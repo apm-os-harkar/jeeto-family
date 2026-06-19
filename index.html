@@ -404,9 +404,9 @@ body{
 .authmsg{display:none;background:#FFF0F0;color:#C42466;border-radius:10px;padding:9px;font-size:12.5px;font-weight:600;margin-bottom:12px}
 .empty{padding:18px;text-align:center;color:var(--ink2);font-size:13px;line-height:1.5}
 
-.gridhead{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border-radius:18px;padding:18px;margin-bottom:14px}
-.gridhead .ghname{font-family:'Baloo 2';font-size:22px}
-.gridhead .ghsub{font-size:12.5px;color:#9fb2d4;margin-top:2px}
+.gridhead{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border-radius:16px;padding:13px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.gridhead .ghname{font-family:'Baloo 2';font-size:18px;line-height:1.1}
+.gridhead .ghsub{font-size:12px;color:#9fb2d4;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;white-space:nowrap}
 .hhrow{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:8px}
 .hhrow .rk{font-family:'Baloo 2';font-size:16px;width:26px;text-align:center}
 .hhrow .hhav{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;font-family:'Baloo 2';font-size:18px}
@@ -457,6 +457,10 @@ body{
 
 .gtclaims{margin:4px 0 10px}
 .gtclaimrow{background:#FFF6E5;border:1px solid #F2D58A;border-radius:10px;padding:7px 11px;margin-bottom:6px;font-size:13px}
+
+.mqcard{background:linear-gradient(135deg,#FFF6E9,#FFEFD6);border:1px solid #F3E2C4;border-radius:18px;padding:14px 16px;margin:8px 0 6px}
+.mqgreet{font-weight:800;font-size:14px;color:#8a5a1a;margin-bottom:3px}
+.mqquote{font-size:14.5px;color:#5b4a32;line-height:1.45}
 </style>
 </head>
 <body>
@@ -484,6 +488,7 @@ body{
 
     <!-- ============ HOME ============ -->
     <section class="view active" id="v-home">
+      <div class="mqcard" id="mqCard"></div>
       <div class="hero">
         <div class="aura">
           <div class="ring r1"></div><div class="ring r2"></div>
@@ -892,7 +897,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 16</div>
+      <div class="psub">Powered by Skyvos AI · build 17</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
@@ -1521,6 +1526,7 @@ async function refreshAll(){
   setHappyHint(FAM?(FAM.happiness||50):50);
   document.getElementById('addMemberBtn').style.display = (ME.role==='captain'&&FAM) ? 'block':'none';
   document.getElementById('skyHome').innerHTML = (FAM?'':'You are not in a family yet. ')+'Tap <b>📸 Submit steps</b> to log today and climb the board 🪙';
+  renderMorningQuote();
   await loadMembers();
   await loadSteps();
   await loadCoinsLedger();
@@ -1872,10 +1878,43 @@ async function joinFamily(){
 }
 
 
+function _dayIdx(len){ var d=new Date(); var doy=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000); return ((doy%len)+len)%len; }
 function setHappyHint(v){
   var el=document.getElementById('happyHint'); if(!el)return;
-  var t = v>=90?'Glowing! \u2728' : v>=80?'Thriving family \ud83c\udf1f' : v>=60?'Happy & active \ud83c\udf3c' : v>=45?'Warming up \ud83d\udc9b' : 'Spend time together to grow';
-  el.textContent=t;
+  var pool;
+  if(v>=80) pool=['Thriving family 🌟','Glowing together ✨','Your family shines 💫','What a team 💛'];
+  else if(v>=60) pool=['Happy & active 🌼','Lovely rhythm 💛','Keep it going 🌿','Warm & close 🤍'];
+  else if(v>=45) pool=['Warming up 💛','A little more together 🌱','One moment at a time 🍃','You\'re getting there 🌤️'];
+  else pool=['Spend time together to grow 💛','Walk together, win together 👣','A photo a day keeps you close 📸','Phones down, hearts up 🤍','One chai, all together ☕','Call someone you love today 📞'];
+  el.textContent = pool[_dayIdx(pool.length)];
+}
+function renderMorningQuote(){
+  var el=document.getElementById('mqCard'); if(!el)return;
+  var h=new Date().getHours();
+  var greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  var emo=h<12?'☀️':h<17?'🌤️':'🌙';
+  var nm=(ME&&ME.display_name)?(', '+esc(ME.display_name.split(' ')[0])):'';
+  var quotes=[
+    'The family that walks together, grows together. 👣',
+    'Small steps every day add up to big journeys. 🌿',
+    'A little time together today is a memory forever. 💛',
+    'Win the morning, win the day. 🌅',
+    'Phones down, hearts up. 🤍',
+    'One photo today is a smile tomorrow. 📸',
+    'Be the reason someone smiles today. 😊',
+    'Health is the real wealth — move a little. 🏃',
+    'Call someone you love. It takes a minute. 📞',
+    'Today is a good day for a good day. ✨',
+    'Together is a beautiful place to be. 🏡',
+    'Your streak starts with one step. 🔥',
+    'Kindness is free — sprinkle it everywhere. 🌸',
+    'Make today count, then rest proud. 🌙',
+    'Family first, always. 💛',
+    'Progress, not perfection. 🌱',
+    'A walk a day keeps the worries away. 🚶',
+    'Be present — the phone can wait. 📵'
+  ];
+  el.innerHTML='<div class="mqgreet">'+greet+nm+' '+emo+'</div><div class="mqquote">'+quotes[_dayIdx(quotes.length)]+'</div>';
 }
 function openHappyInfo(){
   var v = FAM?(FAM.happiness||50):50;
