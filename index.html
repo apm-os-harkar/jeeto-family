@@ -841,7 +841,7 @@ body{
         <input id="jName" placeholder="Your name (e.g. Anu)">
         <input id="jPhone" inputmode="numeric" placeholder="Your phone number">
         <input id="jCode" inputmode="numeric" placeholder="Set a 6-digit code (remember it!)">
-        <input id="jFam" placeholder="Family code (ask your captain)">
+        <input id="jFam" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" placeholder="Family code (ask your captain)">
         <button class="btn btn-primary" id="jBtn" onclick="joinFamily()">Join my family</button>
         <div class="authhint">Already added? <a onclick="showJoin(false)">&larr; Back to log in</a></div>
       </div>
