@@ -786,6 +786,8 @@ body{
         <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button>
         <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button>
       </div>
+      <div class="sectit">🎮 Grid games</div>
+      <div id="gridGames"></div>
       <div class="sectit">Household leaderboard</div>
       <div id="gridLb"></div>
       <div class="sectit" style="margin-top:18px">Grid feed</div>
@@ -838,7 +840,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 6</div>
+      <div class="psub">Powered by Skyvos AI · build 7</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
@@ -1551,8 +1553,10 @@ async function loadGrid(){
     document.getElementById('gridFeed').innerHTML=''; return; }
   document.getElementById('ghName').textContent=GRID.name;
   // households in the grid (with scores)
-  var gh = await sb.from('grid_households').select('household_id, families(id,name,surname,city,household_score)').eq('grid_id',GRID.id).eq('status','active');
+  var gh = await sb.from('grid_households').select('household_id, role, families(id,name,surname,city,household_score)').eq('grid_id',GRID.id).eq('status','active');
   GRIDHOMES = (gh.data||[]).map(function(r){return r.families;}).filter(Boolean);
+  GRID_ADMIN = (gh.data||[]).some(function(r){return r.families && FAM && r.families.id===FAM.id && r.role==='admin';});
+  await loadGridGames();
   document.getElementById('ghSub').textContent=GRIDHOMES.length+(GRIDHOMES.length===1?' household':' households');
   var ranked = GRIDHOMES.slice().sort(function(a,b){return (b.household_score||0)-(a.household_score||0);});
   var lb=document.getElementById('gridLb');
@@ -1755,6 +1759,58 @@ async function setGridHH(grid, house, status){
   if(r.error){toast(r.error.message);return;}
   toast(status==='active'?'Approved ✓':'Declined'); loadRequests();
   if(typeof loadGrid==='function') loadGrid();
+}
+
+
+var GRID_ADMIN=false, CUR_CHALLENGE=null;
+async function loadGridGames(){
+  var box=document.getElementById('gridGames'); if(!box||!GRID)return;
+  var r=await sb.rpc('active_grid_challenge',{p_grid:GRID.id});
+  var ch=(r.data&&r.data[0])?r.data[0]:null; CUR_CHALLENGE=ch;
+  if(!ch){
+    box.innerHTML = GRID_ADMIN
+      ? '<div class="gpost" style="text-align:center"><div style="font-size:30px">🏁</div><b>No grid game running</b><div style="font-size:12px;color:var(--ink2);margin:6px 0 10px">Start a household step race for the grid.</div><button class="minibtn" onclick="openNewChallenge()">Start a grid challenge</button></div>'
+      : emptyMsg('No grid game running. Ask your grid admin to start one 🎮');
+    return;
+  }
+  var days=Math.max(0,Math.ceil((new Date(ch.ends_on)-new Date())/86400000));
+  var st=await sb.rpc('grid_challenge_standings',{p_challenge:ch.id});
+  var rows=(st.data||[]);
+  var board=rows.length?rows.map(function(h,i){
+    var nm=(h.surname||'Household')+(h.city?' · '+h.city:'');
+    var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    var meCls=(FAM&&h.household_id===FAM.id)?' me':'';
+    return '<div class="hhrow'+meCls+'"><div class="rk">'+medal+'</div><div class="hhinfo"><b>'+esc(nm)+'</b></div><div class="hhsc">'+Number(h.total||0).toLocaleString('en-IN')+' 👣</div></div>';
+  }).join(''):emptyMsg('No steps logged yet — get your household walking!');
+  box.innerHTML='<div class="gpost" style="background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border:none">'+
+    '<div style="font-size:11px;letter-spacing:1px;opacity:.8;font-weight:700">🏃 GRID STEP RACE</div>'+
+    '<div style="font-family:\'Baloo 2\';font-size:19px;margin:2px 0">'+esc(ch.title)+'</div>'+
+    '<div style="font-size:12px;opacity:.85">'+days+' day'+(days===1?'':'s')+' left · winner household gets '+ch.reward_coins+' 🪙 each</div></div>'+
+    board+
+    (GRID_ADMIN?'<button class="minibtn ghost" style="margin-top:6px" onclick="endChallenge(\''+ch.id+'\')">End & crown winner</button>':'');
+}
+function openNewChallenge(){
+  openSheet('<h3>Start a grid challenge 🏁</h3><p class="s">A step race between all households in the grid. The household with the most total steps wins.</p>'+
+  '<input id="ncTitle" placeholder="Title (e.g. Diwali Step Race)" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:10px">'+
+  '<input id="ncDays" inputmode="numeric" placeholder="How many days? (e.g. 7)" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:10px">'+
+  '<input id="ncReward" inputmode="numeric" placeholder="Coins for each winner (e.g. 200)" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:14px">'+
+  '<button class="btn btn-primary" onclick="createGridChallenge()">Start race</button>');
+}
+async function createGridChallenge(){
+  var title=(_v('ncTitle')||'').trim()||'Grid Step Race';
+  var days=parseInt((_v('ncDays')||'7').replace(/\D/g,''))||7;
+  var reward=parseInt((_v('ncReward')||'200').replace(/\D/g,''));
+  if(isNaN(reward))reward=200;
+  var r=await sb.rpc('create_grid_challenge',{p_grid:GRID.id,p_title:title,p_days:days,p_reward:reward});
+  if(r.error){toast(r.error.message||'Could not start');return;}
+  closeSheet();confetti();toast('Grid race started! 🏁');
+  await loadGridGames();
+}
+async function endChallenge(id){
+  var r=await sb.rpc('end_grid_challenge',{p_challenge:id});
+  if(r.error){toast(r.error.message||'Could not end');return;}
+  confetti();toast('Winner crowned & coins awarded! 👑');
+  await loadGridGames();
 }
 
 window.addEventListener('load', boot);
