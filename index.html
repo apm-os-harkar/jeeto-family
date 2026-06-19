@@ -429,6 +429,31 @@ body{
 .minibtn{border:none;background:#0E2547;color:#fff;border-radius:10px;padding:7px 13px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer}
 .minibtn.ghost{background:#eef1f7;color:#5b6b85}
 .hhrow .hhinfo{flex:1}
+
+.vtabs{display:flex;gap:7px;margin-bottom:12px}
+.vtab{flex:1;text-align:center;background:#eef1f7;color:#5b6b85;font-weight:700;font-size:13px;padding:10px;border-radius:12px;cursor:pointer}
+.vtab.on{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff}
+.ptile{position:relative}
+.ptile video{width:100%;height:100%;object-fit:cover;display:block}
+.vbadge{position:absolute;top:6px;right:6px;background:rgba(14,37,71,.85);color:#fff;font-size:11px;padding:2px 6px;border-radius:8px}
+.vplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.45);color:#fff;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:14px}
+
+.doctile{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#1f3a5f,#0B1E3B);color:#fff}
+.doctile .de{font-size:30px}
+.doctile .dn{font-size:11px;margin-top:4px;opacity:.85;font-weight:700}
+.protwrap{position:relative;display:inline-block;max-width:100%}
+.protwrap .wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.32);font-weight:800;font-size:22px;letter-spacing:2px;transform:rotate(-22deg);pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.4);text-transform:uppercase}
+.pgrid img,.pgrid video,.protwrap img,.protwrap video{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+
+.gtticket{width:100%;border-collapse:collapse;margin-top:8px}
+.gtticket td{border:1px solid var(--line);height:40px;text-align:center;font-weight:700;font-size:15px}
+.gtticket td.gtempty{background:#f4f6fa}
+.gtticket td.gtnum{cursor:pointer}
+.gtticket td.gtnum.callable{background:#FFF3D6}
+.gtticket td.gtnum.marked{background:#E03A7A;color:#fff}
+.gtcalled{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin-top:8px}
+.gtc{font-size:10.5px;text-align:center;padding:5px 0;border-radius:5px;background:#eef1f7;color:#9aa6ba}
+.gtc.on{background:#12A14B;color:#fff;font-weight:700}
 </style>
 </head>
 <body>
@@ -484,11 +509,11 @@ body{
           <div><div class="qt">Family Board</div><div class="qs">Family chat</div></div>
           <span class="qbadge">3</span>
         </div>
-        <div class="qcard q-music" onclick="go('music')">
+        <div class="qcard q-music" onclick="go('music');loadSongs()">
           <div class="qe">🎵</div>
           <div><div class="qt">Family Songs</div><div class="qs">Our memories</div></div>
         </div>
-        <div class="qcard q-album" onclick="go('album')">
+        <div class="qcard q-album" onclick="go('album');loadVault('mine')">
           <div class="qe">📷</div>
           <div><div class="qt">Family Album</div><div class="qs">Shared photos</div></div>
         </div>
@@ -506,6 +531,7 @@ body{
       </div>
 
       <div class="modtag">🏆 Jeeto Enaam · Rewards module</div>
+      <div id="bdayCard"></div>
       <div class="sectit">Today's champions <a onclick="go('lb')">Leaderboard →</a></div>
       <div class="champs" id="champRow"></div>
 
@@ -667,6 +693,11 @@ body{
         <div class="tile"><div class="k">Lifetime steps</div><div class="v" id="lifeSteps">0</div></div>
         <div class="tile"><div class="k">Coins</div><div class="v" id="meCoins">0</div></div>
       </div>
+      <div class="sectit">My birthday 🎂</div>
+      <input type="date" id="dobInput" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:15px;font-family:inherit;margin-bottom:8px">
+      <input id="dobNote" placeholder="Traditional / Kashmiri date (optional)" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:15px;font-family:inherit;margin-bottom:8px">
+      <button class="minibtn" onclick="saveDob()">Save birthday</button>
+      <div class="s" style="margin:6px 0 8px">Skyvos reminds your family — Gregorian + traditional date 💛</div>
       <div class="sectit">Your badges 🏅</div>
       <div class="badgewrap">
         <div class="bdg"><div class="be">🌅</div><div class="bn">Early Riser</div></div>
@@ -715,11 +746,22 @@ body{
           <div class="pp" id="ppBig" onclick="togglePlay()">▶</div>
           <button onclick="nextSong()">⏭</button>
         </div>
-        <div onclick="openCurrent()" style="margin-top:13px;display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.18);padding:9px 18px;border-radius:24px;font-weight:700;font-size:12.5px;cursor:pointer">▶ Play on YouTube</div>
+        <div id="openCurBtn" onclick="openCurrent()" style="margin-top:13px;display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.18);padding:9px 18px;border-radius:24px;font-weight:700;font-size:12.5px;cursor:pointer">▶ Play</div>
+        <audio id="famAudio" style="display:none"></audio>
       </div>
 
       <div class="sectit">The playlist <a onclick="openAddSong()">+ Add song</a></div>
       <div id="songList"></div>
+    </section>
+
+    <!-- ============ GRID TAMBOLA ============ -->
+    <section class="view" id="v-gtambola">
+      <div class="chathead" style="padding:8px 2px 10px">
+        <div class="cav" style="background:linear-gradient(135deg,#E03A7A,#a01048)">🎯</div>
+        <div><div class="ct">Grid Tambola</div><div class="cs">The whole grid plays together</div></div>
+      </div>
+      <div id="gtBody"></div>
+      <div style="height:24px"></div>
     </section>
 
     <!-- ============ FAMILY ALBUM ============ -->
@@ -727,12 +769,14 @@ body{
       <div class="sectit" style="margin-top:10px">Family Album 📷</div>
       <div class="skyvos">
         <div class="face">✦</div>
-        <div><div class="who">Skyvos AI</div><div class="msg">Every memory in one place. <b>Anyone in the family can add</b> — Dadi included. I'll quietly remind you of these on birthdays &amp; anniversaries 💛</div></div>
+        <div><div class="who">Skyvos AI</div><div class="msg">Your family's memories, saved forever. <b>Anyone can add</b> photos &amp; videos. Tap a memory to <b>share it with your grid</b> 💛</div></div>
       </div>
-      <div class="tabs">
-        <div class="chip on">All photos</div>
+      <div class="vtabs">
+        <div id="vtMine" class="vtab on" onclick="loadVault('mine')">🏠 My Album</div>
+        <div id="vtGrid" class="vtab" onclick="loadVault('grid')">🔗 Grid Shared</div>
       </div>
-      <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="onPhotoPicked(event)">
+      <input id="vaultSearch" placeholder="Search memories…" oninput="applyVaultFilter()" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-family:inherit;margin-bottom:12px">
+      <input type="file" id="photoInput" accept="image/*,video/*,application/pdf" style="display:none" onchange="uploadVaultFile(event)">
       <div class="pgrid" id="pgrid"></div>
     </section>
 
@@ -786,8 +830,10 @@ body{
         <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button>
         <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button>
       </div>
+      <button class="btn btn-ghost" style="margin-bottom:14px" onclick="openConnections()">🤝 Connected households</button>
       <div class="sectit">🎮 Grid games</div>
       <div id="gridGames"></div>
+      <button class="btn btn-ghost" style="margin-bottom:14px" onclick="openGridTambola()">🎯 Play Grid Tambola</button>
       <div class="sectit">Household leaderboard</div>
       <div id="gridLb"></div>
       <div class="sectit" style="margin-top:18px">Grid feed</div>
@@ -840,7 +886,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 7</div>
+      <div class="psub">Powered by Skyvos AI · build 13</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
@@ -1064,97 +1110,216 @@ function confetti(){
 }
 
 /* ========== FAMILY SONGS ========== */
-const SONGS=[];
-let curSong=-1, musicOn=false, playing=false;
+var SONGS=[];
+var curSong=-1, musicOn=false, playing=false;
+async function loadSongs(){
+  if(!FAM){ SONGS=[]; renderSongs(); return; }
+  var r=await sb.from('family_songs').select('*, member:added_by(display_name)').eq('household_id',FAM.id).order('created_at',{ascending:false});
+  if(r.error){ toast(r.error.message); return; }
+  SONGS=(r.data||[]).map(function(s){ return {id:s.id, kind:s.kind, t:s.title, a:s.artist||'', by:(s.member&&s.member.display_name)||'Family', memo:s.memo||'', art:s.art||(s.kind==='audio'?'🎙️':'🎵'), url:s.url, storage_path:s.storage_path, mine:(s.added_by===(ME&&ME.id))}; });
+  renderSongs();
+}
 function renderSongs(){
-  if(!SONGS.length){document.getElementById('songList').innerHTML='<div class="empty">No songs yet. Tap + Add song to start your family playlist 🎵</div>';return;}
-  document.getElementById('songList').innerHTML=SONGS.map((s,i)=>`
-    <div class="songrow ${i===curSong?'playing':''}" onclick="playSong(${i})">
-      <div class="sart">${s.art}</div>
-      <div class="si"><div class="st">${s.t}</div><div class="sm">${s.a} · added by <b>${s.by}</b> — ${s.memo}</div></div>
-      <div class="pbtn">${i===curSong&&playing?'<span class="eq" style="color:#8E3CE0"><i></i><i></i><i></i><i></i></span>':'▶'}</div>
-    </div>`).join('');
+  var box=document.getElementById('songList'); if(!box)return;
+  if(!SONGS.length){ box.innerHTML='<div class="empty">No songs yet. Tap + Add song to start your family playlist 🎵</div>'; return; }
+  box.innerHTML=SONGS.map(function(s,i){
+    var del = s.mine ? '<div class="pbtn" style="color:#c44;margin-left:4px" onclick="event.stopPropagation();deleteSong(\''+s.id+'\')">✕</div>' : '';
+    var tag = (s.kind==='audio') ? ' 🎙️' : '';
+    return '<div class="songrow '+(i===curSong?'playing':'')+'" onclick="playSong('+i+')">'+
+      '<div class="sart">'+(s.art||'🎵')+'</div>'+
+      '<div class="si"><div class="st">'+esc(s.t)+tag+'</div><div class="sm">'+esc(s.a)+' · added by <b>'+esc(s.by)+'</b>'+(s.memo?(' — '+esc(s.memo)):'')+'</div></div>'+
+      '<div class="pbtn">'+((i===curSong&&playing)?'<span class="eq" style="color:#8E3CE0"><i></i><i></i><i></i><i></i></span>':'▶')+'</div>'+del+'</div>';
+  }).join('');
 }
 function playSong(i){
   if(!SONGS.length){toast('Add a family song first 🎵');return;}
   curSong=i;musicOn=true;playing=true;
-  const s=SONGS[i];
-  document.getElementById('nowArt').textContent=s.art;
+  var s=SONGS[i];
+  document.getElementById('nowArt').textContent=s.art||'🎵';
   document.getElementById('nowTitle').textContent=s.t;
-  document.getElementById('nowArtist').textContent=s.a+' · added by '+s.by;
-  const memo=document.getElementById('nowMemo');memo.style.display='inline-block';memo.textContent='“'+s.memo+'”';
-  document.getElementById('ppBig').textContent='⏸';
-  // mini player
-  document.getElementById('miniArt').textContent=s.art;
-  document.getElementById('miniTitle').textContent=s.t;
-  document.getElementById('miniArtist').textContent=s.a+' · '+s.by;
-  document.getElementById('miniPP').textContent='⏸';
-  document.getElementById('mini').classList.add('show');
+  document.getElementById('nowArtist').textContent=(s.a||'')+' · added by '+s.by;
+  var memo=document.getElementById('nowMemo'); if(s.memo){memo.style.display='inline-block';memo.textContent='\u201c'+s.memo+'\u201d';} else {memo.style.display='none';}
+  document.getElementById('ppBig').textContent='\u23f8';
+  var ocb=document.getElementById('openCurBtn'); if(ocb) ocb.textContent = (s.kind==='audio') ? '\u25b6 Play recording' : '\u25b6 Open link';
+  var mini=document.getElementById('mini');
+  if(mini){ document.getElementById('miniArt').textContent=s.art||'🎵'; document.getElementById('miniTitle').textContent=s.t; document.getElementById('miniArtist').textContent=(s.a||'')+' · '+s.by; document.getElementById('miniPP').textContent='\u23f8'; mini.classList.add('show'); }
+  var au=document.getElementById('famAudio');
+  if(au){ if(s.kind==='audio' && s.storage_path){ au.src=vaultUrl(s.storage_path); au.play().catch(function(){}); } else { au.pause(); } }
   renderSongs();
-  toast('▶ '+s.t+' — '+s.by+"'s pick");
 }
 function togglePlay(){
   if(curSong<0){playSong(0);return;}
   playing=!playing;
-  document.getElementById('ppBig').textContent=playing?'⏸':'▶';
-  document.getElementById('miniPP').textContent=playing?'⏸':'▶';
-  document.getElementById('miniEq').style.visibility=playing?'visible':'hidden';
+  var s=SONGS[curSong], au=document.getElementById('famAudio');
+  if(au && s && s.kind==='audio'){ if(playing) au.play().catch(function(){}); else au.pause(); }
+  document.getElementById('ppBig').textContent=playing?'\u23f8':'\u25b6';
+  var mpp=document.getElementById('miniPP'); if(mpp) mpp.textContent=playing?'\u23f8':'\u25b6';
+  var meq=document.getElementById('miniEq'); if(meq) meq.style.visibility=playing?'visible':'hidden';
   renderSongs();
 }
-function nextSong(){playSong((curSong+1)%SONGS.length);}
-function prevSong(){playSong((curSong-1+SONGS.length)%SONGS.length);}
+function nextSong(){ if(SONGS.length) playSong((curSong+1)%SONGS.length); }
+function prevSong(){ if(SONGS.length) playSong((curSong-1+SONGS.length)%SONGS.length); }
 function openCurrent(){
   if(!SONGS.length){toast('Add a family song first 🎵');return;}
   if(curSong<0)playSong(0);
-  const s=SONGS[curSong];
-  window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s.t+' '+s.a),'_blank');
-  toast('Opening '+s.t+' on YouTube ▶');
+  var s=SONGS[curSong];
+  if(s.kind==='link' && s.url){ window.open(s.url,'_blank'); toast('Opening '+s.t+' \u25b6'); }
+  else if(s.kind==='audio'){ togglePlay(); }
+  else { window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s.t+' '+s.a),'_blank'); }
 }
 function openAddSong(){
-  openSheet(`
-    <h3>Add a family song 🎵</h3>
-    <p class="s">Songs that mean something to your family. Add the memory behind it — that's the whole point.</p>
-    <input id="ns_t" placeholder="Song name" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;font-family:inherit;font-size:14px">
-    <input id="ns_a" placeholder="Singer / movie" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;font-family:inherit;font-size:14px">
-    <input id="ns_m" placeholder="The memory — e.g. 'our road-trip song'" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:16px;font-family:inherit;font-size:14px">
-    <button class="btn btn-primary" onclick="addSong()">Add to family playlist</button>
-  `);
+  openSheet('<h3>Add a family song 🎵</h3>'+
+    '<p class="s">A song that means something. Add the memory behind it — that\'s the whole point.</p>'+
+    '<input id="ns_t" placeholder="Song name" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;font-family:inherit;font-size:14px">'+
+    '<input id="ns_a" placeholder="Singer / movie (optional)" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;font-family:inherit;font-size:14px">'+
+    '<input id="ns_m" placeholder="The memory — e.g. our road-trip song" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:14px;font-family:inherit;font-size:14px">'+
+    '<div class="sectit" style="margin:2px 0 8px">🔗 Option A — paste a link</div>'+
+    '<input id="ns_url" placeholder="YouTube / Spotify link" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;font-family:inherit;font-size:14px">'+
+    '<button class="btn btn-primary" onclick="addSongLink()">Add link song</button>'+
+    '<div class="sectit" style="margin:16px 0 8px">🎙️ Option B — upload family audio</div>'+
+    '<p class="s" style="margin-top:0">Dadi singing, a bhajan, kids\' recording — your own audio. Plays even offline once loaded.</p>'+
+    '<input type="file" id="ns_audio" accept="audio/*" style="width:100%;margin-bottom:10px">'+
+    '<button class="btn btn-ghost" onclick="addSongAudio()">Upload &amp; add recording</button>');
 }
-function addSong(){
-  const t=document.getElementById('ns_t').value.trim()||'Untitled';
-  const a=document.getElementById('ns_a').value.trim()||'Unknown';
-  const m=document.getElementById('ns_m').value.trim()||'Added by the family';
-  const arts=['🎵','🎶','💛','🎙️','🪕','✨'];
-  SONGS.unshift({t,a,art:arts[Math.floor(Math.random()*arts.length)],by:'You',memo:m});
-  closeSheet();renderSongs();confetti();toast('Added to Family Songs 💛');
+async function addSongLink(){
+  if(!FAM){toast('Join a household first');return;}
+  var t=(_v('ns_t')||'').trim()||'Untitled';
+  var a=(_v('ns_a')||'').trim();
+  var m=(_v('ns_m')||'').trim();
+  var url=(_v('ns_url')||'').trim();
+  if(!url){toast('Paste a link, or use Option B for audio');return;}
+  var r=await sb.from('family_songs').insert({household_id:FAM.id,added_by:ME.id,kind:'link',title:t,artist:a,url:url,memo:m,art:'🎵'});
+  if(r.error){toast(r.error.message);return;}
+  closeSheet();confetti();toast('Added to Family Songs 💛');loadSongs();
 }
-renderSongs();
-
+async function addSongAudio(){
+  if(!FAM){toast('Join a household first');return;}
+  var fi=document.getElementById('ns_audio'); var f=fi&&fi.files[0];
+  if(!f){toast('Pick an audio file first');return;}
+  if(f.size>30*1024*1024){toast('Audio too large (>30MB) — try a shorter clip');return;}
+  var t=(_v('ns_t')||'').trim()||(f.name||'Recording').replace(/\.[^.]+$/,'');
+  var a=(_v('ns_a')||'').trim();
+  var m=(_v('ns_m')||'').trim();
+  var ext=((f.name||'').split('.').pop()||'mp3').toLowerCase();
+  var path=FAM.id+'/songs/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  toast('Uploading… ⏳');
+  var up=await sb.storage.from('vault').upload(path,f,{contentType:f.type||undefined});
+  if(up.error){toast('Upload failed: '+up.error.message);return;}
+  var r=await sb.from('family_songs').insert({household_id:FAM.id,added_by:ME.id,kind:'audio',title:t,artist:a,storage_path:path,memo:m,art:'🎙️'});
+  if(r.error){toast(r.error.message);return;}
+  closeSheet();confetti();toast('Family recording added 💛');loadSongs();
+}
+async function deleteSong(id){
+  var s=SONGS.find(function(x){return x.id===id;});
+  var r=await sb.from('family_songs').delete().eq('id',id);
+  if(r.error){toast(r.error.message);return;}
+  if(s&&s.kind==='audio'&&s.storage_path){ try{await sb.storage.from('vault').remove([s.storage_path]);}catch(e){} }
+  toast('Removed');loadSongs();
+}
 /* ========== FAMILY ALBUM ========== */
-const PHOTOS=[];
-function renderPhotos(){
-  const add=`<div class="ptile add" onclick="document.getElementById('photoInput').click()">
-      <div class="pe">＋</div><div class="pt">Add photo</div></div>`;
-  const tiles=PHOTOS.map((p,i)=>`<div class="ptile" onclick="openPhoto(${i})">
-      ${p.url?`<img src="${p.url}">`:`<div class="ge" style="background:linear-gradient(135deg,${p.grad})">${p.emoji}</div>`}
-      <div class="pby">${p.cap} · ${p.by}</div></div>`).join('');
+var VAULT_SCOPE='mine', VAULT_ALL=[], VAULT_MAP={};
+document.addEventListener('contextmenu',function(e){ try{ if(e.target&&e.target.closest&&e.target.closest('#pgrid, .sheet')) e.preventDefault(); }catch(_){} });
+function vaultUrl(p){ try{ return sb.storage.from('vault').getPublicUrl(p).data.publicUrl; }catch(e){ return ''; } }
+async function loadVault(scope){
+  VAULT_SCOPE = scope||'mine';
+  var tm=document.getElementById('vtMine'), tg=document.getElementById('vtGrid');
+  if(tm&&tg){ tm.classList.toggle('on',VAULT_SCOPE==='mine'); tg.classList.toggle('on',VAULT_SCOPE==='grid'); }
+  if(!FAM){ document.getElementById('pgrid').innerHTML=emptyMsg('Join a household first.'); return; }
+  document.getElementById('pgrid').innerHTML=emptyMsg('Loading memories…');
+  var q;
+  if(VAULT_SCOPE==='grid'){
+    q = sb.from('vault_items').select('*, families(surname,name)').eq('visibility','grid').order('created_at',{ascending:false}).limit(80);
+  } else {
+    q = sb.from('vault_items').select('*').eq('household_id',FAM.id).order('created_at',{ascending:false}).limit(120);
+  }
+  var r=await q;
+  if(r.error){ document.getElementById('pgrid').innerHTML=emptyMsg(r.error.message); return; }
+  VAULT_ALL=(r.data||[]); VAULT_MAP={}; VAULT_ALL.forEach(function(it){VAULT_MAP[it.id]=it;});
+  applyVaultFilter();
+}
+function applyVaultFilter(){
+  var term=(_v('vaultSearch')||'').trim().toLowerCase();
+  var items=VAULT_ALL;
+  if(term) items=VAULT_ALL.filter(function(it){return ((it.title||'')+' '+(it.description||'')+' '+((it.tags||[]).join(' '))+' '+(it.festival||'')).toLowerCase().indexOf(term)>=0;});
+  renderVault(items);
+}
+function renderVault(items){
+  var add = (VAULT_SCOPE==='mine')
+    ? '<div class="ptile add" onclick="document.getElementById(\'photoInput\').click()"><div class="pe">＋</div><div class="pt">Add</div></div>' : '';
+  if(!items.length && VAULT_SCOPE==='grid'){ document.getElementById('pgrid').innerHTML=emptyMsg('Nothing shared to the grid yet. Open one of your memories and tap "Share to grid".'); return; }
+  var tiles=items.map(function(it){
+    var url=vaultUrl(it.storage_path);
+    var media;
+    if(it.type==='document'){ media='<div class="doctile"><div class="de">📄</div><div class="dn">PDF</div></div>'; }
+    else if(it.type==='video'){ media='<video src="'+url+'#t=0.1" muted playsinline preload="metadata"></video>'; }
+    else { media='<img src="'+url+'" loading="lazy">'; }
+    var badge = (it.visibility==='grid') ? '<span class="vbadge">🔗</span>' : '';
+    var vid = (it.type==='video') ? '<span class="vplay">▶</span>' : '';
+    return '<div class="ptile" onclick="openVaultItem(\''+it.id+'\')">'+media+badge+vid+'</div>';
+  }).join('');
   document.getElementById('pgrid').innerHTML=add+tiles;
 }
-function onPhotoPicked(e){
-  const f=e.target.files[0];if(!f)return;
-  const url=URL.createObjectURL(f);
-  PHOTOS.unshift({url,by:'You',cap:'Just now'});
-  renderPhotos();confetti();toast('Added to the family album 📷💛');
+async function uploadVaultFile(e){
+  var f=e.target.files[0]; if(!f){return;} if(!FAM){toast('Join a household first');return;}
+  if(f.size > 50*1024*1024){ toast('That file is large (>50MB) — try a smaller one.'); e.target.value=''; return; }
+  var ft=(f.type||'');
+  var isVid=ft.indexOf('video')===0;
+  var isPdf=(ft==='application/pdf')||/\.pdf$/i.test(f.name||'');
+  var vtype=isVid?'video':(isPdf?'document':'photo');
+  var ext=((f.name||'').split('.').pop()||(isVid?'mp4':isPdf?'pdf':'jpg')).toLowerCase();
+  var path=FAM.id+'/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  toast('Uploading… ⏳');
+  var up=await sb.storage.from('vault').upload(path,f,{contentType:f.type||undefined,upsert:false});
+  if(up.error){ toast('Upload failed: '+up.error.message); e.target.value=''; return; }
+  var ins=await sb.from('vault_items').insert({household_id:FAM.id,uploaded_by:ME.id,type:vtype,storage_path:path,visibility:'household'});
   e.target.value='';
+  if(ins.error){ toast('File saved but record failed: '+ins.error.message); return; }
+  confetti(); toast('Added to your Vault 💛');
+  loadVault('mine');
 }
-function openPhoto(i){
-  const p=PHOTOS[i];
-  document.getElementById('lbMedia').innerHTML=p.url?`<img src="${p.url}">`:`<div class="lbge">${p.emoji}</div>`;
-  document.getElementById('lbCap').innerHTML=`<div class="lc">${p.cap}</div><div class="lb2">Added by ${p.by}</div>`;
-  document.getElementById('lightbox').classList.add('show');
+function openVaultItem(id){
+  var it=VAULT_MAP[id]; if(!it)return;
+  var url=vaultUrl(it.storage_path);
+  var mine = (it.household_id===FAM.id);
+  var guard = mine ? '' : ' oncontextmenu="return false" draggable="false"';
+  var vguard = mine ? '' : ' controlsList="nodownload noremoteplayback" disablepictureinpicture';
+  var inner;
+  if(it.type==='document'){
+    inner='<iframe src="'+url+'#toolbar=0&navpanes=0&scrollbar=0" style="width:100%;height:62vh;border:none;border-radius:14px;background:#fff"'+guard+'></iframe>';
+  } else if(it.type==='video'){
+    inner='<video src="'+url+'" controls autoplay playsinline style="max-width:100%;max-height:58vh;border-radius:14px"'+guard+vguard+'></video>';
+  } else {
+    inner='<img src="'+url+'" style="max-width:100%;max-height:58vh;border-radius:14px"'+guard+'>';
+  }
+  var wm = mine ? '' : '<div class="wm">'+esc((FAM.surname||FAM.name||'Viewer'))+'</div>';
+  var media = '<div class="protwrap">'+inner+wm+'</div>';
+  var when = new Date(it.created_at).toLocaleDateString('en-IN');
+  var ctrl;
+  if(mine){
+    var shared=(it.visibility==='grid');
+    ctrl = '<button class="btn btn-primary" onclick="shareToGrid(\''+id+'\','+(shared?'false':'true')+')">'+(shared?'🔒 Make household-only':'🔗 Share to grid')+'</button>'+
+           '<div style="height:8px"></div><button class="btn btn-ghost" onclick="deleteVault(\''+id+'\')">Delete</button>';
+  } else {
+    var hn=(it.families&&(it.families.surname||it.families.name))||'A household';
+    ctrl='<div class="s" style="text-align:center">Shared by '+esc(hn)+'</div>';
+  }
+  openSheet('<div style="text-align:center;margin-bottom:10px">'+media+'</div>'+
+    '<div style="font-size:12px;color:var(--ink2);text-align:center;margin-bottom:12px">Added '+when+(it.visibility==='grid'?' · shared to grid 🔗':'')+'</div>'+ctrl);
+}
+async function shareToGrid(id,on){
+  var r=await sb.from('vault_items').update({visibility: on?'grid':'household'}).eq('id',id);
+  if(r.error){toast(r.error.message);return;}
+  closeSheet(); confetti(); toast(on?'Shared to your grid 🔗':'Now household-only 🔒');
+  loadVault(VAULT_SCOPE);
+}
+async function deleteVault(id){
+  var it=VAULT_MAP[id];
+  var r=await sb.from('vault_items').delete().eq('id',id);
+  if(r.error){toast(r.error.message);return;}
+  if(it){ try{ await sb.storage.from('vault').remove([it.storage_path]); }catch(e){} }
+  closeSheet(); toast('Deleted'); loadVault(VAULT_SCOPE);
 }
 function closeLightbox(){document.getElementById('lightbox').classList.remove('show');}
-renderPhotos();
 const REPLIES=[
   {n:'Tia',c:'#C42466',bg:'#E03A7A,#8E3CE0',m:'haha yesss 😄'},
   {n:'Dadi',c:'#E09A12',bg:'#F4B740,#E09A12',m:'God bless beta ❤️'},
@@ -1374,6 +1539,56 @@ async function loadMembers(){
   document.getElementById('memberList').innerHTML=MEMBERS.map(m=>
     '<div class="lbrow"><div class="av" style="width:38px;height:38px;font-size:16px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(m.id===ME.id?' (You)':'')+'</div><div class="sub">'+(m.role==='captain'?'Captain':'Member')+'</div></div></div>'
   ).join('');
+  var di=document.getElementById('dobInput'); if(di && ME && ME.dob) di.value=ME.dob;
+  var dn=document.getElementById('dobNote'); if(dn && ME) dn.value=ME.dob_note||'';
+  renderBirthdays();
+}
+function renderBirthdays(){
+  var bc=document.getElementById('bdayCard'); if(!bc)return;
+  try{
+    var today=new Date(); today.setHours(0,0,0,0);
+    var ups=(MEMBERS||[]).filter(function(m){return m.dob;}).map(function(m){
+      var d=new Date(m.dob+'T00:00:00');
+      var nb=new Date(today.getFullYear(), d.getMonth(), d.getDate());
+      if(nb<today) nb=new Date(today.getFullYear()+1, d.getMonth(), d.getDate());
+      return {name:m.display_name, days:Math.round((nb-today)/86400000), d:d, vs:nb.getFullYear()+57, note:(m.dob_note||'')};
+    }).filter(function(x){return x.days<=60;}).sort(function(a,b){return a.days-b.days;});
+    if(!ups.length){ bc.innerHTML=''; return; }
+    bc.innerHTML='<div class="sectit">🎂 Upcoming birthdays</div>'+ups.map(function(x){
+      var lbl=x.days===0?'Today! 🎉':x.days===1?'Tomorrow 🎈':('in '+x.days+' days');
+      var greg=x.d.toLocaleDateString('en-IN',{day:'numeric',month:'long'});
+      var dual=greg+' · VS '+x.vs+(x.note?(' · '+esc(x.note)):'');
+      var safe=(x.name||'').replace(/'/g,'');
+      var wish=(x.days<=2)?'<button class="minibtn" style="margin-left:auto" onclick="wishBirthday(\''+safe+'\')">🎂 Wish</button>':'';
+      return '<div class="feed-item"><div class="ic" style="background:#FFE3EC">🎂</div><div style="flex:1"><div class="ft">'+esc(x.name)+' · '+lbl+'</div><div class="fm">'+dual+'</div></div>'+wish+'</div>';
+    }).join('');
+  }catch(e){ bc.innerHTML=''; }
+}
+function wishBirthday(name){
+  go('chat');
+  setTimeout(function(){ var ci=document.getElementById('chatInput'); if(ci){ ci.value='Happy Birthday '+name+'! 🎂🎉'; ci.focus(); } },160);
+}
+async function saveDob(){
+  var v=_v('dobInput'); var note=(_v('dobNote')||'').trim();
+  if(!v){toast('Pick your birth date');return;}
+  var r=await sb.from('members').update({dob:v, dob_note:note}).eq('id',ME.id);
+  if(r.error){toast(r.error.message);return;}
+  ME.dob=v; ME.dob_note=note; toast('Birthday saved 🎂'); loadMembers();
+}
+function openConnections(){
+  openSheet('<h3>Connected households 🤝</h3><p class="s">Households you\'ve linked with directly.</p><div id="connList">'+emptyMsg('Loading…')+'</div>');
+  loadConnections();
+}
+async function loadConnections(){
+  var box=document.getElementById('connList'); if(!box)return;
+  var r=await sb.rpc('my_connections');
+  if(r.error){box.innerHTML=emptyMsg(r.error.message);return;}
+  var rows=(r.data||[]);
+  if(!rows.length){box.innerHTML=emptyMsg('No connected households yet. Use 🔍 Find households to connect.');return;}
+  box.innerHTML=rows.map(function(h){
+    var nm=(h.surname||'Household')+(h.city?' · '+h.city:'');
+    return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(h.surname||'H')+')">'+esc((h.surname||'H')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>'+Number(h.household_score||0).toLocaleString('en-IN')+' pts</div></div><span class="rel" style="color:#12A14B">Connected ✓</span></div>';
+  }).join('');
 }
 
 async function loadSteps(){
@@ -1811,6 +2026,130 @@ async function endChallenge(id){
   if(r.error){toast(r.error.message||'Could not end');return;}
   confetti();toast('Winner crowned & coins awarded! 👑');
   await loadGridGames();
+}
+
+
+/* ========== LIVE GRID TAMBOLA ========== */
+var GT={gameId:null,isHost:false,ticket:null,called:[],status:null,marked:{},poll:null};
+function openGridTambola(){ if(!GRID){toast('Join a grid first 🔗');return;} go('gtambola'); gtLoad(); }
+async function gtLoad(){
+  gtStopPoll();
+  document.getElementById('gtBody').innerHTML=emptyMsg('Loading…');
+  var r=await sb.from('grid_tambola').select('*').eq('grid_id',GRID.id).in('status',['lobby','live']).order('created_at',{ascending:false}).limit(1);
+  if(r.error){document.getElementById('gtBody').innerHTML=emptyMsg(r.error.message);return;}
+  var g=(r.data&&r.data[0])?r.data[0]:null;
+  if(!g){ GT.gameId=null; gtRenderStart(); return; }
+  GT.gameId=g.id; GT.called=g.called||[]; GT.status=g.status; GT.isHost=(g.host_member===(ME&&ME.id)); GT.marked={};
+  var p=await sb.from('grid_tambola_players').select('ticket').eq('game_id',g.id).eq('member_id',ME.id).maybeSingle();
+  if(p.data&&p.data.ticket){ GT.ticket=p.data.ticket; gtRenderBoard(); gtStartPoll(); }
+  else { gtRenderJoin(); }
+}
+function gtRenderStart(){
+  document.getElementById('gtBody').innerHTML='<div class="gpost" style="text-align:center"><div style="font-size:34px">🎯</div><b>No Tambola running</b><div class="s" style="margin:6px 0 12px">Start a game — everyone in your grid can join from their own phone.</div><button class="btn btn-primary" onclick="gtCreate()">Start Grid Tambola</button></div>';
+}
+function gtRenderJoin(){
+  document.getElementById('gtBody').innerHTML='<div class="gpost" style="text-align:center"><div style="font-size:30px">🎟️</div><b>Tambola is on!</b><div class="s" style="margin:6px 0 12px">Join now to get your ticket.</div><button class="btn btn-primary" onclick="gtJoinSelf()">Join &amp; get my ticket</button></div>';
+}
+async function gtCreate(){
+  var r=await sb.rpc('create_grid_tambola',{p_grid:GRID.id});
+  if(r.error){toast(r.error.message);return;}
+  GT.gameId=r.data; GT.isHost=true; GT.called=[]; GT.status='lobby'; GT.marked={};
+  await gtJoinSelf();
+}
+async function gtJoinSelf(){
+  if(!GT.gameId){ await gtLoad(); if(!GT.gameId)return; }
+  var ticket=gtGenTicket(); if(!ticket){toast('Ticket gen failed, tap again');return;}
+  var r=await sb.rpc('join_grid_tambola',{p_game:GT.gameId,p_ticket:ticket});
+  if(r.error){toast(r.error.message);return;}
+  GT.ticket=ticket; confetti(); gtRenderBoard(); gtStartPoll();
+}
+function gtRenderBoard(){
+  var host = GT.isHost ? ('<div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-primary" style="flex:1;margin:0" onclick="gtDraw()">🎲 Draw next</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="gtEnd()">End game</button></div>') : '';
+  var last = GT.called.length ? GT.called[GT.called.length-1] : '—';
+  var head='<div style="text-align:center;margin-bottom:6px"><div class="s">Latest number</div><div style="font-family:\'Baloo 2\';font-size:48px;color:#E03A7A;line-height:1.1">'+last+'</div><div class="s">'+GT.called.length+' / 90 called'+(GT.status==='lobby'?' · waiting for host to start':'')+'</div></div>';
+  var claims='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;justify-content:center">'+
+    '<button class="minibtn" onclick="gtClaim(\'early5\')">Early 5</button>'+
+    '<button class="minibtn" onclick="gtClaim(\'line1\')">Top</button>'+
+    '<button class="minibtn" onclick="gtClaim(\'line2\')">Middle</button>'+
+    '<button class="minibtn" onclick="gtClaim(\'line3\')">Bottom</button>'+
+    '<button class="minibtn" onclick="gtClaim(\'full\')">Full House 🏆</button></div>';
+  var calledWrap='<div class="gtcalled">';
+  for(var n=1;n<=90;n++){ var on=GT.called.indexOf(n)>=0; calledWrap+='<span class="gtc'+(on?' on':'')+'">'+n+'</span>'; }
+  calledWrap+='</div>';
+  document.getElementById('gtBody').innerHTML=host+head+gtTicketHTML()+claims+'<div class="sectit" style="margin-top:16px">Called numbers</div>'+calledWrap;
+}
+function gtTicketHTML(){
+  if(!GT.ticket) return '';
+  var rows=GT.ticket.map(function(row){
+    return '<tr>'+row.map(function(n){
+      if(n===null||n===undefined||n==='') return '<td class="gtempty"></td>';
+      var marked=!!GT.marked[n]; var callable=GT.called.indexOf(n)>=0;
+      return '<td class="gtnum'+(marked?' marked':'')+(callable&&!marked?' callable':'')+'" onclick="gtMark('+n+')">'+n+'</td>';
+    }).join('')+'</tr>';
+  }).join('');
+  return '<table class="gtticket">'+rows+'</table><div class="s" style="text-align:center;margin-top:5px">Tap a number when it\'s called to mark it</div>';
+}
+function gtMark(n){
+  if(GT.called.indexOf(n)<0){ toast('Not called yet'); return; }
+  GT.marked[n]=!GT.marked[n]; gtRenderBoard();
+}
+async function gtDraw(){
+  var r=await sb.rpc('draw_grid_tambola',{p_game:GT.gameId});
+  if(r.error){toast(r.error.message);return;}
+  if(!GT.called)GT.called=[]; GT.called.push(r.data); GT.status='live'; gtRenderBoard();
+}
+async function gtClaim(prize){
+  var r=await sb.rpc('claim_grid_tambola',{p_game:GT.gameId,p_prize:prize});
+  if(r.error){toast(r.error.message);return;}
+  if(r.data===true){ confetti(); toast('✅ Verified — '+prize.toUpperCase()+'! 🎉'); }
+  else { toast('❌ Not complete yet — keep going'); }
+}
+async function gtEnd(){
+  var r=await sb.rpc('end_grid_tambola',{p_game:GT.gameId});
+  if(r.error){toast(r.error.message);return;}
+  gtStopPoll(); toast('Game ended'); gtLoad();
+}
+function gtStartPoll(){
+  gtStopPoll();
+  GT.poll=setInterval(async function(){
+    var vw=document.getElementById('v-gtambola');
+    if(!GT.gameId || !vw || vw.offsetParent===null){ gtStopPoll(); return; }
+    var r=await sb.from('grid_tambola').select('called,status').eq('id',GT.gameId).maybeSingle();
+    if(r.data){
+      if(r.data.status==='ended'){ gtStopPoll(); toast('Host ended the game'); gtLoad(); return; }
+      var prev=GT.called.length; GT.called=r.data.called||[]; GT.status=r.data.status;
+      if(GT.called.length!==prev) gtRenderBoard();
+    }
+  },2500);
+}
+function gtStopPoll(){ if(GT.poll){clearInterval(GT.poll);GT.poll=null;} }
+function gtGenTicket(){
+  var ranges=[[1,9],[10,19],[20,29],[30,39],[40,49],[50,59],[60,69],[70,79],[80,90]];
+  for(var attempt=0;attempt<800;attempt++){
+    var colCount=[1,1,1,1,1,1,1,1,1], extra=6;
+    while(extra>0){ var cc=Math.floor(Math.random()*9); if(colCount[cc]<3){colCount[cc]++;extra--;} }
+    var rowsN=[0,0,0];
+    var filled=[[false,false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false,false]];
+    var bad=false;
+    for(var c=0;c<9;c++){
+      var avail=[0,1,2].filter(function(rr){return rowsN[rr]<5;});
+      if(avail.length<colCount[c]){bad=true;break;}
+      for(var i=avail.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=avail[i];avail[i]=avail[j];avail[j]=t;}
+      for(var k=0;k<colCount[c];k++){ filled[avail[k]][c]=true; rowsN[avail[k]]++; }
+    }
+    if(bad||rowsN[0]!==5||rowsN[1]!==5||rowsN[2]!==5) continue;
+    var ticket=[[null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null]];
+    for(var c2=0;c2<9;c2++){
+      var lo=ranges[c2][0],hi=ranges[c2][1],pool=[];
+      for(var nn=lo;nn<=hi;nn++) pool.push(nn);
+      for(var i2=pool.length-1;i2>0;i2--){var j2=Math.floor(Math.random()*(i2+1));var t2=pool[i2];pool[i2]=pool[j2];pool[j2]=t2;}
+      var picks=pool.slice(0,colCount[c2]).sort(function(a,b){return a-b;});
+      var rr2=[]; for(var r2=0;r2<3;r2++) if(filled[r2][c2]) rr2.push(r2);
+      for(var x=0;x<rr2.length;x++) ticket[rr2[x]][c2]=picks[x];
+    }
+    return ticket;
+  }
+  return null;
 }
 
 window.addEventListener('load', boot);
