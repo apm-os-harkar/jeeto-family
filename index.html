@@ -678,7 +678,7 @@ body{
       <div class="feed-item"><div class="ic" style="background:#FFEAD2">👨‍👩‍👧‍👦</div><div><div class="ft" id="famLine">Your family</div><div class="fm" id="famSub">—</div></div></div>
       <div id="memberList"></div>
       <div style="height:8px"></div>
-      <button class="btn btn-primary" id="addMemberBtn" style="display:none" onclick="openAddMember()">➕ Add family member</button>
+      <button class="btn btn-primary" id="addMemberBtn" style="display:none" onclick="openAddMember()">➕ Invite family</button>
       <div style="height:8px"></div>
       <button class="btn btn-ghost" onclick="logout()">Log out</button>
     </section>
@@ -1469,11 +1469,19 @@ async function refreshMe(){
 }
 
 function openAddMember(){
-  openSheet('<h3>Add a family member 👨‍👩‍👧</h3><p class="s">Enter their name and phone. I\'ll generate a login code — share it on WhatsApp and they log in with it.</p>'+
-  '<input id="amName" placeholder="Name (e.g. Dadi)" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:10px">'+
-  '<input id="amPhone" inputmode="numeric" placeholder="Phone number" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:14px">'+
-  '<button class="btn btn-primary" onclick="issueCode()">Generate login code</button>');
+  var code=(FAM&&FAM.invite_code)?FAM.invite_code:'—';
+  var url=location.origin;
+  window.__inviteMsg='Join our family on Jeeto Family \ud83d\udc9b\n'+url+'\nTap "New here? Join your family", set your own 6-digit code, and enter family code: '+code;
+  openSheet('<div style="text-align:center"><div style="font-size:42px">\ud83d\udc6a</div><h3>Invite your family</h3></div>'+
+  '<p class="s">Everyone adds themselves \u2014 just share your family code. Nothing to generate.</p>'+
+  '<div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center"><div style="font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1.5px">FAMILY CODE</div><div style="font-family:\'Baloo 2\';font-size:38px;letter-spacing:6px;color:var(--rani)">'+esc(code)+'</div></div>'+
+  '<div style="height:14px"></div>'+
+  '<button class="btn btn-primary" onclick="shareInvite()">Share on WhatsApp \ud83d\udcac</button>'+
+  '<div style="height:8px"></div>'+
+  '<button class="btn btn-ghost" onclick="copyInvite()">Copy invite message</button>');
 }
+function shareInvite(){var m=window.__inviteMsg||'';if(navigator.share){navigator.share({text:m}).catch(function(){});}else{window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');}}
+function copyInvite(){var m=window.__inviteMsg||'';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(m).then(function(){toast('Copied \u2014 paste it in WhatsApp \ud83d\udc9b');}).catch(function(){toast('Could not copy');});}else{toast('Long-press to copy the code: '+(FAM&&FAM.invite_code||''));}}
 async function issueCode(){
   const name=(document.getElementById('amName').value||'').trim();
   const phone=(document.getElementById('amPhone').value||'').replace(/\D/g,'');
