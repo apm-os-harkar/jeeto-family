@@ -425,6 +425,10 @@ body{
 .faces button.on{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;box-shadow:0 6px 16px rgba(14,37,71,.25)}
 .modtag{font-size:10.5px;font-weight:800;letter-spacing:1.2px;color:#E03A7A;text-transform:uppercase;margin:8px 2px 4px}
 .hhint{font-size:10px;font-weight:700;color:#C47A12;margin-top:3px;max-width:150px;line-height:1.3}
+.rel{font-size:12px;font-weight:700;color:#6b7a92;white-space:nowrap}
+.minibtn{border:none;background:#0E2547;color:#fff;border-radius:10px;padding:7px 13px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer}
+.minibtn.ghost{background:#eef1f7;color:#5b6b85}
+.hhrow .hhinfo{flex:1}
 </style>
 </head>
 <body>
@@ -777,6 +781,11 @@ body{
         <div class="ghname" id="ghName">My Grid</div>
         <div class="ghsub" id="ghSub">Households connected</div>
       </div>
+      <button class="btn btn-ghost" style="margin-bottom:12px" onclick="openJoinGrid()">＋ Join a grid</button>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button>
+        <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button>
+      </div>
       <div class="sectit">Household leaderboard</div>
       <div id="gridLb"></div>
       <div class="sectit" style="margin-top:18px">Grid feed</div>
@@ -829,13 +838,13 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 4</div>
+      <div class="psub">Powered by Skyvos AI · build 6</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
         <input id="aCode" inputmode="numeric" placeholder="Your 6-digit code" onkeydown="if(event.key==='Enter')doLogin()">
         <button class="btn btn-primary" id="aBtn" onclick="doLogin()">Log in</button>
-        <div class="authhint">New here? <a onclick="showJoin(true)">Join your family &rarr;</a></div>
+        <div class="authhint">New here? <a onclick="showPanel('join')">Join your family</a> &nbsp;·&nbsp; <a onclick="showPanel('start')">Start a household</a></div>
       </div>
       <div id="joinPanel" style="display:none">
         <input id="jName" placeholder="Your name (e.g. Anu)">
@@ -843,7 +852,16 @@ body{
         <input id="jCode" inputmode="numeric" placeholder="Set a 6-digit code (remember it!)">
         <input id="jFam" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" placeholder="Family code (ask your captain)">
         <button class="btn btn-primary" id="jBtn" onclick="joinFamily()">Join my family</button>
-        <div class="authhint">Already added? <a onclick="showJoin(false)">&larr; Back to log in</a></div>
+        <div class="authhint">Already added? <a onclick="showPanel('login')">&larr; Back to log in</a></div>
+      </div>
+      <div id="startPanel" style="display:none">
+        <input id="hSurname" placeholder="Family surname (e.g. Pandita)">
+        <input id="hCity" placeholder="City (e.g. Mumbai)">
+        <input id="hName" placeholder="Your name (you'll be the Head)">
+        <input id="hPhone" inputmode="numeric" placeholder="Your phone number">
+        <input id="hCode" inputmode="numeric" placeholder="Set a 6-digit code">
+        <button class="btn btn-primary" id="hBtn" onclick="createHousehold()">Create our household</button>
+        <div class="authhint"><a onclick="showPanel('login')">&larr; Back to log in</a></div>
       </div>
     </div>
   </div>
@@ -1627,6 +1645,116 @@ function openHappyInfo(){
   '\ud83c\udfc3 <b>Movement</b> — the family\u2019s steps today'+
   '</div>'+
   '<div style="height:14px"></div><button class="btn btn-primary" onclick="closeSheet();go(\'family\')">Start a family night \ud83d\udcf5</button>');
+}
+
+
+function showPanel(which){
+  ['login','join','start'].forEach(function(p){
+    var el=document.getElementById(p+'Panel'); if(el) el.style.display = (p===which)?'block':'none';
+  });
+  authMsg('');
+}
+function _v(id){var e=document.getElementById(id);return e?(e.value||''):'';}
+async function createHousehold(){
+  if(!ensureSB()){authMsg('Still loading — check internet and try again.');return;}
+  var sur=_v('hSurname').trim(), city=_v('hCity').trim(), name=_v('hName').trim();
+  var phone=_v('hPhone').replace(/\D/g,''), code=_v('hCode').trim();
+  if(!sur||!name||!phone||code.length<6){authMsg('Fill surname, your name, phone, and a 6-digit code.');return;}
+  var btn=document.getElementById('hBtn');btn.textContent='Creating…';btn.disabled=true;authMsg('');
+  var email=phone+'@jeeto.family';
+  var su=await sb.auth.signUp({email:email,password:code,options:{data:{display_name:name,phone:phone}}});
+  if(su.error){
+    btn.textContent='Create our household';btn.disabled=false;
+    var m=(su.error.message||'').toLowerCase();
+    authMsg(m.indexOf('regist')>=0||m.indexOf('already')>=0?'That phone is already registered — use Log in.':su.error.message);
+    return;
+  }
+  if(!su.data.session){
+    var si=await sb.auth.signInWithPassword({email:email,password:code});
+    if(si.error){btn.textContent='Create our household';btn.disabled=false;authMsg('Created. Turn OFF "Confirm email" in Supabase, then log in.');return;}
+  }
+  var r=await sb.rpc('create_household',{p_surname:sur,p_city:city,p_name:name});
+  btn.textContent='Create our household';btn.disabled=false;
+  if(r.error){authMsg(r.error.message||'Could not create household.');return;}
+  await boot();
+  setTimeout(function(){ if(typeof openAddMember==='function') openAddMember(); }, 600);
+}
+function openJoinGrid(){
+  openSheet('<h3>Join a grid 🔗</h3><p class="s">Enter the grid code your grid admin shared (e.g. AOUGRID). This connects your whole household to the grid.</p>'+
+  '<input id="gridCodeIn" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;text-transform:uppercase;margin-bottom:14px" oninput="this.value=this.value.toUpperCase()" placeholder="Grid code">'+
+  '<button class="btn btn-primary" onclick="doJoinGrid()">Join grid</button>');
+}
+async function doJoinGrid(){
+  var code=(_v('gridCodeIn')||'').toUpperCase().trim();
+  if(!code){toast('Enter a grid code.');return;}
+  var r=await sb.rpc('join_grid',{p_code:code});
+  if(r.error){toast(r.error.message||'Could not join that grid.');return;}
+  closeSheet();
+  if(r.data==='pending'){toast('Request sent — waiting for the grid admin ⏳');}
+  else {confetti();toast('Joined the grid! 🎉');}
+  await loadHousehold(); await loadGrid();
+}
+var _searchT=null;
+function openSearch(){
+  openSheet('<h3>Find households 🔍</h3><p class="s">Search by surname or city — in your grid or across all grids. Send a connect request to link up.</p>'+
+  '<input id="hhSearch" type="text" autocomplete="off" spellcheck="false" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:12px" oninput="doSearch()" placeholder="Surname or city…">'+
+  '<div id="searchResults">'+emptyMsg('Type at least 2 letters to search.')+'</div>');
+}
+function doSearch(){
+  clearTimeout(_searchT);
+  _searchT=setTimeout(async function(){
+    var q=(_v('hhSearch')||'').trim();
+    var box=document.getElementById('searchResults'); if(!box)return;
+    if(q.length<2){box.innerHTML=emptyMsg('Type at least 2 letters.');return;}
+    box.innerHTML=emptyMsg('Searching…');
+    var r=await sb.rpc('search_households',{p_q:q});
+    if(r.error){box.innerHTML=emptyMsg(r.error.message);return;}
+    var rows=(r.data||[]);
+    if(!rows.length){box.innerHTML=emptyMsg('No households found for "'+esc(q)+'".');return;}
+    box.innerHTML=rows.map(function(h){
+      var nm=(h.surname||h.name||'Household')+(h.city?' · '+h.city:'');
+      var act;
+      if(h.relation==='self')act='<span class="rel">You</span>';
+      else if(h.relation==='grid')act='<span class="rel" style="color:#12A14B">In your grid</span>';
+      else if(h.relation==='connected')act='<span class="rel" style="color:#12A14B">Connected ✓</span>';
+      else if(h.relation==='pending')act='<span class="rel">Requested…</span>';
+      else act='<button class="minibtn" onclick="requestLink(\''+h.id+'\')">Connect</button>';
+      return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(h.surname||h.name||'H')+')">'+esc((h.surname||h.name||'H')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>'+((h.household_score||0).toLocaleString('en-IN'))+' pts</div></div>'+act+'</div>';
+    }).join('');
+  }, 280);
+}
+async function requestLink(id){
+  var r=await sb.rpc('request_household_link',{p_target:id});
+  if(r.error){toast(r.error.message||'Could not send request');return;}
+  toast('Connection request sent 🤝'); doSearch();
+}
+function openRequests(){
+  openSheet('<h3>Requests 🔔</h3><p class="s">Households asking to connect with you, and (if you run a grid) households asking to join it.</p><div id="reqList">'+emptyMsg('Loading…')+'</div>');
+  loadRequests();
+}
+async function loadRequests(){
+  var box=document.getElementById('reqList'); if(!box)return;
+  var r=await sb.rpc('my_incoming_requests');
+  if(r.error){box.innerHTML=emptyMsg(r.error.message);return;}
+  var rows=(r.data||[]);
+  if(!rows.length){box.innerHTML=emptyMsg('No pending requests right now.');return;}
+  box.innerHTML=rows.map(function(q){
+    var btns = (q.kind==='link')
+      ? '<button class="minibtn" onclick="respondLink(\''+q.ref1+'\',true)">Accept</button> <button class="minibtn ghost" onclick="respondLink(\''+q.ref1+'\',false)">Decline</button>'
+      : '<button class="minibtn" onclick="setGridHH(\''+q.ref1+'\',\''+q.ref2+'\',\'active\')">Approve</button> <button class="minibtn ghost" onclick="setGridHH(\''+q.ref1+'\',\''+q.ref2+'\',\'removed\')">Decline</button>';
+    return '<div style="border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px"><div style="font-weight:700">'+esc(q.label)+'</div><div style="font-size:12px;color:var(--ink2);margin-bottom:9px">'+esc(q.sub)+'</div>'+btns+'</div>';
+  }).join('');
+}
+async function respondLink(id, accept){
+  var r=await sb.rpc('respond_household_link',{p_link:id,p_accept:accept});
+  if(r.error){toast(r.error.message);return;}
+  toast(accept?'Connected 🤝':'Declined'); loadRequests();
+}
+async function setGridHH(grid, house, status){
+  var r=await sb.rpc('set_grid_household_status',{p_grid:grid,p_house:house,p_status:status});
+  if(r.error){toast(r.error.message);return;}
+  toast(status==='active'?'Approved ✓':'Declined'); loadRequests();
+  if(typeof loadGrid==='function') loadGrid();
 }
 
 window.addEventListener('load', boot);
