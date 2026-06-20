@@ -595,6 +595,12 @@ body{
 .gcbubble{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:9px 12px;font-size:14px;line-height:1.4;word-break:break-word}
 .gcrow.me .gcname{text-align:right;margin:0 4px 3px 0}
 .gcrow.me .gcbubble{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border:none;border-radius:14px 14px 4px 14px}
+
+.welcomelede{font-size:14.5px;color:var(--ink);font-weight:600;margin:0 0 16px;line-height:1.5}
+.welcomerow{display:flex;gap:12px;align-items:center;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:9px}
+.welcomerow span{font-size:24px;flex:0 0 auto}
+.welcomerow b{font-size:14px;display:block;line-height:1.2}
+.welcomerow small{font-size:11.5px;color:var(--ink2);line-height:1.3}
 </style>
 </head>
 <body>
@@ -1036,31 +1042,40 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 37</div>
+      <div class="psub">Powered by Skyvos AI · build 39</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
-      <div id="loginPanel">
+      <div id="welcomePanel">
+        <p class="welcomelede">A little app that keeps your family close 💛</p>
+        <div class="welcomerow"><span>🚶</span><div><b>Walk & play together</b><small>Steps, challenges, live Tambola nights</small></div></div>
+        <div class="welcomerow"><span>📸</span><div><b>Your family's memories</b><small>Photos, songs, birthdays, daily questions</small></div></div>
+        <div class="welcomerow"><span>💜</span><div><b>Care for each other</b><small>Medicine reminders, family rewards & more</small></div></div>
+        <button class="btn btn-primary" style="margin-top:18px" onclick="showPanel('start')">✨ Start your family</button>
+        <button class="btn btn-ghost" style="margin-top:8px" onclick="showPanel('join')">I have a family code</button>
+        <div class="authhint" style="margin-top:14px">Already have an account? <a onclick="showPanel('login')">Log in</a></div>
+      </div>
+      <div id="loginPanel" style="display:none">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
-        <input id="aCode" inputmode="numeric" placeholder="Your 6-digit code" onkeydown="if(event.key==='Enter')doLogin()">
+        <input id="aCode" type="text" placeholder="Your family password" onkeydown="if(event.key==='Enter')doLogin()">
         <button class="btn btn-primary" id="aBtn" onclick="doLogin()">Log in</button>
-        <div class="authhint">New here? <a onclick="showPanel('join')">Join your family</a> &nbsp;·&nbsp; <a onclick="showPanel('start')">Start a household</a></div>
+        <div class="authhint">New to Jeeto? <a onclick="showPanel('start')"><b>Start your family →</b></a></div><div class="authhint" style="margin-top:6px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="joinPanel" style="display:none">
         <input id="jName" placeholder="Your name (e.g. Anu)">
         <input id="jPhone" inputmode="numeric" placeholder="Your phone number">
-        <input id="jCode" inputmode="numeric" placeholder="Set a 6-digit code (remember it!)">
+        <input id="jCode" type="text" placeholder="Create a family password (remember it!)">
         <input id="jFam" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" placeholder="Family code (ask your captain)">
         <button class="btn btn-primary" id="jBtn" onclick="joinFamily()">Join my family</button>
-        <div class="authhint">Already added? <a onclick="showPanel('login')">&larr; Back to log in</a></div>
+        <div class="authhint"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="startPanel" style="display:none">
         <input id="hSurname" placeholder="Family surname (e.g. Pandita)">
         <input id="hCity" placeholder="City (e.g. Mumbai)">
         <input id="hName" placeholder="Your name (you'll be the Head)">
         <input id="hPhone" inputmode="numeric" placeholder="Your phone number">
-        <input id="hCode" inputmode="numeric" placeholder="Set a 6-digit code">
+        <input id="hCode" type="text" placeholder="Create a family password (min 6 characters)">
         <button class="btn btn-primary" id="hBtn" onclick="createHousehold()">Create our household</button>
-        <div class="authhint"><a onclick="showPanel('login')">&larr; Back to log in</a></div>
+        <div class="authhint"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
     </div>
   </div>
@@ -1754,12 +1769,12 @@ function setHappy(v){const el=document.getElementById('happy');let h0=performanc
 async function doLogin(){
   const phone=(document.getElementById('aPhone').value||'').replace(/\D/g,'');
   const code=(document.getElementById('aCode').value||'').trim();
-  if(!phone||!code){authMsg('Enter your phone and your code.');return;}
+  if(!phone||!code){authMsg('Enter your phone and family password.');return;}
   if(!ensureSB()){authMsg('Still loading — check your internet and tap Log in again.');return;}
   const btn=document.getElementById('aBtn');btn.textContent='Logging in…';btn.disabled=true;authMsg('');
   const {error}=await sb.auth.signInWithPassword({email:phone+'@jeeto.family',password:code});
   btn.textContent='Log in';btn.disabled=false;
-  if(error){authMsg('Wrong phone or code. Please check and try again.');return;}
+  if(error){authMsg('Wrong phone or password. Please check and try again.');return;}
   await boot();
 }
 async function logout(){try{await sb.auth.signOut();}catch(e){}location.reload();}
@@ -2203,7 +2218,7 @@ function openHappyInfo(){
 
 
 function showPanel(which){
-  ['login','join','start'].forEach(function(p){
+  ['welcome','login','join','start'].forEach(function(p){
     var el=document.getElementById(p+'Panel'); if(el) el.style.display = (p===which)?'block':'none';
   });
   authMsg('');
@@ -2213,7 +2228,7 @@ async function createHousehold(){
   if(!ensureSB()){authMsg('Still loading — check internet and try again.');return;}
   var sur=_v('hSurname').trim(), city=_v('hCity').trim(), name=_v('hName').trim();
   var phone=_v('hPhone').replace(/\D/g,''), code=_v('hCode').trim();
-  if(!sur||!name||!phone||code.length<6){authMsg('Fill surname, your name, phone, and a 6-digit code.');return;}
+  if(!sur||!name||!phone||code.length<6){authMsg('Fill surname, your name, phone, and a family password (min 6 characters).');return;}
   var btn=document.getElementById('hBtn');btn.textContent='Creating…';btn.disabled=true;authMsg('');
   var email=phone+'@jeeto.family';
   var su=await sb.auth.signUp({email:email,password:code,options:{data:{display_name:name,phone:phone}}});
