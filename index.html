@@ -514,6 +514,14 @@ body{
 .gvf.on .gvfth{border-color:var(--gold)}
 .gvfn{color:#fff;font-size:10px;margin-top:3px;text-transform:capitalize}
 .minibtn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+
+.streaknudge{background:linear-gradient(135deg,#FFF1E8,#FFE3D0);border:1px solid #FAD0B5;border-radius:14px;padding:11px 14px;margin-bottom:14px;font-size:13.5px;color:#8A3D12;line-height:1.4}
+.pdtag{font-size:10.5px;font-weight:800;letter-spacing:1px;color:#1E8E4F}
+.pdcard{background:linear-gradient(135deg,#F1FBF4,#E2F6E9);border:1px solid #C6E9D2;border-radius:18px;padding:15px 16px;margin-bottom:14px}
+.jday{border-top:1px solid var(--line);padding:12px 0}
+.jdate{font-size:11px;font-weight:800;color:var(--ink2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
+.jq{font-family:'Baloo 2';font-size:15px;color:#3a2c16;margin-bottom:4px}
+.jrow{font-size:14px;padding:3px 0;line-height:1.4}
 </style>
 </head>
 <body>
@@ -543,6 +551,8 @@ body{
     <section class="view active" id="v-home">
       <div class="mqcard" id="mqCard"></div>
       <div id="dailyCard"></div>
+      <div id="streakNudge"></div>
+      <div id="proudCard"></div>
       <div class="hero">
         <div class="aura">
           <div class="ring r1"></div><div class="ring r2"></div>
@@ -953,7 +963,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 24</div>
+      <div class="psub">Powered by Skyvos AI · build 25</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
@@ -1706,7 +1716,7 @@ async function refreshAll(){
   setHappyHint(FAM?(FAM.happiness||50):50);
   document.getElementById('addMemberBtn').style.display = (ME.role==='captain'&&FAM) ? 'block':'none';
   document.getElementById('skyHome').innerHTML = (FAM?'':'You are not in a family yet. ')+'Tap <b>📸 Submit steps</b> to log today and climb the board 🪙';
-  renderMorningQuote(); loadDailyPrompt(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
+  renderMorningQuote(); loadDailyPrompt(); loadProud(); loadStreakNudge(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
   await loadMembers();
   await loadSteps();
   await loadCoinsLedger();
@@ -2690,7 +2700,7 @@ async function loadDailyPrompt(){
   }).join('');
   var more=(ans.length<total)?' · see what they said 👇':'';
   box.innerHTML='<div class="dacard">'+
-    '<div class="datag">🌟 TODAY\u2019S FAMILY QUESTION</div>'+
+    '<div class="datag">🌟 TODAY\u2019S FAMILY QUESTION<a onclick="openJournal()" style="float:right;color:#C47A12;font-weight:800">📖 Past days</a></div>'+
     '<div class="daq">'+esc(prompt)+'</div>'+
     '<textarea id="daInput" rows="2" placeholder="Your answer\u2026" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font-family:inherit;font-size:14px;box-sizing:border-box;margin-bottom:8px">'+esc(mine?mine.answer:'')+'</textarea>'+
     '<button class="minibtn" onclick="submitDaily()">'+(mine?'Update my answer':'Share with family')+'</button>'+
@@ -2704,6 +2714,74 @@ async function submitDaily(){
   var r=await sb.from('daily_answers').upsert({household_id:FAM.id,member_id:ME.id,day:_todayStr(),prompt:_todaysPrompt(),answer:t},{onConflict:'household_id,member_id,day'});
   if(r.error){toast(r.error.message);return;}
   confetti(); toast('Shared with the family 💛'); loadDailyPrompt();
+}
+
+
+/* ========== PROUD OF TODAY · daily pride beat ========== */
+async function loadProud(){
+  var box=document.getElementById('proudCard'); if(!box)return;
+  if(!FAM){ box.innerHTML=''; return; }
+  var day=_todayStr();
+  var r=await sb.from('daily_proud').select('member_id,text, m:member_id(display_name)').eq('household_id',FAM.id).eq('day',day);
+  if(r.error){ box.innerHTML=''; return; }
+  var ans=(r.data||[]);
+  var mine=ans.filter(function(a){return a.member_id===(ME&&ME.id);})[0];
+  var total=(MEMBERS&&MEMBERS.length)||1;
+  var list=ans.map(function(a){
+    var nm=(a.member_id===(ME&&ME.id))?'You':((a.m&&a.m.display_name)||'Family');
+    return '<div class="darow"><b>'+esc(nm)+':</b> '+esc(a.text)+'</div>';
+  }).join('');
+  box.innerHTML='<div class="pdcard">'+
+    '<div class="pdtag">🏅 PROUD OF TODAY</div>'+
+    '<div class="daq">What are you proud of today? <span style="font-size:13px;font-weight:600;opacity:.7">(you, or someone in the family)</span></div>'+
+    '<textarea id="prInput" rows="2" placeholder="One thing\u2026" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font-family:inherit;font-size:14px;box-sizing:border-box;margin-bottom:8px">'+esc(mine?mine.text:'')+'</textarea>'+
+    '<button class="minibtn" onclick="submitProud()">'+(mine?'Update':'Share')+'</button>'+
+    '<div class="dacount">'+ans.length+' of '+total+' shared</div>'+
+    list+'</div>';
+}
+async function submitProud(){
+  if(!FAM){toast('Join a family first');return;}
+  var t=(_v('prInput')||'').trim(); if(!t){toast('Write something first 🏅');return;}
+  var r=await sb.from('daily_proud').upsert({household_id:FAM.id,member_id:ME.id,day:_todayStr(),text:t},{onConflict:'household_id,member_id,day'});
+  if(r.error){toast(r.error.message);return;}
+  confetti(); toast('Shared with the family 🏅'); loadProud();
+}
+
+/* ========== FAMILY JOURNAL · the memory button ========== */
+async function openJournal(){
+  if(!FAM){toast('Join a family first');return;}
+  openSheet('<h3>📖 Family Journal</h3><p class="s">Loading your family\u2019s days\u2026</p>');
+  var q=await sb.from('daily_answers').select('day,prompt,answer, m:member_id(display_name)').eq('household_id',FAM.id).order('day',{ascending:false}).limit(300);
+  var p=await sb.from('daily_proud').select('day,text, m:member_id(display_name)').eq('household_id',FAM.id).order('day',{ascending:false}).limit(300);
+  var byDay={};
+  (q.data||[]).forEach(function(r){ if(!byDay[r.day])byDay[r.day]={q:r.prompt,ans:[],proud:[]}; if(!byDay[r.day].q)byDay[r.day].q=r.prompt; byDay[r.day].ans.push(r); });
+  (p.data||[]).forEach(function(r){ if(!byDay[r.day])byDay[r.day]={q:'',ans:[],proud:[]}; byDay[r.day].proud.push(r); });
+  var days=Object.keys(byDay).sort().reverse();
+  var html='<div class="grip"></div><h3>📖 Family Journal</h3>';
+  if(!days.length){ html+='<p class="s">No entries yet. Answer today\u2019s question to start your family\u2019s journal 💛</p>'; document.getElementById('sheet').innerHTML=html; return; }
+  html+='<p class="s">Your family\u2019s days, kept forever.</p>';
+  days.forEach(function(d){
+    var o=byDay[d];
+    var dd=new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    html+='<div class="jday"><div class="jdate">'+dd+'</div>';
+    if(o.q) html+='<div class="jq">🌟 '+esc(o.q)+'</div>';
+    o.ans.forEach(function(a){ html+='<div class="jrow"><b>'+esc((a.m&&a.m.display_name)||'Family')+':</b> '+esc(a.answer)+'</div>'; });
+    if(o.proud.length){ html+='<div class="jq" style="margin-top:8px">🏅 Proud of today</div>'; o.proud.forEach(function(a){ html+='<div class="jrow"><b>'+esc((a.m&&a.m.display_name)||'Family')+':</b> '+esc(a.text)+'</div>'; }); }
+    html+='</div>';
+  });
+  document.getElementById('sheet').innerHTML=html;
+}
+
+/* ========== STREAK NUDGE · the daily trigger ========== */
+async function loadStreakNudge(){
+  var box=document.getElementById('streakNudge'); if(!box)return;
+  if(!FAM){ box.innerHTML=''; return; }
+  var r=await sb.from('families').select('together_streak').eq('id',FAM.id).maybeSingle();
+  var st=(r.data&&r.data.together_streak)||0;
+  var msg = st>0
+    ? '🔥 <b>'+st+'-day family streak</b> — keep it alive! Log your steps before midnight.'
+    : '🔥 Start your family streak today — get 2 or more of you walking!';
+  box.innerHTML='<div class="streaknudge">'+msg+'</div>';
 }
 
 window.addEventListener('load', boot);
