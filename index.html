@@ -584,6 +584,17 @@ body{
 .lgbody ul{margin:0 0 10px;padding-left:20px}
 .lgbody li{margin-bottom:5px}
 .lgnote{background:#FFF6E5;border:1px solid #F1DFBE;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#7a5b1a;margin-bottom:14px}
+
+.gchat{display:flex;flex-direction:column;gap:10px}
+.gcrow{display:flex;gap:8px;align-items:flex-end;max-width:88%}
+.gcrow.me{align-self:flex-end;flex-direction:row}
+.gcav{width:30px;height:30px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
+.gcwrap{min-width:0}
+.gcname{font-size:10.5px;color:var(--ink2);font-weight:700;margin:0 0 3px 4px}
+.gcname span{font-weight:500}
+.gcbubble{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:9px 12px;font-size:14px;line-height:1.4;word-break:break-word}
+.gcrow.me .gcname{text-align:right;margin:0 4px 3px 0}
+.gcrow.me .gcbubble{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border:none;border-radius:14px 14px 4px 14px}
 </style>
 </head>
 <body>
@@ -1025,7 +1036,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 36</div>
+      <div class="psub">Powered by Skyvos AI · build 37</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
@@ -2067,25 +2078,32 @@ async function loadGrid(){
     return '<div class="hhrow'+meCls+'"><div class="rk">'+medal+'</div><div class="hhav" style="background:linear-gradient(135deg,'+avFor(h.surname||h.name)+')">'+esc((h.surname||h.name)[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>'+((h.household_score||0).toLocaleString('en-IN'))+' family points</div></div><div class="hhsc">'+((h.household_score||0).toLocaleString('en-IN'))+'</div></div>';
   }).join(''); }
   // grid feed
-  var gp = await sb.from('grid_posts').select('*').eq('grid_id',GRID.id).order('created_at',{ascending:false}).limit(40);
+  var gp = await sb.from('grid_posts').select('*').eq('grid_id',GRID.id).order('created_at',{ascending:true}).limit(80);
   var feed=document.getElementById('gridFeed');
   var posts=(gp.data||[]);
-  if(!posts.length){ feed.innerHTML=emptyMsg('No grid posts yet. Say something to the whole grid!'); return; }
-  // map household names
+  if(!posts.length){ feed.innerHTML=emptyMsg('No grid posts yet. Say hello to the whole grid! 👋'); return; }
   var hmap={}; GRIDHOMES.forEach(function(h){hmap[h.id]=(h.surname||h.name);});
-  feed.innerHTML=posts.map(function(p){
+  feed.innerHTML='<div class="gchat">'+posts.map(function(p){
     var hn=hmap[p.household_id]||'A household';
-    var when=new Date(p.created_at).toLocaleString('en-IN');
-    var tag=p.kind&&p.kind!=='post'?(' \u00b7 '+p.kind):'';
-    return '<div class="gpost"><div class="gph"><b>'+esc(hn)+'</b>'+tag+' \u00b7 '+when+'</div>'+esc(p.body||'')+'</div>';
-  }).join('');
+    var mine=(p.household_id===FAM.id);
+    var when=new Date(p.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    return gchatRow(hn,p.body||'',when,mine);
+  }).join('')+'</div>';
+  var sc=document.getElementById('screen'); if(sc) setTimeout(function(){sc.scrollTop=sc.scrollHeight;},80);
+}
+function gchatRow(name,body,when,mine){
+  var av='<div class="gcav" style="background:linear-gradient(135deg,'+avFor(name)+')">'+esc((name||'?')[0].toUpperCase())+'</div>';
+  var bubble='<div class="gcwrap'+(mine?' me':'')+'"><div class="gcname">'+esc(mine?'Your household':name)+' · <span>'+when+'</span></div><div class="gcbubble">'+esc(body)+'</div></div>';
+  return '<div class="gcrow'+(mine?' me':'')+'">'+(mine?bubble+av:av+bubble)+'</div>';
 }
 async function sendGridPost(){
   if(!GRID||!FAM){toast('No grid yet.');return;}
   var inp=document.getElementById('gridPostInput'); var txt=(inp.value||'').trim(); if(!txt)return;
   inp.value='';
-  var feed=document.getElementById('gridFeed'); if(feed.querySelector('.empty'))feed.innerHTML='';
-  feed.insertAdjacentHTML('afterbegin','<div class="gpost"><div class="gph"><b>'+esc(FAM.surname||FAM.name)+'</b> \u00b7 just now</div>'+esc(txt)+'</div>');
+  var feed=document.getElementById('gridFeed'); var chat=feed.querySelector('.gchat');
+  if(!chat){ feed.innerHTML='<div class="gchat"></div>'; chat=feed.querySelector('.gchat'); }
+  chat.insertAdjacentHTML('beforeend', gchatRow(FAM.surname||FAM.name, txt, 'just now', true));
+  var sc=document.getElementById('screen'); if(sc) sc.scrollTop=sc.scrollHeight;
   var r=await sb.from('grid_posts').insert({grid_id:GRID.id,household_id:FAM.id,author_id:ME.id,body:txt,kind:'post'});
   if(r.error)toast('Could not post: '+r.error.message);
 }
