@@ -272,6 +272,9 @@ body{
 .q-chat{background:linear-gradient(135deg,#25b56a,#0e8a4d)}
 .q-music{background:linear-gradient(135deg,#8E3CE0,#5b1fa8)}
 .q-album{background:linear-gradient(135deg,#FF8A1E,#E03A7A)}
+.q-grid{background:linear-gradient(135deg,#163A66,#0B1E3B)}
+.q-hearts{background:linear-gradient(135deg,#7A3CE0,#4A1E9E)}
+.q-cup{background:linear-gradient(135deg,#E7A52F,#C47A12)}
 .qcard .qbadge{position:absolute;top:7px;right:7px;background:rgba(255,255,255,.3);font-size:9px;font-weight:800;padding:2px 6px;border-radius:20px}
 
 /* ===== FAMILY CHAT (our own WhatsApp) ===== */
@@ -576,9 +579,17 @@ body{
           <div class="qe">📷</div>
           <div><div class="qt">Family Album</div><div class="qs">Shared photos</div></div>
         </div>
-        <div class="qcard q-chat" style="background:linear-gradient(135deg,#163A66,#0B1E3B)" onclick="go('grid');loadGrid()">
+        <div class="qcard q-grid" onclick="go('grid');loadGrid()">
           <div class="qe">🔗</div>
           <div><div class="qt" id="gridCardName">My Grid</div><div class="qs" id="gridCardSub">Households together</div></div>
+        </div>
+        <div class="qcard q-hearts" onclick="go('coins');loadHearts()">
+          <div class="qe">💜</div>
+          <div><div class="qt">Hearts & Coins</div><div class="qs">Family rewards</div></div>
+        </div>
+        <div class="qcard q-cup" onclick="go('lb')">
+          <div class="qe">🏆</div>
+          <div><div class="qt">Leaderboard</div><div class="qs">Today's champions</div></div>
         </div>
       </div>
 
@@ -942,7 +953,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 23</div>
+      <div class="psub">Powered by Skyvos AI · build 24</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
