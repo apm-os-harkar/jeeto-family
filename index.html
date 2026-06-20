@@ -597,16 +597,21 @@ body{
 .lgbody li{margin-bottom:5px}
 .lgnote{background:#FFF6E5;border:1px solid #F1DFBE;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#7a5b1a;margin-bottom:14px}
 
-.gchat{display:flex;flex-direction:column;gap:10px}
-.gcrow{display:flex;gap:8px;align-items:flex-end;max-width:88%}
+.gchat{display:flex;flex-direction:column;gap:0}
+.gchatpad{height:84px}
+.gcrow{display:flex;gap:7px;align-items:flex-end;max-width:86%;margin-top:2px}
+.gcrow.gstart{margin-top:14px}
 .gcrow.me{align-self:flex-end;flex-direction:row}
-.gcav{width:30px;height:30px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
-.gcwrap{min-width:0}
-.gcname{font-size:10.5px;color:var(--ink2);font-weight:700;margin:0 0 3px 4px}
-.gcname span{font-weight:500}
-.gcbubble{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:9px 12px;font-size:14px;line-height:1.4;word-break:break-word}
-.gcrow.me .gcname{text-align:right;margin:0 4px 3px 0}
-.gcrow.me .gcbubble{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border:none;border-radius:14px 14px 4px 14px}
+.gcav{width:28px;height:28px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
+.gcav.ghost{visibility:hidden}
+.gcwrap{min-width:0;max-width:100%}
+.gcname{font-size:10.5px;color:var(--ink2);font-weight:700;margin:0 0 3px 6px}
+.gcname span{font-weight:500;opacity:.8}
+.gcbubble{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px 13px;font-size:14px;line-height:1.38;word-break:break-word;width:fit-content}
+.gcrow:not(.me) .gend .gcbubble,.gcrow:not(.me).gend .gcbubble{border-bottom-left-radius:5px}
+.gcrow.me .gcname{text-align:right;margin:0 6px 3px 0}
+.gcrow.me .gcbubble{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border:none;margin-left:auto}
+.gcrow.me.gend .gcbubble{border-bottom-right-radius:5px}
 
 .welcomelede{font-size:14.5px;color:var(--ink);font-weight:600;margin:0 0 16px;line-height:1.5}
 .welcomerow{display:flex;gap:12px;align-items:center;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:9px}
@@ -1071,7 +1076,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 44</div>
+      <div class="psub">Powered by Skyvos AI · build 45</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
@@ -2132,27 +2137,39 @@ async function loadGrid(){
   var posts=(gp.data||[]);
   if(!posts.length){ feed.innerHTML=emptyMsg('No grid posts yet. Say hello to the whole grid! 👋'); return; }
   var hmap={}; GRIDHOMES.forEach(function(h){hmap[h.id]=(h.surname||h.name);});
-  feed.innerHTML='<div class="gchat">'+posts.map(function(p){
+  var rows=posts.map(function(p,i){
     var hn=hmap[p.household_id]||'A household';
     var mine=(p.household_id===FAM.id);
+    var prev=posts[i-1], next=posts[i+1];
+    var first=(!prev||prev.household_id!==p.household_id);
+    var last=(!next||next.household_id!==p.household_id);
     var when=new Date(p.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-    return gchatRow(hn,p.body||'',when,mine);
-  }).join('')+'</div>';
+    return gchatRow(hn,p.body||'',when,mine,first,last);
+  }).join('');
+  feed.innerHTML='<div class="gchat">'+rows+'</div><div class="gchatpad"></div>';
   var sc=document.getElementById('screen'); if(sc) setTimeout(function(){sc.scrollTop=sc.scrollHeight;},80);
 }
-function gchatRow(name,body,when,mine){
-  var av='<div class="gcav" style="background:linear-gradient(135deg,'+avFor(name)+')">'+esc((name||'?')[0].toUpperCase())+'</div>';
-  var bubble='<div class="gcwrap'+(mine?' me':'')+'"><div class="gcname">'+esc(mine?'Your household':name)+' · <span>'+when+'</span></div><div class="gcbubble">'+esc(body)+'</div></div>';
-  return '<div class="gcrow'+(mine?' me':'')+'">'+(mine?bubble+av:av+bubble)+'</div>';
+function gchatRow(name,body,when,mine,first,last){
+  if(first===undefined)first=true; if(last===undefined)last=true;
+  var av = last
+    ? '<div class="gcav" style="background:linear-gradient(135deg,'+avFor(name)+')">'+esc((name||'?')[0].toUpperCase())+'</div>'
+    : '<div class="gcav ghost"></div>';
+  var nm = first ? '<div class="gcname">'+esc(mine?'Your household':name)+' · <span>'+when+'</span></div>' : '';
+  var bubble='<div class="gcwrap'+(mine?' me':'')+'">'+nm+'<div class="gcbubble">'+esc(body)+'</div></div>';
+  var cls='gcrow'+(mine?' me':'')+(first?' gstart':'')+(last?' gend':'');
+  return '<div class="'+cls+'">'+(mine?bubble+av:av+bubble)+'</div>';
 }
 async function sendGridPost(){
   if(!GRID||!FAM){toast('No grid yet.');return;}
   var inp=document.getElementById('gridPostInput'); var txt=(inp.value||'').trim(); if(!txt)return;
   inp.value='';
   var feed=document.getElementById('gridFeed'); var chat=feed.querySelector('.gchat');
-  if(!chat){ feed.innerHTML='<div class="gchat"></div>'; chat=feed.querySelector('.gchat'); }
-  chat.insertAdjacentHTML('beforeend', gchatRow(FAM.surname||FAM.name, txt, 'just now', true));
-  var sc=document.getElementById('screen'); if(sc) sc.scrollTop=sc.scrollHeight;
+  if(!chat){ feed.innerHTML='<div class="gchat"></div><div class="gchatpad"></div>'; chat=feed.querySelector('.gchat'); }
+  var allRows=chat.querySelectorAll('.gcrow'); var lastRow=allRows[allRows.length-1];
+  var sameBurst = lastRow && lastRow.classList.contains('me');
+  if(sameBurst){ var pav=lastRow.querySelector('.gcav'); if(pav){pav.className='gcav ghost';pav.removeAttribute('style');pav.textContent='';} lastRow.classList.remove('gend'); }
+  chat.insertAdjacentHTML('beforeend', gchatRow(FAM.surname||FAM.name, txt, 'just now', true, !sameBurst, true));
+  var sc=document.getElementById('screen'); if(sc) setTimeout(function(){sc.scrollTop=sc.scrollHeight;},30);
   var r=await sb.from('grid_posts').insert({grid_id:GRID.id,household_id:FAM.id,author_id:ME.id,body:txt,kind:'post'});
   if(r.error)toast('Could not post: '+r.error.message);
 }
