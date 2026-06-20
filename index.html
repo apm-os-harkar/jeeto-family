@@ -533,6 +533,33 @@ body{
 .hcsub{font-size:11.5px;opacity:.92;line-height:1.25;margin-top:1px}
 .hchint{font-size:10px;font-weight:700;margin-top:3px;opacity:.96}
 .hcpet{font-size:28px}
+
+.carerow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
+.carerow.over{border-color:#f0b4a8;background:#fff6f3}
+.carerow.done{opacity:.55}
+.cabox{font-size:21px;line-height:1}
+.camid{flex:1;min-width:0}
+.catitle{font-weight:700;font-size:14.5px;line-height:1.2}
+.cameta{font-size:11.5px;color:var(--ink2);margin-top:2px;line-height:1.3}
+.ctchip.on{background:var(--gold)!important;border-color:var(--gold)!important;color:#3a2c0a!important}
+.cafield{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:15px;font-family:inherit;box-sizing:border-box;margin-bottom:10px}
+
+#tripFinder{display:none;position:fixed;inset:0;z-index:9998;background:var(--paper);flex-direction:column}
+.tfbar{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);font-size:16px;background:linear-gradient(135deg,#3AA0E0,#1c6aa8);color:#fff}
+.tfbar span{font-size:20px;cursor:pointer;color:#fff}
+.tfbody{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+.tfsl{margin-bottom:13px}
+.tfsl label{font-size:14px;font-weight:700;display:flex;justify-content:space-between;margin-bottom:3px}
+.tfsl input[type=range]{width:100%;accent-color:var(--rani)}
+.tfsel{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:15px;font-family:inherit;box-sizing:border-box;margin-bottom:10px}
+.tftog{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tftbtn{flex:1;min-width:120px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:13px;font-weight:700;background:var(--card);color:var(--ink2);cursor:pointer}
+.tftbtn.on{background:var(--green);border-color:var(--green);color:#fff}
+.trcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.trtop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.trname{font-family:'Baloo 2';font-size:19px}
+.trmatch{background:var(--green);color:#fff;border-radius:14px;padding:3px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+.trwhy{font-size:13px;color:var(--ink2);margin:6px 0 10px;line-height:1.45}
 </style>
 </head>
 <body>
@@ -619,6 +646,7 @@ body{
 
       <div class="modtag">🏆 Jeeto Enaam · Rewards module</div>
       <div id="bdayCard"></div>
+      <div id="scheduleCard"></div>
       <div class="sectit">Today's champions <a onclick="go('lb')">Leaderboard →</a></div>
       <div class="champs" id="champRow"></div>
 
@@ -970,7 +998,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 27</div>
+      <div class="psub">Powered by Skyvos AI · build 29</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
@@ -1723,7 +1751,7 @@ async function refreshAll(){
   setHappyHint(FAM?(FAM.happiness||50):50);
   document.getElementById('addMemberBtn').style.display = (ME.role==='captain'&&FAM) ? 'block':'none';
   document.getElementById('skyHome').innerHTML = (FAM?'':'You are not in a family yet. ')+'Tap <b>📸 Submit steps</b> to log today and climb the board 🪙';
-  renderMorningQuote(); loadDailyPrompt(); loadProud(); loadStreakNudge(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
+  renderMorningQuote(); loadDailyPrompt(); loadProud(); loadStreakNudge(); loadSchedule(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
   await loadMembers();
   await loadSteps();
   await loadCoinsLedger();
@@ -2629,7 +2657,8 @@ function renderHearts(){
   var mem='<div class="sectit">Hearts by member</div>'+HEARTS.members.map(function(m){
     return '<div class="lbrow"><div class="av" style="width:34px;height:34px;font-size:15px;background:linear-gradient(135deg,'+avFor(m.name)+')">'+esc((m.name||'?')[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.name)+(m.id===ME.id?' (You)':'')+'</div></div><div class="hhsc">💜 '+m.hearts+'</div></div>';
   }).join('');
-  box.innerHTML=hero+actions+goalsHead+goals+mem;
+  var tripBtn='<div style="margin:4px 0 16px"><button class="btn btn-ghost" style="margin:0" onclick="openTripFinder()">✈️ Plan a family trip together</button></div>';
+  box.innerHTML=hero+actions+goalsHead+goals+tripBtn+mem;
 }
 function openSendHearts(){
   var opts=HEARTS.members.filter(function(m){return m.id!==ME.id;});
@@ -2817,6 +2846,201 @@ async function loadStreakNudge(){
   box.innerHTML='<div class="streaknudge">'+msg+'</div>';
 }
 
+
+/* ========== FAMILY SCHEDULE · per-person reminders on the board ========== */
+var CARE_TYPES={
+  medicine:{icon:'💊',label:'Medicine',rec:'daily',lead:120},
+  appointment:{icon:'🩺',label:'Doctor visit',rec:'once',lead:10080},
+  study:{icon:'📚',label:'Study / homework',rec:'daily',lead:60},
+  activity:{icon:'🏃',label:'Sport / activity',rec:'daily',lead:60},
+  reminder:{icon:'🔔',label:'Reminder',rec:'once',lead:1440}
+};
+function _careLead(m){ return m>=1440?(Math.round(m/1440)+' day(s)'):(m>=60?(Math.round(m/60)+' hr'):(m+' min')); }
+async function loadSchedule(){
+  var box=document.getElementById('scheduleCard'); if(!box)return;
+  if(!FAM){ box.innerHTML=''; return; }
+  var ir=await sb.from('care_items').select('*').eq('household_id',FAM.id).eq('active',true);
+  if(ir.error){ box.innerHTML=''; return; }
+  var items=ir.data||[];
+  var head='<div class="sectit">📅 Family schedule <a onclick="openAddCareItem()">+ Add</a></div>';
+  if(!items.length){ box.innerHTML=head+'<div class="empty">No reminders yet. Add medicines, doctor visits or study time — each shows on the board before it\u2019s due, and the family can help if it\u2019s missed.</div>'; return; }
+  var cr=await sb.from('care_checks').select('item_id,for_date').eq('household_id',FAM.id).limit(800);
+  var checks={}; (cr.data||[]).forEach(function(c){ checks[c.item_id+'|'+c.for_date]=1; });
+  var now=new Date(), today=_todayStr(), due=[];
+  items.forEach(function(it){
+    var fd,dueDt,ws;
+    if(it.recurrence==='daily'){
+      fd=today; dueDt=new Date(today+'T'+(it.at_time||'08:00')); ws=new Date(dueDt.getTime()-(it.lead_minutes||0)*60000);
+      if(now>=ws) due.push({it:it,fd:fd,dueDt:dueDt});
+    } else {
+      if(!it.at_date)return; fd=it.at_date; dueDt=new Date(it.at_date+'T'+(it.at_time||'09:00'));
+      ws=new Date(dueDt.getTime()-(it.lead_minutes||0)*60000); var endShow=new Date(it.at_date+'T23:59');
+      var checked=checks[it.id+'|'+fd];
+      if(now>=ws && (now<=endShow || !checked)) due.push({it:it,fd:fd,dueDt:dueDt});
+    }
+  });
+  if(!due.length){ box.innerHTML=head+'<div class="empty">All clear right now ✅ <a onclick="openCareList()">See all</a></div>'; return; }
+  due.sort(function(a,b){return a.dueDt-b.dueDt;});
+  var rows=due.map(function(d){
+    var it=d.it, checked=checks[it.id+'|'+d.fd], overdue=(now>d.dueDt)&&!checked;
+    var mm=(MEMBERS||[]).filter(function(m){return m.id===it.member_id;})[0];
+    var who=(mm&&mm.display_name)||'';
+    var tl=(it.recurrence==='once')? (new Date(d.fd).toLocaleDateString('en-IN',{day:'numeric',month:'short'})+' · '+(it.at_time||'')) : ('every day · '+(it.at_time||''));
+    return '<div class="carerow'+(overdue?' over':'')+(checked?' done':'')+'" onclick="toggleCare(\''+it.id+'\',\''+d.fd+'\','+(checked?1:0)+')">'+
+      '<div class="cabox">'+(checked?'✅':'⬜')+'</div>'+
+      '<div class="camid"><div class="catitle">'+it.icon+' '+esc(it.title)+'</div>'+
+      '<div class="cameta">'+esc(who)+' · '+tl+(overdue?' · <b style="color:#c0392b">needs a call 💛</b>':'')+'</div></div></div>';
+  }).join('');
+  box.innerHTML=head+rows+'<div style="text-align:center;margin-top:4px"><a class="s" onclick="openCareList()">Manage all</a></div>';
+}
+async function toggleCare(id,fd,checked){
+  if(checked){ await sb.from('care_checks').delete().eq('item_id',id).eq('for_date',fd); }
+  else { await sb.from('care_checks').insert({item_id:id,household_id:FAM.id,for_date:fd,checked_by:ME.id,checked_at:new Date().toISOString()}); confetti(); }
+  loadSchedule();
+}
+function openAddCareItem(){
+  if(!FAM){toast('Join a family first');return;}
+  window._careType='medicine';
+  var mem=(MEMBERS||[]).map(function(m){return '<option value="'+m.id+'">'+esc(m.display_name)+(m.id===ME.id?' (You)':'')+'</option>';}).join('');
+  var chips=Object.keys(CARE_TYPES).map(function(k){var t=CARE_TYPES[k];return '<button class="minibtn ghost ctchip" data-k="'+k+'" onclick="setCareType(\''+k+'\')">'+t.icon+' '+esc(t.label)+'</button>';}).join('');
+  openSheet('<h3>📅 Add to schedule</h3><p class="s">Set it for a family member. It shows on the board before it\u2019s due, and the family can help if it\u2019s missed.</p>'+
+    '<div class="s">Type</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px">'+chips+'</div>'+
+    '<div class="s">For</div><select id="caMember" class="cafield">'+mem+'</select>'+
+    '<div class="s">What is it?</div><input id="caTitle" class="cafield" placeholder="e.g. BP tablet / Dr Sharma checkup">'+
+    '<div id="caDateWrap" style="display:none"><div class="s">Date</div><input id="caDate" type="date" class="cafield"></div>'+
+    '<div class="s">Time</div><input id="caTime" type="time" value="08:00" class="cafield">'+
+    '<div class="s">Show on board before</div><select id="caLead" class="cafield"><option value="30">30 min</option><option value="60">1 hour</option><option value="120">2 hours</option><option value="360">6 hours</option><option value="720">12 hours</option><option value="1440">1 day</option><option value="4320">3 days</option><option value="10080">1 week</option></select>'+
+    '<div class="s">Notes (optional)</div><input id="caNotes" class="cafield" placeholder="dosage, doctor name, etc.">'+
+    '<button class="btn btn-primary" onclick="saveCareItem()">Add to schedule</button>');
+  setCareType('medicine');
+}
+function setCareType(k){
+  window._careType=k; var t=CARE_TYPES[k];
+  var chips=document.querySelectorAll('.ctchip'); for(var i=0;i<chips.length;i++){ chips[i].classList.toggle('on', chips[i].getAttribute('data-k')===k); }
+  var lead=document.getElementById('caLead'); if(lead)lead.value=String(t.lead);
+  var ti=document.getElementById('caTitle'); if(ti&&!ti.value)ti.value=t.label;
+  var dw=document.getElementById('caDateWrap'); if(dw)dw.style.display=(t.rec==='once')?'block':'none';
+}
+async function saveCareItem(){
+  var k=window._careType||'reminder', t=CARE_TYPES[k];
+  var rec={household_id:FAM.id,member_id:_v('caMember')||ME.id,title:(_v('caTitle')||t.label).trim(),icon:t.icon,kind:k,recurrence:t.rec,at_time:_v('caTime')||'08:00',at_date:(t.rec==='once'?(_v('caDate')||null):null),lead_minutes:parseInt(_v('caLead'))||t.lead,notes:(_v('caNotes')||'').trim(),created_by:ME.id,active:true};
+  if(t.rec==='once' && !rec.at_date){ toast('Pick a date for this one'); return; }
+  var r=await sb.from('care_items').insert(rec);
+  if(r.error){ toast(r.error.message); return; }
+  closeSheet(); confetti(); toast('Added to family schedule 📅'); loadSchedule();
+}
+function openCareList(){
+  sb.from('care_items').select('*').eq('household_id',FAM.id).eq('active',true).order('created_at',{ascending:false}).then(function(r){
+    var items=r.data||[];
+    var list=items.length? items.map(function(it){
+      var mm=(MEMBERS||[]).filter(function(m){return m.id===it.member_id;})[0]; var who=(mm&&mm.display_name)||'';
+      var when=(it.recurrence==='daily'?'every day · '+(it.at_time||''):((it.at_date||'')+' · '+(it.at_time||'')));
+      return '<div class="carerow"><div class="camid"><div class="catitle">'+it.icon+' '+esc(it.title)+'</div><div class="cameta">'+esc(who)+' · '+when+' · shows '+_careLead(it.lead_minutes||0)+' before</div></div><button class="minibtn ghost" onclick="delCareItem(\''+it.id+'\')">Delete</button></div>';
+    }).join('') : '<div class="empty">No items yet.</div>';
+    openSheet('<h3>📅 Family schedule</h3><p class="s">Reminders for your family. Not a medical device — a gentle helper only.</p>'+list+'<div style="height:12px"></div><button class="btn btn-primary" onclick="openAddCareItem()">+ Add new</button>');
+  });
+}
+async function delCareItem(id){
+  await sb.from('care_items').update({active:false}).eq('id',id);
+  closeSheet(); toast('Removed from schedule'); loadSchedule();
+}
+
+
+/* ========== FAMILY TRIP FINDER · interest-slider vacation meter ✈️ ========== */
+var TF_INTERESTS=[
+  {k:'beach',label:'🏖 Beach'},{k:'hills',label:'⛰ Hills & cool weather'},
+  {k:'heritage',label:'🏛 Heritage & culture'},{k:'spiritual',label:'🛕 Spiritual'},
+  {k:'adventure',label:'🧗 Adventure'},{k:'nature',label:'🌿 Nature & wildlife'},
+  {k:'city',label:'🛍 City & shopping'},{k:'relaxed',label:'😌 Relaxed & easy'}
+];
+var TF_DEST=[
+  {n:'Goa',s:'West',e:'🏖',beach:5,hills:0,heritage:2,spiritual:1,adventure:3,nature:3,city:3,relaxed:4,kid:4,elder:3,budget:2},
+  {n:'Manali',s:'North',e:'⛰',beach:0,hills:5,heritage:1,spiritual:2,adventure:5,nature:4,city:2,relaxed:3,kid:4,elder:2,budget:2},
+  {n:'Shimla',s:'North',e:'🚂',beach:0,hills:5,heritage:3,spiritual:1,adventure:2,nature:4,city:3,relaxed:4,kid:5,elder:4,budget:2},
+  {n:'Nainital',s:'North',e:'🛶',beach:0,hills:5,heritage:1,spiritual:2,adventure:3,nature:4,city:2,relaxed:4,kid:5,elder:4,budget:2},
+  {n:'Jaipur',s:'North',e:'🏰',beach:0,hills:0,heritage:5,spiritual:2,adventure:2,nature:1,city:4,relaxed:3,kid:4,elder:4,budget:2},
+  {n:'Udaipur',s:'West',e:'🛥',beach:0,hills:1,heritage:5,spiritual:2,adventure:2,nature:3,city:3,relaxed:4,kid:4,elder:4,budget:2},
+  {n:'Jaisalmer',s:'West',e:'🐪',beach:0,hills:0,heritage:5,spiritual:1,adventure:4,nature:2,city:2,relaxed:3,kid:4,elder:3,budget:2},
+  {n:'Rishikesh',s:'North',e:'🧘',beach:0,hills:3,heritage:2,spiritual:5,adventure:5,nature:4,city:1,relaxed:3,kid:3,elder:3,budget:1},
+  {n:'Varanasi',s:'North',e:'🪔',beach:0,hills:0,heritage:5,spiritual:5,adventure:1,nature:1,city:3,relaxed:2,kid:2,elder:4,budget:1},
+  {n:'Amritsar',s:'North',e:'🛕',beach:0,hills:0,heritage:4,spiritual:5,adventure:1,nature:1,city:3,relaxed:3,kid:4,elder:4,budget:1},
+  {n:'Mount Abu',s:'West',e:'🏞',beach:0,hills:4,heritage:3,spiritual:3,adventure:2,nature:3,city:2,relaxed:4,kid:4,elder:4,budget:1},
+  {n:'Mahabaleshwar',s:'West',e:'🍓',beach:0,hills:4,heritage:1,spiritual:1,adventure:3,nature:4,city:2,relaxed:4,kid:4,elder:4,budget:2},
+  {n:'Munnar, Kerala',s:'South',e:'🌱',beach:0,hills:4,heritage:1,spiritual:1,adventure:3,nature:5,city:1,relaxed:5,kid:4,elder:4,budget:2},
+  {n:'Alleppey, Kerala',s:'South',e:'🛶',beach:3,hills:0,heritage:2,spiritual:1,adventure:2,nature:5,city:1,relaxed:5,kid:4,elder:4,budget:2},
+  {n:'Ooty',s:'South',e:'🌼',beach:0,hills:5,heritage:2,spiritual:1,adventure:3,nature:4,city:2,relaxed:4,kid:5,elder:4,budget:2},
+  {n:'Coorg',s:'South',e:'☕',beach:0,hills:4,heritage:1,spiritual:1,adventure:3,nature:5,city:1,relaxed:5,kid:4,elder:3,budget:2},
+  {n:'Mysore',s:'South',e:'🐯',beach:0,hills:1,heritage:5,spiritual:2,adventure:1,nature:2,city:3,relaxed:4,kid:4,elder:4,budget:1},
+  {n:'Pondicherry',s:'South',e:'🌊',beach:4,hills:0,heritage:4,spiritual:2,adventure:2,nature:2,city:3,relaxed:5,kid:4,elder:4,budget:2},
+  {n:'Darjeeling',s:'East',e:'🍃',beach:0,hills:5,heritage:3,spiritual:2,adventure:3,nature:4,city:2,relaxed:4,kid:4,elder:4,budget:2},
+  {n:'Gangtok',s:'East',e:'🏔',beach:0,hills:5,heritage:2,spiritual:3,adventure:4,nature:4,city:2,relaxed:3,kid:4,elder:3,budget:2},
+  {n:'Andaman Islands',s:'Islands',e:'🐠',beach:5,hills:0,heritage:1,spiritual:1,adventure:4,nature:5,city:1,relaxed:4,kid:4,elder:3,budget:3}
+];
+var TF_STATE={budget:3,region:'Anywhere',kids:false,elders:false};
+function openTripFinder(){ document.getElementById('tripFinder').style.display='flex'; renderTripForm(); }
+function closeTripFinder(){ document.getElementById('tripFinder').style.display='none'; }
+function renderTripForm(){
+  var sliders=TF_INTERESTS.map(function(it){
+    return '<div class="tfsl"><label><span>'+it.label+'</span><span id="tv_'+it.k+'">2</span></label>'+
+      '<input type="range" min="0" max="5" value="2" id="tf_'+it.k+'" oninput="document.getElementById(\'tv_'+it.k+'\').textContent=this.value"></div>';
+  }).join('');
+  document.getElementById('tfBody').innerHTML=
+    '<p class="s" style="margin-top:0">Slide what your family loves — 0 (not for us) to 5 (yes please!). We\u2019ll find your perfect trip together. 💛</p>'+
+    sliders+
+    '<div class="s" style="margin-top:6px">Budget</div>'+
+    '<select id="tf_budget" class="tfsel"><option value="1">₹ Easy</option><option value="2">₹₹ Medium</option><option value="3" selected>₹₹₹ Any</option></select>'+
+    '<div class="s">Region</div>'+
+    '<select id="tf_region" class="tfsel"><option>Anywhere</option><option>North</option><option>South</option><option>West</option><option>East</option><option>Islands</option></select>'+
+    '<div class="tftog">'+
+      '<div class="tftbtn" id="tf_kids" onclick="this.classList.toggle(\'on\')">👶 With kids</div>'+
+      '<div class="tftbtn" id="tf_elders" onclick="this.classList.toggle(\'on\')">👵 With elders</div>'+
+    '</div>'+
+    '<button class="btn btn-primary" onclick="computeTrips()">✨ Find our trip</button>'+
+    '<div id="tfResults" style="margin-top:16px"></div>';
+}
+function computeTrips(){
+  var sl={}; TF_INTERESTS.forEach(function(it){ sl[it.k]=parseInt((document.getElementById('tf_'+it.k)||{}).value||0); });
+  var budget=parseInt((document.getElementById('tf_budget')||{}).value||3);
+  var region=(document.getElementById('tf_region')||{}).value||'Anywhere';
+  var kids=document.getElementById('tf_kids').classList.contains('on');
+  var elders=document.getElementById('tf_elders').classList.contains('on');
+  var anyPicked=Object.keys(sl).some(function(k){return sl[k]>0;});
+  if(!anyPicked){ document.getElementById('tfResults').innerHTML='<div class="empty">Slide at least one interest up first 🙂</div>'; return; }
+  var maxW=0; TF_INTERESTS.forEach(function(it){ maxW+=sl[it.k]*5; });
+  var ranked=TF_DEST.filter(function(d){
+    if(region!=='Anywhere' && d.s!==region) return false;
+    if(d.budget>budget) return false;
+    return true;
+  }).map(function(d){
+    var score=0; TF_INTERESTS.forEach(function(it){ score+=sl[it.k]*(d[it.k]||0); });
+    var match=maxW?Math.round(100*score/maxW):0;
+    if(kids) match+= (d.kid-3)*2;
+    if(elders) match+= (d.elder-3)*2;
+    match=Math.max(40,Math.min(99,match));
+    return {d:d,match:match};
+  }).sort(function(a,b){return b.match-a.match;}).slice(0,4);
+  if(!ranked.length){ document.getElementById('tfResults').innerHTML='<div class="empty">No match for that region/budget — try widening it.</div>'; return; }
+  var html='<div class="sectit" style="margin-top:0">Your family\u2019s top picks ✨</div>'+ranked.map(function(r){
+    return '<div class="trcard"><div class="trtop"><div class="trname">'+r.d.e+' '+esc(r.d.n)+'</div><div class="trmatch">'+r.match+'% match</div></div>'+
+      '<div class="trwhy">'+tripWhy(sl,r.d)+'</div>'+
+      '<button class="minibtn" onclick="saveTripGoal(\''+r.d.n.replace(/'/g,'')+'\','+r.d.budget+')">💜 Save for this trip</button></div>';
+  }).join('');
+  document.getElementById('tfResults').innerHTML=html;
+}
+function tripWhy(sl,d){
+  var hits=TF_INTERESTS.filter(function(it){ return sl[it.k]>=3 && (d[it.k]||0)>=4; }).map(function(it){return it.label.replace(/^[^ ]+ /,'');});
+  if(!hits.length) hits=TF_INTERESTS.filter(function(it){return (d[it.k]||0)>=4;}).slice(0,2).map(function(it){return it.label.replace(/^[^ ]+ /,'');});
+  var per=(d.s==='Islands'?'a special island getaway':'a great '+d.s+'-India pick');
+  return 'Perfect for '+(hits.slice(0,3).join(', ')||'a family break')+'. '+(d.kid>=4?'Kid-friendly. ':'')+(d.elder>=4?'Easy for elders. ':'')+per+'.';
+}
+async function saveTripGoal(name,budget){
+  if(!FAM){toast('Join a family first');return;}
+  var target=budget>=3?1000:budget===2?600:300;
+  var r=await sb.rpc('set_treasury_goal',{p_title:'Trip: '+name,p_target:target});
+  if(r.error){ toast((r.error.message||'').indexOf('captain')>=0?'Only the captain can set a family goal — ask them 💛':r.error.message); return; }
+  confetti(); toast('🎯 Saving for '+name+'! Added to family goals 💜');
+}
+
 window.addEventListener('load', boot);
 </script>
 
@@ -2832,6 +3056,10 @@ window.addEventListener('load', boot);
     <div id="gvStage"></div>
     <div id="gvFilters"></div>
     <div id="gvActions"></div>
+  </div>
+  <div id="tripFinder">
+    <div class="tfbar"><span onclick="closeTripFinder()">✕</span><b>✈️ Family Trip Finder</b><span style="width:18px"></span></div>
+    <div class="tfbody" id="tfBody"></div>
   </div>
 </body>
 </html>
