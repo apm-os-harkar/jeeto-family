@@ -570,7 +570,19 @@ body{
 
 .legalfoot{text-align:center;font-size:11.5px;color:var(--ink2);margin-top:8px}
 .legalfoot a{color:var(--ink2);text-decoration:underline;cursor:pointer}
-#legalOverlay{display:none;position:fixed;inset:0;z-index:9999;background:var(--paper);flex-direction:column}
+#legalOverlay,#founderOverlay{display:none;position:fixed;inset:0;z-index:9999;background:var(--paper);flex-direction:column}
+.fstatgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.fstat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.fstat .n{font-family:'Baloo 2';font-size:26px;line-height:1;color:var(--navy,#0E2547)}
+.fstat .l{font-size:11px;color:var(--ink2);margin-top:4px;font-weight:600}
+.fstat.hot .n{color:var(--green,#12A14B)}
+.frow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.frow .fn{font-weight:700;font-size:14px}
+.frow .fc{font-size:11.5px;color:var(--ink2)}
+.frow .fb{text-align:right;font-size:11.5px;color:var(--ink2);white-space:nowrap}
+.fb b{font-size:15px;color:var(--ink)}
+.fdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px}
+
 .lgbar{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--navy,#0E2547);color:#fff;font-size:16px}
 .lgbar span{font-size:20px;cursor:pointer;color:#fff}
 .lgtabs{display:flex;border-bottom:1px solid var(--line)}
@@ -874,10 +886,18 @@ body{
       <div style="height:8px"></div>
       <button class="btn btn-primary" id="addMemberBtn" style="display:none" onclick="openAddMember()">➕ Invite family</button>
       <div style="height:8px"></div>
+      <button class="btn btn-primary" id="founderBtn" style="display:none;background:linear-gradient(135deg,#0E2547,#163A66)" onclick="openFounder()">📊 Founder Dashboard</button>
+      <div style="height:8px"></div>
       <div class="sectit">Legal</div>
       <div class="legalfoot" style="text-align:left;margin-bottom:12px"><a onclick="openLegal('privacy')">Privacy Policy</a> &nbsp;·&nbsp; <a onclick="openLegal('terms')">Terms of Service</a></div>
       <button class="btn btn-ghost" onclick="logout()">Log out</button>
     </section>
+
+    <!-- ============ FOUNDER DASHBOARD ============ -->
+    <div id="founderOverlay">
+      <div class="lgbar"><span onclick="closeFounder()">✕</span><b>📊 Founder</b><span style="font-size:14px;cursor:pointer" onclick="loadFounder()">↻</span></div>
+      <div class="lgbody" id="founderBody"><div class="empty">Loading…</div></div>
+    </div>
 
     <!-- ============ FAMILY CHAT ============ -->
     <section class="view" id="v-chat">
@@ -1051,7 +1071,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 43</div>
+      <div class="psub">Powered by Skyvos AI · build 44</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
@@ -1799,7 +1819,7 @@ async function boot(){
   if(!user){document.getElementById('authgate').classList.add('show');return;}
   const {data:me,error}=await sb.from('members').select('*').eq('user_id',user.id).limit(1).maybeSingle();
   if(error||!me){authMsg('Your profile is not set up yet. Ask the captain to add you.');document.getElementById('authgate').classList.add('show');try{await sb.auth.signOut();}catch(e){}return;}
-  ME=me; coins=ME.coins||0;
+  ME=me; coins=ME.coins||0; window.AUTHEMAIL=(user.email||'');
   if(ME.family_id){const {data:fam}=await sb.from('families').select('*').eq('id',ME.family_id).maybeSingle();FAM=fam||null;}
   document.getElementById('authgate').classList.remove('show');
   await refreshAll();
@@ -1808,6 +1828,7 @@ async function boot(){
 async function refreshAll(){
   setCoins();
   document.getElementById('profName').textContent=ME.display_name;
+  try{var fb=document.getElementById('founderBtn'); if(fb) fb.style.display=(window.AUTHEMAIL==='9971708833@jeeto.family')?'block':'none';}catch(e){}
   document.getElementById('profRole').textContent=(ME.role==='captain'?'Family Captain':'Member')+' · '+(ME.streak_days||0)+'-day streak 🔥';
   document.getElementById('meCoins').textContent=(ME.coins||0).toLocaleString('en-IN');
   document.getElementById('herotag').textContent=(FAM?FAM.name:'Your family')+' 💛';
@@ -3176,6 +3197,48 @@ async function callTripAI(avg,budget,region,kids,elders,voters){
 /* ========== LEGAL · Privacy Policy & Terms of Service ========== */
 var LEGAL_PRIVACY = "<p class=\"lgmeta\">Last updated: 20 June 2026</p>\n<p>Jeeto Family (\"Jeeto\", \"we\", \"us\") is a family wellness and togetherness app operated by Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI) (\"the Company\"), based in Delhi NCR, India. This Privacy Policy explains what information we collect, how we use it, and the choices you have. We are committed to handling your information responsibly and in line with India\\u2019s Digital Personal Data Protection Act, 2023 (DPDP Act).</p>\n\n<h3>1. Information we collect</h3>\n<p>When you use Jeeto, we may collect:</p>\n<ul>\n<li><b>Account details</b> \\u2014 your mobile number, display name, and the family/household and grid you belong to.</li>\n<li><b>Wellness data</b> \\u2014 step counts and activity you submit, including screenshots of step counters you choose to upload.</li>\n<li><b>Photos, videos and documents</b> you add to your Family Vault.</li>\n<li><b>Family details you choose to add</b> \\u2014 birthdays, and care reminders such as medicine times or appointments.</li>\n<li><b>Your contributions</b> \\u2014 answers to the daily family question, \"proud of today\" notes, songs, Hearts and Coins activity, challenge and game participation.</li>\n<li><b>Basic technical data</b> \\u2014 information needed to keep the app running on your device.</li>\n</ul>\n\n<h3>2. How we use your information</h3>\n<p>We use your information only to run Jeeto: to show your family their shared activity, calculate wellness scores and Hearts, run challenges and games, surface birthdays and reminders, and keep your family\\u2019s space working. We do <b>not</b> sell your personal data, and we do not show third-party advertising inside Jeeto.</p>\n\n<h3>3. AI processing of step images</h3>\n<p>When you submit a step screenshot, the image is processed by an artificial-intelligence service (Anthropic\\u2019s Claude) solely to read the step number shown, so we can record your activity. The image is used for this purpose and not for advertising or profiling.</p>\n\n<h3>4. Who can see your information</h3>\n<p>Your information is visible based on where you place it:</p>\n<ul>\n<li><b>Household-only</b> content (daily answers, proud notes, care schedule, private Vault items) is visible only to members of your own household.</li>\n<li><b>Grid</b> content (items you choose to share to your grid, grid games, grid trip votes) is visible to other households in that grid.</li>\n<li>You control what you share to a grid. We never automatically connect one grid to another.</li>\n</ul>\n\n<h3>5. Service providers</h3>\n<p>We use trusted providers to operate Jeeto, including Supabase (database and storage), Cloudflare (hosting and delivery) and Anthropic (AI step reading). These providers process data on our behalf under their own security and privacy commitments.</p>\n\n<h3>6. Children\\u2019s information</h3>\n<p>Jeeto is designed for families, and a household may include children. Accounts are created and managed by an adult family member (\"captain\"), who confirms they have authority to add family members. By adding a child\\u2019s information, the managing adult provides parental consent for that child\\u2019s data to be processed within their family\\u2019s private space. We do not knowingly allow children to be contacted by adults outside their own household, and we do not profile children for advertising. If you believe a child\\u2019s data has been added without proper consent, contact us and we will remove it.</p>\n\n<h3>7. Health and medicine reminders</h3>\n<p>Care reminders (such as medicine times) are a convenience feature to help families look after each other. <b>Jeeto is not a medical device and does not provide medical advice.</b> Reminders may not always be delivered on time and must not be relied upon for critical medication. Always follow your doctor and use a dedicated medical alarm where needed.</p>\n\n<h3>8. Your rights</h3>\n<p>You may ask us to access, correct, or delete your personal data, or withdraw consent, by contacting us at the address below. Deleted Vault items are held in a recovery area for up to 30 days before permanent removal. When you delete your account, we remove your personal data except where we must keep it for legal reasons.</p>\n\n<h3>9. Data security &amp; retention</h3>\n<p>We use industry-standard measures to protect your information and keep it only as long as needed to provide Jeeto or as required by law.</p>\n\n<h3>10. Changes to this policy</h3>\n<p>We may update this policy as Jeeto evolves. We will revise the date above and, for significant changes, let you know within the app.</p>\n\n<h3>11. Contact &amp; grievances</h3>\n<p>For any privacy question or to exercise your rights, contact our grievance officer at <b>admin@skyvos.in</b>, Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI), Delhi NCR, India.</p>";
 var LEGAL_TERMS = "<p class=\"lgmeta\">Last updated: 20 June 2026</p>\n<p>These Terms of Service (\"Terms\") govern your use of the Jeeto Family app (\"Jeeto\"), operated by Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI) (\"the Company\"). By using Jeeto, you agree to these Terms.</p>\n\n<h3>1. Who can use Jeeto</h3>\n<p>You must be at least 18 years old to create and manage an account. Children may take part only as members of a household added and supervised by an adult family member who consents on their behalf.</p>\n\n<h3>2. Your account, household and grid</h3>\n<p>You are responsible for activity under your account. A household \"captain\" manages their family\\u2019s space and members; a grid \"admin\" manages which households join their grid. These roles are local \\u2014 they give no rights over other families or grids.</p>\n\n<h3>3. Hearts and Coins are not money</h3>\n<p>Jeeto Hearts and Jeeto Coins are in-app symbols of family activity and togetherness. <b>They have no monetary value, cannot be purchased, cannot be exchanged for cash, and cannot be transferred outside your family for money.</b> They are not a payment instrument, currency, or gambling stake. We may adjust how they work at any time.</p>\n\n<h3>4. Content you share</h3>\n<p>You keep ownership of the photos, videos, notes and other content you add. You grant us permission to store and display that content within Jeeto so your family and chosen grid can see it. You are responsible for what you upload and confirm you have the right to share it. You must not upload anything unlawful, abusive, hateful, or that infringes others\\u2019 rights.</p>\n\n<h3>5. Acceptable use &amp; community conduct</h3>\n<p>Jeeto exists to bring families closer. You agree not to: harass or harm others; share illegal or explicit content; attempt to contact children outside your household; misuse grids to spam or deceive; or interfere with the app\\u2019s security. We may suspend or remove accounts that break these rules, especially to protect children.</p>\n\n<h3>6. Health and medicine reminders</h3>\n<p>Care and medicine reminders are a helper feature only. <b>Jeeto is not a medical device and gives no medical advice.</b> Do not rely on Jeeto for critical medication timing; follow your doctor and use proper medical tools.</p>\n\n<h3>7. Availability &amp; changes</h3>\n<p>We provide Jeeto on an \"as is\" and \"as available\" basis and may add, change, or remove features. We aim to keep Jeeto running smoothly but cannot guarantee it will always be uninterrupted or error-free.</p>\n\n<h3>8. Limitation of liability</h3>\n<p>To the extent permitted by law, the Company is not liable for indirect or consequential losses arising from your use of Jeeto, including missed reminders or lost content. Nothing in these Terms limits liability that cannot be limited by law.</p>\n\n<h3>9. Termination</h3>\n<p>You may stop using Jeeto and delete your account at any time. We may suspend access where these Terms are breached or where needed to protect users.</p>\n\n<h3>10. Governing law</h3>\n<p>These Terms are governed by the laws of India, and disputes are subject to the courts of Delhi NCR.</p>\n\n<h3>11. Contact</h3>\n<p>Questions about these Terms? Contact us at <b>admin@skyvos.in</b>, Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI), Delhi NCR, India.</p>";
+function openFounder(){ document.getElementById('founderOverlay').style.display='flex'; loadFounder(); }
+function closeFounder(){ document.getElementById('founderOverlay').style.display='none'; }
+function fAgo(ts){
+  if(!ts) return 'never walked';
+  var d=Math.floor((Date.now()-new Date(ts).getTime())/86400000);
+  if(d<=0) return 'active today';
+  if(d===1) return 'active yesterday';
+  return 'active '+d+'d ago';
+}
+async function loadFounder(){
+  var body=document.getElementById('founderBody');
+  body.innerHTML='<div class="empty">Loading…</div>';
+  try{
+    var r=await sb.rpc('founder_stats');
+    if(r.error){ body.innerHTML='<div class="empty">'+esc(r.error.message||'Could not load')+'</div>'; return; }
+    var d=r.data||{}; var fams=d.families||[];
+    var html='<div class="fstatgrid">'
+      +'<div class="fstat"><div class="n">'+(d.total_families||0)+'</div><div class="l">Families</div></div>'
+      +'<div class="fstat"><div class="n">'+(d.total_people||0)+'</div><div class="l">People</div></div>'
+      +'<div class="fstat hot"><div class="n">'+(d.families_today||0)+'</div><div class="l">New families today</div></div>'
+      +'<div class="fstat hot"><div class="n">'+(d.active_today||0)+'</div><div class="l">Walked today</div></div>'
+      +'<div class="fstat"><div class="n">'+(d.families_7d||0)+'</div><div class="l">New this week</div></div>'
+      +'<div class="fstat"><div class="n">'+(d.walked_ever||0)+'</div><div class="l">Ever walked</div></div>'
+      +'</div>';
+    // activation hint
+    var act = d.total_people? Math.round((d.walked_ever||0)*100/d.total_people):0;
+    html+='<div style="font-size:12px;color:var(--ink2);margin:-6px 0 14px">\ud83d\udc9b '+act+'% of people have walked at least once. That number — not signups — is what tells you it\'s working.</div>';
+    html+='<div class="sectit">Every family ('+fams.length+')</div>';
+    if(!fams.length){ html+='<div class="empty">No families yet. Share your link!</div>'; }
+    else{
+      html+=fams.map(function(f){
+        var people=f.people||0, steps=f.steps_logged||0;
+        var d2=f.last_active?Math.floor((Date.now()-new Date(f.last_active).getTime())/86400000):999;
+        var col=(steps===0)?'#C42466':(d2<=1?'#12A14B':(d2<=6?'#E7A52F':'#9A8A96'));
+        return '<div class="frow"><div><div class="fn">'+esc(f.name||'—')+'<span class="fdot" style="background:'+col+'"></span></div>'
+          +'<div class="fc">'+esc(f.city||'—')+' · joined '+new Date(f.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})+'</div></div>'
+          +'<div class="fb"><b>'+people+'</b> '+(people===1?'person':'people')+'<br>'+steps+' steps · '+fAgo(f.last_active)+'</div></div>';
+      }).join('');
+    }
+    body.innerHTML=html;
+  }catch(e){ body.innerHTML='<div class="empty">'+esc(String(e))+'</div>'; }
+}
 function openLegal(which){
   document.getElementById('legalOverlay').style.display='flex';
   var isP=(which!=='terms');
