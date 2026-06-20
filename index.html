@@ -1086,7 +1086,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 58</div>
+      <div class="psub">Powered by Skyvos AI · build 59</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
@@ -2113,11 +2113,11 @@ async function inviteBulk(){
     var nm=((document.getElementById('amName'+i)||{}).value||'').trim();
     var ph=((document.getElementById('amPhone'+i)||{}).value||'').replace(/\D/g,'');
     if(!nm&&!ph) continue;
-    if(!nm||ph.length<6){ fail.push(nm||ph||'a row'); continue; }
+    if(!nm||ph.length<6){ fail.push((nm||'A row')+': needs a name and a valid phone'); continue; }
     var r=await sb.rpc('invite_member',{p_name:nm,p_phone:ph});
-    if(r.error){ fail.push(nm); } else { ok.push({name:nm,phone:ph}); }
+    if(r.error){ fail.push(nm+': '+(r.error.message||'could not add')); } else { ok.push({name:nm,phone:ph}); }
   }
-  if(!ok.length){ toast(fail.length?'Check names & phone numbers \u2014 nothing added.':'Add at least one person.'); return; }
+  if(!ok.length){ toast(fail.length? fail[0] : 'Add at least one person.'); return; }
   _showInviteShare(ok,fail);
 }
 function _showInviteShare(ok,fail){
@@ -2131,7 +2131,7 @@ function _showInviteShare(ok,fail){
   var perPerson=ok.map(function(p,idx){
     return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><div style="flex:1"><b style="font-size:13.5px">'+esc(p.name)+'</b><div style="font-size:11px;color:var(--ink2)">'+esc(p.phone)+'</div></div><button class="btn btn-ghost" style="width:auto;padding:7px 14px;margin:0" onclick="_sendOne('+idx+')">Send \ud83d\udcac</button></div>';
   }).join('');
-  var failNote=(fail&&fail.length)?'<p class="s" style="color:#B4532A">Couldn\'t add: '+esc(fail.join(', '))+' \u2014 check those phone numbers.</p>':'';
+  var failNote=(fail&&fail.length)?'<p class="s" style="color:#B4532A">Skipped \u2014 '+esc(fail.join('; '))+'</p>':'';
   openSheet('<div style="text-align:center"><div style="font-size:46px">\u2705</div><h3>'+ok.length+' invited!</h3></div>'+
   failNote+
   '<p class="s">Easiest \u2014 drop one message in your family WhatsApp group \ud83d\udc47</p>'+
