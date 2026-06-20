@@ -570,7 +570,15 @@ body{
 
 .legalfoot{text-align:center;font-size:11.5px;color:var(--ink2);margin-top:8px}
 .legalfoot a{color:var(--ink2);text-decoration:underline;cursor:pointer}
-#legalOverlay,#founderOverlay{display:none;position:fixed;inset:0;z-index:9999;background:var(--paper);flex-direction:column}
+#legalOverlay,#founderOverlay,#tourOverlay{display:none;position:fixed;inset:0;z-index:9999;background:var(--paper);flex-direction:column}
+.tourlede{font-size:15px;font-weight:600;color:var(--ink);margin:0 0 16px;line-height:1.5}
+.tourcard{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:11px}
+.tourcard .te{font-size:30px;flex:0 0 auto;line-height:1}
+.tourcard b{font-size:15.5px;display:block;margin-bottom:3px}
+.tourcard p{font-size:13px;color:var(--ink2);line-height:1.45;margin:0}
+.tournote{font-size:12.5px;color:var(--ink2);text-align:center;margin:16px 0 14px;font-weight:600}
+.mergecard{background:#FFF7EC;border:1px solid var(--line);border-radius:14px;padding:13px;margin:8px 0;font-size:13.5px;line-height:1.45;color:var(--ink)}
+.mergecard a{color:var(--rani);font-weight:700;cursor:pointer}
 .fstatgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .fstat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
 .fstat .n{font-family:'Baloo 2';font-size:26px;line-height:1;color:var(--navy,#0E2547)}
@@ -893,6 +901,7 @@ body{
       <div style="height:8px"></div>
       <button class="btn btn-primary" id="founderBtn" style="display:none;background:linear-gradient(135deg,#0E2547,#163A66)" onclick="openFounder()">📊 Founder Dashboard</button>
       <div style="height:8px"></div>
+      <div id="mergeBox"></div>
       <div class="sectit">Legal</div>
       <div class="legalfoot" style="text-align:left;margin-bottom:12px"><a onclick="openLegal('privacy')">Privacy Policy</a> &nbsp;·&nbsp; <a onclick="openLegal('terms')">Terms of Service</a></div>
       <button class="btn btn-ghost" onclick="logout()">Log out</button>
@@ -1013,11 +1022,12 @@ body{
         <div class="ghname" id="ghName">My Grid</div>
         <div class="ghsub" id="ghSub">Households connected</div>
       </div>
-      <button class="btn btn-ghost" style="margin-bottom:12px" onclick="openJoinGrid()">＋ Join a grid</button>
+      <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openJoinGrid()">＋ Join a grid</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openCreateGrid()">🔗 Create a grid</button></div>
       <div style="display:flex;gap:8px;margin-bottom:14px">
         <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button>
         <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button>
       </div>
+      <button class="btn btn-ghost" id="gridInviteBtn" style="display:none;margin-bottom:14px" onclick="openGridHouseholdInvite()">➕ Invite a household by phone</button>
       <button class="btn btn-ghost" style="margin-bottom:14px" onclick="openConnections()">🤝 Connected households</button>
       <button class="btn btn-ghost" style="margin-bottom:14px" onclick="openGridBirthdays()">🎂 Grid birthdays</button>
       <div class="sectit">🎮 Grid games</div>
@@ -1076,11 +1086,12 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 46</div>
+      <div class="psub">Powered by Skyvos AI · build 58</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <p class="welcomelede">A little app that keeps your family close 💛</p>
+        <div id="gridInviteBanner" style="display:none"></div>
         <div class="welcomerow"><span>🚶</span><div><b>Walk & play together</b><small>Steps, challenges, live Tambola nights</small></div></div>
         <div class="welcomerow"><span>📸</span><div><b>Your family's memories</b><small>Photos, songs, birthdays, daily questions</small></div></div>
         <div class="welcomerow"><span>💜</span><div><b>Care for each other</b><small>Medicine reminders, family rewards & more</small></div></div>
@@ -1088,31 +1099,34 @@ body{
         <button class="btn btn-primary welcomebtn" style="margin-top:10px" onclick="showPanel('start')">✨ No — set up my family<small>I'm the first one. I'll invite everyone after.</small></button>
         <button class="btn btn-ghost welcomebtn" style="margin-top:9px" onclick="showPanel('join')">🏠 Yes — join with a code<small>Someone in my family shared a code with me.</small></button>
         <div class="welcomenote">🏡 Your <b>family</b> here means your <b>household</b> — everyone living at one home. Relatives in other cities can connect later through a <b>Grid</b>.</div>
-        <div class="authhint" style="margin-top:14px">Already have an account? <a onclick="showPanel('login')">Log in</a></div>
+        <div class="authhint" style="margin-top:12px">Not sure yet? <a onclick="openTour()"><b>👀 See how it works</b></a></div>
+        <div class="authhint" style="margin-top:8px">Already have an account? <a onclick="showPanel('login')">Log in</a></div>
       </div>
       <div id="loginPanel" style="display:none">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
-        <input id="aCode" type="text" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()">
+        <input id="aCode" type="text" placeholder="Your PIN or password" onkeydown="if(event.key==='Enter')doLogin()">
         <button class="btn btn-primary" id="aBtn" onclick="doLogin()">Log in</button>
         <div class="authhint">New to Jeeto? <a onclick="showPanel('start')"><b>Start your family →</b></a></div><div class="authhint" style="margin-top:6px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="joinPanel" style="display:none">
-        <div class="reghint">👪 Joining a family already on Jeeto? You’ll make <b>your own password</b> (just for you to log in), then enter the <b>family code</b> your captain shared to join their household.</div>
+        <div class="reghint">👪 If your captain <b>invited you by phone</b>, just fill these 3 and tap Join — leave the code blank. Otherwise add the family code they shared.</div>
         <input id="jName" placeholder="Your name (e.g. Anu)">
         <input id="jPhone" inputmode="numeric" placeholder="Your phone number">
-        <input id="jCode" type="text" placeholder="Create your password (you’ll log in with this)">
-        <input id="jFam" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" placeholder="Family code (ask your captain)">
+        <input id="jCode" inputmode="numeric" placeholder="Create a PIN (you'll log in with this)">
+        <div class="reghint" style="background:#EAF7EF;border-color:#BCE6CC;color:#1A6B3C">\U0001f512 Your number is just your private login \u2014 never shown to anyone. You choose if you ever share it.</div>
+        <input id="jFam" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" placeholder="Family code (only if you weren't invited by phone)">
         <button class="btn btn-primary" id="jBtn" onclick="joinFamily()">Join my family</button>
         <div class="authhint"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="startPanel" style="display:none">
-        <div class="reghint">🏡 Set up your <b>family at one home</b> (your household). You’ll be the Head and can invite everyone living with you. Relatives elsewhere can join your <b>Grid</b> later.</div>
-        <input id="hSurname" placeholder="Family surname (e.g. Pandita)">
-        <input id="hCity" placeholder="City (e.g. Mumbai)">
+        <div class="reghint">🏡 Just 3 quick things and you're in — you'll be the Head of your family. Add the rest later.</div>
         <input id="hName" placeholder="Your name (you'll be the Head)">
         <input id="hPhone" inputmode="numeric" placeholder="Your phone number">
-        <input id="hCode" type="text" placeholder="Create your password (min 6 characters)">
-        <button class="btn btn-primary" id="hBtn" onclick="createHousehold()">Create our household</button>
+        <input id="hCode" inputmode="numeric" placeholder="Create a PIN (you'll log in with this)">
+        <div class="reghint" style="background:#EAF7EF;border-color:#BCE6CC;color:#1A6B3C">\U0001f512 Your number is just your private login \u2014 never shown to anyone. You choose if you ever share it.</div>
+        <input id="hSurname" placeholder="Family surname (optional)">
+        <input id="hCity" placeholder="City (optional)">
+        <button class="btn btn-primary" id="hBtn" onclick="createHousehold()">Create my family</button>
         <div class="authhint"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
     </div>
@@ -1819,19 +1833,38 @@ async function logout(){try{await sb.auth.signOut();}catch(e){}location.reload()
 
 async function boot(){
   if(!ensureSB()){document.getElementById('authgate').classList.add('show');authMsg('Could not load. Check internet and refresh the page.');return;}
+  try{ var _g=new URLSearchParams(location.search).get('grid'); if(_g && !window.__pendingGrid){ window.__pendingGrid=_g.toUpperCase().trim(); } }catch(e){}
+  try{ var _c=new URLSearchParams(location.search).get('claim'); if(_c && !window.__claimPhone){ window.__claimPhone=_c.replace(/\D/g,''); } }catch(e){}
   let user=null;
   try{const r=await sb.auth.getUser();user=r.data.user;}catch(e){}
-  if(!user){document.getElementById('authgate').classList.add('show');return;}
+  if(!user){
+    document.getElementById('authgate').classList.add('show');
+    if(window.__claimPhone){ try{ showPanel('join'); var _jp=document.getElementById('jPhone'); if(_jp){_jp.value=window.__claimPhone;_jp.readOnly=true;} var _jf=document.getElementById('jFam'); if(_jf)_jf.value=''; var _rh=document.querySelector('#joinPanel .reghint'); if(_rh)_rh.innerHTML='\ud83c\udfe1 You\'re invited! Your family is already set up \u2014 just pick a PIN below and tap Join to enter the grid.'; }catch(e){} }
+    if(window.__pendingGrid){ var _b=document.getElementById('gridInviteBanner'); if(_b){ _b.style.display='block'; _b.innerHTML='<div style="background:#EAF7EF;border:1px solid #BCE6CC;color:#1A6B3C;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.5;text-align:left">\ud83d\udd17 <b>You\'re invited to a grid!</b><br>First set up your family below \u2014 we\'ll connect you to the grid automatically. \ud83d\udc9b</div>'; } }
+    return;
+  }
   const {data:me,error}=await sb.from('members').select('*').eq('user_id',user.id).limit(1).maybeSingle();
   if(error||!me){authMsg('Your profile is not set up yet. Ask the captain to add you.');document.getElementById('authgate').classList.add('show');try{await sb.auth.signOut();}catch(e){}return;}
   ME=me; coins=ME.coins||0; window.AUTHEMAIL=(user.email||'');
   if(ME.family_id){const {data:fam}=await sb.from('families').select('*').eq('id',ME.family_id).maybeSingle();FAM=fam||null;}
   document.getElementById('authgate').classList.remove('show');
   await refreshAll();
+  if(window.__pendingGrid && ME && ME.role==='captain' && (!GRID)){ _offerGridJoin(window.__pendingGrid); }
+}
+function _offerGridJoin(code){
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udd17</div><h3>Join this grid?</h3></div>'+
+  '<p class="s">You opened a grid invite. Connect your household to it?</p>'+
+  '<button class="btn btn-primary" onclick="_acceptGridJoin(\''+code+'\')">Join grid</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet();window.__pendingGrid=null">Not now</button>');
+}
+async function _acceptGridJoin(code){
+  window.__pendingGrid=null; window.__gridCode=code; closeSheet();
+  if(FAM&&FAM.surname){ _doJoinGridNow(code); } else { openNameFamily(); }
 }
 
 async function refreshAll(){
   setCoins();
+  try{ if(typeof loadMerge==='function') loadMerge(); }catch(e){}
   document.getElementById('profName').textContent=ME.display_name;
   try{var fb=document.getElementById('founderBtn'); if(fb) fb.style.display=(window.AUTHEMAIL==='9971708833@jeeto.family')?'block':'none';}catch(e){}
   document.getElementById('profRole').textContent=(ME.role==='captain'?'Family Captain':'Member')+' · '+(ME.streak_days||0)+'-day streak 🔥';
@@ -2053,16 +2086,72 @@ async function refreshMe(){
 }
 
 function openAddMember(){
-  var code=(FAM&&FAM.invite_code)?FAM.invite_code:'—';
-  var url=location.origin;
-  window.__inviteMsg='Join our family on Jeeto Family \ud83d\udc9b\n'+url+'\nTap "New here? Join your family", set your own 6-digit code, and enter family code: '+code;
+  window.__inviteRows=3;
+  var code=(FAM&&FAM.invite_code)?FAM.invite_code:'\u2014';
+  var rows=''; for(var i=0;i<3;i++) rows+=_inviteRowHtml(i);
   openSheet('<div style="text-align:center"><div style="font-size:42px">\ud83d\udc6a</div><h3>Invite your family</h3></div>'+
-  '<p class="s">Everyone adds themselves \u2014 just share your family code. Nothing to generate.</p>'+
-  '<div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center"><div style="font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1.5px">FAMILY CODE</div><div style="font-family:\'Baloo 2\';font-size:38px;letter-spacing:6px;color:var(--rani)">'+esc(code)+'</div></div>'+
-  '<div style="height:14px"></div>'+
-  '<button class="btn btn-primary" onclick="shareInvite()">Share on WhatsApp \ud83d\udcac</button>'+
+  '<p class="s">Add everyone at once \u2014 name + phone. They just open the app, type their number + a PIN. No code to hunt for.</p>'+
+  '<div id="inviteRows">'+rows+'</div>'+
+  '<div class="authhint" style="text-align:left;margin:2px 0 12px"><a onclick="addInviteRow()">\u2795 Add another person</a></div>'+
+  '<button class="btn btn-primary" onclick="inviteBulk()">Invite everyone</button>'+
+  '<div style="height:16px"></div>'+
+  '<div style="font-size:11px;color:var(--ink2);font-weight:700;text-align:center;letter-spacing:1px">OR JUST SHARE YOUR FAMILY CODE</div>'+
+  '<div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;margin-top:8px"><div style="font-family:\'Baloo 2\';font-size:30px;letter-spacing:5px;color:var(--rani)">'+esc(code)+'</div></div>'+
   '<div style="height:8px"></div>'+
-  '<button class="btn btn-ghost" onclick="copyInvite()">Copy invite message</button>');
+  '<button class="btn btn-ghost" onclick="shareCodeInvite()">Share family code on WhatsApp \ud83d\udcac</button>');
+}
+function _inviteRowHtml(i){
+  return '<div style="display:flex;gap:6px;margin-bottom:6px"><input id="amName'+i+'" placeholder="Name" style="flex:1;margin:0"><input id="amPhone'+i+'" inputmode="numeric" placeholder="Phone number" style="flex:1.25;margin:0"></div>';
+}
+function addInviteRow(){
+  var i=window.__inviteRows||0; var d=document.getElementById('inviteRows');
+  if(d){ d.insertAdjacentHTML('beforeend', _inviteRowHtml(i)); window.__inviteRows=i+1; }
+}
+async function inviteBulk(){
+  var n=window.__inviteRows||0, ok=[], fail=[];
+  for(var i=0;i<n;i++){
+    var nm=((document.getElementById('amName'+i)||{}).value||'').trim();
+    var ph=((document.getElementById('amPhone'+i)||{}).value||'').replace(/\D/g,'');
+    if(!nm&&!ph) continue;
+    if(!nm||ph.length<6){ fail.push(nm||ph||'a row'); continue; }
+    var r=await sb.rpc('invite_member',{p_name:nm,p_phone:ph});
+    if(r.error){ fail.push(nm); } else { ok.push({name:nm,phone:ph}); }
+  }
+  if(!ok.length){ toast(fail.length?'Check names & phone numbers \u2014 nothing added.':'Add at least one person.'); return; }
+  _showInviteShare(ok,fail);
+}
+function _showInviteShare(ok,fail){
+  var url=location.origin;
+  var names=ok.map(function(p){return p.name;});
+  var nameList=names.length===1?names[0]:(names.slice(0,-1).join(', ')+' & '+names[names.length-1]);
+  window.__inviteMsg='I\'ve added '+nameList+' to our family on Jeeto! \ud83d\udc9b\n\nEveryone open \ud83d\udc49 '+url+'\nTap "Join my family", enter YOUR phone number + a PIN \u2014 and you\'re in! (Leave the family-code box blank.)';
+  window.__invitePer=ok.map(function(p){
+    return 'Hi '+p.name+'! \ud83d\udc9b I added you to our family on Jeeto.\nOpen \ud83d\udc49 '+url+'\nTap "Join my family", enter your phone '+p.phone+', set a PIN \u2014 you\'re in! (Leave the family-code box blank.)';
+  });
+  var perPerson=ok.map(function(p,idx){
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><div style="flex:1"><b style="font-size:13.5px">'+esc(p.name)+'</b><div style="font-size:11px;color:var(--ink2)">'+esc(p.phone)+'</div></div><button class="btn btn-ghost" style="width:auto;padding:7px 14px;margin:0" onclick="_sendOne('+idx+')">Send \ud83d\udcac</button></div>';
+  }).join('');
+  var failNote=(fail&&fail.length)?'<p class="s" style="color:#B4532A">Couldn\'t add: '+esc(fail.join(', '))+' \u2014 check those phone numbers.</p>':'';
+  openSheet('<div style="text-align:center"><div style="font-size:46px">\u2705</div><h3>'+ok.length+' invited!</h3></div>'+
+  failNote+
+  '<p class="s">Easiest \u2014 drop one message in your family WhatsApp group \ud83d\udc47</p>'+
+  '<button class="btn btn-primary" onclick="shareInvite()">Share to family group \ud83d\udcac</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="copyInvite()">Copy group message</button>'+
+  '<div style="height:16px"></div>'+
+  '<div style="font-size:11px;color:var(--ink2);font-weight:700;text-align:center;letter-spacing:1px">OR MESSAGE EACH PERSON</div>'+
+  '<div style="height:10px"></div>'+perPerson+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet();refreshAll()">Done</button>');
+}
+function _sendOne(idx){
+  var m=(window.__invitePer||[])[idx]||'';
+  if(navigator.share){ navigator.share({text:m}).catch(function(){}); }
+  else { window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank'); }
+}
+function shareCodeInvite(){
+  var code=(FAM&&FAM.invite_code)?FAM.invite_code:'';
+  var url=location.origin;
+  window.__inviteMsg='Join our family on Jeeto! \ud83d\udc9b\n'+url+'\nTap "Join my family", enter your name, phone & a PIN, then family code: '+code;
+  shareInvite();
 }
 function shareInvite(){var m=window.__inviteMsg||'';if(navigator.share){navigator.share({text:m}).catch(function(){});}else{window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');}}
 function copyInvite(){var m=window.__inviteMsg||'';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(m).then(function(){toast('Copied \u2014 paste it in WhatsApp \ud83d\udc9b');}).catch(function(){toast('Could not copy');});}else{toast('Long-press to copy the code: '+(FAM&&FAM.invite_code||''));}}
@@ -2112,14 +2201,16 @@ async function loadHousehold(){
 }
 async function loadGrid(){
   if(!GRID){ document.getElementById('ghName').textContent='No grid yet';
-    document.getElementById('ghSub').textContent='Ask your grid admin for the join code';
-    document.getElementById('gridLb').innerHTML=emptyMsg('Your household is not in a grid yet.');
+    document.getElementById('ghSub').textContent='Join one with a code, or create your own';
+    document.getElementById('gridLb').innerHTML=emptyMsg('Your household is not in a grid yet. Create a grid to connect relatives\u2019 households, or join one with a code.');
+    try{var _gib=document.getElementById('gridInviteBtn'); if(_gib)_gib.style.display='none';}catch(e){}
     document.getElementById('gridFeed').innerHTML=''; return; }
   document.getElementById('ghName').textContent=GRID.name;
   // households in the grid (with scores)
   var gh = await sb.from('grid_households').select('household_id, role, families(id,name,surname,city,household_score)').eq('grid_id',GRID.id).eq('status','active');
   GRIDHOMES = (gh.data||[]).map(function(r){return r.families;}).filter(Boolean);
   GRID_ADMIN = (gh.data||[]).some(function(r){return r.families && FAM && r.families.id===FAM.id && r.role==='admin';});
+  try{var gib=document.getElementById('gridInviteBtn'); if(gib) gib.style.display='block';}catch(e){}
   await loadGridGames();
   document.getElementById('ghSub').textContent=GRIDHOMES.length+(GRIDHOMES.length===1?' household':' households');
   var ranked = GRIDHOMES.slice().sort(function(a,b){return (b.household_score||0)-(a.household_score||0);});
@@ -2194,7 +2285,8 @@ async function joinFamily(){
   var phone=(document.getElementById('jPhone').value||'').replace(/\D/g,'');
   var code=(document.getElementById('jCode').value||'').trim();
   var fam=(document.getElementById('jFam').value||'').trim().toUpperCase();
-  if(!name||!phone||code.length<6||!fam){authMsg('Fill in name, phone, your password (min 6 characters), and the family code.');return;}
+  if(!phone||code.length<4){authMsg('Enter your phone and a PIN (4+ digits).');return;}
+  if(fam && !name){authMsg('Enter your name to join with a family code.');return;}
   var btn=document.getElementById('jBtn');btn.textContent='Joining…';btn.disabled=true;authMsg('');
   var email=phone+'@jeeto.family';
   var su=await sb.auth.signUp({email:email,password:code,options:{data:{display_name:name,phone:phone}}});
@@ -2208,9 +2300,20 @@ async function joinFamily(){
     var si=await sb.auth.signInWithPassword({email:email,password:code});
     if(si.error){btn.textContent='Join my family';btn.disabled=false;authMsg('Account created. Turn OFF "Confirm email" in Supabase, then log in.');return;}
   }
-  var jf=await sb.rpc('join_family',{p_code:fam});
-  btn.textContent='Join my family';btn.disabled=false;
-  if(jf.error){authMsg(jf.error.message||'Could not find that family code.');return;}
+  if(fam){
+    var jf=await sb.rpc('join_family',{p_code:fam});
+    btn.textContent='Join my family';btn.disabled=false;
+    if(jf.error){authMsg(jf.error.message||'Could not find that family code.');return;}
+  } else {
+    var ci=await sb.rpc('claim_invite',{p_name:name});
+    btn.textContent='Join my family';btn.disabled=false;
+    if(ci.error){
+      var em=(ci.error.message||'');
+      if(em.indexOf('no_invite')>=0){ authMsg('No invite found for this number. Ask your captain to invite you, or enter the family code they shared.'); }
+      else { authMsg(em||'Could not join.'); }
+      return;
+    }
+  }
   await boot();
 }
 
@@ -2279,25 +2382,108 @@ async function createHousehold(){
   if(!ensureSB()){authMsg('Still loading — check internet and try again.');return;}
   var sur=_v('hSurname').trim(), city=_v('hCity').trim(), name=_v('hName').trim();
   var phone=_v('hPhone').replace(/\D/g,''), code=_v('hCode').trim();
-  if(!sur||!name||!phone||code.length<6){authMsg('Fill surname, your name, phone, and a password (min 6 characters).');return;}
+  if(!name||!phone||code.length<4){authMsg('Just need your name, phone, and a PIN (at least 4 digits).');return;}
   var btn=document.getElementById('hBtn');btn.textContent='Creating…';btn.disabled=true;authMsg('');
   var email=phone+'@jeeto.family';
   var su=await sb.auth.signUp({email:email,password:code,options:{data:{display_name:name,phone:phone}}});
   if(su.error){
-    btn.textContent='Create our household';btn.disabled=false;
+    btn.textContent='Create my family';btn.disabled=false;
     var m=(su.error.message||'').toLowerCase();
     authMsg(m.indexOf('regist')>=0||m.indexOf('already')>=0?'That phone is already registered — use Log in.':su.error.message);
     return;
   }
   if(!su.data.session){
     var si=await sb.auth.signInWithPassword({email:email,password:code});
-    if(si.error){btn.textContent='Create our household';btn.disabled=false;authMsg('Created. Turn OFF "Confirm email" in Supabase, then log in.');return;}
+    if(si.error){btn.textContent='Create my family';btn.disabled=false;authMsg('Created. Turn OFF "Confirm email" in Supabase, then log in.');return;}
   }
-  var r=await sb.rpc('create_household',{p_surname:sur,p_city:city,p_name:name});
-  btn.textContent='Create our household';btn.disabled=false;
-  if(r.error){authMsg(r.error.message||'Could not create household.');return;}
-  await boot();
+  // SAFEGUARD: if this phone was already invited to a family, offer to join instead of duplicating
+  window.__pend={sur:sur,city:city,name:name};
+  var inv=await sb.rpc('check_my_invite');
+  btn.textContent='Create my family';btn.disabled=false;
+  if(!inv.error && inv.data && inv.data.found){
+    openSheet('<div style="text-align:center"><div style="font-size:42px">\ud83d\udc4b</div><h3>You\'re already invited!</h3></div>'+
+      '<p class="s"><b>'+esc(inv.data.family)+'</b> already added you to their family. Join them instead of starting a separate one?</p>'+
+      '<button class="btn btn-primary" onclick="_joinInvited()">Join '+esc(inv.data.family)+'</button>'+
+      '<div style="height:8px"></div>'+
+      '<button class="btn btn-ghost" onclick="_createAnyway()">No, create my own family</button>');
+    return;
+  }
+  await _doCreateHousehold();
+}
+async function _doCreateHousehold(){
+  var p=window.__pend||{};
+  var r=await sb.rpc('create_household',{p_surname:p.sur,p_city:p.city,p_name:p.name});
+  if(r.error){closeSheet();authMsg(r.error.message||'Could not create household.');return;}
+  closeSheet(); await boot();
+  if(window.__pendingGrid){
+    var gc=window.__pendingGrid; window.__pendingGrid=null; window.__gridCode=gc;
+    if(FAM&&FAM.surname){ _doJoinGridNow(gc); } else { openNameFamily(); }
+    return;
+  }
   setTimeout(function(){ if(typeof openAddMember==='function') openAddMember(); }, 600);
+}
+async function _joinInvited(){
+  var p=window.__pend||{};
+  var ci=await sb.rpc('claim_invite',{p_name:p.name});
+  if(ci.error){closeSheet();authMsg(ci.error.message||'Could not join.');return;}
+  closeSheet(); await boot();
+}
+function _createAnyway(){ _doCreateHousehold(); }
+function openCreateGrid(){
+  if(!FAM){ toast('Set up your family first.'); return; }
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udd17</div><h3>Create a grid</h3></div>'+
+  '<p class="s">A grid links your relatives\' households \u2014 shared leaderboard, chat, Tambola. Name it, share the code with people you know, and <b>approve each household</b> before they join.</p>'+
+  '<input id="grNameIn" placeholder="Grid name (e.g. Harkar Khandaan)">'+
+  '<input id="grAboutIn" placeholder="About (optional, e.g. Our extended family)">'+
+  '<label style="display:flex;gap:8px;align-items:flex-start;margin:2px 0 12px;font-size:12px;color:var(--ink2);text-align:left"><input type="checkbox" id="grOpenIn" style="margin-top:2px"> Let anyone with the code join instantly (leave off \u2014 safer: you approve each household)</label>'+
+  '<button class="btn btn-primary" onclick="createGrid()">Create grid</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
+}
+async function createGrid(){
+  var name=(_v('grNameIn')||'').trim(), about=(_v('grAboutIn')||'').trim();
+  if(!name){ toast('Give your grid a name.'); return; }
+  var open=!!(document.getElementById('grOpenIn')&&document.getElementById('grOpenIn').checked);
+  var r=await sb.rpc('create_grid',{p_name:name,p_about:about,p_open:open});
+  if(r.error){ toast(r.error.message||'Could not create grid. Run the create-grid SQL first.'); return; }
+  var code=(r.data&&r.data.code)||'';
+  await loadHousehold(); await loadGrid();
+  _showGridShare(name, code, (r.data&&r.data.open));
+}
+function _showGridShare(name, code, open){
+  var url=location.origin;
+  window.__gridShareMsg='Join our family grid "'+name+'" on Jeeto! \ud83d\udd17\n\nTap \ud83d\udc49 '+url+'/?grid='+code+'\nSet up your family and you\'ll be connected to the grid automatically. \ud83d\udc9b\n\n(Grid code if needed: '+code+')';
+  openSheet('<div style="text-align:center"><div style="font-size:46px">\ud83c\udf89</div><h3>"'+esc(name)+'" is live!</h3></div>'+
+  '<p class="s">'+(open?'\u26a0\ufe0f <b>Anyone with this code can join instantly.</b> Share it only with people you know.':'Share this <b>only with people you know</b> \u2014 each household you invite asks to join, and <b>you approve them</b> in \ud83d\udd14 Requests.')+'</p>'+
+  '<div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1.5px">GRID CODE</div><div style="font-family:\'Baloo 2\';font-size:34px;letter-spacing:5px;color:var(--rani)">'+esc(code)+'</div></div>'+
+  '<div style="height:14px"></div>'+
+  '<button class="btn btn-primary" onclick="shareGridInvite()">Invite households on WhatsApp \ud83d\udcac</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="copyGridInvite()">Copy invite message</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Done</button>');
+}
+function shareGridInvite(){ var m=window.__gridShareMsg||''; if(navigator.share){navigator.share({text:m}).catch(function(){});} else {window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');} }
+function copyGridInvite(){ var m=window.__gridShareMsg||''; if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(m).then(function(){toast('Copied \u2014 paste in WhatsApp \ud83d\udd17');}).catch(function(){toast('Could not copy');});} else {toast('Long-press to copy.');} }
+function openGridHouseholdInvite(){
+  if(!GRID){ toast('Join a grid first.'); return; }
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udc6a</div><h3>Add a household to '+esc(GRID.name)+'</h3></div>'+
+  '<p class="s">Invite a relative who isn\'t on Jeeto yet. We\'ll set up their household on their number \u2014 they just open the link and set a PIN. New households join once the grid admin approves.</p>'+
+  '<input id="ghiName" placeholder="Their name (e.g. Rohit)">'+
+  '<input id="ghiPhone" inputmode="numeric" placeholder="Their phone number">'+
+  '<button class="btn btn-primary" onclick="gridInviteHousehold()">Create household & invite</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
+}
+async function gridInviteHousehold(){
+  var name=(_v('ghiName')||'').trim(), phone=(_v('ghiPhone')||'').replace(/\D/g,'');
+  if(!name||phone.length<6){ toast('Enter their name and phone.'); return; }
+  var r=await sb.rpc('grid_invite_household',{p_name:name,p_phone:phone,p_grid:GRID.id});
+  if(r.error){ toast(r.error.message||'Could not invite. Run the grid-invite SQL first.'); return; }
+  var pending=!!(r.data&&r.data.pending);
+  var url=location.origin;
+  window.__inviteMsg = pending ? ('Hi '+name+'! \ud83d\udc9b I\'ve added you to our family grid "'+GRID.name+'" on Jeeto.\n\nOpen \ud83d\udc49 '+url+'/?claim='+phone+'\nSet a PIN to set up your family \u2014 you\'ll join the grid once our admin approves it. \ud83d\ude4f') : ('Hi '+name+'! \ud83d\udc9b I\'ve set up your family on Jeeto and added you to our grid "'+GRID.name+'".\n\nOpen \ud83d\udc49 '+url+'/?claim='+phone+'\nJust set a PIN \u2014 and you\'re in!');
+  openSheet('<div style="text-align:center"><div style="font-size:46px">\u2705</div><h3>'+esc(name)+' is ready!</h3></div>'+
+  '<p class="s">'+(pending?'Their household will be created when they set a PIN. They join '+esc(GRID.name)+' once the grid admin approves them in \ud83d\udd14 Requests.':'Their household is created and tagged to join '+esc(GRID.name)+'. Send them this \u2014 they only set a PIN:')+'</p>'+
+  '<button class="btn btn-primary" onclick="shareInvite()">Send on WhatsApp \ud83d\udcac</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="copyInvite()">Copy message</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet();openGridHouseholdInvite()">Invite another</button>');
 }
 function openJoinGrid(){
   openSheet('<h3>Join a grid 🔗</h3><p class="s">Enter the grid code your grid admin shared (e.g. AOUGRID). This connects your whole household to the grid.</p>'+
@@ -2307,12 +2493,34 @@ function openJoinGrid(){
 async function doJoinGrid(){
   var code=(_v('gridCodeIn')||'').toUpperCase().trim();
   if(!code){toast('Enter a grid code.');return;}
+  window.__gridCode=code;
+  if(!(FAM&&FAM.surname)){ openNameFamily(); return; }
+  await _doJoinGridNow(code);
+}
+async function _doJoinGridNow(code){
   var r=await sb.rpc('join_grid',{p_code:code});
   if(r.error){toast(r.error.message||'Could not join that grid.');return;}
   closeSheet();
-  if(r.data==='pending'){toast('Request sent — waiting for the grid admin ⏳');}
-  else {confetti();toast('Joined the grid! 🎉');}
+  if(r.data==='pending'){toast('Request sent — waiting for the grid admin \u23f3');}
+  else {confetti();toast('Joined the grid! \ud83c\udf89');}
   await loadHousehold(); await loadGrid();
+}
+function openNameFamily(){
+  var city=(FAM&&FAM.city)?esc(FAM.city):'';
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83c\udfe1</div><h3>Name your family</h3></div>'+
+  '<p class="s">You\'re joining a Grid \u2014 relatives will see your household here. What\'s your family called?</p>'+
+  '<input id="famSurIn" placeholder="Family name (e.g. Pandita)">'+
+  '<input id="famCityIn" value="'+city+'" placeholder="City (optional)">'+
+  '<button class="btn btn-primary" onclick="saveFamilyName()">Save & join grid</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
+}
+async function saveFamilyName(){
+  var sur=(_v('famSurIn')||'').trim(), city=(_v('famCityIn')||'').trim();
+  if(!sur){toast('Please enter your family name.');return;}
+  var r=await sb.rpc('set_family_name',{p_surname:sur,p_city:city});
+  if(r.error){toast(r.error.message||'Could not save');return;}
+  try{var f=await sb.from('families').select('*').eq('id',FAM.id).maybeSingle(); if(f.data)FAM=f.data;}catch(e){}
+  await _doJoinGridNow(window.__gridCode||'');
 }
 var _searchT=null;
 function openSearch(){
@@ -3214,6 +3422,65 @@ async function callTripAI(avg,budget,region,kids,elders,voters){
 /* ========== LEGAL · Privacy Policy & Terms of Service ========== */
 var LEGAL_PRIVACY = "<p class=\"lgmeta\">Last updated: 20 June 2026</p>\n<p>Jeeto Family (\"Jeeto\", \"we\", \"us\") is a family wellness and togetherness app operated by Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI) (\"the Company\"), based in Delhi NCR, India. This Privacy Policy explains what information we collect, how we use it, and the choices you have. We are committed to handling your information responsibly and in line with India\\u2019s Digital Personal Data Protection Act, 2023 (DPDP Act).</p>\n\n<h3>1. Information we collect</h3>\n<p>When you use Jeeto, we may collect:</p>\n<ul>\n<li><b>Account details</b> \\u2014 your mobile number, display name, and the family/household and grid you belong to.</li>\n<li><b>Wellness data</b> \\u2014 step counts and activity you submit, including screenshots of step counters you choose to upload.</li>\n<li><b>Photos, videos and documents</b> you add to your Family Vault.</li>\n<li><b>Family details you choose to add</b> \\u2014 birthdays, and care reminders such as medicine times or appointments.</li>\n<li><b>Your contributions</b> \\u2014 answers to the daily family question, \"proud of today\" notes, songs, Hearts and Coins activity, challenge and game participation.</li>\n<li><b>Basic technical data</b> \\u2014 information needed to keep the app running on your device.</li>\n</ul>\n\n<h3>2. How we use your information</h3>\n<p>We use your information only to run Jeeto: to show your family their shared activity, calculate wellness scores and Hearts, run challenges and games, surface birthdays and reminders, and keep your family\\u2019s space working. We do <b>not</b> sell your personal data, and we do not show third-party advertising inside Jeeto.</p>\n\n<h3>3. AI processing of step images</h3>\n<p>When you submit a step screenshot, the image is processed by an artificial-intelligence service (Anthropic\\u2019s Claude) solely to read the step number shown, so we can record your activity. The image is used for this purpose and not for advertising or profiling.</p>\n\n<h3>4. Who can see your information</h3>\n<p>Your information is visible based on where you place it:</p>\n<ul>\n<li><b>Household-only</b> content (daily answers, proud notes, care schedule, private Vault items) is visible only to members of your own household.</li>\n<li><b>Grid</b> content (items you choose to share to your grid, grid games, grid trip votes) is visible to other households in that grid.</li>\n<li>You control what you share to a grid. We never automatically connect one grid to another.</li>\n</ul>\n\n<h3>5. Service providers</h3>\n<p>We use trusted providers to operate Jeeto, including Supabase (database and storage), Cloudflare (hosting and delivery) and Anthropic (AI step reading). These providers process data on our behalf under their own security and privacy commitments.</p>\n\n<h3>6. Children\\u2019s information</h3>\n<p>Jeeto is designed for families, and a household may include children. Accounts are created and managed by an adult family member (\"captain\"), who confirms they have authority to add family members. By adding a child\\u2019s information, the managing adult provides parental consent for that child\\u2019s data to be processed within their family\\u2019s private space. We do not knowingly allow children to be contacted by adults outside their own household, and we do not profile children for advertising. If you believe a child\\u2019s data has been added without proper consent, contact us and we will remove it.</p>\n\n<h3>7. Health and medicine reminders</h3>\n<p>Care reminders (such as medicine times) are a convenience feature to help families look after each other. <b>Jeeto is not a medical device and does not provide medical advice.</b> Reminders may not always be delivered on time and must not be relied upon for critical medication. Always follow your doctor and use a dedicated medical alarm where needed.</p>\n\n<h3>8. Your rights</h3>\n<p>You may ask us to access, correct, or delete your personal data, or withdraw consent, by contacting us at the address below. Deleted Vault items are held in a recovery area for up to 30 days before permanent removal. When you delete your account, we remove your personal data except where we must keep it for legal reasons.</p>\n\n<h3>9. Data security &amp; retention</h3>\n<p>We use industry-standard measures to protect your information and keep it only as long as needed to provide Jeeto or as required by law.</p>\n\n<h3>10. Changes to this policy</h3>\n<p>We may update this policy as Jeeto evolves. We will revise the date above and, for significant changes, let you know within the app.</p>\n\n<h3>11. Contact &amp; grievances</h3>\n<p>For any privacy question or to exercise your rights, contact our grievance officer at <b>admin@skyvos.in</b>, Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI), Delhi NCR, India.</p>";
 var LEGAL_TERMS = "<p class=\"lgmeta\">Last updated: 20 June 2026</p>\n<p>These Terms of Service (\"Terms\") govern your use of the Jeeto Family app (\"Jeeto\"), operated by Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI) (\"the Company\"). By using Jeeto, you agree to these Terms.</p>\n\n<h3>1. Who can use Jeeto</h3>\n<p>You must be at least 18 years old to create and manage an account. Children may take part only as members of a household added and supervised by an adult family member who consents on their behalf.</p>\n\n<h3>2. Your account, household and grid</h3>\n<p>You are responsible for activity under your account. A household \"captain\" manages their family\\u2019s space and members; a grid \"admin\" manages which households join their grid. These roles are local \\u2014 they give no rights over other families or grids.</p>\n\n<h3>3. Hearts and Coins are not money</h3>\n<p>Jeeto Hearts and Jeeto Coins are in-app symbols of family activity and togetherness. <b>They have no monetary value, cannot be purchased, cannot be exchanged for cash, and cannot be transferred outside your family for money.</b> They are not a payment instrument, currency, or gambling stake. We may adjust how they work at any time.</p>\n\n<h3>4. Content you share</h3>\n<p>You keep ownership of the photos, videos, notes and other content you add. You grant us permission to store and display that content within Jeeto so your family and chosen grid can see it. You are responsible for what you upload and confirm you have the right to share it. You must not upload anything unlawful, abusive, hateful, or that infringes others\\u2019 rights.</p>\n\n<h3>5. Acceptable use &amp; community conduct</h3>\n<p>Jeeto exists to bring families closer. You agree not to: harass or harm others; share illegal or explicit content; attempt to contact children outside your household; misuse grids to spam or deceive; or interfere with the app\\u2019s security. We may suspend or remove accounts that break these rules, especially to protect children.</p>\n\n<h3>6. Health and medicine reminders</h3>\n<p>Care and medicine reminders are a helper feature only. <b>Jeeto is not a medical device and gives no medical advice.</b> Do not rely on Jeeto for critical medication timing; follow your doctor and use proper medical tools.</p>\n\n<h3>7. Availability &amp; changes</h3>\n<p>We provide Jeeto on an \"as is\" and \"as available\" basis and may add, change, or remove features. We aim to keep Jeeto running smoothly but cannot guarantee it will always be uninterrupted or error-free.</p>\n\n<h3>8. Limitation of liability</h3>\n<p>To the extent permitted by law, the Company is not liable for indirect or consequential losses arising from your use of Jeeto, including missed reminders or lost content. Nothing in these Terms limits liability that cannot be limited by law.</p>\n\n<h3>9. Termination</h3>\n<p>You may stop using Jeeto and delete your account at any time. We may suspend access where these Terms are breached or where needed to protect users.</p>\n\n<h3>10. Governing law</h3>\n<p>These Terms are governed by the laws of India, and disputes are subject to the courts of Delhi NCR.</p>\n\n<h3>11. Contact</h3>\n<p>Questions about these Terms? Contact us at <b>admin@skyvos.in</b>, Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI), Delhi NCR, India.</p>";
+async function loadMerge(){
+  var box=document.getElementById('mergeBox'); if(!box) return;
+  if(!ME||ME.role!=='captain'){ box.innerHTML=''; return; }
+  var html='';
+  try{
+    var rq=await sb.rpc('merge_requests');
+    var reqs=(rq&&rq.data)||[]; if(typeof reqs==='string'){ try{reqs=JSON.parse(reqs);}catch(e){reqs=[];} }
+    (reqs||[]).forEach(function(r){
+      html+='<div class="mergecard">\ud83d\udd00 <b>'+esc(r.from_name)+'</b> ('+r.members+' '+(r.members==1?'person':'people')+') wants to merge into your family.'+
+        '<div style="display:flex;gap:8px;margin-top:9px"><button class="btn btn-primary" style="flex:1;padding:8px" onclick="approveMerge(\''+r.from_id+'\')">Approve</button>'+
+        '<button class="btn btn-ghost" style="flex:1;padding:8px" onclick="declineMerge(\''+r.from_id+'\')">Decline</button></div></div>';
+    });
+  }catch(e){}
+  if(FAM&&FAM.merge_to){
+    html+='<div class="mergecard">\u23f3 You asked to merge into another household. Waiting for them to approve. <a onclick="cancelMerge()">Cancel request</a></div>';
+  } else {
+    html+='<div class="authhint" style="text-align:left;margin:6px 0 2px"><a onclick="openMergeRequest()">\ud83d\udd00 Merge into another household</a></div>';
+  }
+  box.innerHTML=html;
+}
+function openMergeRequest(){
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udd00</div><h3>Merge into another household</h3></div>'+
+  '<p class="s">If your family ended up split into two, merge yours <b>into</b> the other one. Enter their family code \u2014 their Head must approve. Your members move over and you become a member there.</p>'+
+  '<input id="mrgCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" placeholder="Their family code">'+
+  '<button class="btn btn-primary" onclick="requestMerge()">Send merge request</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
+}
+async function requestMerge(){
+  var code=(document.getElementById('mrgCode').value||'').trim().toUpperCase();
+  if(!code){toast('Enter their family code.');return;}
+  var r=await sb.rpc('request_merge',{p_code:code});
+  if(r.error){toast(r.error.message||'Could not send request');return;}
+  try{var f=await sb.from('families').select('*').eq('id',FAM.id).maybeSingle(); if(f.data)FAM=f.data;}catch(e){}
+  closeSheet(); toast('Request sent to '+((r.data&&r.data.target)||'them')+' \ud83d\udc9b'); loadMerge();
+}
+function approveMerge(fromId){
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udd00</div><h3>Approve merge?</h3></div>'+
+  '<p class="s">Their members will join your family and their household will be removed. <b>This cannot be undone.</b></p>'+
+  '<button class="btn btn-primary" onclick="_doApprove(\''+fromId+'\')">Yes, merge them in</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
+}
+async function _doApprove(fromId){
+  var r=await sb.rpc('approve_merge',{p_from:fromId});
+  if(r.error){toast(r.error.message||'Could not merge');return;}
+  closeSheet(); toast('Merged \ud83d\udc9b'); await refreshAll();
+}
+async function declineMerge(fromId){
+  var r=await sb.rpc('decline_merge',{p_from:fromId});
+  if(r.error){toast(r.error.message||'Could not decline');return;}
+  toast('Declined'); loadMerge();
+}
+async function cancelMerge(){
+  var r=await sb.rpc('cancel_merge');
+  if(r.error){toast(r.error.message||'Could not cancel');return;}
+  try{var f=await sb.from('families').select('*').eq('id',FAM.id).maybeSingle(); if(f.data)FAM=f.data;}catch(e){}
+  toast('Request cancelled'); loadMerge();
+}
+function openTour(){ document.getElementById('tourOverlay').style.display='flex'; }
+function closeTour(){ document.getElementById('tourOverlay').style.display='none'; }
 function openFounder(){ document.getElementById('founderOverlay').style.display='flex'; loadFounder(); }
 function closeFounder(){ document.getElementById('founderOverlay').style.display='none'; }
 function fAgo(ts){
@@ -3287,6 +3554,21 @@ window.addEventListener('load', boot);
     <div class="tfbar"><span onclick="closeTripFinder()">✕</span><b id="tfTitle">✈️ Family Trip Finder</b><span style="width:18px"></span></div>
     <div class="tfbody" id="tfBody"></div>
   </div>
+  <!-- ============ HOW IT WORKS TOUR ============ -->
+  <div id="tourOverlay">
+    <div class="lgbar"><span onclick="closeTour()">✕</span><b>How Jeeto works</b><span style="width:18px"></span></div>
+    <div class="lgbody">
+      <div class="tourlede">A little app that keeps your family close 💛 Here's the idea:</div>
+      <div class="tourcard"><div class="te">🚶</div><div><b>Walk together</b><p>Everyone logs their steps from any step app. Your family climbs the leaderboard as a team — not alone.</p></div></div>
+      <div class="tourcard"><div class="te">📸</div><div><b>Share your world</b><p>Photos, songs, birthdays, and a fresh family question every day so everyone stays close, even far apart.</p></div></div>
+      <div class="tourcard"><div class="te">🎲</div><div><b>Play Tambola nights</b><p>Host live Tambola and games for the whole family right inside the app. Real fun, real together-time.</p></div></div>
+      <div class="tourcard"><div class="te">💛</div><div><b>Care & rewards</b><p>Gentle medicine & appointment reminders, family hearts, and rewards you earn together as a household.</p></div></div>
+      <div class="tournote">No money, no ads — just your family, closer. Setup takes about a minute.</div>
+      <button class="btn btn-primary" style="margin-top:6px" onclick="closeTour();showPanel('start')">✨ Start my family</button>
+      <button class="btn btn-ghost" style="margin-top:8px" onclick="closeTour();showPanel('join')">I have a family code</button>
+    </div>
+  </div>
+
   <div id="legalOverlay">
     <div class="lgbar"><span onclick="closeLegal()">✕</span><b id="lgTitle">Legal</b><span style="width:18px"></span></div>
     <div class="lgtabs"><div class="lgtab on" id="lgtPriv" onclick="openLegal('privacy')">Privacy</div><div class="lgtab" id="lgtTerms" onclick="openLegal('terms')">Terms</div></div>
