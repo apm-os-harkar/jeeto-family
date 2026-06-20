@@ -522,6 +522,17 @@ body{
 .jdate{font-size:11px;font-weight:800;color:var(--ink2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
 .jq{font-family:'Baloo 2';font-size:15px;color:#3a2c16;margin-bottom:4px}
 .jrow{font-size:14px;padding:3px 0;line-height:1.4}
+
+.hcompact{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#FF8A1E,#E03A7A);color:#fff;border-radius:18px;padding:12px 15px;margin-bottom:14px;box-shadow:var(--shadow);cursor:pointer}
+.hcompact:active{transform:scale(.98)}
+.hcscore{text-align:center;min-width:54px}
+.hcnum{font-family:'Baloo 2';font-size:34px;line-height:.95}
+.hclab{font-size:8.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;opacity:.92}
+.hcmid{flex:1;min-width:0}
+.hctag{font-family:'Baloo 2';font-size:16px;line-height:1.12}
+.hcsub{font-size:11.5px;opacity:.92;line-height:1.25;margin-top:1px}
+.hchint{font-size:10px;font-weight:700;margin-top:3px;opacity:.96}
+.hcpet{font-size:28px}
 </style>
 </head>
 <body>
@@ -553,18 +564,14 @@ body{
       <div id="dailyCard"></div>
       <div id="streakNudge"></div>
       <div id="proudCard"></div>
-      <div class="hero">
-        <div class="aura">
-          <div class="ring r1"></div><div class="ring r2"></div>
-          <div class="core" onclick="openHappyInfo()">
-            <div class="hscore" id="happy">0</div>
-            <div class="hlabel">Family Happiness</div>
-            <div class="hhint" id="happyHint"></div>
-          </div>
-          <div class="pet" title="Laddoo the family pet">🐘</div>
+      <div class="hcompact" onclick="openHappyInfo()">
+        <div class="hcscore"><div class="hcnum" id="happy">0</div><div class="hclab">Happiness</div></div>
+        <div class="hcmid">
+          <div class="hctag" id="herotag">Welcome to JEETO 💛</div>
+          <div class="hcsub" id="herosub">Loading your family…</div>
+          <div class="hchint" id="happyHint"></div>
         </div>
-        <div class="herotag" id="herotag">Welcome to JEETO 💛</div>
-        <div class="herosub" id="herosub">Loading your family…</div>
+        <div class="hcpet">🐘</div>
       </div>
 
       <div class="skyvos">
@@ -963,7 +970,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 25</div>
+      <div class="psub">Powered by Skyvos AI · build 27</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="loginPanel">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
@@ -2304,8 +2311,28 @@ function gtToggleMute(){
   toast(GT.muted?'🔇 Voice off':'🔊 Voice on');
   gtRenderBoard();
 }
+/* prime audio on a user tap so this phone is allowed to speak (browser rule) */
+function gtUnlockAudio(){
+  try{ if(!('speechSynthesis' in window)) return; var u=new SpeechSynthesisUtterance(' '); u.volume=0; window.speechSynthesis.speak(u); GT.audioOK=true; }catch(e){}
+}
+/* host auto-draw every N seconds, with hold/resume */
+function gtToggleAuto(){
+  GT.auto=!GT.auto;
+  if(GT.auto){ gtAutoStart(); toast('▶ Auto-draw on · every '+GT.autoSecs+'s'); }
+  else { gtAutoStop(); toast('⏸ Held — tap ▶ to resume'); }
+  gtRenderBoard();
+}
+function gtAutoStart(){
+  gtAutoStop();
+  GT.autoTimer=setInterval(function(){
+    if(!GT.isHost || GT.status==='ended'){ gtAutoStop(); return; }
+    if(GT.called && GT.called.length>=90){ gtAutoStop(); GT.auto=false; gtRenderBoard(); return; }
+    gtDraw();
+  }, GT.autoSecs*1000);
+}
+function gtAutoStop(){ if(GT.autoTimer){ clearInterval(GT.autoTimer); GT.autoTimer=null; } }
 
-var GT={gameId:null,isHost:false,ticket:null,called:[],status:null,marked:{},poll:null,claims:[],muted:false,spokenIdx:0};
+var GT={gameId:null,isHost:false,ticket:null,called:[],status:null,marked:{},poll:null,claims:[],muted:false,spokenIdx:0,audioOK:false,auto:false,autoTimer:null,autoSecs:20};
 function openGridTambola(){ if(!GRID){toast('Join a grid first 🔗');return;} go('gtambola'); gtLoad(); }
 async function gtLoad(){
   gtStopPoll();
@@ -2332,6 +2359,7 @@ async function gtCreate(){
   await gtJoinSelf();
 }
 async function gtJoinSelf(){
+  gtUnlockAudio();
   if(!GT.gameId){ await gtLoad(); if(!GT.gameId)return; }
   var ticket=gtGenTicket(); if(!ticket){toast('Ticket gen failed, tap again');return;}
   var r=await sb.rpc('join_grid_tambola',{p_game:GT.gameId,p_ticket:ticket});
@@ -2344,9 +2372,12 @@ function gtRenderBoard(){
     for(var _si=GT.spokenIdx; _si<GT.called.length; _si++){ /* only speak the latest to avoid backlog */ }
     gtSpeakNum(GT.called[GT.called.length-1]); GT.spokenIdx=GT.called.length;
   }
-  var host = GT.isHost ? ('<div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-primary" style="flex:1;margin:0" onclick="gtDraw()">🎲 Draw next</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="gtEnd()">End game</button></div>') : '';
+  var host = GT.isHost ? ('<div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-primary" style="flex:1;margin:0" onclick="gtDraw()">🎲 Draw</button><button class="btn '+(GT.auto?'btn-primary':'btn-ghost')+'" style="flex:1;margin:0" onclick="gtToggleAuto()">'+(GT.auto?'⏸ Hold':'▶ Auto 20s')+'</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="gtEnd()">End</button></div>'+(GT.auto?'<div class="s" style="text-align:center;margin:-6px 0 10px;color:#1E8E4F">▶ Auto-drawing every 20s · tap Hold to pause for discussion</div>':'')) : '';
   var last = GT.called.length ? GT.called[GT.called.length-1] : '—';
-  var mute='<div style="text-align:center;margin-bottom:8px"><button class="minibtn ghost" onclick="gtToggleMute()">'+(GT.muted?'🔇 Voice off':'🔊 Voice on')+'</button></div>';
+  var sound = !GT.audioOK
+    ? '<button class="minibtn" onclick="gtUnlockAudio();toast(\'🔊 Sound enabled on this phone\');gtRenderBoard()">🔊 Tap to enable sound</button>'
+    : '<button class="minibtn ghost" onclick="gtToggleMute()">'+(GT.muted?'🔇 Voice off':'🔊 Voice on')+'</button>';
+  var mute='<div style="text-align:center;margin-bottom:8px">'+sound+'</div>';
   var head='<div style="text-align:center;margin-bottom:6px"><div class="s">Latest number</div><div style="font-family:\'Baloo 2\';font-size:48px;color:#E03A7A;line-height:1.1">'+last+'</div><div class="s">'+GT.called.length+' / 90 called'+(GT.status==='lobby'?' · waiting for host to start':'')+'</div></div>';
   var claimstrip = GT.claims.length ? ('<div class="gtclaims">'+GT.claims.map(function(cl){return '<div class="gtclaimrow">🏆 <b>'+esc(cl.winner||'Someone')+'</b> — '+gtPrizeName(cl.prize)+'</div>';}).join('')+'</div>') : '';
   var claims='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;justify-content:center">'+
@@ -2373,6 +2404,7 @@ function gtTicketHTML(){
   return '<table class="gtticket">'+rows+'</table><div class="s" style="text-align:center;margin-top:5px">Tap a number when it\'s called to mark it</div>';
 }
 function gtMark(n){
+  gtUnlockAudio();
   if(GT.called.indexOf(n)<0){ toast('Not called yet'); return; }
   GT.marked[n]=!GT.marked[n]; gtRenderBoard();
 }
@@ -2396,6 +2428,7 @@ async function gtLoadClaims(){
   if(!r.error){ var prev=GT.claims.length; GT.claims=(r.data||[]); if(GT.claims.length!==prev) gtRenderBoard(); }
 }
 async function gtEnd(){
+  gtAutoStop(); GT.auto=false;
   var r=await sb.rpc('end_grid_tambola',{p_game:GT.gameId});
   if(r.error){toast(r.error.message);return;}
   gtStopPoll(); await gtLoadClaims(); GT.status='ended'; gtRenderWinners();
@@ -2428,7 +2461,7 @@ function gtStartPoll(){
     }
   },2500);
 }
-function gtStopPoll(){ if(GT.poll){clearInterval(GT.poll);GT.poll=null;} }
+function gtStopPoll(){ if(GT.poll){clearInterval(GT.poll);GT.poll=null;} gtAutoStop(); }
 function gtGenTicket(){
   var ranges=[[1,9],[10,19],[20,29],[30,39],[40,49],[50,59],[60,69],[70,79],[80,90]];
   for(var attempt=0;attempt<800;attempt++){
