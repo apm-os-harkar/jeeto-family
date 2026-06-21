@@ -607,6 +607,21 @@ body{
 
 .gchat{display:flex;flex-direction:column;gap:0}
 .gchatpad{height:84px}
+.chatscreen{position:fixed;inset:0;z-index:300;background:var(--bg,#FBF5EC);display:none;flex-direction:column}
+.chatscreen.on{display:flex}
+.chathead{display:flex;align-items:center;gap:8px;padding:12px 12px;padding-top:calc(env(safe-area-inset-top) + 12px);background:#0E2547;color:#fff}
+.chatback{background:none;border:none;color:#fff;font-size:30px;line-height:1;padding:0 6px;cursor:pointer}
+.chatheadinfo b{font-size:16px;display:block;line-height:1.2}
+.chatheadinfo div{font-size:12px;opacity:.8}
+.chatmsgs{flex:1;overflow-y:auto;padding:14px;-webkit-overflow-scrolling:touch}
+.chatinput{display:flex;gap:8px;align-items:center;padding:10px 12px;padding-bottom:calc(env(safe-area-inset-bottom) + 10px);background:#fff;border-top:1px solid var(--line,#eee)}
+.chatinput input{flex:1;border:1px solid var(--line,#ddd);border-radius:22px;padding:11px 16px;font-size:15px;outline:none}
+.chatinput button{background:#E7368D;color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:17px;cursor:pointer;flex:none}
+.chatlauncher{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line,#eee);border-radius:14px;padding:14px;cursor:pointer}
+.chatlauncher .clicon{font-size:26px}
+.chatlauncher .clbody{flex:1;min-width:0}
+.chatlauncher .clprev{font-size:12.5px;color:var(--ink2,#888);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chatlauncher .clarrow{font-size:24px;color:var(--ink2,#bbb)}
 .gcrow{display:flex;gap:7px;align-items:flex-end;max-width:86%;margin-top:2px}
 .gcrow.gstart{margin-top:14px}
 .gcrow.me{align-self:flex-end;flex-direction:row}
@@ -1022,12 +1037,14 @@ body{
         <div class="ghname" id="ghName">My Grid</div>
         <div class="ghsub" id="ghSub">Households connected</div>
       </div>
+      <button class="btn btn-ghost" id="myGridsBtn" style="display:none;margin-bottom:12px" onclick="openMyGrids()">🗂️ My grids</button>
       <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openJoinGrid()">＋ Join a grid</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openCreateGrid()">🔗 Create a grid</button></div>
       <div style="display:flex;gap:8px;margin-bottom:14px">
         <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button>
         <button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button>
       </div>
       <button class="btn btn-ghost" id="gridInviteBtn" style="display:none;margin-bottom:14px" onclick="openGridHouseholdInvite()">➕ Invite a household by phone</button>
+      <button class="btn btn-ghost" id="gridSentBtn" style="display:none;margin-bottom:14px" onclick="openSentInvites()">📋 Sent invites & status</button>
       <button class="btn btn-ghost" style="margin-bottom:14px" onclick="openConnections()">🤝 Connected households</button>
       <button class="btn btn-ghost" style="margin-bottom:14px" onclick="openGridBirthdays()">🎂 Grid birthdays</button>
       <div class="sectit">🎮 Grid games</div>
@@ -1036,13 +1053,25 @@ body{
       <button class="btn btn-ghost" style="margin-bottom:14px" onclick="openGridTrip()">✈️ Grid Trip Finder</button>
       <div class="sectit">Household leaderboard</div>
       <div id="gridLb"></div>
-      <div class="sectit" style="margin-top:18px">Grid feed</div>
-      <div class="gridpost">
-        <input id="gridPostInput" placeholder="Share with the grid…" />
-        <button onclick="sendGridPost()">Post</button>
+      <div class="sectit" style="margin-top:18px">Grid Chat</div>
+      <div id="gridChatLauncher" class="chatlauncher" onclick="openGridChatFull()">
+        <div class="clicon">💬</div>
+        <div class="clbody"><b>Open Grid Chat</b><div id="gridChatPreview" class="clprev">Tap to open the conversation</div></div>
+        <div class="clarrow">›</div>
       </div>
-      <div id="gridFeed"></div>
+      <div id="gridFeed" style="display:none"></div>
     </section>
+    <div id="gridChatScreen" class="chatscreen">
+      <div class="chathead">
+        <button class="chatback" onclick="closeGridChatFull()">‹</button>
+        <div class="chatheadinfo"><b id="gcHeadName">Grid Chat</b><div id="gcHeadSub"></div></div>
+      </div>
+      <div id="gcMessages" class="chatmsgs"></div>
+      <div class="chatinput">
+        <input id="gcFullInput" placeholder="Message the grid…" onkeydown="if(event.key==='Enter')sendGridChatFull()" />
+        <button onclick="sendGridChatFull()">➤</button>
+      </div>
+    </div>
 
   <div class="mini" id="mini" onclick="if(event.target.id!=='miniPP')go('music')">
     <div class="mart" id="miniArt">🎶</div>
@@ -1086,7 +1115,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 59</div>
+      <div class="psub">Powered by Skyvos AI · build 63</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
@@ -2191,12 +2220,17 @@ async function loadHousehold(){
   try{
     var gh = await sb.from('grid_households').select('grid_id, role, grids(id,name,kind,invite_code,about)').eq('household_id',FAM.id).eq('status','active');
     var rows=(gh.data||[]);
-    if(rows.length){
-      GRID = rows[0].grids;
+    window.ALLGRIDS = rows.filter(function(r){return r.grids;}).map(function(r){ return {id:r.grids.id, name:r.grids.name, code:r.grids.invite_code, role:r.role, g:r.grids}; });
+    if(window.ALLGRIDS.length){
+      var pick=null;
+      if(window.__activeGridId){ pick=window.ALLGRIDS.filter(function(x){return x.id===window.__activeGridId;})[0]; }
+      if(!pick) pick=window.ALLGRIDS[0];
+      GRID = pick.g; window.__activeGridId = pick.id;
       var cardN=document.getElementById('gridCardName'), cardS=document.getElementById('gridCardSub');
       if(cardN) cardN.textContent=GRID.name;
-      if(cardS) cardS.textContent='Tap to open';
-    }
+      if(cardS) cardS.textContent=(window.ALLGRIDS.length>1?(window.ALLGRIDS.length+' grids · tap to open'):'Tap to open');
+    } else { GRID=null; }
+    try{var mgb=document.getElementById('myGridsBtn'); if(mgb) mgb.style.display=(window.ALLGRIDS.length>0?'block':'none');}catch(e){}
   }catch(e){}
 }
 async function loadGrid(){
@@ -2210,7 +2244,7 @@ async function loadGrid(){
   var gh = await sb.from('grid_households').select('household_id, role, families(id,name,surname,city,household_score)').eq('grid_id',GRID.id).eq('status','active');
   GRIDHOMES = (gh.data||[]).map(function(r){return r.families;}).filter(Boolean);
   GRID_ADMIN = (gh.data||[]).some(function(r){return r.families && FAM && r.families.id===FAM.id && r.role==='admin';});
-  try{var gib=document.getElementById('gridInviteBtn'); if(gib) gib.style.display='block';}catch(e){}
+  try{var gib=document.getElementById('gridInviteBtn'); if(gib) gib.style.display='block'; var gsb=document.getElementById('gridSentBtn'); if(gsb) gsb.style.display='block';}catch(e){}
   await loadGridGames();
   document.getElementById('ghSub').textContent=GRIDHOMES.length+(GRIDHOMES.length===1?' household':' households');
   var ranked = GRIDHOMES.slice().sort(function(a,b){return (b.household_score||0)-(a.household_score||0);});
@@ -2222,12 +2256,27 @@ async function loadGrid(){
     var meCls=(FAM&&h.id===FAM.id)?' me':'';
     return '<div class="hhrow'+meCls+'"><div class="rk">'+medal+'</div><div class="hhav" style="background:linear-gradient(135deg,'+avFor(h.surname||h.name)+')">'+esc((h.surname||h.name)[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>'+((h.household_score||0).toLocaleString('en-IN'))+' family points</div></div><div class="hhsc">'+((h.household_score||0).toLocaleString('en-IN'))+'</div></div>';
   }).join(''); }
-  // grid feed
-  var gp = await sb.from('grid_posts').select('*').eq('grid_id',GRID.id).order('created_at',{ascending:true}).limit(80);
-  var feed=document.getElementById('gridFeed');
-  var posts=(gp.data||[]);
-  if(!posts.length){ feed.innerHTML=emptyMsg('No grid posts yet. Say hello to the whole grid! 👋'); return; }
-  var hmap={}; GRIDHOMES.forEach(function(h){hmap[h.id]=(h.surname||h.name);});
+  // grid feed (preview here; full conversation opens in the WhatsApp-style chat screen)
+  var gp = await sb.from('grid_posts').select('*').eq('grid_id',GRID.id).order('created_at',{ascending:true}).limit(200);
+  window.__gridPosts=(gp.data||[]);
+  _setGridPreview();
+  var _cs=document.getElementById('gridChatScreen'); if(_cs && _cs.classList.contains('on')){ _renderGridChatInto(document.getElementById('gcMessages')); }
+}
+function openGridChatFull(){
+  if(!GRID){toast('No grid yet.');return;}
+  var sc=document.getElementById('gridChatScreen'); if(!sc)return;
+  document.getElementById('gcHeadName').textContent=GRID.name||'Grid Chat';
+  document.getElementById('gcHeadSub').textContent=(GRIDHOMES?GRIDHOMES.length:0)+' households';
+  _renderGridChatInto(document.getElementById('gcMessages'));
+  sc.classList.add('on');
+  var m=document.getElementById('gcMessages'); setTimeout(function(){m.scrollTop=m.scrollHeight;},60);
+}
+function closeGridChatFull(){ var sc=document.getElementById('gridChatScreen'); if(sc)sc.classList.remove('on'); }
+function _renderGridChatInto(el){
+  if(!el)return;
+  var posts=window.__gridPosts||[];
+  if(!posts.length){ el.innerHTML=emptyMsg('No messages yet. Say hello to the whole grid! \ud83d\udc4b'); return; }
+  var hmap={}; (GRIDHOMES||[]).forEach(function(h){hmap[h.id]=(h.surname||h.name);});
   var rows=posts.map(function(p,i){
     var hn=hmap[p.household_id]||'A household';
     var mine=(p.household_id===FAM.id);
@@ -2237,8 +2286,31 @@ async function loadGrid(){
     var when=new Date(p.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
     return gchatRow(hn,p.body||'',when,mine,first,last);
   }).join('');
-  feed.innerHTML='<div class="gchat">'+rows+'</div><div class="gchatpad"></div>';
-  var sc=document.getElementById('screen'); if(sc) setTimeout(function(){sc.scrollTop=sc.scrollHeight;},80);
+  el.innerHTML='<div class="gchat">'+rows+'</div>';
+}
+async function sendGridChatFull(){
+  if(!GRID||!FAM){toast('No grid yet.');return;}
+  var inp=document.getElementById('gcFullInput'); var txt=(inp.value||'').trim(); if(!txt)return;
+  inp.value='';
+  var el=document.getElementById('gcMessages'); var chat=el.querySelector('.gchat');
+  if(!chat){ el.innerHTML='<div class="gchat"></div>'; chat=el.querySelector('.gchat'); }
+  var allRows=chat.querySelectorAll('.gcrow'); var lastRow=allRows[allRows.length-1];
+  var sameBurst=lastRow&&lastRow.classList.contains('me');
+  if(sameBurst){ var pav=lastRow.querySelector('.gcav'); if(pav){pav.className='gcav ghost';pav.removeAttribute('style');pav.textContent='';} lastRow.classList.remove('gend'); }
+  chat.insertAdjacentHTML('beforeend', gchatRow(FAM.surname||FAM.name, txt, 'just now', true, !sameBurst, true));
+  setTimeout(function(){el.scrollTop=el.scrollHeight;},20);
+  var r=await sb.from('grid_posts').insert({grid_id:GRID.id,household_id:FAM.id,author_id:ME.id,body:txt,kind:'post'});
+  if(r.error){toast('Could not send: '+r.error.message);}
+  else { window.__gridPosts=window.__gridPosts||[]; window.__gridPosts.push({household_id:FAM.id,body:txt,created_at:new Date().toISOString()}); _setGridPreview(); }
+}
+function _setGridPreview(){
+  var el=document.getElementById('gridChatPreview'); if(!el)return;
+  var posts=window.__gridPosts||[];
+  if(!posts.length){ el.textContent='Tap to open the conversation'; return; }
+  var last=posts[posts.length-1];
+  var hmap={}; (GRIDHOMES||[]).forEach(function(h){hmap[h.id]=(h.surname||h.name);});
+  var who=(last.household_id===FAM.id)?'You':(hmap[last.household_id]||'Someone');
+  el.textContent=who+': '+(last.body||'');
 }
 function gchatRow(name,body,when,mine,first,last){
   if(first===undefined)first=true; if(last===undefined)last=true;
@@ -2462,6 +2534,55 @@ function _showGridShare(name, code, open){
 }
 function shareGridInvite(){ var m=window.__gridShareMsg||''; if(navigator.share){navigator.share({text:m}).catch(function(){});} else {window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');} }
 function copyGridInvite(){ var m=window.__gridShareMsg||''; if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(m).then(function(){toast('Copied \u2014 paste in WhatsApp \ud83d\udd17');}).catch(function(){toast('Could not copy');});} else {toast('Long-press to copy.');} }
+function openMyGrids(){
+  var all=window.ALLGRIDS||[];
+  if(!all.length){ toast('You are not in any grid yet.'); return; }
+  var admin=all.filter(function(x){return x.role==='admin';});
+  var member=all.filter(function(x){return x.role!=='admin';});
+  function card(x){
+    var active=(x.id===window.__activeGridId);
+    return '<div class="mergecard" style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="switchGrid(\''+x.id+'\')">'+
+      '<div style="flex:1"><b>'+esc(x.name)+'</b><div style="font-size:11px;color:var(--ink2)">code '+esc(x.code||'')+(active?' \u00b7 open now':'')+'</div></div>'+
+      (active?'<span style="color:#12A14B;font-weight:800">\u2713</span>':'<span style="color:var(--ink2);font-size:20px">\u203a</span>')+'</div>';
+  }
+  var html='<div style="text-align:center"><div style="font-size:40px">\ud83d\uddc2\ufe0f</div><h3>My grids</h3></div>'+
+    '<p class="s">You\'re in <b>'+all.length+'</b> grid'+(all.length>1?'s':'')+' \u2014 '+admin.length+' you created, '+member.length+' you joined. Tap one to open it.</p>';
+  if(admin.length){ html+='<div class="sectit" style="margin:6px 0">\ud83c\udfc6 Created by you (admin)</div>'+admin.map(card).join(''); }
+  if(member.length){ html+='<div class="sectit" style="margin:12px 0 6px">\ud83d\udd17 Joined</div>'+member.map(card).join(''); }
+  html+='<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Close</button>';
+  openSheet(html);
+}
+async function switchGrid(id){
+  window.__activeGridId=id; closeSheet();
+  var pick=(window.ALLGRIDS||[]).filter(function(x){return x.id===id;})[0];
+  if(pick){ GRID=pick.g; }
+  await loadGrid();
+  toast('Switched to '+((pick&&pick.g&&pick.g.name)||'grid'));
+}
+async function openSentInvites(){
+  if(!GRID){ toast('Join a grid first.'); return; }
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udccb</div><h3>Sent invites</h3></div><p class="s">Loading\u2026</p>');
+  var r=await sb.rpc('my_sent_grid_invites');
+  if(r.error){ openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udccb</div><h3>Sent invites</h3></div><p class="s">Could not load \u2014 run the latest grid-invite SQL.</p><button class="btn btn-ghost" onclick="closeSheet()">Close</button>'); return; }
+  var list=r.data||[]; if(typeof list==='string'){ try{list=JSON.parse(list);}catch(e){list=[];} }
+  if(!list.length){ openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udccb</div><h3>Sent invites</h3></div><p class="s">You haven\'t invited any households yet. Use \u201c\u2795 Invite a household by phone\u201d to bring a relative in.</p><button class="btn btn-ghost" onclick="closeSheet()">Close</button>'); return; }
+  window.__sent=list;
+  var rows=list.map(function(it,idx){
+    var st=it.status;
+    var badge = st==='joined' ? '<span style="color:#12A14B;font-weight:700">\u2705 In the grid</span>'
+      : st==='pending_admin' ? '<span style="color:#B4791F;font-weight:700">\ud83d\udd52 Waiting for admin approval</span>'
+      : '<span style="color:#9A6CC9;font-weight:700">\u23f3 Waiting for them to set a PIN</span>';
+    var resend = (st==='pending_household') ? '<div><button class="btn btn-ghost" style="width:auto;padding:6px 12px;margin:6px 0 0" onclick="_resendInvite('+idx+')">Resend link \ud83d\udcac</button></div>' : '';
+    return '<div class="mergecard"><b>'+esc(it.display||it.name||'A household')+'</b>'+(it.phone?' \u00b7 <span style="color:var(--ink2)">'+esc(it.phone)+'</span>':'')+'<div style="margin-top:4px;font-size:12.5px">'+badge+'</div>'+resend+'</div>';
+  }).join('');
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udccb</div><h3>Sent invites</h3></div><p class="s">Households you\'ve invited to '+esc(GRID.name)+':</p>'+rows+'<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Close</button>');
+}
+function _resendInvite(idx){
+  var it=(window.__sent||[])[idx]; if(!it)return;
+  var url=location.origin;
+  window.__inviteMsg='Hi '+(it.display||it.name)+'! \ud83d\udc9b I\'ve added you to our family grid "'+(it.grid||GRID.name)+'" on Jeeto.\n\nOpen \ud83d\udc49 '+url+'/?claim='+(it.phone||'')+'\nJust set a PIN to set up your family.';
+  shareInvite();
+}
 function openGridHouseholdInvite(){
   if(!GRID){ toast('Join a grid first.'); return; }
   openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udc6a</div><h3>Add a household to '+esc(GRID.name)+'</h3></div>'+
@@ -3576,8 +3697,24 @@ window.addEventListener('load', boot);
   </div>
 <script>
 if('serviceWorker' in navigator){
+  var _reloading=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(_reloading) return; _reloading=true; window.location.reload();
+  });
+  var _lastTag=null;
+  async function _checkFresh(reg){
+    try{ if(reg) reg.update(); }catch(e){}
+    try{
+      var r=await fetch('index.html',{method:'HEAD',cache:'no-store'});
+      var tag=r.headers.get('etag')||r.headers.get('last-modified');
+      if(tag){ if(_lastTag && tag!==_lastTag){ window.location.reload(); } _lastTag=tag; }
+    }catch(e){}
+  }
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('SW failed',e); });
+    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(reg){
+      _checkFresh(reg);
+      document.addEventListener('visibilitychange',function(){ if(!document.hidden) _checkFresh(reg); });
+    }).catch(function(e){ console.log('SW failed',e); });
   });
 }
 </script>
