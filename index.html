@@ -622,6 +622,9 @@ body{
 .chatlauncher .clbody{flex:1;min-width:0}
 .chatlauncher .clprev{font-size:12.5px;color:var(--ink2,#888);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chatlauncher .clarrow{font-size:24px;color:var(--ink2,#bbb)}
+.ptile.seld{outline:3px solid #E7368D;outline-offset:-3px}
+.vcheck{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.85);border:2px solid #E7368D;color:#E7368D;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:3}
+.vcheck.on{background:#E7368D;color:#fff}
 .gcrow{display:flex;gap:7px;align-items:flex-end;max-width:86%;margin-top:2px}
 .gcrow.gstart{margin-top:14px}
 .gcrow.me{align-self:flex-end;flex-direction:row}
@@ -989,7 +992,17 @@ body{
       <input id="vaultSearch" placeholder="Search memories…" oninput="applyVaultFilter()" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-family:inherit;margin-bottom:12px">
       <input type="file" id="photoInput" accept="image/*,video/*,application/pdf" multiple style="display:none" onchange="uploadVaultFile(event)">
       <div id="albumChips" class="achips"></div>
+      <div id="vselBar" style="display:none;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <button class="btn btn-ghost" id="vselToggle" style="width:auto;padding:7px 14px;margin:0" onclick="toggleSelectMode()">Select</button>
+        <span id="vselCount" style="font-size:13px;color:var(--ink2);font-weight:700"></span>
+      </div>
       <div class="pgrid" id="pgrid"></div>
+      <div id="vselActions" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:120;background:#fff;border-top:1px solid var(--line);padding:12px;padding-bottom:calc(env(safe-area-inset-bottom) + 12px);box-shadow:0 -4px 16px rgba(0,0,0,.08)">
+        <div style="display:flex;gap:8px;max-width:520px;margin:0 auto">
+          <button class="btn btn-ghost" style="flex:1;margin:0" onclick="toggleSelectMode()">Cancel</button>
+          <button class="btn btn-primary" style="flex:2;margin:0" onclick="saveShareSelected()">📤 Save / Share</button>
+        </div>
+      </div>
     </section>
 
     <!-- ============ TAMBOLA ============ -->
@@ -1115,7 +1128,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 65</div>
+      <div class="psub">Powered by Skyvos AI · build 67</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
@@ -1467,6 +1480,7 @@ async function deleteSong(id){
 var VAULT_SCOPE='mine', VAULT_ALL=[], VAULT_MAP={}, VAULT_ALBUM='', _vaultShown=[];
 document.addEventListener('contextmenu',function(e){ try{ if(e.target&&e.target.closest&&e.target.closest('#pgrid, #galv')) e.preventDefault(); }catch(_){} });
 function vaultUrl(p){ try{ return sb.storage.from('vault').getPublicUrl(p).data.publicUrl; }catch(e){ return ''; } }
+function vaultThumb(p,w){ try{ return sb.storage.from('vault').getPublicUrl(p,{transform:{width:(w||400),quality:55,resize:'cover'}}).data.publicUrl; }catch(e){ return vaultUrl(p); } }
 var PHOTO_FILTERS={none:'',vivid:'saturate(1.5) contrast(1.08)',warm:'sepia(.28) saturate(1.35)',cool:'saturate(1.2) hue-rotate(12deg) brightness(1.04)',mono:'grayscale(1) contrast(1.1)',vintage:'sepia(.5) contrast(.92) saturate(1.2) brightness(1.05)',fade:'contrast(.9) brightness(1.12) saturate(.82)',punch:'saturate(1.8) contrast(1.15) brightness(1.03)'};
 function pfCss(n){ return PHOTO_FILTERS[n||'none']||''; }
 
@@ -1476,6 +1490,7 @@ async function loadVault(scope){
   if(!FAM){ document.getElementById('pgrid').innerHTML=emptyMsg('Join a household first.'); return; }
   document.getElementById('pgrid').innerHTML=emptyMsg('Loading memories…');
   var q;
+  try{ var vb=document.getElementById('vselBar'); if(vb) vb.style.display=(VAULT_SCOPE==='mine')?'flex':'none'; if(VAULT_SCOPE!=='mine'){ VSEL.on=false; _vselSync(); } }catch(e){}
   if(VAULT_SCOPE==='grid'){
     q = sb.from('vault_items').select('*, families(surname,name)').eq('visibility','grid').is('deleted_at',null).order('created_at',{ascending:false}).limit(80);
   } else if(VAULT_SCOPE==='trash'){
@@ -1512,7 +1527,7 @@ function renderVault(items){
     if(!items.length){ grid.innerHTML=emptyMsg('Recently deleted is empty. Deleted photos rest here for 30 days. 🗑'); return; }
     grid.innerHTML=items.map(function(it){
       var url=vaultUrl(it.storage_path);
-      var media=(it.type==='document')?'<div class="doctile"><div class="de">📄</div></div>':(it.type==='video')?'<video src="'+url+'#t=0.1" muted playsinline></video>':'<img src="'+url+'" loading="lazy" style="filter:'+pfCss(it.filter)+';opacity:.7">';
+      var media=(it.type==='document')?'<div class="doctile"><div class="de">📄</div></div>':(it.type==='video')?'<video src="'+url+'#t=0.1" muted playsinline></video>':'<img src="'+vaultThumb(it.storage_path)+'" onerror="this.onerror=null;this.src=\''+url+'\'" loading="lazy" decoding="async" style="filter:'+pfCss(it.filter)+';opacity:.7">';
       return '<div class="ptile" onclick="openTrashItem(\''+it.id+'\')">'+media+'<span class="vbadge">🗑</span></div>';
     }).join('');
     return;
@@ -1525,10 +1540,12 @@ function renderVault(items){
     var media;
     if(it.type==='document'){ media='<div class="doctile"><div class="de">📄</div><div class="dn">PDF</div></div>'; }
     else if(it.type==='video'){ media='<video src="'+url+'#t=0.1" muted playsinline preload="metadata" style="filter:'+pfCss(it.filter)+'"></video>'; }
-    else { media='<img src="'+url+'" loading="lazy" style="filter:'+pfCss(it.filter)+'">'; }
+    else { media='<img src="'+vaultThumb(it.storage_path)+'" onerror="this.onerror=null;this.src=\''+url+'\'" loading="lazy" decoding="async" style="filter:'+pfCss(it.filter)+'">'; }
     var badge = (it.visibility==='grid') ? '<span class="vbadge">🔗</span>' : '';
     var vid = (it.type==='video') ? '<span class="vplay">▶</span>' : '';
-    return '<div class="ptile" onclick="openGallery(\''+it.id+'\')">'+media+badge+vid+'</div>';
+    var sel = VSEL.on && VSEL.ids[it.id];
+    var check = VSEL.on ? '<span class="vcheck'+(sel?' on':'')+'">'+(sel?'\u2713':'')+'</span>' : '';
+    return '<div class="ptile'+(sel?' seld':'')+'" data-id="'+it.id+'" onclick="vtileTap(\''+it.id+'\')">'+media+badge+vid+check+'</div>';
   }).join('');
   grid.innerHTML=add+tiles;
 }
@@ -1562,6 +1579,42 @@ async function uploadVaultFile(e){
 
 /* ===== Full-screen gallery: pinch-zoom + swipe + filters ===== */
 var GV={list:[],idx:0,scale:1,tx:0,ty:0,sd:0,ss:1,sx:0,sy:0,px:0,py:0,lastTap:0,filtersOn:false};
+var VSEL={on:false, ids:{}};
+function toggleSelectMode(){
+  VSEL.on=!VSEL.on; VSEL.ids={}; _vselSync(); renderVault(_vaultShown);
+}
+function _vselSync(){
+  var t=document.getElementById('vselToggle'); if(t) t.textContent=VSEL.on?'Done':'Select';
+  var n=Object.keys(VSEL.ids).length;
+  var c=document.getElementById('vselCount'); if(c) c.textContent=VSEL.on?(n+' selected'):'';
+  var a=document.getElementById('vselActions'); if(a) a.style.display=(VSEL.on&&n>0)?'block':'none';
+}
+function vtileTap(id){
+  if(!VSEL.on){ openGallery(id); return; }
+  if(VSEL.ids[id]) delete VSEL.ids[id]; else VSEL.ids[id]=1;
+  _vselSync(); renderVault(_vaultShown);
+}
+async function saveShareSelected(){
+  var ids=Object.keys(VSEL.ids); if(!ids.length){ toast('Pick some photos first.'); return; }
+  var picks=_vaultShown.filter(function(it){return VSEL.ids[it.id];});
+  toast('Preparing '+picks.length+'\u2026 \u23f3');
+  var files=[];
+  for(var i=0;i<picks.length;i++){
+    var it=picks[i];
+    try{
+      var resp=await fetch(vaultUrl(it.storage_path)); var blob=await resp.blob();
+      var ext=((it.storage_path||'').split('.').pop()||'jpg').toLowerCase();
+      files.push(new File([blob],'jeeto_'+Date.now()+'_'+i+'.'+ext,{type:blob.type||'application/octet-stream'}));
+    }catch(e){}
+  }
+  if(!files.length){ toast('Could not prepare those files.'); return; }
+  if(navigator.canShare && navigator.canShare({files:files})){
+    try{ await navigator.share({files:files, title:'Jeeto'}); toggleSelectMode(); return; }catch(e){ if(e&&e.name==='AbortError'){return;} }
+  }
+  // fallback: download each
+  files.forEach(function(f,idx){ setTimeout(function(){ var a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(a.href);},2000); }, idx*400); });
+  toast('Saving '+files.length+'\u2026 \ud83d\udc9b'); toggleSelectMode();
+}
 function openGallery(id){
   GV.list=_vaultShown.slice();
   GV.idx=GV.list.findIndex(function(it){return it.id===id;}); if(GV.idx<0)GV.idx=0;
