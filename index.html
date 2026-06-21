@@ -408,8 +408,8 @@ body{
 .authcard{background:#fff;border-radius:26px;padding:30px 24px;width:100%;max-width:340px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .authlogo{width:64px;height:64px;border-radius:20px;margin:0 auto 14px;display:grid;place-items:center;font-family:'Baloo 2';font-weight:800;font-size:34px;color:#fff;background:linear-gradient(135deg,#FF8A1E,#E03A7A);box-shadow:0 10px 24px rgba(224,58,122,.4)}
 .authcard h2{font-family:'Baloo 2';font-size:30px;margin:0;letter-spacing:.5px}
-.authcard .psub{color:var(--ink2);font-size:12.5px;margin:2px 0 18px}
-.authcard input{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:16px;font-family:inherit;margin-bottom:11px;text-align:center}
+.authcard .psub{color:var(--ink2);font-size:12.5px;margin:2px 0 24px}
+.authcard input{width:100%;border:1px solid var(--line);border-radius:14px;padding:15px 14px;font-size:16px;font-family:inherit;margin-bottom:13px;text-align:center}
 .authcard input:focus{outline:none;border-color:var(--saffron)}
 .authhint{font-size:11.5px;color:var(--ink2);margin-top:14px}
 .authhint a{color:#E07A1E;font-weight:700;cursor:pointer}
@@ -484,6 +484,9 @@ body{
 .gtclaimrow{background:#FFF6E5;border:1px solid #F2D58A;border-radius:10px;padding:7px 11px;margin-bottom:6px;font-size:13px}
 
 .mqcard{background:linear-gradient(135deg,#FFF6E9,#FFEFD6);border:1px solid #F3E2C4;border-radius:18px;padding:14px 16px;margin:8px 0 6px}
+.submitcta{width:100%;margin:10px 0 6px}
+.submithow{font-size:11.5px;color:var(--ink2);line-height:1.5;margin:0 4px 12px;text-align:center}
+.submithow b{color:var(--ink)}
 .mqgreet{font-weight:800;font-size:14px;color:#8a5a1a;margin-bottom:3px}
 .mqquote{font-size:14.5px;color:#5b4a32;line-height:1.45}
 
@@ -518,6 +521,8 @@ body{
 #galv{display:none;position:fixed;inset:0;z-index:9999;background:#0b0b10;flex-direction:column}
 .gvbar{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;color:#fff;font-size:14px;font-weight:700}
 .gvx{font-size:22px;cursor:pointer;width:24px}
+#gvShareInfo{display:none;text-align:center;color:#fff;font-size:12.5px;background:rgba(255,255,255,.14);margin:6px 16px 0;padding:7px 12px;border-radius:20px}
+#gvShareInfo b{color:#FFD9A0}
 #gvStage{flex:1;display:flex;justify-content:center;align-items:center;overflow:hidden;touch-action:none;padding:0 6px}
 #gvStage img{will-change:transform}
 #gvActions{display:flex;justify-content:center;align-items:center;gap:8px;padding:12px 10px calc(env(safe-area-inset-bottom) + 14px)}
@@ -582,7 +587,7 @@ body{
 .trmatch{background:var(--green);color:#fff;border-radius:14px;padding:3px 10px;font-size:12px;font-weight:800;white-space:nowrap}
 .trwhy{font-size:13px;color:var(--ink2);margin:6px 0 10px;line-height:1.45}
 
-.legalfoot{text-align:center;font-size:11.5px;color:var(--ink2);margin-top:8px}
+.legalfoot{text-align:center;font-size:11px;color:var(--ink2);margin-top:22px;padding-top:16px;border-top:1px solid var(--line,#eee)}
 .legalfoot a{color:var(--ink2);text-decoration:underline;cursor:pointer}
 #legalOverlay,#founderOverlay,#tourOverlay{display:none;position:fixed;inset:0;z-index:9999;background:var(--paper);flex-direction:column}
 .tourlede{font-size:15px;font-weight:600;color:var(--ink);margin:0 0 16px;line-height:1.5}
@@ -718,9 +723,11 @@ body{
         <div class="face">✦</div>
         <div>
           <div class="who">Skyvos AI · your family host</div>
-          <div class="msg" id="skyHome">Tap <b>📸 Submit steps</b> to log your walk and climb the family board. Every step earns coins 🪙</div>
+          <div class="msg" id="skyHome">Log today's walk to climb the family board. Every step earns coins 🪙</div>
         </div>
       </div>
+      <button class="btn btn-primary submitcta" onclick="openSubmit()">📸 Submit today's steps</button>
+      <div class="submithow"><b>How it works:</b> take a short walk → open your phone's step counter → tap the button above & snap a photo of it. It logs your steps, earns coins 🪙, and when <b>2+ of you</b> walk, your family streak 🔥 stays alive.</div>
 
       <div class="qrow">
         <div class="qcard q-chat" onclick="go('chat')">
@@ -1164,8 +1171,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 77</div>
-      <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
+      <div class="psub">Powered by Skyvos AI · build 80</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <p class="welcomelede">A little app that keeps your family close 💛</p>
@@ -1207,6 +1213,7 @@ body{
         <button class="btn btn-primary" id="hBtn" onclick="createHousehold()">Create my family</button>
         <div class="authhint"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
+      <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> &nbsp;·&nbsp; <a onclick="openLegal('terms')">Terms of Service</a></div>
     </div>
   </div>
 
@@ -1577,7 +1584,7 @@ function renderVault(items){
     if(it.type==='document'){ media='<div class="doctile"><div class="de">📄</div><div class="dn">PDF</div></div>'; }
     else if(it.type==='video'){ media='<video src="'+url+'#t=0.1" muted playsinline preload="metadata" style="filter:'+pfCss(it.filter)+'"></video>'; }
     else { media='<img src="'+vaultThumb(it.storage_path)+'" onerror="this.onerror=null;this.src=\''+url+'\'" loading="lazy" decoding="async" style="filter:'+pfCss(it.filter)+'">'; }
-    var badge = (it.visibility==='grid') ? '<span class="vbadge">🔗</span>' : '';
+    var badge = (it.visibility==='grid') ? '<span class="vbadge" title="Shared with '+esc(_gridShareLabel())+'">🔗</span>' : '';
     var vid = (it.type==='video') ? '<span class="vplay">▶</span>' : '';
     var sel = VSEL.on && VSEL.ids[it.id];
     var check = VSEL.on ? '<span class="vcheck'+(sel?' on':'')+'">'+(sel?'\u2713':'')+'</span>' : '';
@@ -1673,6 +1680,12 @@ function gvRender(){
   var wm = mine ? '' : '<div class="wm" style="font-size:26px">'+esc((FAM.surname||FAM.name||'Viewer'))+'</div>';
   stage.innerHTML='<div class="protwrap" style="display:flex;justify-content:center;align-items:center;width:100%;height:100%">'+media+wm+'</div>';
   document.getElementById('gvTitle').textContent=(GV.idx+1)+' / '+GV.list.length;
+  var _si=document.getElementById('gvShareInfo');
+  if(_si){
+    if(it.visibility==='grid'){ _si.style.display='block'; _si.innerHTML='🔗 Shared with <b>'+esc(mine?_gridShareLabel():((it.families&&(it.families.surname||it.families.name))||'family')+"'s grid")+'</b>'; }
+    else if(mine){ _si.style.display='block'; _si.innerHTML='🔒 Private to your household'; }
+    else { _si.style.display='none'; }
+  }
   var acts='<button class="gvbtn" onclick="gvPrev()">‹</button>';
   if(mine){
     acts+='<button class="gvbtn" onclick="gvAlbum()">📁</button>';
@@ -1708,11 +1721,22 @@ async function gvSetFilter(name){
 }
 function gvPrev(){ if(GV.idx>0){GV.idx--;gvRender();} }
 function gvNext(){ if(GV.idx<GV.list.length-1){GV.idx++;gvRender();} }
+function _myGridNames(){
+  var g=(window.ALLGRIDS||[]).map(function(x){return x.name;}).filter(Boolean);
+  return g;
+}
+function _gridShareLabel(){
+  var g=_myGridNames();
+  if(!g.length) return 'your grid';
+  if(g.length===1) return g[0];
+  if(g.length===2) return g[0]+' & '+g[1];
+  return g.slice(0,-1).join(', ')+' & '+g[g.length-1];
+}
 async function gvShare(){
   var it=GV.list[GV.idx]; var on=(it.visibility!=='grid');
   var r=await sb.from('vault_items').update({visibility:on?'grid':'household'}).eq('id',it.id);
   if(r.error){toast(r.error.message);return;}
-  it.visibility=on?'grid':'household'; confetti(); toast(on?'Shared to your grid 🔗':'Now household-only 🔒'); gvRender();
+  it.visibility=on?'grid':'household'; confetti(); toast(on?('Shared with '+_gridShareLabel()+' 🔗'):'Now household-only 🔒'); gvRender();
 }
 async function gvSaveShare(){
   var it=GV.list[GV.idx]; if(!it){return;}
@@ -3841,6 +3865,7 @@ window.addEventListener('load', boot);
 
   <div id="galv">
     <div class="gvbar"><span class="gvx" onclick="closeGallery()">✕</span><span id="gvTitle"></span><span style="width:24px"></span></div>
+    <div id="gvShareInfo"></div>
     <div id="gvStage"></div>
     <div id="gvFilters"></div>
     <div id="gvActions"></div>
