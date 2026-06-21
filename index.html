@@ -108,7 +108,8 @@ body{
 .flame{font-size:15px;animation:flick 1.6s ease-in-out infinite}
 @keyframes flick{0%,100%{transform:scale(1) rotate(-3deg);filter:saturate(1)}50%{transform:scale(1.18) rotate(4deg);filter:saturate(1.4)}}
 
-.sectit{font-family:'Baloo 2';font-size:17px;margin:22px 4px 12px;display:flex;align-items:center;justify-content:space-between}
+.sectit{font-family:'Baloo 2';font-size:17px;margin:22px 4px 12px;display:flex;align-items:center;justify-content:space-between;color:var(--rani-d);position:relative;padding-left:13px}
+.sectit::before{content:'';position:absolute;left:0;top:53%;transform:translateY(-50%);width:5px;height:19px;border-radius:3px;background:linear-gradient(180deg,#FF7A00,#E03A7A 55%,#7C3AED)}
 .sectit a{font-family:'Plus Jakarta Sans';font-size:12px;font-weight:700;color:var(--rani);text-decoration:none}
 
 /* champions row */
@@ -214,9 +215,9 @@ body{
 .nav button.on .ni{transform:translateY(-2px) scale(1.12)}
 
 /* modal / sheet */
-.sheet-bg{position:absolute;inset:0;background:rgba(42,30,46,.5);z-index:40;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+.sheet-bg{position:fixed;inset:0;background:rgba(42,30,46,.5);z-index:240;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
 .sheet-bg.show{display:flex;animation:fade .25s}
-.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:26px 26px 0 0;padding:8px 20px calc(26px + env(safe-area-inset-bottom));max-height:88%;overflow-y:auto;animation:up .3s cubic-bezier(.2,.9,.3,1)}
+.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:26px 26px 0 0;padding:8px 20px calc(26px + env(safe-area-inset-bottom));max-height:88%;max-height:86dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:up .3s cubic-bezier(.2,.9,.3,1)}
 .sheet::-webkit-scrollbar{display:none}
 @keyframes up{from{transform:translateY(100%)}to{transform:none}}
 .grip{width:42px;height:5px;background:var(--line);border-radius:5px;margin:6px auto 14px}
@@ -442,6 +443,11 @@ body{
 .gridpost button{border:none;background:var(--navy);color:#fff;border-radius:12px;padding:11px 18px;font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;white-space:nowrap}
 .gridpost button:active{transform:scale(.96)}
 .gpost{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.gamenull{background:linear-gradient(150deg,#7C3AED 0%,#E03A7A 58%,#FF7A00 100%);color:#fff;border-radius:18px;padding:24px 18px;text-align:center;margin-bottom:10px;box-shadow:0 10px 26px rgba(124,58,237,.28)}
+.gamenull .gnflag{font-size:42px;line-height:1;margin-bottom:6px}
+.gamenull b{font-size:18px;font-family:'Baloo 2'}
+.gamenull .gnsub{font-size:12.5px;color:rgba(255,255,255,.92);line-height:1.5;margin:7px 6px 16px}
+.gamenull .gnbtn{background:#fff;color:var(--rani-d);font-weight:800;font-family:inherit;font-size:14px;border:none;padding:13px 26px;border-radius:30px;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.2)}
 .gpost .gph{font-size:12px;color:var(--mut);margin-bottom:4px}
 .gpost .gph b{color:var(--navy)}
 
@@ -486,6 +492,9 @@ body{
 .mqcard{background:linear-gradient(135deg,#FFF6E9,#FFEFD6);border:1px solid #F3E2C4;border-radius:18px;padding:14px 16px;margin:8px 0 6px}
 .submitcta{width:100%;margin:10px 0 6px}
 .submithow{font-size:11.5px;color:var(--ink2);line-height:1.5;margin:0 4px 12px;text-align:center}
+.stepslot{font-size:12.5px;color:#8a5a3c;text-align:center;background:#FFF4E8;border:1px solid #F3D9BE;border-radius:12px;padding:9px 12px;margin:2px 2px 12px}
+.stepslot b{color:var(--rani-d)}
+.stepslot a{color:var(--saffron-d);font-weight:700;cursor:pointer}
 .submithow b{color:var(--ink)}
 .mqgreet{font-weight:800;font-size:14px;color:#8a5a1a;margin-bottom:3px}
 .mqquote{font-size:14.5px;color:#5b4a32;line-height:1.45}
@@ -727,6 +736,7 @@ body{
         </div>
       </div>
       <button class="btn btn-primary submitcta" onclick="openSubmit()">📸 Submit today's steps</button>
+      <div id="stepSlot" class="stepslot" style="display:none"></div>
       <div class="submithow"><b>How it works:</b> take a short walk → open your phone's step counter → tap the button above & snap a photo of it. It logs your steps, earns coins 🪙, and when <b>2+ of you</b> walk, your family streak 🔥 stays alive.</div>
 
       <div class="qrow">
@@ -1113,7 +1123,6 @@ body{
   </div>
 
   <!-- SUBMIT STEPS FAB -->
-  <button class="fab" id="fab" onclick="openSubmit()">📸 Submit steps</button>
 
   <!-- MINI MUSIC PLAYER -->
 
@@ -1171,7 +1180,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 80</div>
+      <div class="psub">Powered by Skyvos AI · build 83</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <p class="welcomelede">A little app that keeps your family close 💛</p>
@@ -1231,7 +1240,6 @@ function go(v){
   var fi=document.getElementById('faceInside'),fo=document.getElementById('faceOutside');
   if(fi&&fo){ fo.classList.toggle('on', v==='grid'); fi.classList.toggle('on', v!=='grid'); }
   document.getElementById('screen').scrollTop=0;
-  document.getElementById('fab').style.display=(v==='home')?'flex':'none';
   // composer only on chat
   document.getElementById('composer').classList.toggle('show',v==='chat');
   // mini player on every view except chat (composer needs that space)
@@ -1584,7 +1592,7 @@ function renderVault(items){
     if(it.type==='document'){ media='<div class="doctile"><div class="de">📄</div><div class="dn">PDF</div></div>'; }
     else if(it.type==='video'){ media='<video src="'+url+'#t=0.1" muted playsinline preload="metadata" style="filter:'+pfCss(it.filter)+'"></video>'; }
     else { media='<img src="'+vaultThumb(it.storage_path)+'" onerror="this.onerror=null;this.src=\''+url+'\'" loading="lazy" decoding="async" style="filter:'+pfCss(it.filter)+'">'; }
-    var badge = (it.visibility==='grid') ? '<span class="vbadge" title="Shared with '+esc(_gridShareLabel())+'">🔗</span>' : '';
+    var badge = (it.visibility==='grid') ? '<span class="vbadge" title="Shared with '+esc(it.share_grid_id?((((window.ALLGRIDS||[]).filter(function(x){return x.id===it.share_grid_id;})[0])||{}).name||'a grid'):_gridShareLabel())+'">🔗</span>' : '';
     var vid = (it.type==='video') ? '<span class="vplay">▶</span>' : '';
     var sel = VSEL.on && VSEL.ids[it.id];
     var check = VSEL.on ? '<span class="vcheck'+(sel?' on':'')+'">'+(sel?'\u2713':'')+'</span>' : '';
@@ -1682,7 +1690,13 @@ function gvRender(){
   document.getElementById('gvTitle').textContent=(GV.idx+1)+' / '+GV.list.length;
   var _si=document.getElementById('gvShareInfo');
   if(_si){
-    if(it.visibility==='grid'){ _si.style.display='block'; _si.innerHTML='🔗 Shared with <b>'+esc(mine?_gridShareLabel():((it.families&&(it.families.surname||it.families.name))||'family')+"'s grid")+'</b>'; }
+    if(it.visibility==='grid'){
+      _si.style.display='block';
+      var _lbl;
+      if(it.share_grid_id){ _lbl=(((window.ALLGRIDS||[]).filter(function(x){return x.id===it.share_grid_id;})[0]||{}).name)||(mine?'a grid':'their grid'); }
+      else { _lbl=mine?_gridShareLabel():'their grids'; }
+      _si.innerHTML='🔗 Shared with <b>'+esc(_lbl)+'</b>';
+    }
     else if(mine){ _si.style.display='block'; _si.innerHTML='🔒 Private to your household'; }
     else { _si.style.display='none'; }
   }
@@ -1721,6 +1735,26 @@ async function gvSetFilter(name){
 }
 function gvPrev(){ if(GV.idx>0){GV.idx--;gvRender();} }
 function gvNext(){ if(GV.idx<GV.list.length-1){GV.idx++;gvRender();} }
+function renderStepSlot(){
+  var el=document.getElementById('stepSlot'); if(!el)return;
+  var cap=!!(ME&&ME.role==='captain');
+  var t=FAM&&FAM.submit_time;
+  if(t){ el.style.display='block'; el.innerHTML='\ud83d\udd58 Family step time: <b>'+esc(t)+'</b>'+(cap?' \u00b7 <a onclick="openStepTime()">change</a>':''); }
+  else if(cap){ el.style.display='block'; el.innerHTML='\ud83d\udd58 <a onclick="openStepTime()">Set a daily step time for the family \u2192</a>'; }
+  else { el.style.display='none'; }
+}
+function openStepTime(){
+  if(!(ME&&ME.role==='captain')){toast('Only the family head can set this \ud83d\udd58');return;}
+  var opts=['Morning \u00b7 around 7 AM \ud83c\udf05','Midday \u00b7 around 12 PM \u2600\ufe0f','Evening \u00b7 around 7 PM \ud83c\udf06','Night \u00b7 around 9 PM \ud83c\udf19','Anytime \u2014 log whenever \ud83d\udd50'];
+  var btns=opts.map(function(o){return '<button class="btn btn-ghost" style="margin-bottom:8px" onclick="setStepTime(\''+o.replace(/'/g,'')+'\')">'+o+'</button>';}).join('');
+  openSheet('<div style="text-align:center"><div style="font-size:38px">\ud83d\udd58</div><h3>Family step time</h3></div><p class="s">Pick a daily time for everyone to log their steps. A shared rhythm keeps your family streak \ud83d\udd25 alive \u2014 everyone walks and logs around the same time.</p>'+btns+'<button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
+}
+async function setStepTime(label){
+  closeSheet();
+  var r=await sb.rpc('set_household_submit_time',{p_time:label});
+  if(r.error){toast(r.error.message.indexOf('head')>=0?'Only the family head can set this':r.error.message);return;}
+  if(FAM)FAM.submit_time=label; toast('Family step time set \ud83d\udd58'); renderStepSlot();
+}
 function _myGridNames(){
   var g=(window.ALLGRIDS||[]).map(function(x){return x.name;}).filter(Boolean);
   return g;
@@ -1733,10 +1767,32 @@ function _gridShareLabel(){
   return g.slice(0,-1).join(', ')+' & '+g[g.length-1];
 }
 async function gvShare(){
-  var it=GV.list[GV.idx]; var on=(it.visibility!=='grid');
-  var r=await sb.from('vault_items').update({visibility:on?'grid':'household'}).eq('id',it.id);
+  var it=GV.list[GV.idx]; if(!it)return;
+  if(it.visibility==='grid'){
+    var r=await sb.from('vault_items').update({visibility:'household',share_grid_id:null}).eq('id',it.id);
+    if(r.error){toast(r.error.message);return;}
+    it.visibility='household'; it.share_grid_id=null; toast('Now household-only \ud83d\udd12'); gvRender(); return;
+  }
+  var grids=window.ALLGRIDS||[];
+  if(grids.length<=1){ await _doGridShare(it, grids.length?grids[0].id:null); }
+  else { _openShareGridPicker(it); }
+}
+function _openShareGridPicker(it){
+  var grids=window.ALLGRIDS||[];
+  var btns=grids.map(function(g){return '<button class="btn btn-ghost" style="margin-bottom:8px" onclick="_doGridShareById(\''+it.id+'\',\''+g.id+'\')">\ud83d\udd17 '+esc(g.name)+'</button>';}).join('');
+  openSheet('<div style="text-align:center"><div style="font-size:38px">\ud83d\udd17</div><h3>Share to which grid?</h3></div><p class="s">Pick one grid \u2014 only that grid will see this photo. Or share with all your grids.</p>'+btns+'<button class="btn btn-ghost" style="margin-bottom:8px" onclick="_doGridShareById(\''+it.id+'\',\'ALL\')">\ud83c\udf10 All my grids</button><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
+}
+async function _doGridShareById(itemId,gid){
+  closeSheet();
+  var it=(GV.list||[]).filter(function(x){return x.id===itemId;})[0]; if(!it)return;
+  await _doGridShare(it, gid==='ALL'?null:gid);
+}
+async function _doGridShare(it,gid){
+  var r=await sb.from('vault_items').update({visibility:'grid',share_grid_id:gid}).eq('id',it.id);
   if(r.error){toast(r.error.message);return;}
-  it.visibility=on?'grid':'household'; confetti(); toast(on?('Shared with '+_gridShareLabel()+' 🔗'):'Now household-only 🔒'); gvRender();
+  it.visibility='grid'; it.share_grid_id=gid; confetti();
+  var nm=gid?(((window.ALLGRIDS||[]).filter(function(x){return x.id===gid;})[0]||{}).name||'your grid'):_gridShareLabel();
+  toast('Shared with '+nm+' \ud83d\udd17'); gvRender();
 }
 async function gvSaveShare(){
   var it=GV.list[GV.idx]; if(!it){return;}
@@ -2057,6 +2113,7 @@ async function refreshAll(){
   document.getElementById('herotag').textContent=(FAM?FAM.name:'Your family')+' 💛';
   document.getElementById('chatFamName').textContent=FAM?FAM.name:'Your family';
   document.getElementById('streak').innerHTML=(ME.streak_days||0)+' <small>days</small>';
+  try{renderStepSlot();}catch(e){}
   if(FAM){try{var _h=await sb.rpc('recalc_happiness',{p_house:FAM.id});if(!_h.error&&typeof _h.data==='number')FAM.happiness=_h.data;}catch(e){}}
   setHappy(FAM?(FAM.happiness||50):50);
   setHappyHint(FAM?(FAM.happiness||50):50);
@@ -2884,8 +2941,8 @@ async function loadGridGames(){
   var ch=(r.data&&r.data[0])?r.data[0]:null; CUR_CHALLENGE=ch;
   if(!ch){
     box.innerHTML = GRID_ADMIN
-      ? '<div class="gpost" style="text-align:center"><div style="font-size:30px">🏁</div><b>No grid game running</b><div style="font-size:12px;color:var(--ink2);margin:6px 0 10px">Start a household step race for the grid.</div><button class="minibtn" onclick="openNewChallenge()">Start a grid challenge</button></div>'
-      : emptyMsg('No grid game running. Ask your grid admin to start one 🎮');
+      ? '<div class="gamenull"><div class="gnflag">🏁</div><b>No grid game running</b><div class="gnsub">Start a step race \u2014 every household competes, and the family that walks the most wins! 🏆</div><button class="gnbtn" onclick="openNewChallenge()">🎮 Start a grid challenge</button></div>'
+      : '<div class="gamenull"><div class="gnflag">🎮</div><b>No grid game running</b><div class="gnsub">Your grid admin hasn\'t started a game yet. Nudge them in the chat \u2014 then may the most active household win! 🏆</div></div>';
     return;
   }
   var days=Math.max(0,Math.ceil((new Date(ch.ends_on)-new Date())/86400000));
