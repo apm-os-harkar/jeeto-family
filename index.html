@@ -681,9 +681,9 @@ body{
     <!-- ============ HOME ============ -->
     <section class="view active" id="v-home">
       <div class="mqcard" id="mqCard"></div>
-      <div id="dailyCard"></div>
+      <div id="dailyCard" style="display:none"></div>
       <div id="streakNudge"></div>
-      <div id="proudCard"></div>
+      <div id="proudCard" style="display:none"></div>
       <div class="hcompact" onclick="openHappyInfo()">
         <div class="hcscore"><div class="hcnum" id="happy">0</div><div class="hclab">Happiness</div></div>
         <div class="hcmid">
@@ -923,6 +923,7 @@ body{
       <div class="sectit">Legal</div>
       <div class="legalfoot" style="text-align:left;margin-bottom:12px"><a onclick="openLegal('privacy')">Privacy Policy</a> &nbsp;·&nbsp; <a onclick="openLegal('terms')">Terms of Service</a></div>
       <button class="btn btn-ghost" onclick="logout()">Log out</button>
+      <div style="text-align:center;margin-top:12px"><a onclick="openDeleteAccount()" style="font-size:12px;color:var(--ink2);cursor:pointer">Delete my account</a></div>
     </section>
 
     <!-- ============ FOUNDER DASHBOARD ============ -->
@@ -1128,7 +1129,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 67</div>
+      <div class="psub">Powered by Skyvos AI · build 70</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
@@ -1941,6 +1942,20 @@ async function doLogin(){
   await boot();
 }
 async function logout(){try{await sb.auth.signOut();}catch(e){}location.reload();}
+function openDeleteAccount(){
+  openSheet('<div style="text-align:center"><div style="font-size:40px">\u26a0\ufe0f</div><h3>Delete your account?</h3></div>'+
+  '<p class="s">This removes your login and your place in your family \u2014 for good. If you\'re the only one in your household, your household and its photos are deleted too. Photos you added to a shared family album stay with your family.</p>'+
+  '<p class="s"><b>This cannot be undone.</b></p>'+
+  '<button class="btn btn-primary" style="background:#C0392B" onclick="_confirmDeleteAccount(this)">Yes, delete my account</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
+}
+async function _confirmDeleteAccount(btn){
+  try{ if(btn){btn.disabled=true;btn.textContent="Deleting\u2026";} }catch(e){}
+  var r=await sb.rpc("delete_my_account");
+  if(r.error){ toast(r.error.message||"Could not delete"); try{btn.disabled=false;btn.textContent="Yes, delete my account";}catch(e){} return; }
+  try{await sb.auth.signOut();}catch(e){}
+  location.reload();
+}
 
 async function boot(){
   if(!ensureSB()){document.getElementById('authgate').classList.add('show');authMsg('Could not load. Check internet and refresh the page.');return;}
@@ -1988,7 +2003,7 @@ async function refreshAll(){
   setHappyHint(FAM?(FAM.happiness||50):50);
   document.getElementById('addMemberBtn').style.display = (ME.role==='captain'&&FAM) ? 'block':'none';
   document.getElementById('skyHome').innerHTML = (FAM?'':'You are not in a family yet. ')+'Tap <b>📸 Submit steps</b> to log today and climb the board 🪙';
-  renderMorningQuote(); loadDailyPrompt(); loadProud(); loadStreakNudge(); loadSchedule(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
+  renderMorningQuote(); loadStreakNudge(); loadSchedule(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
   await loadMembers();
   await loadSteps();
   await loadCoinsLedger();
@@ -2202,6 +2217,7 @@ function openAddMember(){
   var rows=''; for(var i=0;i<3;i++) rows+=_inviteRowHtml(i);
   openSheet('<div style="text-align:center"><div style="font-size:42px">\ud83d\udc6a</div><h3>Invite your family</h3></div>'+
   '<p class="s">Add everyone at once \u2014 name + phone. They just open the app, type their number + a PIN. No code to hunt for.</p>'+
+  '<p class="s" style="font-size:12px;color:var(--ink2);margin-top:-4px">Adding little ones too? As their parent or guardian, you\'re adding them with love. \ud83d\udc9b</p>'+
   '<div id="inviteRows">'+rows+'</div>'+
   '<div class="authhint" style="text-align:left;margin:2px 0 12px"><a onclick="addInviteRow()">\u2795 Add another person</a></div>'+
   '<button class="btn btn-primary" onclick="inviteBulk()">Invite everyone</button>'+
