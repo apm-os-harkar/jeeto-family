@@ -65,6 +65,8 @@ body{
 .screen::-webkit-scrollbar{display:none}
 .view{display:none;animation:fade .35s ease}
 .view.active{display:block}
+#v-grid{padding-top:0;margin-top:0}
+#v-grid .gridhead:first-child{margin-top:0!important}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* HOME hero — Family Happiness aura (the signature) */
@@ -414,12 +416,17 @@ body{
 .authmsg{display:none;background:#FFF0F0;color:#C42466;border-radius:10px;padding:9px;font-size:12.5px;font-weight:600;margin-bottom:12px}
 .empty{padding:18px;text-align:center;color:var(--ink2);font-size:13px;line-height:1.5}
 
-.gridhead{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border-radius:16px;padding:13px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.gridhead{background:linear-gradient(135deg,#FF7A00 0%,#E03A7A 52%,#7C3AED 100%);color:#fff;border-radius:18px;padding:15px 16px;margin-bottom:12px;display:flex;flex-direction:column;gap:12px;box-shadow:0 8px 22px rgba(224,58,122,.28)}
+.gridhead .ghtop{display:flex;align-items:center;justify-content:space-between}
+.ghavatars{display:flex;align-items:center;min-height:2px}
+.ghav{width:34px;height:34px;border-radius:50%;color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;border:2.5px solid rgba(255,255,255,.92);margin-left:-9px;box-shadow:0 2px 7px rgba(0,0,0,.2)}
+.ghav:first-child{margin-left:0}
+.ghav.more{background:rgba(255,255,255,.28);font-size:12px}
 .gridhead .ghname{font-family:'Baloo 2';font-size:18px;line-height:1.1}
 .gridhead .ghsub{font-size:12px;color:#9fb2d4;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;white-space:nowrap}
-.gridhead .ghsubline{font-size:12px;color:#9fb2d4;margin-top:3px}
-.gridhead .ghswitch{font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.16);padding:7px 13px;border-radius:20px;white-space:nowrap}
-.gridintro{font-size:12.5px;color:#8a93a0;line-height:1.5;margin:10px 4px 14px;text-align:center}
+.gridhead .ghsubline{font-size:12px;color:rgba(255,255,255,.88);margin-top:3px;font-weight:600}
+.gridhead .ghswitch{font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.22);padding:7px 13px;border-radius:20px;white-space:nowrap}
+.gridintro{font-size:13px;color:#8a5a3c;line-height:1.55;margin:2px 6px 16px;text-align:center;font-weight:600}
 .managehdr{width:100%;background:#fff;border:1px solid var(--line,#eee);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;font-family:inherit;font-weight:700;font-size:14px;color:var(--ink,#243049);cursor:pointer}
 .managearrow{transition:.2s;color:#9aa3ad;font-size:13px}
 .managehdr.open .managearrow{transform:rotate(180deg)}
@@ -624,8 +631,8 @@ body{
 .chatinput{display:flex;gap:8px;align-items:center;padding:10px 12px;padding-bottom:calc(env(safe-area-inset-bottom) + 10px);background:#fff;border-top:1px solid var(--line,#eee)}
 .chatinput input{flex:1;border:1px solid var(--line,#ddd);border-radius:22px;padding:11px 16px;font-size:15px;outline:none}
 .chatinput button{background:#E7368D;color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:17px;cursor:pointer;flex:none}
-.chatlauncher{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line,#eee);border-radius:14px;padding:14px;cursor:pointer}
-.chatlauncher .clicon{font-size:26px}
+.chatlauncher{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#FFF4E8,#fff);border:1px solid #F3D9BE;border-radius:16px;padding:14px;cursor:pointer;box-shadow:0 4px 14px rgba(224,58,122,.07)}
+.chatlauncher .clicon{font-size:22px;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#FF7A00,#E03A7A);box-shadow:0 4px 10px rgba(224,58,122,.25)}
 .chatlauncher .clbody{flex:1;min-width:0}
 .chatlauncher .clprev{font-size:12.5px;color:var(--ink2,#888);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chatlauncher .clarrow{font-size:24px;color:var(--ink2,#bbb)}
@@ -1052,19 +1059,16 @@ body{
 
 
 
-  </div>
-
-  <!-- SUBMIT STEPS FAB -->
-  <button class="fab" id="fab" onclick="openSubmit()">📸 Submit steps</button>
-
-  <!-- MINI MUSIC PLAYER -->
     <section class="view" id="v-grid">
       <!-- grid identity -->
-      <div class="gridhead" style="margin-top:4px;cursor:pointer" onclick="openMyGrids()">
-        <div><div class="ghname" id="ghName">My Grid</div><div class="ghsubline" id="ghSub">Households connected</div></div>
-        <div class="ghswitch">\u21c4 Switch</div>
+      <div class="gridhead" style="margin-top:6px;cursor:pointer" onclick="openMyGrids()">
+        <div class="ghtop">
+          <div><div class="ghname" id="ghName">My Grid</div><div class="ghsubline" id="ghSub">Households connected</div></div>
+          <div class="ghswitch">⇄ Switch</div>
+        </div>
+        <div class="ghavatars" id="ghAvatars"></div>
       </div>
-      <div class="gridintro">Your khandaan's shared space — chat, walk &amp; play together. 💛</div>
+      <div class="gridintro">Welcome to your khandaan's aangan 🏡 — where the whole family chats, walks &amp; plays together. 💛</div>
 
       <!-- CHAT first (the heart of the grid) -->
       <div id="gridChatLauncher" class="chatlauncher" onclick="openGridChatFull()">
@@ -1098,6 +1102,14 @@ body{
       </div>
       <div id="gridFeed" style="display:none"></div>
     </section>
+
+  </div>
+
+  <!-- SUBMIT STEPS FAB -->
+  <button class="fab" id="fab" onclick="openSubmit()">📸 Submit steps</button>
+
+  <!-- MINI MUSIC PLAYER -->
+
     <div id="gridChatScreen" class="chatscreen">
       <div class="chathead">
         <button class="chatback" onclick="closeGridChatFull()">‹</button>
@@ -1152,7 +1164,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 75</div>
+      <div class="psub">Powered by Skyvos AI · build 77</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
@@ -2368,6 +2380,12 @@ async function loadGrid(){
   try{var gib=document.getElementById('gridInviteBtn'); if(gib) gib.style.display='block'; var gsb=document.getElementById('gridSentBtn'); if(gsb) gsb.style.display='block';}catch(e){}
   await loadGridGames();
   document.getElementById('ghSub').textContent=GRIDHOMES.length+(GRIDHOMES.length===1?' household':' households');
+  try{var _av=document.getElementById('ghAvatars'); if(_av){
+    var _hs=GRIDHOMES.slice(0,7);
+    var _d=_hs.map(function(h){var nm=(h.surname||h.name||'?');return '<div class="ghav" style="background:linear-gradient(135deg,'+avFor(nm)+')" title="'+esc(nm)+'">'+esc(nm[0].toUpperCase())+'</div>';}).join('');
+    if(GRIDHOMES.length>7) _d+='<div class="ghav more">+'+(GRIDHOMES.length-7)+'</div>';
+    _av.innerHTML=_d;
+  }}catch(e){}
   var ranked = GRIDHOMES.slice().sort(function(a,b){return (b.household_score||0)-(a.household_score||0);});
   var lb=document.getElementById('gridLb');
   if(!ranked.length){ lb.innerHTML=emptyMsg('No households yet.'); }
