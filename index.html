@@ -417,6 +417,8 @@ body{
 .gridhead{background:linear-gradient(135deg,#163A66,#0B1E3B);color:#fff;border-radius:16px;padding:13px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
 .gridhead .ghname{font-family:'Baloo 2';font-size:18px;line-height:1.1}
 .gridhead .ghsub{font-size:12px;color:#9fb2d4;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;white-space:nowrap}
+.gridhead .ghsubline{font-size:12px;color:#9fb2d4;margin-top:3px}
+.gridhead .ghswitch{font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.16);padding:7px 13px;border-radius:20px;white-space:nowrap}
 .gridintro{font-size:12.5px;color:#8a93a0;line-height:1.5;margin:10px 4px 14px;text-align:center}
 .managehdr{width:100%;background:#fff;border:1px solid var(--line,#eee);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;font-family:inherit;font-weight:700;font-size:14px;color:var(--ink,#243049);cursor:pointer}
 .managearrow{transition:.2s;color:#9aa3ad;font-size:13px}
@@ -1058,9 +1060,9 @@ body{
   <!-- MINI MUSIC PLAYER -->
     <section class="view" id="v-grid">
       <!-- grid identity -->
-      <div class="gridhead" style="margin-top:4px">
-        <div class="ghname" id="ghName">My Grid</div>
-        <div class="ghsub" id="ghSub">Households connected</div>
+      <div class="gridhead" style="margin-top:4px;cursor:pointer" onclick="openMyGrids()">
+        <div><div class="ghname" id="ghName">My Grid</div><div class="ghsubline" id="ghSub">Households connected</div></div>
+        <div class="ghswitch">\u21c4 Switch</div>
       </div>
       <div class="gridintro">Your khandaan's shared space — chat, walk &amp; play together. 💛</div>
 
@@ -1150,7 +1152,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 74</div>
+      <div class="psub">Powered by Skyvos AI · build 75</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
