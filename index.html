@@ -987,7 +987,7 @@ body{
         <div id="vtTrash" class="vtab" onclick="loadVault('trash')">🗑 Trash</div>
       </div>
       <input id="vaultSearch" placeholder="Search memories…" oninput="applyVaultFilter()" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-family:inherit;margin-bottom:12px">
-      <input type="file" id="photoInput" accept="image/*,video/*,application/pdf" style="display:none" onchange="uploadVaultFile(event)">
+      <input type="file" id="photoInput" accept="image/*,video/*,application/pdf" multiple style="display:none" onchange="uploadVaultFile(event)">
       <div id="albumChips" class="achips"></div>
       <div class="pgrid" id="pgrid"></div>
     </section>
@@ -1115,7 +1115,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 63</div>
+      <div class="psub">Powered by Skyvos AI · build 65</div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> · <a onclick="openLegal('terms')">Terms of Service</a></div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
@@ -1533,24 +1533,31 @@ function renderVault(items){
   grid.innerHTML=add+tiles;
 }
 async function uploadVaultFile(e){
-  var f=e.target.files[0]; if(!f){return;} if(!FAM){toast('Join a household first');return;}
-  if(f.size > 50*1024*1024){ toast('That file is large (>50MB) — try a smaller one.'); e.target.value=''; return; }
-  var ft=(f.type||'');
-  var isVid=ft.indexOf('video')===0;
-  var isPdf=(ft==='application/pdf')||/\.pdf$/i.test(f.name||'');
-  var vtype=isVid?'video':(isPdf?'document':'photo');
-  var ext=((f.name||'').split('.').pop()||(isVid?'mp4':isPdf?'pdf':'jpg')).toLowerCase();
-  var path=FAM.id+'/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.'+ext;
-  toast('Uploading… ⏳');
-  var up=await sb.storage.from('vault').upload(path,f,{contentType:f.type||undefined,upsert:false});
-  if(up.error){ toast('Upload failed: '+up.error.message); e.target.value=''; return; }
-  var rec={household_id:FAM.id,uploaded_by:ME.id,type:vtype,storage_path:path,visibility:'household',filter:'none'};
-  if(VAULT_ALBUM) rec.album=VAULT_ALBUM;
-  var ins=await sb.from('vault_items').insert(rec);
+  var files=Array.prototype.slice.call(e.target.files||[]);
+  if(!files.length){return;}
+  if(!FAM){toast('Join a household first');return;}
+  var ok=0, fail=0, total=files.length;
+  for(var i=0;i<files.length;i++){
+    var f=files[i];
+    if(f.size > 50*1024*1024){ fail++; continue; }
+    var ft=(f.type||'');
+    var isVid=ft.indexOf('video')===0;
+    var isPdf=(ft==='application/pdf')||/\.pdf$/i.test(f.name||'');
+    var vtype=isVid?'video':(isPdf?'document':'photo');
+    var ext=((f.name||'').split('.').pop()||(isVid?'mp4':isPdf?'pdf':'jpg')).toLowerCase();
+    var path=FAM.id+'/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.'+ext;
+    toast(total>1?('Uploading '+(i+1)+' of '+total+'\u2026 \u23f3'):'Uploading\u2026 \u23f3');
+    var up=await sb.storage.from('vault').upload(path,f,{contentType:f.type||undefined,upsert:false});
+    if(up.error){ fail++; continue; }
+    var rec={household_id:FAM.id,uploaded_by:ME.id,type:vtype,storage_path:path,visibility:'household',filter:'none'};
+    if(VAULT_ALBUM) rec.album=VAULT_ALBUM;
+    var ins=await sb.from('vault_items').insert(rec);
+    if(ins.error){ fail++; continue; }
+    ok++;
+  }
   e.target.value='';
-  if(ins.error){ toast('File saved but record failed: '+ins.error.message); return; }
-  confetti(); toast('Added to your Vault 💛');
-  loadVault('mine');
+  if(ok){ confetti(); toast(ok+(ok>1?' items':' item')+' added to your Vault \ud83d\udc9b'+(fail?(' \u00b7 '+fail+' skipped'):'')); loadVault('mine'); }
+  else { toast(fail?('Could not add '+fail+(fail>1?' files':' file')+' \u2014 try smaller files.'):'Nothing selected.'); }
 }
 
 /* ===== Full-screen gallery: pinch-zoom + swipe + filters ===== */
@@ -1582,6 +1589,7 @@ function gvRender(){
     acts+='<button class="gvbtn" onclick="gvAlbum()">📁</button>';
     if(it.type==='photo') acts+='<button class="gvbtn" onclick="gvToggleFilters()">🎨</button>';
     acts+='<button class="gvbtn" onclick="gvShare()">'+(it.visibility==='grid'?'🔒':'🔗')+'</button>';
+    acts+='<button class="gvbtn" onclick="gvSaveShare()">📤</button>';
     acts+='<button class="gvbtn" onclick="gvDelete()">🗑</button>';
   } else {
     acts+='<span class="gvby">Shared by '+esc((it.families&&(it.families.surname||it.families.name))||'family')+'</span>';
@@ -1616,6 +1624,27 @@ async function gvShare(){
   var r=await sb.from('vault_items').update({visibility:on?'grid':'household'}).eq('id',it.id);
   if(r.error){toast(r.error.message);return;}
   it.visibility=on?'grid':'household'; confetti(); toast(on?'Shared to your grid 🔗':'Now household-only 🔒'); gvRender();
+}
+async function gvSaveShare(){
+  var it=GV.list[GV.idx]; if(!it){return;}
+  var url=vaultUrl(it.storage_path);
+  toast('Preparing\u2026');
+  try{
+    var resp=await fetch(url); var blob=await resp.blob();
+    var ext=((it.storage_path||'').split('.').pop()||'jpg').toLowerCase();
+    var name='jeeto_'+Date.now()+'.'+ext;
+    var file=new File([blob], name, {type:blob.type||'application/octet-stream'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:'Jeeto'});
+      return;
+    }
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('Saved \ud83d\udc9b');
+  }catch(e){
+    try{ window.open(url,'_blank'); toast('Opened \u2014 long-press to save'); }catch(_){ toast('Could not save'); }
+  }
 }
 async function gvDelete(){
   var it=GV.list[GV.idx];
