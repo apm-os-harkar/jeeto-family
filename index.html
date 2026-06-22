@@ -283,7 +283,7 @@ body{
 /* modal / sheet */
 .sheet-bg{position:fixed;inset:0;background:rgba(42,30,46,.5);z-index:240;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
 .sheet-bg.show{display:flex;animation:fade .25s}
-.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:26px 26px 0 0;padding:8px 20px calc(26px + env(safe-area-inset-bottom));max-height:88%;max-height:86dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:up .3s cubic-bezier(.2,.9,.3,1)}
+.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:26px 26px 0 0;padding:8px 20px calc(40px + env(safe-area-inset-bottom));max-height:88%;max-height:85dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;animation:up .3s cubic-bezier(.2,.9,.3,1)}
 .sheet::-webkit-scrollbar{display:none}
 @keyframes up{from{transform:translateY(100%)}to{transform:none}}
 .grip{width:42px;height:5px;background:var(--line);border-radius:5px;margin:6px auto 14px}
@@ -1236,7 +1236,11 @@ body{
 
     <!-- ============ FAMILY TREE ============ -->
     <section class="view" id="v-tree">
-      <div class="sectit" style="margin-top:10px">Family Tree 🌳</div>
+      <div class="skyvos" style="margin-top:8px">
+        <div class="face">✦</div>
+        <div><div class="who">Skyvos AI · Family Tree</div><div class="msg">Tap anyone to set how they're related 👵🧒. Use <b>🔗 Connect</b> for people already here, <b>＋ Add family</b> for new ones. Map it once — your whole khandaan, alive. 🌳</div></div>
+      </div>
+      <div class="sectit" style="margin-top:6px">Family Tree 🌳</div>
       <div class="tr-tabs">
         <div class="tr-tab on" data-tv="tree" onclick="TR_switch('tree')">🌳 Tree</div>
         <div class="tr-tab" data-tv="homes" onclick="TR_switch('homes')">🏡 Homes</div>
@@ -1290,7 +1294,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 93</div>
+      <div class="psub">Powered by Skyvos AI · build 96</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -4246,8 +4250,10 @@ function TR_switch(v){TR_view=v;
   if(v==='tree')TR_renderTree();if(v==='homes')TR_renderHomes();if(v==='rel')TR_renderRel();
 }
 
+function TR_isPlaceholder(p){return !!(p&&(p.placeholder||p.name==='(Parent)'));}
+function TR_realIds(){return Object.keys(TR_people).filter(function(k){return !TR_isPlaceholder(TR_P(k));});}
 function TR_renderTree(){
-  var el=document.getElementById('tr-tree');if(!el)return;var ids=Object.keys(TR_people);
+  var el=document.getElementById('tr-tree');if(!el)return;var ids=TR_realIds();
   if(!ids.length){el.innerHTML='<div class="tr-empty">🌱 Your tree is empty.<br>Tap <b>＋ Add family</b> to add yourself, your parents, spouse and children.</div>';return;}
   var gen=TR_computeGen(),byGen={};ids.forEach(function(id){(byGen[gen[id]]=byGen[gen[id]]||[]).push(id);});
   var gnums=Object.keys(byGen).map(Number).sort(function(a,b){return a-b;});var meG=gen[TR_ME]||0;var html='';
@@ -4266,8 +4272,8 @@ function TR_renderTree(){
 }
 function TR_renderHomes(){
   var el=document.getElementById('tr-homes');if(!el)return;
-  var byHome={};Object.keys(TR_people).forEach(function(id){var h=TR_P(id).household_id;if(h){(byHome[h]=byHome[h]||[]).push(id);}});
-  var noHome=Object.keys(TR_people).filter(function(id){return !TR_P(id).household_id;});
+  var byHome={};TR_realIds().forEach(function(id){var h=TR_P(id).household_id;if(h){(byHome[h]=byHome[h]||[]).push(id);}});
+  var noHome=TR_realIds().filter(function(id){return !TR_P(id).household_id;});
   var hids=Object.keys(byHome);
   if(!hids.length&&!noHome.length){el.innerHTML='<div class="tr-empty">🏡 No homes yet.</div>';return;}
   var html='';
@@ -4280,7 +4286,7 @@ function TR_renderHomes(){
   el.innerHTML=html;
 }
 function TR_renderRel(){
-  var el=document.getElementById('tr-rel');if(!el)return;var ids=Object.keys(TR_people);
+  var el=document.getElementById('tr-rel');if(!el)return;var ids=TR_realIds();
   var opts=ids.map(function(id){return '<option value="'+id+'"'+(id===TR_ME?' selected':'')+'>'+TR_P(id).name+'</option>';}).join('');
   var head='<div class="tr-whoami">👤 Relations from: <select onchange="TR_ME=this.value;TR_renderRel();TR_renderTree()">'+opts+'</select></div>';
   if(ids.length<=1){el.innerHTML=head+'<div class="tr-empty">Add family to see how everyone is related to you.</div>';return;}
@@ -4301,9 +4307,8 @@ function TR_tap(id){var p=TR_P(id),r=TR_relation(TR_ME,id);
   openSheet('<h3>'+p.name+'</h3>'+
     '<div style="display:flex;align-items:center;gap:14px;margin-bottom:10px">'+TR_avatar(id)+'<div><div style="font-size:14px">'+relLine+'</div>'+(p.household_id&&TR_homes[p.household_id]?'<div style="font-size:12px;color:var(--ink2);margin-top:3px">🏡 '+TR_homes[p.household_id].name+'</div>':'')+'</div></div>'+
     gtoggle+
-    (id!==TR_ME?'<button class="tr-cta" style="margin-top:2px;background:linear-gradient(135deg,#16A34A,#0EA5A0)" onclick="TR_openConnect(\''+id+'\')">🔗 Connect '+p.name.split(' ')[0]+' to the family</button><div style="text-align:center;font-size:11px;color:var(--ink2);margin:14px 0 8px">— or add a NEW relative —</div>':'<div style="text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 8px">Add a relative of yours —</div>')+
-    '<div class="tr-addgrid">'+TR_addBtn('spouse',id,'❤','Add spouse','husband / wife')+TR_addBtn('child',id,'🧒','Add child','son / daughter')+TR_addBtn('parent',id,'👴','Add parent','father / mother')+TR_addBtn('sibling',id,'🧑‍🤝‍🧑','Add sibling','brother / sister')+'</div>'+
-    (id!==TR_ME?'<div style="text-align:center;margin-top:14px"><a onclick="TR_askRemove(\''+id+'\')" style="color:#c2410c;font-size:12px;font-weight:600;cursor:pointer">🗑 Remove '+p.name.split(' ')[0]+' from the tree</a></div>':''));
+    (id!==TR_ME?'<button class="tr-cta" style="margin-top:2px;background:linear-gradient(135deg,#16A34A,#0EA5A0)" onclick="TR_openConnect(\''+id+'\')">🔗 Connect '+p.name.split(' ')[0]+' to the family</button><div style="text-align:center;margin:9px 0 2px"><a onclick="TR_askRemove(\''+id+'\')" style="color:#c2410c;font-size:12.5px;font-weight:700;cursor:pointer">🗑 Remove '+p.name.split(' ')[0]+' (duplicate?)</a></div><div style="text-align:center;font-size:11px;color:var(--ink2);margin:12px 0 8px">— or add a NEW relative —</div>':'<div style="text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 8px">Add a relative of yours —</div>')+
+    '<div class="tr-addgrid">'+TR_addBtn('spouse',id,'❤','Add spouse','husband / wife')+TR_addBtn('child',id,'🧒','Add child','son / daughter')+TR_addBtn('parent',id,'👴','Add parent','father / mother')+TR_addBtn('sibling',id,'🧑‍🤝‍🧑','Add sibling','brother / sister')+'</div>');
 }
 function TR_askRemove(id){var p=TR_P(id);
   openSheet('<h3>Remove '+p.name+'?</h3>'+
@@ -4343,7 +4348,7 @@ function TR_doConnect(id){var other=document.getElementById('tr_cother').value;v
   if(TR_crel==='parent'){ TR_link('parent',id,other); TR_persistEdge('parent',id,other); }
   else if(TR_crel==='child'){ TR_link('parent',other,id); TR_persistEdge('parent',other,id); }
   else if(TR_crel==='spouse'){ TR_link('spouse',id,other); TR_persistEdge('spouse',id,other); }
-  else if(TR_crel==='sibling'){ var ps=TR_par(other); if(!ps.length){ msg.textContent='Add '+TR_P(other).name.split(' ')[0]+'’s parent first — then siblings link up automatically.'; return; } ps.forEach(function(p){ TR_link('parent',p,id); TR_persistEdge('parent',p,id); }); }
+  else if(TR_crel==='sibling'){ TR_ensureSibling(id,other); closeSheet(); return; }
   closeSheet(); TR_switch(TR_view);
 }
 async function TR_persistEdge(kind,a,b){ if(!TR_TREE||!sb)return; if(!TR_P(a)||!TR_P(a).__db||!TR_P(b)||!TR_P(b).__db)return; try{ var r=await sb.from('tree_edges').insert({tree_id:TR_TREE,kind:kind,a:a,b:b}).select().single(); if(!r.error){ var e=TR_edges.filter(function(x){return x.kind===kind&&x.a===a&&x.b===b&&!x.id;})[0]; if(e)e.id=r.data.id; } }catch(e){} }
@@ -4364,7 +4369,7 @@ function TR_save(rel,anchor){var name=(document.getElementById('tr_name').value|
   else if(rel==='spouse'){TR_link('spouse',anchor,nid);}
   else if(rel==='child'){TR_link('parent',anchor,nid);TR_spo(anchor).forEach(function(s){TR_link('parent',s,nid);});}
   else if(rel==='parent'){TR_link('parent',nid,anchor);var ex=TR_par(anchor).filter(function(p){return p!==nid;});if(ex.length===1)TR_link('spouse',ex[0],nid);}
-  else if(rel==='sibling'){var ps=TR_par(anchor);if(ps.length){ps.forEach(function(p){TR_link('parent',p,nid);});}else{var pp=TR_add({name:'(Parent)',gender:'o'});TR_link('parent',pp,anchor);TR_link('parent',pp,nid);}}
+  else if(rel==='sibling'){ TR_persist(nid,rel,anchor).then(function(rid){ TR_ensureSibling(rid,anchor); }); closeSheet();TR_switch(TR_view); return; }
   TR_persist(nid,rel,anchor);
   closeSheet();TR_switch(TR_view);
 }
@@ -4381,7 +4386,7 @@ async function treeBoot(){
     var hr=await sb.rpc('tree_homes');
     TR_people={};TR_edges=[];TR_homes={};
     (hr.data||[]).forEach(function(h){TR_homes[h.id]={id:h.id,name:h.name||'Home',city:h.city||''};});
-    (pr.data||[]).forEach(function(p){TR_people[p.id]={id:p.id,name:p.display_name,gender:p.gender||'o',dob:p.dob,photo_url:p.photo_url,household_id:p.household_id,member_id:p.member_id,__db:true};});
+    (pr.data||[]).forEach(function(p){TR_people[p.id]={id:p.id,name:p.display_name,gender:p.gender||'o',dob:p.dob,photo_url:p.photo_url,household_id:p.household_id,member_id:p.member_id,placeholder:p.display_name==='(Parent)',__db:true};});
     (er.data||[]).forEach(function(e){TR_edges.push({id:e.id,kind:e.kind,a:e.a,b:e.b});});
     if(window.ME&&window.ME.id){var mine=Object.keys(TR_people).filter(function(k){return TR_people[k].member_id===ME.id;})[0];if(mine)TR_ME=mine;}
     if(!TR_ME){var any=Object.keys(TR_people);if(any.length)TR_ME=any[0];}
@@ -4398,6 +4403,28 @@ async function TR_persist(nid,rel,anchor){
     TR_edges.forEach(function(e){if(e.a===nid)e.a=rid;if(e.b===nid)e.b=rid;});if(TR_ME===nid)TR_ME=rid;
     var save=TR_edges.filter(function(e){return (e.a===rid||e.b===rid)&&!e.id;});
     for(var i=0;i<save.length;i++){var e=save[i];var r=await sb.from('tree_edges').insert({tree_id:TR_TREE,kind:e.kind,a:e.a,b:e.b}).select().single();if(!r.error)e.id=r.data.id;}
+    return rid;
+  }catch(e){}
+}
+async function TR_ensureSibling(id,other){
+  if(!id||!other||id===other)return;
+  var allP=TR_par(other).concat(TR_par(id));var uniq={};allP.forEach(function(p){uniq[p]=1;});var pp=Object.keys(uniq);
+  if(pp.length){
+    pp.forEach(function(p){ TR_link('parent',p,id); TR_link('parent',p,other); TR_persistEdge('parent',p,id); TR_persistEdge('parent',p,other); });
+    TR_switch(TR_view); return;
+  }
+  // no parents anywhere → create one HIDDEN shared parent so siblings link with no wall
+  var ph=TR_add({name:'(Parent)',gender:'o',placeholder:true});
+  TR_link('parent',ph,other); TR_link('parent',ph,id);
+  TR_switch(TR_view);
+  if(!TR_TREE||!sb)return;
+  try{
+    var ins=await sb.from('tree_people').insert({tree_id:TR_TREE,display_name:'(Parent)',gender:'o'}).select().single();
+    if(ins.error)return; var rid=ins.data.id;
+    TR_people[rid]=Object.assign({},TR_people[ph],{id:rid,__db:true}); delete TR_people[ph];
+    TR_edges.forEach(function(e){if(e.a===ph)e.a=rid;if(e.b===ph)e.b=rid;});
+    var es=TR_edges.filter(function(e){return e.a===rid&&!e.id;});
+    for(var i=0;i<es.length;i++){var e=es[i];var r=await sb.from('tree_edges').insert({tree_id:TR_TREE,kind:'parent',a:rid,b:e.b}).select().single();if(!r.error)e.id=r.data.id;}
   }catch(e){}
 }
 async function TR_saveGender(id,g){ if(!sb||!TR_P(id)||!TR_P(id).__db)return; try{await sb.from('tree_people').update({gender:g}).eq('id',id);}catch(e){} }
