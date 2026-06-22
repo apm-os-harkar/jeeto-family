@@ -115,6 +115,20 @@ body{
 .tr-gset{font-size:12.5px;color:var(--ink2);margin:4px 0 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .tr-gopt{border:1.5px solid var(--line);border-radius:10px;padding:6px 10px;font-weight:700;cursor:pointer;color:var(--ink2);font-size:12.5px}
 .tr-gopt.on{border-color:var(--rani);background:#FFF1F4;color:var(--rani-d)}
+.treehero{display:flex;align-items:center;gap:14px;margin:6px 0 14px;padding:14px 16px;border-radius:20px;cursor:pointer;
+  background:linear-gradient(120deg,#1F8A4C 0%,#16A34A 38%,#0EA5A0 100%);
+  box-shadow:0 10px 26px rgba(22,163,74,.32);position:relative;overflow:hidden}
+.treehero::after{content:"";position:absolute;top:-40%;right:-10%;width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%)}
+.treehero-ring{flex:0 0 auto;width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.22);box-shadow:0 0 0 6px rgba(255,255,255,.12);animation:treepulse 2.4s ease-in-out infinite}
+.treehero-circle{width:54px;height:54px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:30px;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+@keyframes treepulse{0%,100%{box-shadow:0 0 0 6px rgba(255,255,255,.12)}50%{box-shadow:0 0 0 11px rgba(255,255,255,.05)}}
+.treehero-txt{flex:1;min-width:0;color:#fff;position:relative;z-index:1}
+.treehero-t{font-size:18px;font-weight:800;letter-spacing:-.2px}
+.treehero-s{font-size:12px;opacity:.95;line-height:1.35;margin-top:2px}
+.treehero-go{flex:0 0 auto;color:#fff;font-size:22px;font-weight:800;opacity:.9;position:relative;z-index:1}
 .tr-fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom));z-index:25;background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border:none;border-radius:999px;padding:13px 22px;font-size:15px;font-weight:800;box-shadow:0 8px 20px rgba(224,58,122,.38);cursor:pointer}
 .view.active{display:block}
 #v-grid{padding-top:0;margin-top:0}
@@ -807,11 +821,16 @@ body{
       <div id="stepSlot" class="stepslot" style="display:none"></div>
       <div class="submithow"><b>How it works:</b> take a short walk → open your phone's step counter → tap the button above & snap a photo of it. It logs your steps, earns coins 🪙, and when <b>2+ of you</b> walk, your family streak 🔥 stays alive.</div>
 
-      <div class="qrow">
-        <div class="qcard q-tree" onclick="go('tree');treeBoot()">
-          <div class="qe">🌳</div>
-          <div><div class="qt">Family Tree</div><div class="qs">See your whole khandaan</div></div>
+      <div class="treehero" onclick="go('tree');treeBoot()">
+        <div class="treehero-ring"><div class="treehero-circle">🌳</div></div>
+        <div class="treehero-txt">
+          <div class="treehero-t">Family Tree</div>
+          <div class="treehero-s">See your whole khandaan — who's who &amp; how you're all related 💛</div>
         </div>
+        <div class="treehero-go">→</div>
+      </div>
+
+      <div class="qrow">
         <div class="qcard q-chat" onclick="go('chat')">
           <div class="qe">💬</div>
           <div><div class="qt">Family Board</div><div class="qs">Family chat</div></div>
@@ -1271,7 +1290,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 89</div>
+      <div class="psub">Powered by Skyvos AI · build 90</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
