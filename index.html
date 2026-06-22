@@ -339,7 +339,7 @@ body{
 .qcard .qe{font-size:23px}
 .qcard .qt{font-family:'Baloo 2';font-size:13.5px;line-height:1.05}
 .qcard .qs{font-size:9.5px;opacity:.9;margin-top:2px;line-height:1.2}
-.q-chat{background:linear-gradient(135deg,#25b56a,#0e8a4d)}
+.q-chat{background:linear-gradient(135deg,#4F8EF7,#2563EB)}
 .q-music{background:linear-gradient(135deg,#8E3CE0,#5b1fa8)}
 .q-album{background:linear-gradient(135deg,#FF8A1E,#E03A7A)}
 .q-grid{background:linear-gradient(135deg,#163A66,#0B1E3B)}
@@ -1290,7 +1290,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 91</div>
+      <div class="psub">Powered by Skyvos AI · build 93</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -4302,7 +4302,21 @@ function TR_tap(id){var p=TR_P(id),r=TR_relation(TR_ME,id);
     '<div style="display:flex;align-items:center;gap:14px;margin-bottom:10px">'+TR_avatar(id)+'<div><div style="font-size:14px">'+relLine+'</div>'+(p.household_id&&TR_homes[p.household_id]?'<div style="font-size:12px;color:var(--ink2);margin-top:3px">🏡 '+TR_homes[p.household_id].name+'</div>':'')+'</div></div>'+
     gtoggle+
     (id!==TR_ME?'<button class="tr-cta" style="margin-top:2px;background:linear-gradient(135deg,#16A34A,#0EA5A0)" onclick="TR_openConnect(\''+id+'\')">🔗 Connect '+p.name.split(' ')[0]+' to the family</button><div style="text-align:center;font-size:11px;color:var(--ink2);margin:14px 0 8px">— or add a NEW relative —</div>':'<div style="text-align:center;font-size:11px;color:var(--ink2);margin:6px 0 8px">Add a relative of yours —</div>')+
-    '<div class="tr-addgrid">'+TR_addBtn('spouse',id,'❤','Add spouse','husband / wife')+TR_addBtn('child',id,'🧒','Add child','son / daughter')+TR_addBtn('parent',id,'👴','Add parent','father / mother')+TR_addBtn('sibling',id,'🧑‍🤝‍🧑','Add sibling','brother / sister')+'</div>');
+    '<div class="tr-addgrid">'+TR_addBtn('spouse',id,'❤','Add spouse','husband / wife')+TR_addBtn('child',id,'🧒','Add child','son / daughter')+TR_addBtn('parent',id,'👴','Add parent','father / mother')+TR_addBtn('sibling',id,'🧑‍🤝‍🧑','Add sibling','brother / sister')+'</div>'+
+    (id!==TR_ME?'<div style="text-align:center;margin-top:14px"><a onclick="TR_askRemove(\''+id+'\')" style="color:#c2410c;font-size:12px;font-weight:600;cursor:pointer">🗑 Remove '+p.name.split(' ')[0]+' from the tree</a></div>':''));
+}
+function TR_askRemove(id){var p=TR_P(id);
+  openSheet('<h3>Remove '+p.name+'?</h3>'+
+    '<p style="font-size:13px;color:var(--ink2);line-height:1.5;margin:4px 0 16px">This removes '+p.name.split(' ')[0]+' (and their relationship links) from the <b>family tree only</b>. It does <b>not</b> delete them from your family or the app.</p>'+
+    '<button class="tr-cta" style="background:linear-gradient(135deg,#dc2626,#b91c1c)" onclick="TR_doRemove(\''+id+'\')">🗑 Remove from tree</button>'+
+    '<button class="tr-cta" style="background:#fff;color:var(--ink);border:1.5px solid var(--line);margin-top:9px" onclick="TR_tap(\''+id+'\')">Keep '+p.name.split(' ')[0]+'</button>');
+}
+async function TR_doRemove(id){
+  if(TR_P(id)&&TR_P(id).__db&&sb&&TR_TREE){ try{ await sb.from('tree_people').delete().eq('id',id); }catch(e){} }
+  delete TR_people[id];
+  TR_edges=TR_edges.filter(function(e){return e.a!==id&&e.b!==id;});
+  if(TR_ME===id){ var rest=Object.keys(TR_people); var mine=rest.filter(function(k){return window.ME&&TR_people[k].member_id===ME.id;})[0]; TR_ME=mine||rest[0]||null; }
+  closeSheet(); TR_switch(TR_view);
 }
 var TR_crel=null;
 function TR_openConnect(id){var p=TR_P(id);
