@@ -428,6 +428,11 @@ body{
 .gridhead .ghsubline{font-size:12px;color:rgba(255,255,255,.88);margin-top:3px;font-weight:600}
 .gridhead .ghswitch{font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.22);padding:7px 13px;border-radius:20px;white-space:nowrap}
 .gridintro{font-size:13px;color:#8a5a3c;line-height:1.55;margin:2px 6px 16px;text-align:center;font-weight:600}
+.invitecta{background:linear-gradient(135deg,#FFF1E2,#FFE9F2);border:1px solid #F3D9BE;border-radius:16px;padding:14px;margin:14px 0 4px;cursor:pointer;box-shadow:0 4px 14px rgba(224,58,122,.08)}
+.invitecta .ictop{display:flex;align-items:center;gap:12px}
+.invitecta .icplus{width:44px;height:44px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;background:linear-gradient(135deg,#FF7A00,#E03A7A);box-shadow:0 4px 10px rgba(224,58,122,.25)}
+.invitecta b{font-size:15px;color:var(--ink,#243049)}
+.invitecta .icsub{font-size:11.5px;color:var(--ink2,#888);line-height:1.45;margin-top:2px}
 .managehdr{width:100%;background:#fff;border:1px solid var(--line,#eee);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;font-family:inherit;font-weight:700;font-size:14px;color:var(--ink,#243049);cursor:pointer}
 .managearrow{transition:.2s;color:#9aa3ad;font-size:13px}
 .managehdr.open .managearrow{transform:rotate(180deg)}
@@ -496,6 +501,15 @@ body{
 .stepslot b{color:var(--rani-d)}
 .stepslot a{color:var(--saffron-d);font-weight:700;cursor:pointer}
 .submithow b{color:var(--ink)}
+.autochip{width:100%;border:1.5px dashed #C9A227;background:linear-gradient(135deg,#FFF7E0,#FFF1F4);color:#8A5A00;font-weight:800;font-size:13px;border-radius:14px;padding:11px 12px;margin:0 0 10px;cursor:pointer;line-height:1.35}
+.autochip span{display:block;font-weight:600;font-size:11px;color:#A07A2A;margin-top:2px}
+.asbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;text-align:left}
+.asbox h4{margin:0 0 6px;font-size:15px}
+.asbox p{font-size:12.5px;color:var(--ink2);line-height:1.5;margin:6px 0}
+.astok{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#0e1726;color:#c7f9d0;padding:10px 12px;border-radius:10px;word-break:break-all;margin:8px 0}
+.ascopy{display:inline-block;background:var(--rani);color:#fff;border:none;border-radius:9px;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;margin:2px 0}
+.asstep{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:var(--ink);margin:9px 0;line-height:1.45}
+.asstep b{display:inline-flex;width:20px;height:20px;flex:0 0 auto;background:var(--rani);color:#fff;border-radius:50%;align-items:center;justify-content:center;font-size:11px}
 .mqgreet{font-weight:800;font-size:14px;color:#8a5a1a;margin-bottom:3px}
 .mqquote{font-size:14.5px;color:#5b4a32;line-height:1.45}
 
@@ -598,7 +612,7 @@ body{
 
 .legalfoot{text-align:center;font-size:11px;color:var(--ink2);margin-top:22px;padding-top:16px;border-top:1px solid var(--line,#eee)}
 .legalfoot a{color:var(--ink2);text-decoration:underline;cursor:pointer}
-#legalOverlay,#founderOverlay,#tourOverlay{display:none;position:fixed;inset:0;z-index:9999;background:var(--paper);flex-direction:column}
+#legalOverlay,#founderOverlay,#tourOverlay,#guideOverlay{display:none;position:fixed;inset:0;z-index:9999;background:var(--paper);flex-direction:column}
 .tourlede{font-size:15px;font-weight:600;color:var(--ink);margin:0 0 16px;line-height:1.5}
 .tourcard{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:11px}
 .tourcard .te{font-size:30px;flex:0 0 auto;line-height:1}
@@ -680,6 +694,7 @@ body{
 .welcomerow small{font-size:11.5px;color:var(--ink2);line-height:1.3}
 
 .welcomeq{font-size:13.5px;font-weight:700;color:var(--ink);margin:16px 0 2px}
+.welcomelede{font-size:15px;font-weight:700;color:var(--rani-d);text-align:center;margin:6px 0 18px}
 .welcomebtn{display:flex;flex-direction:column;align-items:flex-start;text-align:left;height:auto;padding:11px 15px;line-height:1.25;gap:2px}
 .welcomebtn small{font-weight:500;font-size:11px;opacity:.85}
 .btn-primary.welcomebtn small{color:rgba(255,255,255,.9)}
@@ -736,6 +751,7 @@ body{
         </div>
       </div>
       <button class="btn btn-primary submitcta" onclick="openSubmit()">📸 Submit today's steps</button>
+      <button class="autochip" onclick="openAutoSteps()">⚡ Auto-send my steps every day — no screenshots <span>iPhone · set up once</span></button>
       <div id="stepSlot" class="stepslot" style="display:none"></div>
       <div class="submithow"><b>How it works:</b> take a short walk → open your phone's step counter → tap the button above & snap a photo of it. It logs your steps, earns coins 🪙, and when <b>2+ of you</b> walk, your family streak 🔥 stays alive.</div>
 
@@ -957,6 +973,7 @@ body{
       <button class="btn btn-primary" id="founderBtn" style="display:none;background:linear-gradient(135deg,#0E2547,#163A66)" onclick="openFounder()">📊 Founder Dashboard</button>
       <div style="height:8px"></div>
       <div id="mergeBox"></div>
+      <button class="btn btn-ghost" style="margin-bottom:10px" onclick="openGuide()">❔ How to use Jeeto</button>
       <div class="sectit">Legal</div>
       <div class="legalfoot" style="text-align:left;margin-bottom:12px"><a onclick="openLegal('privacy')">Privacy Policy</a> &nbsp;·&nbsp; <a onclick="openLegal('terms')">Terms of Service</a></div>
       <button class="btn btn-ghost" onclick="logout()">Log out</button>
@@ -1094,6 +1111,11 @@ body{
         <div class="clarrow">›</div>
       </div>
 
+      <!-- INVITE (prominent — grow the grid the easy way) -->
+      <div id="gridInviteTop" class="invitecta" style="display:none" onclick="openGridHouseholdInvite()">
+        <div class="ictop"><div class="icplus">＋</div><div><b>Invite a relative's household</b><div class="icsub">Sends a personal link \u2014 they tap it, set a PIN, and they're straight in this grid. No code to type.</div></div></div>
+      </div>
+
       <!-- PLAY -->
       <div class="sectit" style="margin-top:18px">🎮 Play together</div>
       <div id="gridGames"></div>
@@ -1112,7 +1134,6 @@ body{
         <button class="btn btn-ghost" id="myGridsBtn" style="display:none;margin-bottom:10px" onclick="openMyGrids()">🗂️ My grids</button>
         <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openJoinGrid()">＋ Join a grid</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openCreateGrid()">🔗 Create a grid</button></div>
         <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button></div>
-        <button class="btn btn-ghost" id="gridInviteBtn" style="display:none;margin-bottom:10px" onclick="openGridHouseholdInvite()">➕ Invite a household by phone</button>
         <button class="btn btn-ghost" id="gridSentBtn" style="display:none;margin-bottom:10px" onclick="openSentInvites()">📋 Sent invites &amp; status</button>
         <button class="btn btn-ghost" style="margin-bottom:10px" onclick="openConnections()">🤝 Connected households</button>
         <button class="btn btn-ghost" style="margin-bottom:4px" onclick="openGridBirthdays()">🎂 Grid birthdays</button>
@@ -1180,20 +1201,15 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 83</div>
+      <div class="psub">Powered by Skyvos AI · build 88</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
-        <p class="welcomelede">A little app that keeps your family close 💛</p>
         <div id="gridInviteBanner" style="display:none"></div>
-        <div class="welcomerow"><span>🚶</span><div><b>Walk & play together</b><small>Steps, challenges, live Tambola nights</small></div></div>
-        <div class="welcomerow"><span>📸</span><div><b>Your family's memories</b><small>Photos, songs, birthdays, daily questions</small></div></div>
-        <div class="welcomerow"><span>💜</span><div><b>Care for each other</b><small>Medicine reminders, family rewards & more</small></div></div>
-        <div class="welcomeq">Is your family already on Jeeto?</div>
-        <button class="btn btn-primary welcomebtn" style="margin-top:10px" onclick="showPanel('start')">✨ No — set up my family<small>I'm the first one. I'll invite everyone after.</small></button>
-        <button class="btn btn-ghost welcomebtn" style="margin-top:9px" onclick="showPanel('join')">🏠 Yes — join with a code<small>Someone in my family shared a code with me.</small></button>
-        <div class="welcomenote">🏡 Your <b>family</b> here means your <b>household</b> — everyone living at one home. Relatives in other cities can connect later through a <b>Grid</b>.</div>
-        <div class="authhint" style="margin-top:12px">Not sure yet? <a onclick="openTour()"><b>👀 See how it works</b></a></div>
-        <div class="authhint" style="margin-top:8px">Already have an account? <a onclick="showPanel('login')">Log in</a></div>
+        <p class="welcomelede">Your family, closer. 💛</p>
+        <button class="btn btn-primary welcomebtn" onclick="showPanel('start')">✨ Set up my family<small>I'm the first one. I'll invite everyone after.</small></button>
+        <button class="btn btn-ghost welcomebtn" style="margin-top:10px" onclick="showPanel('join')">🏠 Join with a code<small>Someone shared a family code with me.</small></button>
+        <div class="authhint" style="margin-top:16px">Curious how it works? <a onclick="openTour()"><b>👀 Take a quick tour</b></a></div>
+        <div class="authhint" style="margin-top:8px">Already have an account? <a onclick="showPanel('login')"><b>Log in</b></a></div>
       </div>
       <div id="loginPanel" style="display:none">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
@@ -1221,6 +1237,14 @@ body{
         <input id="hCity" placeholder="City (optional)">
         <button class="btn btn-primary" id="hBtn" onclick="createHousehold()">Create my family</button>
         <div class="authhint"><a onclick="showPanel('welcome')">&larr; Back</a></div>
+      </div>
+      <div id="claimPanel" style="display:none">
+        <div class="reghint" style="background:#EAF7EF;border-color:#BCE6CC;color:#1A6B3C">\ud83c\udf89 You\'re invited! Your family is already set up and connected to the grid \u2014 just set a PIN below and you\'re in. <b>No code to type.</b></div>
+        <div style="text-align:center;font-size:12px;color:var(--ink2);margin:0 0 10px">Joining as <b id="cPhoneShow"></b></div>
+        <input id="cName" placeholder="Your name (optional)">
+        <input id="cCode" inputmode="numeric" placeholder="Create a PIN (you\'ll log in with this)" onkeydown="if(event.key===\'Enter\')claimJoin()">
+        <button class="btn btn-primary" id="cBtn" onclick="claimJoin()">\ud83d\udd17 Join the grid</button>
+        <div class="authhint" style="margin-top:10px">Not you? <a onclick="showPanel(\'welcome\')">Start fresh</a></div>
       </div>
       <div class="legalfoot"><a onclick="openLegal('privacy')">Privacy Policy</a> &nbsp;·&nbsp; <a onclick="openLegal('terms')">Terms of Service</a></div>
     </div>
@@ -2080,7 +2104,7 @@ async function boot(){
   try{const r=await sb.auth.getUser();user=r.data.user;}catch(e){}
   if(!user){
     document.getElementById('authgate').classList.add('show');
-    if(window.__claimPhone){ try{ showPanel('join'); var _jp=document.getElementById('jPhone'); if(_jp){_jp.value=window.__claimPhone;_jp.readOnly=true;} var _jf=document.getElementById('jFam'); if(_jf)_jf.value=''; var _rh=document.querySelector('#joinPanel .reghint'); if(_rh)_rh.innerHTML='\ud83c\udfe1 You\'re invited! Your family is already set up \u2014 just pick a PIN below and tap Join to enter the grid.'; }catch(e){} }
+    if(window.__claimPhone){ try{ showPanel('claim'); var _cd=document.getElementById('cPhoneShow'); if(_cd)_cd.textContent='\u2022\u2022\u2022\u2022\u2022 '+window.__claimPhone.slice(-4); }catch(e){} }
     if(window.__pendingGrid){ var _b=document.getElementById('gridInviteBanner'); if(_b){ _b.style.display='block'; _b.innerHTML='<div style="background:#EAF7EF;border:1px solid #BCE6CC;color:#1A6B3C;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.5;text-align:left">\ud83d\udd17 <b>You\'re invited to a grid!</b><br>First set up your family below \u2014 we\'ll connect you to the grid automatically. \ud83d\udc9b</div>'; } }
     return;
   }
@@ -2089,6 +2113,7 @@ async function boot(){
   ME=me; coins=ME.coins||0; window.AUTHEMAIL=(user.email||'');
   if(ME.family_id){const {data:fam}=await sb.from('families').select('*').eq('id',ME.family_id).maybeSingle();FAM=fam||null;}
   document.getElementById('authgate').classList.remove('show');
+  try{ if(!localStorage.getItem('jeeto_guide_v1')){ setTimeout(function(){ if(typeof openGuide==='function') openGuide(); }, 700); } }catch(e){}
   await refreshAll();
   if(window.__pendingGrid && ME && ME.role==='captain' && (!GRID)){ _offerGridJoin(window.__pendingGrid); }
 }
@@ -2299,6 +2324,33 @@ function openSubmit(){
   '<div id="ssStatus" style="margin-top:12px;font-size:13px;color:var(--ink2);line-height:1.5"></div>');
 }
 function fileToB64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
+var AUTO_SHORTCUT_URL = ""; // <-- paste the iCloud Shortcut link here once, then redeploy
+async function openAutoSteps(){
+  openSheet('<h3>⚡ Auto-send my steps</h3><div style="text-align:center;color:var(--ink2);padding:14px">Getting your personal setup…</div>');
+  var tok='';
+  try{ var r=await sb.rpc('get_my_step_token'); if(r.error)throw r.error; tok=r.data||''; }
+  catch(e){ openSheet('<h3>⚡ Auto-send my steps</h3><div class="asbox"><p>Couldn\'t load your setup. Make sure you\'re logged in and the auto-steps update has been run in Supabase, then try again.</p></div>'); return; }
+  var installBtn = AUTO_SHORTCUT_URL
+    ? '<a class="ascopy" style="background:#0a7d32;text-decoration:none;display:block;text-align:center;padding:11px;font-size:14px" href="'+AUTO_SHORTCUT_URL+'">⬇️ Install the Jeeto Steps shortcut</a><p style="text-align:center">Then open it once and paste your code below when it asks.</p>'
+    : '<p style="background:#FFF1F4;border:1px solid #f3c7d3;border-radius:10px;padding:8px 10px"><b>One-time:</b> your family admin is finishing the iPhone shortcut. For now you can still use “Submit today\'s steps”. ⏳</p>';
+  var html =
+    '<div class="asbox">'+
+      '<h4>📱 Your steps, sent automatically</h4>'+
+      '<p>Your iPhone already counts your steps in Apple Health (Pacer writes there too). Set this up <b>once</b> and Jeeto pulls today\'s count on its own — every day, no screenshots.</p>'+
+      installBtn+
+      '<p style="margin-top:12px"><b>Your personal code</b> (tap to copy — keep it private):</p>'+
+      '<div class="astok" id="asTok">'+tok+'</div>'+
+      '<button class="ascopy" onclick="asCopy(\''+tok+'\',this)">Copy my code</button>'+
+      '<hr style="border:none;border-top:1px solid var(--line);margin:14px 0">'+
+      '<p><b>How it works once it\'s on:</b></p>'+
+      '<div class="asstep"><b>1</b><div>Each night your iPhone reads your Apple Health step count.</div></div>'+
+      '<div class="asstep"><b>2</b><div>It sends just the number to Jeeto using your private code.</div></div>'+
+      '<div class="asstep"><b>3</b><div>Your steps, coins 🪙 and family streak 🔥 update on their own — you do nothing.</div></div>'+
+      '<p style="margin-top:12px;font-size:11.5px">No screenshots, nothing to upload. You can still submit a screenshot any day if you prefer.</p>'+
+    '</div>';
+  openSheet('<h3>⚡ Auto-send my steps</h3>'+html);
+}
+function asCopy(t,btn){ try{ navigator.clipboard.writeText(t); if(btn){var o=btn.textContent;btn.textContent='Copied ✓';setTimeout(function(){btn.textContent=o;},1400);} }catch(e){ toast('Copy failed — long-press the code'); } }
 async function submitSteps(){
   const f=document.getElementById('ssShot').files[0];
   const raw=((document.getElementById('ssCount').value)||'').replace(/\D/g,'');
@@ -2451,14 +2503,14 @@ async function loadGrid(){
   if(!GRID){ document.getElementById('ghName').textContent='No grid yet';
     document.getElementById('ghSub').textContent='Join one with a code, or create your own';
     document.getElementById('gridLb').innerHTML=emptyMsg('Your household is not in a grid yet. Create a grid to connect relatives\u2019 households, or join one with a code.');
-    try{var _gib=document.getElementById('gridInviteBtn'); if(_gib)_gib.style.display='none';}catch(e){}
+    try{var _gib=document.getElementById('gridInviteTop'); if(_gib)_gib.style.display='none';}catch(e){}
     document.getElementById('gridFeed').innerHTML=''; return; }
   document.getElementById('ghName').textContent=GRID.name;
   // households in the grid (with scores)
   var gh = await sb.from('grid_households').select('household_id, role, families(id,name,surname,city,household_score)').eq('grid_id',GRID.id).eq('status','active');
   GRIDHOMES = (gh.data||[]).map(function(r){return r.families;}).filter(Boolean);
   GRID_ADMIN = (gh.data||[]).some(function(r){return r.families && FAM && r.families.id===FAM.id && r.role==='admin';});
-  try{var gib=document.getElementById('gridInviteBtn'); if(gib) gib.style.display='block'; var gsb=document.getElementById('gridSentBtn'); if(gsb) gsb.style.display='block';}catch(e){}
+  try{var gib=document.getElementById('gridInviteTop'); if(gib) gib.style.display='block'; var gsb=document.getElementById('gridSentBtn'); if(gsb) gsb.style.display='block';}catch(e){}
   await loadGridGames();
   document.getElementById('ghSub').textContent=GRIDHOMES.length+(GRIDHOMES.length===1?' household':' households');
   try{var _av=document.getElementById('ghAvatars'); if(_av){
@@ -2671,12 +2723,42 @@ function openHappyInfo(){
 
 
 function showPanel(which){
-  ['welcome','login','join','start'].forEach(function(p){
+  ['welcome','login','join','start','claim'].forEach(function(p){
     var el=document.getElementById(p+'Panel'); if(el) el.style.display = (p===which)?'block':'none';
   });
   authMsg('');
 }
 function _v(id){var e=document.getElementById(id);return e?(e.value||''):'';}
+async function claimJoin(){
+  if(!ensureSB()){authMsg('Still loading \u2014 check internet and try again.');return;}
+  var phone=(window.__claimPhone||'').replace(/\D/g,'');
+  var name=_v('cName').trim(); var code=_v('cCode').trim();
+  if(!phone){authMsg('This invite link is missing your number \u2014 ask for a fresh link.');return;}
+  if(code.length<4){authMsg('Pick a PIN (at least 4 digits) \u2014 that\'s your login.');return;}
+  var btn=document.getElementById('cBtn');btn.textContent='Joining\u2026';btn.disabled=true;authMsg('');
+  var email=phone+'@jeeto.family';
+  var su=await sb.auth.signUp({email:email,password:code,options:{data:{display_name:name,phone:phone}}});
+  if(su.error){
+    var m=(su.error.message||'').toLowerCase();
+    if(m.indexOf('regist')>=0||m.indexOf('already')>=0){
+      var si=await sb.auth.signInWithPassword({email:email,password:code});
+      if(si.error){btn.textContent='\ud83d\udd17 Join the grid';btn.disabled=false;authMsg('This number already has an account \u2014 enter your existing PIN to log in.');return;}
+    } else { btn.textContent='\ud83d\udd17 Join the grid';btn.disabled=false;authMsg(su.error.message);return; }
+  }
+  if(!su.data||!su.data.session){
+    var si2=await sb.auth.signInWithPassword({email:email,password:code});
+    if(si2.error){btn.textContent='\ud83d\udd17 Join the grid';btn.disabled=false;authMsg('Created \u2014 turn OFF "Confirm email" in Supabase, then log in.');return;}
+  }
+  var ci=await sb.rpc('claim_invite',{p_name:name});
+  if(ci.error){
+    var em=(ci.error.message||'');
+    btn.textContent='\ud83d\udd17 Join the grid';btn.disabled=false;
+    if(em.indexOf('already in')>=0){ window.__claimPhone=null; await boot(); return; }
+    if(em.indexOf('no_invite')>=0){ authMsg('No invite found for this number. Ask for a fresh invite link \u2014 or tap "Start fresh" to set up your own family.'); return; }
+    authMsg(em||'Could not join.'); return;
+  }
+  window.__claimPhone=null; confetti(); await boot();
+}
 async function createHousehold(){
   if(!ensureSB()){authMsg('Still loading — check internet and try again.');return;}
   var sur=_v('hSurname').trim(), city=_v('hCity').trim(), name=_v('hName').trim();
@@ -3856,6 +3938,8 @@ async function cancelMerge(){
   toast('Request cancelled'); loadMerge();
 }
 function openTour(){ document.getElementById('tourOverlay').style.display='flex'; }
+function openGuide(){ var el=document.getElementById('guideOverlay'); if(el){ el.style.display='flex'; el.scrollTop=0; } }
+function closeGuide(){ var el=document.getElementById('guideOverlay'); if(el) el.style.display='none'; try{ localStorage.setItem('jeeto_guide_v1','1'); }catch(e){} }
 function closeTour(){ document.getElementById('tourOverlay').style.display='none'; }
 function openFounder(){ document.getElementById('founderOverlay').style.display='flex'; loadFounder(); }
 function closeFounder(){ document.getElementById('founderOverlay').style.display='none'; }
@@ -3943,6 +4027,21 @@ window.addEventListener('load', boot);
       <div class="tournote">No money, no ads — just your family, closer. Setup takes about a minute.</div>
       <button class="btn btn-primary" style="margin-top:6px" onclick="closeTour();showPanel('start')">✨ Start my family</button>
       <button class="btn btn-ghost" style="margin-top:8px" onclick="closeTour();showPanel('join')">I have a family code</button>
+    </div>
+  </div>
+
+  <!-- ============ POST-LOGIN: HOW TO USE (navigation guide) ============ -->
+  <div id="guideOverlay">
+    <div class="lgbar"><span onclick="closeGuide()">✕</span><b>👋 Welcome — how to use Jeeto</b><span style="width:18px"></span></div>
+    <div class="lgbody">
+      <div class="tourlede">You're in! Here's everything you need in 5 quick steps 💛</div>
+      <div class="tourcard"><div class="te">🏠</div><div><b>1 · This is your Home</b><p>Your household's own space — your family's happiness, daily steps and memories all live here. You start here every time.</p></div></div>
+      <div class="tourcard"><div class="te">📸</div><div><b>2 · Walk &amp; earn together</b><p>On Home, tap <b>📸 Submit steps</b> and snap your step count from any step app (Pacer, Health, Fit). Everyone's steps lift the family up the board — you climb as a team, never alone.</p></div></div>
+      <div class="tourcard"><div class="te">🧭</div><div><b>3 · Find your way</b><p>The tabs at the bottom: <b>🏠 Home</b> · <b>🏆 Ranks</b> · <b>🎮 Play</b> · <b>💛 Family</b> (chat, songs, album) · <b>🪙 Coins</b> · <b>😊 Me</b>. Tap around — you can't break anything!</p></div></div>
+      <div class="tourcard"><div class="te">🔗</div><div><b>4 · Inside vs Outside</b><p>The toggle at the very top. <b>🏠 Inside the Home</b> is your own household. <b>🔗 Outside · Grid</b> connects you with relatives' households — to chat, walk &amp; play across the whole khandaan.</p></div></div>
+      <div class="tourcard"><div class="te">🔑</div><div><b>5 · What's a "grid code"?</b><p>A short code (like <b>AOUGRID</b>) your family head shares to link your household into the family grid. <b>You don't need it to begin</b> — explore your home first, and join a grid whenever you're ready.</p></div></div>
+      <div class="tournote">Stuck later? Open this guide anytime from the <b>😊 Me</b> tab → <b>How to use Jeeto</b>.</div>
+      <button class="btn btn-primary" style="margin-top:6px" onclick="closeGuide()">Got it — let's go! 💛</button>
     </div>
   </div>
 
