@@ -64,6 +64,58 @@ body{
 .screen{flex:1;overflow-y:auto;padding:4px 16px calc(120px + env(safe-area-inset-bottom));scroll-behavior:smooth}
 .screen::-webkit-scrollbar{display:none}
 .view{display:none;animation:fade .35s ease}
+.tr-tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:5px;margin:8px 0 12px}
+.tr-tab{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--ink2);padding:9px 4px;border-radius:10px;cursor:pointer}
+.tr-tab.on{background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff}
+.tr-hide{display:none}
+.tr-av{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:19px;border:2.5px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.12);overflow:hidden;flex:0 0 auto}
+.tr-av img{width:100%;height:100%;object-fit:cover}
+.tr-av.m{background:linear-gradient(135deg,#60A5FA,#3B82F6)}
+.tr-av.f{background:linear-gradient(135deg,#F9A8D4,#EC4899)}
+.tr-av.o{background:linear-gradient(135deg,#A78BFA,#7C3AED)}
+.tr-av.sm{width:42px;height:42px;font-size:15px}
+.tr-av.me{box-shadow:0 0 0 3px #FFD23F,0 3px 9px rgba(0,0,0,.15)}
+.tr-gen{margin-bottom:4px}
+.tr-genlab{font-size:11px;font-weight:800;color:var(--rani-d);text-transform:uppercase;letter-spacing:.5px;margin:0 2px 8px;display:flex;align-items:center;gap:7px}
+.tr-genlab::before{content:"";width:16px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--saffron),var(--rani))}
+.tr-genrow{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 14px}
+.tr-couple{display:flex;align-items:flex-start;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px 11px 9px;box-shadow:0 4px 12px rgba(0,0,0,.04);flex:0 0 auto}
+.tr-couple.hasme{border-color:#FFD23F;box-shadow:0 0 0 2px #FFE7A0,0 6px 14px rgba(255,160,0,.13)}
+.tr-pc{display:flex;flex-direction:column;align-items:center;width:74px;cursor:pointer}
+.tr-nm{font-size:12px;font-weight:700;margin-top:6px;text-align:center;line-height:1.15;max-width:74px}
+.tr-rl{font-size:10px;color:var(--rani-d);font-weight:700;margin-top:1px;text-align:center}
+.tr-heart{align-self:center;color:var(--rani);font-size:12px;margin-top:14px}
+.tr-empty{text-align:center;color:var(--ink2);font-size:13px;padding:28px 16px;line-height:1.6}
+.tr-home{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.04);position:relative;overflow:hidden}
+.tr-home::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:linear-gradient(180deg,var(--saffron),var(--rani),var(--purple))}
+.tr-home h3{margin:0 0 2px;font-size:15px}
+.tr-city{font-size:11.5px;color:var(--ink2);margin:0 0 10px}
+.tr-members{display:flex;flex-wrap:wrap;gap:12px}
+.tr-members .tr-pc{width:60px}.tr-members .tr-nm{max-width:60px;font-size:11px}
+.tr-whoami{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.6);border:1px dashed var(--rani);border-radius:13px;padding:9px 11px;margin-bottom:12px;font-size:12.5px}
+.tr-whoami select{margin-left:auto;border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-weight:700;background:#fff;color:var(--ink)}
+.tr-relgrp{margin-bottom:15px}
+.tr-relgrp h4{font-size:12px;font-weight:800;color:var(--rani-d);text-transform:uppercase;letter-spacing:.5px;margin:0 2px 8px}
+.tr-relcard{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 11px;margin-bottom:7px;box-shadow:0 3px 9px rgba(0,0,0,.03)}
+.tr-info{flex:1;min-width:0}.tr-nm2{font-size:14px;font-weight:700}.tr-sub{font-size:11px;color:var(--ink2);margin-top:1px}
+.tr-chip{font-size:12px;font-weight:800;color:#fff;padding:5px 11px;border-radius:999px;white-space:nowrap;background:linear-gradient(135deg,var(--saffron),var(--rani))}
+.tr-chip.elder{background:linear-gradient(135deg,#7C3AED,#9F5CF0)}
+.tr-chip.younger{background:linear-gradient(135deg,#10B981,#34D399)}
+.tr-chip.other{background:linear-gradient(135deg,#94A3B8,#64748B)}
+.tr-addgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0}
+.tr-addbtn{display:flex;flex-direction:column;align-items:flex-start;gap:3px;background:linear-gradient(135deg,#FFF7E0,#FFF1F4);border:1.5px solid #f3d9c7;border-radius:14px;padding:12px;cursor:pointer}
+.tr-addbtn b{font-size:13.5px}.tr-addbtn small{font-size:11px;color:var(--ink2)}.tr-addbtn span{font-size:21px}
+.tr-fld{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin:12px 0 5px}
+.tr-fi{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:15px;background:#fff;color:var(--ink)}
+.tr-gsel{display:flex;gap:8px}
+.tr-gopt2{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:12px;padding:11px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink2)}
+.tr-gopt2.on{border-color:var(--rani);background:#FFF1F4;color:var(--rani-d)}
+.tr-cta{width:100%;background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;margin-top:16px;cursor:pointer}
+.tr-msg{font-size:12px;color:var(--rani-d);min-height:15px;margin-top:6px;text-align:center}
+.tr-gset{font-size:12.5px;color:var(--ink2);margin:4px 0 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tr-gopt{border:1.5px solid var(--line);border-radius:10px;padding:6px 10px;font-weight:700;cursor:pointer;color:var(--ink2);font-size:12.5px}
+.tr-gopt.on{border-color:var(--rani);background:#FFF1F4;color:var(--rani-d)}
+.tr-fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom));z-index:25;background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border:none;border-radius:999px;padding:13px 22px;font-size:15px;font-weight:800;box-shadow:0 8px 20px rgba(224,58,122,.38);cursor:pointer}
 .view.active{display:block}
 #v-grid{padding-top:0;margin-top:0}
 #v-grid .gridhead:first-child{margin-top:0!important}
@@ -756,6 +808,10 @@ body{
       <div class="submithow"><b>How it works:</b> take a short walk → open your phone's step counter → tap the button above & snap a photo of it. It logs your steps, earns coins 🪙, and when <b>2+ of you</b> walk, your family streak 🔥 stays alive.</div>
 
       <div class="qrow">
+        <div class="qcard q-tree" onclick="go('tree');treeBoot()">
+          <div class="qe">🌳</div>
+          <div><div class="qt">Family Tree</div><div class="qs">See your whole khandaan</div></div>
+        </div>
         <div class="qcard q-chat" onclick="go('chat')">
           <div class="qe">💬</div>
           <div><div class="qt">Family Board</div><div class="qs">Family chat</div></div>
@@ -1159,6 +1215,20 @@ body{
       </div>
     </div>
 
+    <!-- ============ FAMILY TREE ============ -->
+    <section class="view" id="v-tree">
+      <div class="sectit" style="margin-top:10px">Family Tree 🌳</div>
+      <div class="tr-tabs">
+        <div class="tr-tab on" data-tv="tree" onclick="TR_switch('tree')">🌳 Tree</div>
+        <div class="tr-tab" data-tv="homes" onclick="TR_switch('homes')">🏡 Homes</div>
+        <div class="tr-tab" data-tv="rel" onclick="TR_switch('rel')">💞 Relations</div>
+      </div>
+      <div id="tr-tree"></div>
+      <div id="tr-homes" class="tr-hide"></div>
+      <div id="tr-rel" class="tr-hide"></div>
+      <button class="tr-fab" onclick="TR_openAdd()">＋ Add family</button>
+    </section>
+
   <div class="mini" id="mini" onclick="if(event.target.id!=='miniPP')go('music')">
     <div class="mart" id="miniArt">🎶</div>
     <div class="mi"><div class="mt" id="miniTitle">—</div><div class="ma" id="miniArtist">—</div></div>
@@ -1201,7 +1271,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 88</div>
+      <div class="psub">Powered by Skyvos AI · build 89</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -4072,6 +4142,203 @@ if('serviceWorker' in navigator){
     }).catch(function(e){ console.log('SW failed',e); });
   });
 }
+</script>
+<script>
+/* ============ JEETO FAMILY TREE (in-app module, namespaced TR_) ============ */
+var TR_people={}, TR_edges=[], TR_homes={}, TR_ME=null, TR_TREE=null, TR_booted=false, TR_view='tree';
+function TR_P(id){return TR_people[id];}
+function TR_uid(){return 'p'+Math.random().toString(36).slice(2,9);}
+function TR_add(o){var id=o.id||TR_uid();TR_people[id]=Object.assign({id:id,gender:'o'},o);return id;}
+function TR_link(k,a,b){ if(!a||!b)return; if(TR_edges.some(function(e){return e.kind===k&&((e.a===a&&e.b===b)||(k==='spouse'&&e.a===b&&e.b===a));}))return; TR_edges.push({kind:k,a:a,b:b}); }
+function TR_par(id){return TR_edges.filter(function(e){return e.kind==='parent'&&e.b===id;}).map(function(e){return e.a;});}
+function TR_chi(id){return TR_edges.filter(function(e){return e.kind==='parent'&&e.a===id;}).map(function(e){return e.b;});}
+function TR_spo(id){return TR_edges.filter(function(e){return e.kind==='spouse'&&(e.a===id||e.b===id);}).map(function(e){return e.a===id?e.b:e.a;});}
+function TR_sib(id){var s={};TR_par(id).forEach(function(p){TR_chi(p).forEach(function(c){if(c!==id)s[c]=1;});});return Object.keys(s);}
+function TR_in(a,x){return a.indexOf(x)>=0;}
+function TR_ey(a,b){var A=TR_P(a),B=TR_P(b);if(A&&B&&A.dob&&B.dob)return A.dob<B.dob?'elder':'younger';return null;}
+
+function TR_relation(me,x){
+  if(me===x) return {hi:'You',en:'',grp:'me'};
+  var g=TR_P(x).gender, M=g==='m', F=g==='f', mg=TR_P(me).gender;
+  function pick(a,b,n){return M?a:(F?b:n);}
+  if(TR_in(TR_spo(me),x)) return {hi:pick('Pati','Patni','Partner'),en:'Spouse',grp:'mine'};
+  if(TR_in(TR_par(me),x)) return {hi:pick('Papa','Maa','Parent'),en:'Parent',grp:'elder'};
+  if(TR_in(TR_chi(me),x)) return {hi:pick('Beta','Beti','Child'),en:'Child',grp:'younger'};
+  if(TR_in(TR_sib(me),x)){var e=TR_ey(x,me);
+    if(M)return{hi:e==='elder'?'Bhaiya':(e==='younger'?'Chhota Bhai':'Bhai'),en:'Brother',grp:'mine'};
+    if(F)return{hi:e==='elder'?'Didi':(e==='younger'?'Chhoti Behen':'Behen'),en:'Sister',grp:'mine'};
+    return{hi:'Sibling',en:'Sibling',grp:'mine'};}
+  var par=TR_par(me),i,p,k,sb,s,sibs;
+  for(i=0;i<par.length;i++){p=par[i];
+    if(TR_in(TR_par(p),x)){var pat=TR_P(p).gender==='m';
+      if(pat)return{hi:pick('Dada','Dadi','Grandparent'),en:'Grandparent',grp:'elder'};
+      return{hi:pick('Nana','Nani','Grandparent'),en:'Grandparent',grp:'elder'};}
+  }
+  for(i=0;i<par.length;i++){var gp=TR_par(par[i]);for(k=0;k<gp.length;k++){if(TR_in(TR_par(gp[k]),x))return{hi:pick('Par-Dada','Par-Dadi','Great-grandparent'),en:'Great-grandparent',grp:'elder'};}}
+  var kids=TR_chi(me);
+  for(i=0;i<kids.length;i++){if(TR_in(TR_chi(kids[i]),x))return{hi:pick('Pota/Dohta','Poti/Dohti','Grandchild'),en:'Grandchild',grp:'younger'};}
+  for(i=0;i<par.length;i++){p=par[i];var paternal=TR_P(p).gender==='m';sibs=TR_sib(p);
+    if(TR_in(sibs,x)){var e2=TR_ey(x,p);
+      if(paternal)return{hi:M?(e2==='elder'?'Tau':'Chacha'):(F?'Bua':'Uncle/Aunt'),en:"Parent's sibling",grp:'elder'};
+      return{hi:M?'Mama':(F?'Mausi':'Uncle/Aunt'),en:"Parent's sibling",grp:'elder'};}
+    for(k=0;k<sibs.length;k++){sb=sibs[k];
+      if(TR_in(TR_spo(sb),x)){var sbM=TR_P(sb).gender==='m';
+        if(paternal){ if(sbM)return{hi:F?(TR_ey(sb,p)==='elder'?'Tai':'Chachi'):'Aunt',en:"Uncle's wife",grp:'elder'}; return{hi:M?'Phupha':'Relative',en:"Bua's husband",grp:'elder'};}
+        if(sbM)return{hi:F?'Mami':'Aunt',en:"Mama's wife",grp:'elder'}; return{hi:M?'Mausa':'Relative',en:"Mausi's husband",grp:'elder'};}
+    }
+  }
+  sibs=TR_sib(me);
+  for(i=0;i<sibs.length;i++){s=sibs[i];
+    if(TR_in(TR_chi(s),x)){var bro=TR_P(s).gender==='m';
+      if(bro)return{hi:pick('Bhatija','Bhatiji','Nibling'),en:"Brother's child",grp:'younger'};
+      return{hi:pick('Bhanja','Bhanji','Nibling'),en:"Sister's child",grp:'younger'};}
+  }
+  for(i=0;i<par.length;i++){var ps=TR_sib(par[i]);for(k=0;k<ps.length;k++){if(TR_in(TR_chi(ps[k]),x))return{hi:M?'Cousin Bhai':(F?'Cousin Behen':'Cousin'),en:'Cousin',grp:'mine'};}}
+  var sp=TR_spo(me);
+  for(i=0;i<sp.length;i++){s=sp[i];
+    if(TR_in(TR_par(s),x))return{hi:pick('Sasur','Saas','In-law'),en:'Parent-in-law',grp:'elder'};
+    if(TR_in(TR_sib(s),x)){ if(mg==='m')return{hi:pick('Saala','Saali','In-law'),en:"Spouse's sibling",grp:'mine'}; return{hi:M?(TR_ey(x,s)==='elder'?'Jeth':'Devar'):(F?'Nanad':'In-law'),en:"Spouse's sibling",grp:'mine'};}
+  }
+  for(i=0;i<sibs.length;i++){s=sibs[i];
+    if(TR_in(TR_spo(s),x)){ if(TR_P(s).gender==='m')return{hi:'Bhabhi',en:"Brother's wife",grp:'mine'}; return{hi:M?'Jija':'Relative',en:"Sister's husband",grp:'mine'};}
+  }
+  for(i=0;i<kids.length;i++){if(TR_in(TR_spo(kids[i]),x))return{hi:pick('Damaad','Bahu','Child-in-law'),en:'Child-in-law',grp:'younger'};}
+  return {hi:'Relative',en:'Family',grp:'other'};
+}
+
+function TR_computeGen(){
+  var gen={},ids=Object.keys(TR_people);if(!ids.length)return gen;
+  var start=TR_ME||ids[0];gen[start]=0;var q=[start],guard=0;
+  while(q.length&&guard++<6000){var cur=q.shift(),g=gen[cur];
+    TR_spo(cur).forEach(function(s){if(gen[s]===undefined){gen[s]=g;q.push(s);}});
+    TR_par(cur).forEach(function(p){if(gen[p]===undefined){gen[p]=g-1;q.push(p);}});
+    TR_chi(cur).forEach(function(c){if(gen[c]===undefined){gen[c]=g+1;q.push(c);}});
+  }
+  ids.forEach(function(id){if(gen[id]===undefined)gen[id]=0;});return gen;
+}
+function TR_initials(n){return (n||'?').trim().split(/\s+/).map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();}
+function TR_avatar(id,cls){var p=TR_P(id);var c=p.gender==='m'?'m':(p.gender==='f'?'f':'o');var me=id===TR_ME?' me':'';
+  var inner=p.photo_url?'<img src="'+p.photo_url+'">':TR_initials(p.name);
+  return '<div class="tr-av '+c+(cls?' '+cls:'')+me+'">'+inner+'</div>';}
+
+function TR_switch(v){TR_view=v;
+  ['tree','homes','rel'].forEach(function(t){var el=document.getElementById('tr-'+t);if(el)el.classList.toggle('tr-hide',t!==v);
+    var tb=document.querySelector('.tr-tab[data-tv="'+t+'"]');if(tb)tb.classList.toggle('on',t===v);});
+  if(v==='tree')TR_renderTree();if(v==='homes')TR_renderHomes();if(v==='rel')TR_renderRel();
+}
+
+function TR_renderTree(){
+  var el=document.getElementById('tr-tree');if(!el)return;var ids=Object.keys(TR_people);
+  if(!ids.length){el.innerHTML='<div class="tr-empty">🌱 Your tree is empty.<br>Tap <b>＋ Add family</b> to add yourself, your parents, spouse and children.</div>';return;}
+  var gen=TR_computeGen(),byGen={};ids.forEach(function(id){(byGen[gen[id]]=byGen[gen[id]]||[]).push(id);});
+  var gnums=Object.keys(byGen).map(Number).sort(function(a,b){return a-b;});var meG=gen[TR_ME]||0;var html='';
+  gnums.forEach(function(gn){var diff=gn-meG;
+    var lbl=diff===0?'Your generation':(diff===-1?'Parents & their siblings':(diff===-2?'Grandparents':(diff===1?'Children, nieces & nephews':(diff===2?'Grandchildren':(diff<0?'Elders':'Younger')))));
+    var row=byGen[gn].slice(),done={},cards='';
+    row.forEach(function(id){if(done[id])return;var sp=TR_spo(id).filter(function(s){return gen[s]===gn;});
+      var partners=[id].concat(sp.filter(function(s){return !done[s];}));partners.forEach(function(s){done[s]=1;});
+      var hasme=partners.indexOf(TR_ME)>=0,inner='';
+      partners.forEach(function(pid,ix){var r=TR_relation(TR_ME,pid);
+        inner+='<div class="tr-pc" onclick="TR_tap(\''+pid+'\')">'+TR_avatar(pid)+'<div class="tr-nm">'+TR_P(pid).name+'</div>'+(pid===TR_ME?'<div class="tr-rl">You</div>':(r.hi&&r.hi!=='You'?'<div class="tr-rl">'+r.hi+'</div>':''))+'</div>';
+        if(ix<partners.length-1)inner+='<div class="tr-heart">❤</div>';});
+      cards+='<div class="tr-couple'+(hasme?' hasme':'')+'">'+inner+'</div>';});
+    html+='<div class="tr-gen"><div class="tr-genlab">'+lbl+'</div><div class="tr-genrow">'+cards+'</div></div>';});
+  el.innerHTML=html;
+}
+function TR_renderHomes(){
+  var el=document.getElementById('tr-homes');if(!el)return;
+  var byHome={};Object.keys(TR_people).forEach(function(id){var h=TR_P(id).household_id;if(h){(byHome[h]=byHome[h]||[]).push(id);}});
+  var noHome=Object.keys(TR_people).filter(function(id){return !TR_P(id).household_id;});
+  var hids=Object.keys(byHome);
+  if(!hids.length&&!noHome.length){el.innerHTML='<div class="tr-empty">🏡 No homes yet.</div>';return;}
+  var html='';
+  hids.forEach(function(h){var hh=TR_homes[h]||{name:'Home',city:''},ms=byHome[h];
+    html+='<div class="tr-home"><h3>🏡 '+(hh.name||'Home')+'</h3><div class="tr-city">📍 '+(hh.city||'')+' · '+ms.length+' member'+(ms.length!==1?'s':'')+'</div><div class="tr-members">';
+    ms.forEach(function(id){var r=TR_relation(TR_ME,id);html+='<div class="tr-pc" onclick="TR_tap(\''+id+'\')">'+TR_avatar(id,'sm')+'<div class="tr-nm">'+TR_P(id).name+'</div>'+(r.hi&&r.hi!=='You'?'<div class="tr-rl">'+r.hi+'</div>':(id===TR_ME?'<div class="tr-rl">You</div>':''))+'</div>';});
+    html+='</div></div>';});
+  if(noHome.length){html+='<div class="tr-home"><h3>🚪 Not in a home yet</h3><div class="tr-members">';
+    noHome.forEach(function(id){html+='<div class="tr-pc" onclick="TR_tap(\''+id+'\')">'+TR_avatar(id,'sm')+'<div class="tr-nm">'+TR_P(id).name+'</div></div>';});html+='</div></div>';}
+  el.innerHTML=html;
+}
+function TR_renderRel(){
+  var el=document.getElementById('tr-rel');if(!el)return;var ids=Object.keys(TR_people);
+  var opts=ids.map(function(id){return '<option value="'+id+'"'+(id===TR_ME?' selected':'')+'>'+TR_P(id).name+'</option>';}).join('');
+  var head='<div class="tr-whoami">👤 Relations from: <select onchange="TR_ME=this.value;TR_renderRel();TR_renderTree()">'+opts+'</select></div>';
+  if(ids.length<=1){el.innerHTML=head+'<div class="tr-empty">Add family to see how everyone is related to you.</div>';return;}
+  var groups={elder:[],mine:[],younger:[],other:[]};
+  ids.forEach(function(id){if(id===TR_ME)return;var r=TR_relation(TR_ME,id);(groups[r.grp]||groups.other).push({id:id,r:r});});
+  var order=[['elder','👴 Elders'],['mine','🧑‍🤝‍🧑 Your generation'],['younger','🧒 Younger'],['other','👨‍👩‍👧 Extended']];var html=head;
+  order.forEach(function(o){var list=groups[o[0]];if(!list.length)return;list.sort(function(a,b){return a.r.hi.localeCompare(b.r.hi);});
+    html+='<div class="tr-relgrp"><h4>'+o[1]+'</h4>';
+    list.forEach(function(it){var p=TR_P(it.id);html+='<div class="tr-relcard">'+TR_avatar(it.id,'sm')+'<div class="tr-info"><div class="tr-nm2">'+p.name+'</div><div class="tr-sub">'+(it.r.en||'Family')+(p.household_id&&TR_homes[p.household_id]?' · '+TR_homes[p.household_id].name:'')+'</div></div><div class="tr-chip '+it.r.grp+'">'+it.r.hi+'</div></div>';});
+    html+='</div>';});
+  el.innerHTML=html;
+}
+function TR_tap(id){var p=TR_P(id),r=TR_relation(TR_ME,id);
+  var relLine=id===TR_ME?'<b>This is you</b> 💛':('Your <b>'+r.hi+'</b>'+(r.en?' ('+r.en+')':''));
+  var gtoggle='<div class="tr-gset">Who are they? '+
+    '<span class="tr-gopt'+(p.gender==='m'?' on':'')+'" onclick="TR_setGender(\''+id+'\',\'m\')">👨 Male</span>'+
+    '<span class="tr-gopt'+(p.gender==='f'?' on':'')+'" onclick="TR_setGender(\''+id+'\',\'f\')">👩 Female</span></div>';
+  openSheet('<h3>'+p.name+'</h3>'+
+    '<div style="display:flex;align-items:center;gap:14px;margin-bottom:10px">'+TR_avatar(id)+'<div><div style="font-size:14px">'+relLine+'</div>'+(p.household_id&&TR_homes[p.household_id]?'<div style="font-size:12px;color:var(--ink2);margin-top:3px">🏡 '+TR_homes[p.household_id].name+'</div>':'')+'</div></div>'+
+    gtoggle+
+    '<div class="tr-addgrid">'+TR_addBtn('spouse',id,'❤','Add spouse','husband / wife')+TR_addBtn('child',id,'🧒','Add child','son / daughter')+TR_addBtn('parent',id,'👴','Add parent','father / mother')+TR_addBtn('sibling',id,'🧑‍🤝‍🧑','Add sibling','brother / sister')+'</div>');
+}
+function TR_setGender(id,g){if(TR_P(id))TR_P(id).gender=g; if(TR_P(id)&&TR_P(id).__db)TR_saveGender(id,g); TR_tap(id); TR_switch(TR_view);}
+function TR_addBtn(rel,anchor,icon,title,sub){return '<div class="tr-addbtn" onclick="TR_openForm(\''+rel+'\',\''+anchor+'\')"><span>'+icon+'</span><b>'+title+'</b><small>'+sub+'</small></div>';}
+function TR_openAdd(){ if(!Object.keys(TR_people).length||!TR_ME){TR_openForm('self',null);return;}
+  openSheet('<h3>Add to the tree</h3><p style="font-size:12.5px;color:var(--ink2);margin:-6px 0 12px">Add a relative — or tap anyone in the tree to add <i>their</i> relatives.</p><div class="tr-addgrid">'+TR_addBtn('spouse',TR_ME,'❤','My spouse','husband / wife')+TR_addBtn('child',TR_ME,'🧒','My child','son / daughter')+TR_addBtn('parent',TR_ME,'👴','My parent','father / mother')+TR_addBtn('sibling',TR_ME,'🧑‍🤝‍🧑','My sibling','brother / sister')+'</div>');}
+var TR_pg='o';
+function TR_openForm(rel,anchor){var who=rel==='self'?'you':({spouse:'spouse',child:'a child',parent:'a parent',sibling:'a sibling'}[rel]||'family');
+  var ctx=rel==='self'?'Let’s start with you 🌱':('Adding '+who+(anchor?' of '+TR_P(anchor).name:''));TR_pg='o';
+  var homeOpts='<option value="">— no home —</option>'+Object.keys(TR_homes).map(function(h){return '<option value="'+h+'">'+TR_homes[h].name+'</option>';}).join('');
+  openSheet('<h3>'+ctx+'</h3><label class="tr-fld">Name</label><input class="tr-fi" id="tr_name" placeholder="Full name"><label class="tr-fld">They are</label><div class="tr-gsel"><div class="tr-gopt2" id="tr_gm" onclick="TR_pg=\'m\';TR_gselUI()">👨 Male</div><div class="tr-gopt2" id="tr_gf" onclick="TR_pg=\'f\';TR_gselUI()">👩 Female</div><div class="tr-gopt2" id="tr_go" onclick="TR_pg=\'o\';TR_gselUI()">Other</div></div><label class="tr-fld">Birthday <small style="font-weight:500">(optional)</small></label><input class="tr-fi" id="tr_dob" type="date"><label class="tr-fld">Home <small style="font-weight:500">(optional)</small></label><select class="tr-fi" id="tr_home">'+homeOpts+'</select><div class="tr-msg" id="tr_msg"></div><button class="tr-cta" onclick="TR_save(\''+rel+'\',\''+(anchor||'')+'\')">Add to tree 🌳</button>');}
+function TR_gselUI(){['m','f','o'].forEach(function(x){var e=document.getElementById('tr_g'+x);if(e)e.classList.toggle('on',x===TR_pg);});}
+function TR_save(rel,anchor){var name=(document.getElementById('tr_name').value||'').trim();if(!name){document.getElementById('tr_msg').textContent='Please enter a name';return;}
+  var dob=document.getElementById('tr_dob').value||null,home=document.getElementById('tr_home').value||null;
+  var nid=TR_add({name:name,gender:TR_pg,dob:dob,household_id:home});
+  if(rel==='self'){TR_ME=nid;}
+  else if(rel==='spouse'){TR_link('spouse',anchor,nid);}
+  else if(rel==='child'){TR_link('parent',anchor,nid);TR_spo(anchor).forEach(function(s){TR_link('parent',s,nid);});}
+  else if(rel==='parent'){TR_link('parent',nid,anchor);var ex=TR_par(anchor).filter(function(p){return p!==nid;});if(ex.length===1)TR_link('spouse',ex[0],nid);}
+  else if(rel==='sibling'){var ps=TR_par(anchor);if(ps.length){ps.forEach(function(p){TR_link('parent',p,nid);});}else{var pp=TR_add({name:'(Parent)',gender:'o'});TR_link('parent',pp,anchor);TR_link('parent',pp,nid);}}
+  TR_persist(nid,rel,anchor);
+  closeSheet();TR_switch(TR_view);
+}
+
+/* ---------- Supabase load / persist ---------- */
+async function treeBoot(){
+  if(TR_booted){TR_switch('tree');return;}
+  var host=document.getElementById('tr-tree');if(host)host.innerHTML='<div class="tr-empty">Loading your family…</div>';
+  try{
+    var t=await sb.rpc('my_family_tree'); if(t.error)throw t.error; TR_TREE=t.data;
+    await sb.rpc('tree_import_members');
+    var pr=await sb.from('tree_people').select('*').eq('tree_id',TR_TREE);
+    var er=await sb.from('tree_edges').select('*').eq('tree_id',TR_TREE);
+    var hr=await sb.rpc('tree_homes');
+    TR_people={};TR_edges=[];TR_homes={};
+    (hr.data||[]).forEach(function(h){TR_homes[h.id]={id:h.id,name:h.name||'Home',city:h.city||''};});
+    (pr.data||[]).forEach(function(p){TR_people[p.id]={id:p.id,name:p.display_name,gender:p.gender||'o',dob:p.dob,photo_url:p.photo_url,household_id:p.household_id,member_id:p.member_id,__db:true};});
+    (er.data||[]).forEach(function(e){TR_edges.push({id:e.id,kind:e.kind,a:e.a,b:e.b});});
+    if(window.ME&&window.ME.id){var mine=Object.keys(TR_people).filter(function(k){return TR_people[k].member_id===ME.id;})[0];if(mine)TR_ME=mine;}
+    if(!TR_ME){var any=Object.keys(TR_people);if(any.length)TR_ME=any[0];}
+    TR_booted=true;
+  }catch(e){ if(host)host.innerHTML='<div class="tr-empty">Couldn’t load the tree. Make sure the Family Tree update has been run in Supabase, then reopen.</div>'; return; }
+  TR_switch('tree');
+}
+async function TR_persist(nid,rel,anchor){
+  if(!TR_TREE||!sb)return;
+  try{var p=TR_people[nid];
+    var ins=await sb.from('tree_people').insert({tree_id:TR_TREE,display_name:p.name,gender:p.gender,dob:p.dob,household_id:p.household_id}).select().single();
+    if(ins.error)throw ins.error;var rid=ins.data.id;p.__db=true;
+    TR_people[rid]=Object.assign({},p,{id:rid});delete TR_people[nid];
+    TR_edges.forEach(function(e){if(e.a===nid)e.a=rid;if(e.b===nid)e.b=rid;});if(TR_ME===nid)TR_ME=rid;
+    var save=TR_edges.filter(function(e){return (e.a===rid||e.b===rid)&&!e.id;});
+    for(var i=0;i<save.length;i++){var e=save[i];var r=await sb.from('tree_edges').insert({tree_id:TR_TREE,kind:e.kind,a:e.a,b:e.b}).select().single();if(!r.error)e.id=r.data.id;}
+  }catch(e){}
+}
+async function TR_saveGender(id,g){ if(!sb||!TR_P(id)||!TR_P(id).__db)return; try{await sb.from('tree_people').update({gender:g}).eq('id',id);}catch(e){} }
+
 </script>
 </body>
 </html>
