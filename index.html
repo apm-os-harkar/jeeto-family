@@ -1049,7 +1049,7 @@ body{
       <div class="feed-item"><div class="ic" style="background:#FFEAD2">👨‍👩‍👧‍👦</div><div><div class="ft" id="famLine">Your family</div><div class="fm" id="famSub">—</div></div></div>
       <div id="memberList"></div>
       <div style="height:8px"></div>
-      <button class="btn btn-primary" id="addMemberBtn" style="display:none" onclick="openAddMember()">👪 Add or invite family</button>
+      <button class="btn btn-primary" id="addMemberBtn" style="display:none" onclick="openFamilyHub()">👪 My Family — add &amp; requests</button>
       <div style="height:8px"></div>
       <button class="btn btn-primary" id="founderBtn" style="display:none;background:linear-gradient(135deg,#0E2547,#163A66)" onclick="openFounder()">📊 Founder Dashboard</button>
       <div style="height:8px"></div>
@@ -1303,7 +1303,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 109</div>
+      <div class="psub">Powered by Skyvos AI · build 110</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -2493,35 +2493,76 @@ async function refreshMe(){
   await loadCoinsLedger();
 }
 
-function openAddMember(){
-  window.__inviteRows=3;
-  var rows=''; for(var i=0;i<3;i++) rows+=_inviteRowHtml(i);
-  openSheet('<div style="text-align:center"><div style="font-size:42px">👪</div><h3>Add a family member</h3></div>'+
-  '<p class="s">Just enter their <b>name + phone number</b>. If they\'re on Jeeto, they get a request to <b>Accept</b>. If not, they join your family automatically when they sign up with that number. No codes.</p>'+
-  '<div id="inviteRows">'+rows+'</div>'+
-  '<div class="authhint" style="text-align:left;margin:2px 0 12px"><a onclick="addInviteRow()">➕ Add another person</a></div>'+
-  '<button class="btn btn-primary" onclick="inviteBulk()">Add to my family</button>'+
-  '<p class="s" style="font-size:11.5px;color:var(--ink2);margin-top:10px">Adding little ones or elders? As their parent or guardian, you\'re adding them with love. 💛</p>'+
-  '<div id="sentInvBox" style="margin-top:8px"></div>');
-  loadSentInvites();
+/* ===== ONE clean Family screen: add by phone, see sent, accept incoming, see members ===== */
+function openAddMember(){ openFamilyHub(); }   /* all family roads lead here */
+function openFamilyInvite(){ openFamilyHub(); }
+async function openFamilyHub(){
+  openSheet('<div style="text-align:center"><div style="font-size:40px">👪</div><h3>Your Family</h3></div><div id="fhBody">'+emptyMsg('Loading…')+'</div>');
+  loadFamilyHub();
 }
-async function loadSentInvites(){
-  var box=document.getElementById('sentInvBox'); if(!box) return;
-  var list=[];
-  try{ var r=await sb.rpc('my_sent_family_invites'); list=(r&&r.data)||[]; if(typeof list==='string'){ try{list=JSON.parse(list);}catch(e){list=[];} } }catch(e){}
-  if(!list.length){ box.innerHTML=''; return; }
-  var rows=list.map(function(it){
-    return '<div style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:7px">'+
-      '<div style="flex:1"><b style="font-size:13.5px">'+esc(it.name||'Someone')+'</b><div style="font-size:11.5px;color:#B4791F;font-weight:600">⏳ Waiting for them to accept</div></div>'+
-      '<button class="btn btn-ghost" style="width:auto;padding:6px 12px;margin:0" onclick="cancelSentInvite(\''+it.family_id+'\')">Cancel</button></div>';
-  }).join('');
-  box.innerHTML='<div style="font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1px;margin:14px 0 8px">📤 INVITES YOU\'VE SENT</div>'+rows+
-    '<p class="s" style="font-size:11px;color:var(--ink2)">Once they Accept, they show up in your family members list.</p>';
+async function loadFamilyHub(){
+  var box=document.getElementById('fhBody'); if(!box) return;
+  var inv=null, sent=[], mem=[];
+  try{ var iq=await sb.rpc('my_family_invite'); inv=(iq&&iq.data)||null; if(typeof inv==='string'){ try{inv=JSON.parse(inv);}catch(e){inv=null;} } }catch(e){}
+  try{ var sq=await sb.rpc('my_sent_family_invites'); sent=(sq&&sq.data)||[]; if(typeof sent==='string'){ try{sent=JSON.parse(sent);}catch(e){sent=[];} } }catch(e){}
+  try{ if(FAM){ var mq=await sb.from('members').select('display_name, role').eq('family_id',FAM.id); mem=(mq&&mq.data)||[]; } }catch(e){}
+
+  var html='';
+  // 1) Someone invited ME (accept / decline)
+  if(inv&&inv.from_id){
+    html+='<div style="border:1.5px solid #BCE6CC;background:#EAF7EF;border-radius:14px;padding:14px;margin-bottom:16px">'+
+      '<div style="font-weight:800;color:#1A6B3C">🔔 '+esc(inv.from_name||'A family')+' invited you to join</div>'+
+      '<div style="font-size:12px;color:#1A6B3C;margin:4px 0 10px">Accept and your account joins their family.</div>'+
+      '<button class="btn btn-primary" style="margin:0 0 8px" onclick="fhAccept()">Accept &amp; join 💛</button>'+
+      '<button class="btn btn-ghost" style="margin:0" onclick="fhDecline()">Decline</button></div>';
+  }
+  // 2) Add a family member by phone
+  html+='<div style="font-weight:800;margin-bottom:4px">➕ Add a family member</div>'+
+    '<p class="s" style="margin-top:0">Enter their phone. If they\'re on Jeeto they get a request to <b>Accept</b>. If not, they join when they sign up. No codes.</p>'+
+    '<input id="fhName" placeholder="Name">'+
+    '<input id="fhPhone" inputmode="numeric" placeholder="Phone number" onkeydown="if(event.key===\'Enter\')fhAdd()">'+
+    '<button class="btn btn-primary" onclick="fhAdd()">Send request</button>';
+  // 3) Requests I've sent (waiting)
+  if(sent&&sent.length){
+    html+='<div style="font-weight:800;margin:18px 0 6px">⏳ Waiting to accept</div>';
+    sent.forEach(function(s){
+      html+='<div style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:7px">'+
+        '<div style="flex:1"><b>'+esc(s.name||'Someone')+'</b><div style="font-size:11.5px;color:#B4791F">Waiting for them to accept</div></div>'+
+        '<button class="btn btn-ghost" style="width:auto;padding:6px 12px;margin:0" onclick="fhCancel(\''+s.family_id+'\')">Cancel</button></div>';
+    });
+  }
+  // 4) Who's in my family
+  if(mem&&mem.length){
+    html+='<div style="font-weight:800;margin:18px 0 6px">💛 In your family ('+mem.length+')</div>';
+    html+=mem.map(function(m){ return '<div style="padding:9px 2px;border-bottom:1px solid var(--line)">'+esc(m.display_name||'Member')+'</div>'; }).join('');
+  }
+  box.innerHTML=html;
 }
-async function cancelSentInvite(fid){
+async function fhAdd(){
+  var nm=(_v('fhName')||'').trim(), ph=(_v('fhPhone')||'').replace(/\D/g,'');
+  if(!nm||ph.length<6){ toast('Enter a name and a valid phone number.'); return; }
+  var r=await sb.rpc('family_add_by_phone',{p_name:nm,p_phone:ph});
+  if(r.error){ toast(r.error.message||'Could not add'); return; }
+  var st=(r.data&&r.data.status)||'';
+  if(st==='invited') toast('Request sent — ask '+nm+' to Accept 🔔');
+  else if(st==='already_in') toast(nm+' is already in your family');
+  else toast(nm+' will join when they sign up 💛');
+  loadFamilyHub(); try{refreshAll();}catch(e){}
+}
+async function fhAccept(){
+  var r=await sb.rpc('accept_family_invite');
+  if(r.error){ toast(r.error.message||'Could not join'); return; }
+  confetti&&confetti(); toast('You\'re in the family now 💛'); closeSheet(); await refreshAll();
+}
+async function fhDecline(){
+  var r=await sb.rpc('decline_family_invite');
+  if(r.error){ toast(r.error.message||'Could not decline'); return; }
+  toast('Declined'); loadFamilyHub();
+}
+async function fhCancel(fid){
   var r=await sb.rpc('cancel_family_invite',{p_family:fid});
   if(r.error){ toast(r.error.message||'Could not cancel'); return; }
-  toast('Invite cancelled'); loadSentInvites();
+  toast('Invite cancelled'); loadFamilyHub();
 }
 function _inviteRowHtml(i){
   return '<div style="display:flex;gap:6px;margin-bottom:6px"><input id="amName'+i+'" placeholder="Name" style="flex:1;margin:0"><input id="amPhone'+i+'" inputmode="numeric" placeholder="Phone number" style="flex:1.25;margin:0"></div>';
@@ -3179,26 +3220,7 @@ async function declineGridInvite(gid){
 }
 function loadGridReqBanner(){ return loadReqBanners(); } /* legacy alias */
 /* Family INVITE — someone added you by phone; you Accept to join them. */
-function openFamilyRequests(){ openFamilyInvite(); } /* legacy alias */
-async function openFamilyInvite(){
-  var inv=null;
-  try{ var iq=await sb.rpc('my_family_invite'); inv=(iq&&iq.data)||null; if(typeof inv==='string'){ try{inv=JSON.parse(inv);}catch(e){inv=null;} } }catch(e){}
-  if(!inv||!inv.from_id){ toast('No pending invite right now.'); loadReqBanners(); return; }
-  openSheet('<div style="text-align:center"><div style="font-size:42px">👪</div><h3>Join '+esc(inv.from_name||'this family')+'?</h3></div>'+
-  '<p class="s">You\'ve been invited to join <b>'+esc(inv.from_name||'this family')+'</b>. Accept and your account joins their family — you\'ll share their family space and tree. 💛</p>'+
-  '<button class="btn btn-primary" onclick="acceptInvite()">Accept &amp; join 💛</button>'+
-  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="declineInvite()">Decline</button>');
-}
-async function acceptInvite(){
-  var r=await sb.rpc('accept_family_invite');
-  if(r.error){ toast(r.error.message||'Could not join'); return; }
-  closeSheet(); confetti&&confetti(); toast('You\'re in the family now 💛'); await refreshAll();
-}
-async function declineInvite(){
-  var r=await sb.rpc('decline_family_invite');
-  if(r.error){ toast(r.error.message||'Could not decline'); return; }
-  closeSheet(); toast('Invite declined'); await refreshAll();
-}
+/* openFamilyInvite / openFamilyRequests now route to openFamilyHub (defined above). */
 async function respondLink(id, accept){
   var r=await sb.rpc('respond_household_link',{p_link:id,p_accept:accept});
   if(r.error){toast(r.error.message);return;}
