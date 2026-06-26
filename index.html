@@ -214,6 +214,22 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jdot{width:32px;height:32px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
 .jt{font-weight:800;font-size:14px}
 .jd{font-size:11.5px;color:var(--ink3);font-weight:700;margin-top:1px}
+/* life engine */
+.le-card{display:flex;gap:14px;position:relative;cursor:pointer}
+.le-card::before{content:"";position:absolute;left:18px;top:36px;bottom:-6px;width:2px;background:var(--line)}
+.le-card.last::before{display:none}
+.le-ic{width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;z-index:1;box-shadow:var(--sh-1)}
+.le-body{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 15px;margin-bottom:14px;box-shadow:var(--sh-1);transition:transform .12s}
+.le-card:active .le-body{transform:scale(.99)}
+.le-date{font-size:11.5px;color:var(--rani-d);font-weight:800;letter-spacing:.2px}
+.le-title{font-family:'Baloo 2';font-weight:800;font-size:16px;margin-top:2px;line-height:1.2}
+.le-desc{font-size:13.5px;color:var(--ink2);font-weight:500;line-height:1.5;margin-top:5px}
+.le-more{font-size:11.5px;color:var(--ink3);font-weight:800;margin-top:8px}
+.insights{background:linear-gradient(135deg,#FFF3E6,#FFE9F1);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:16px}
+.ins-head{font-family:'Baloo 2';font-weight:800;font-size:16px;margin-bottom:11px}
+.ins-row{font-size:14px;font-weight:700;color:var(--ink2);margin-bottom:7px}
+.ins-row .iv{font-family:'Baloo 2';font-weight:800;font-size:18px;color:var(--rani-d);margin-right:7px}
+.ins-foot{font-size:11.5px;color:var(--ink3);font-weight:700;margin-top:9px}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -298,10 +314,10 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .house{animation:rise .6s ease both}
 
 /* bottom nav */
-.nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:9px 6px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(122,68,20,.07)}
-.nav button{flex:1;background:none;border:none;outline:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink3);font-size:11px;font-weight:700;padding:5px 0}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:9px 3px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(122,68,20,.07)}
+.nav button{flex:1;background:none;border:none;outline:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink3);font-size:9.5px;font-weight:700;padding:5px 0}
 .nav button:focus{outline:none}
-.nav button .ni{font-size:21px;transition:transform .22s,filter .22s}
+.nav button .ni{font-size:19px;transition:transform .22s,filter .22s}
 .nav button .nl{transition:color .2s}
 .nav button.on .ni{transform:translateY(-2px) scale(1.16);filter:drop-shadow(0 3px 8px rgba(224,58,122,.55))}
 .nav button.on .nl{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
@@ -462,6 +478,11 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
       <div class="mhome-head"><span>❤️ Moments</span><span class="mhome-cta">Open →</span></div>
       <div id="momentsHomeBody"><div class="mhome-empty">Capture your first Moment — a lunch, a milestone, a festival. It becomes family heritage.</div></div>
     </div>
+
+    <div class="mhome" id="lifeHome" onclick="navTo('life')" style="display:none;background:linear-gradient(135deg,#EFE6FF,#FFE9F1)">
+      <div class="mhome-head"><span>❤️ Today in My Life</span><span class="mhome-cta">View Journey →</span></div>
+      <div id="lifeHomeBody"></div>
+    </div>
   </section>
 
   <!-- FAMILY -->
@@ -498,6 +519,16 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div id="archivedLink" style="text-align:center;margin:18px 0 4px"></div>
   </section>
 
+  <section class="screen has-nav" id="screen-life">
+    <div class="h1" style="margin-bottom:4px">❤️ My Life</div>
+    <p class="muted" style="font-size:13px;margin:0 2px 16px">Not an app — your life's journey. Jeeto writes it for you, quietly, as you live it.</p>
+    <div id="lifeOnThisDay" style="margin-bottom:14px"></div>
+    <div id="lifeInsights"></div>
+    <input class="fi" id="lifeSearch" placeholder="Search your life — a year, a name, a moment…" oninput="renderLifeFeed(true)" style="margin:2px 0 16px">
+    <div id="lifeFeed"></div>
+    <div id="lifeSentinel"></div>
+  </section>
+
   <!-- BRIDGE -->
   <section class="screen has-nav" id="screen-bridge">
     <div class="h1" style="margin-bottom:4px">🌉 Bridges</div>
@@ -516,8 +547,9 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <button data-tab="home" onclick="navTo('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')"><span class="ni">❤️</span><span class="nl">Family</span></button>
     <button data-tab="moments" onclick="navTo('moments')"><span class="ni">💛</span><span class="nl">Moments</span></button>
+    <button data-tab="life" onclick="navTo('life')"><span class="ni">📖</span><span class="nl">Life</span></button>
     <button data-tab="bridge" onclick="navTo('bridge')"><span class="ni">🌉</span><span class="nl">Bridge</span></button>
-    <button data-tab="profile" onclick="navTo('profile')"><span class="ni">👤</span><span class="nl">Profile</span></button>
+    <button data-tab="profile" onclick="navTo('profile')"><span class="ni">👤</span><span class="nl">Passport</span></button>
   </nav>
 
   <div class="toast" id="toast"></div>
@@ -527,6 +559,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <div class="modal" id="bridgeModal"></div>
   <div class="modal" id="momentModal"></div>
   <div class="modal" id="editModal"></div>
+  <div class="modal" id="lifeModal"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -579,7 +612,7 @@ function closeCelebrate(){ document.getElementById('celebrate').classList.remove
 function showScreen(id){
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
-  var main=['screen-home','screen-family','screen-moments','screen-bridge','screen-profileTab'];
+  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ window.scrollTo(0,0); }catch(e){}
 }
@@ -703,6 +736,7 @@ async function loadDashboard(){
   if(db) db.textContent='🌉 '+active+(active===1?' active':' active')+' · '+pendingVotes+' pending · ⭐ '+bstrength+' strength';
 
   renderMomentsHome();
+  renderLifeHome();
 }
 
 /* ---------- data ---------- */
@@ -1734,13 +1768,180 @@ async function submitEditProfile(){
   closeEditModal(); toast('Passport updated ❤️'); renderPassport();
 }
 
+/* ============================================================
+   LIFE ENGINE — the journey, built automatically. Newest first,
+   infinite scroll. Events can be edited or archived, never deleted.
+   ============================================================ */
+var LIFE=[], LIFE_N=0, LIFE_OBS=null, LIFE_CHUNK=12;
+async function loadLife(){
+  if(!ensureSB()) return [];
+  try{ var r=await sb.from('life_events').select('*').eq('person_phone',myPhone()).eq('status','active').order('event_date',{ascending:false}).limit(500); return r.data||[]; }catch(e){ return []; }
+}
+async function renderLife(){
+  if(!ME) ME=await fetchProfile(myPhone());
+  // make sure a passport exists so "Joined Jeeto" is present
+  try{ await ensurePassport(); }catch(e){}
+  LIFE=await loadLife();
+  renderLifeInsights();
+  renderLifeOnThisDay();
+  renderLifeFeed(true);
+}
+function fmtLifeDate(d){ try{ return new Date(d).toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'}); }catch(e){ return d; } }
+function lifeRelative(d){
+  try{ var now=new Date(), dt=new Date(d);
+    var a=new Date(now.getFullYear(),now.getMonth(),now.getDate()), b=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate());
+    var diff=Math.round((a-b)/86400000);
+    if(diff<=0) return 'Today'; if(diff===1) return 'Yesterday'; if(diff<7) return diff+' days ago';
+    return fmtLifeDate(d);
+  }catch(e){ return fmtLifeDate(d); }
+}
+function lifeFiltered(){
+  var q=((document.getElementById('lifeSearch')||{}).value||'').trim().toLowerCase();
+  if(!q) return LIFE;
+  return LIFE.filter(function(e){
+    var hay=((e.event_title||'')+' '+(e.description||'')+' '+(e.event_type||'')).toLowerCase();
+    var yr=(new Date(e.event_date).getFullYear()+'');
+    return hay.indexOf(q)>=0 || yr.indexOf(q)>=0;
+  });
+}
+function lifeCard(e, isLast){
+  return '<div class="le-card'+(isLast?' last':'')+'" onclick="openLifeDetail(\''+e.id+'\')">'+
+    '<div class="le-ic">'+(e.icon||'❤️')+'</div>'+
+    '<div class="le-body"><div class="le-date">'+escapeHtml(fmtLifeDate(e.event_date))+'</div>'+
+    '<div class="le-title">'+escapeHtml(e.event_title)+'</div>'+
+    (e.description?'<div class="le-desc">'+escapeHtml(e.description)+'</div>':'')+
+    '<div class="le-more">Open details →</div></div></div>';
+}
+function renderLifeFeed(reset){
+  var box=document.getElementById('lifeFeed'); if(!box) return;
+  var list=lifeFiltered();
+  if(reset){ LIFE_N=0; box.innerHTML=''; }
+  if(!list.length){
+    box.innerHTML='<div class="empty"><span class="big">📖</span><div class="e1">Your life story begins now</div><div class="e2">As you connect, build and capture, your journey writes itself here.</div></div>';
+    setupLifeObserver(false); return;
+  }
+  var prev = LIFE_N>0 ? new Date(list[LIFE_N-1].event_date).getFullYear() : null;
+  var next=list.slice(LIFE_N, LIFE_N+LIFE_CHUNK);
+  var html='';
+  next.forEach(function(e,i){
+    var y=new Date(e.event_date).getFullYear();
+    if(y!==prev){ html+='<div class="tl-head">'+y+'</div>'; prev=y; }
+    var globalIdx=LIFE_N+i;
+    html+=lifeCard(e, globalIdx===list.length-1);
+  });
+  box.insertAdjacentHTML('beforeend', html);
+  LIFE_N+=next.length;
+  setupLifeObserver(LIFE_N<list.length);
+}
+function setupLifeObserver(more){
+  var sent=document.getElementById('lifeSentinel'); if(!sent) return;
+  if(LIFE_OBS){ LIFE_OBS.disconnect(); LIFE_OBS=null; }
+  if(!more){ sent.innerHTML=''; return; }
+  sent.innerHTML='<div class="muted" style="text-align:center;padding:14px;font-size:12px">Loading more of your life…</div>';
+  if('IntersectionObserver' in window){
+    LIFE_OBS=new IntersectionObserver(function(entries){ if(entries[0] && entries[0].isIntersecting){ renderLifeFeed(false); } }, { rootMargin:'200px' });
+    LIFE_OBS.observe(sent);
+  } else {
+    sent.innerHTML='<button class="btn btn-soft" onclick="renderLifeFeed(false)">Load more</button>';
+  }
+}
+function renderLifeOnThisDay(){
+  var box=document.getElementById('lifeOnThisDay'); if(!box) return;
+  var now=new Date(), mm=now.getMonth(), dd=now.getDate(), yy=now.getFullYear();
+  var hits=LIFE.filter(function(e){ var d=new Date(e.event_date); return d.getMonth()===mm && d.getDate()===dd && d.getFullYear()<yy; });
+  if(!hits.length){ box.innerHTML=''; return; }
+  var items=hits.slice(0,3).map(function(e){ var y=yy-new Date(e.event_date).getFullYear(); return '<div style="margin-top:9px"><div class="l">Exactly '+y+' year'+(y===1?'':'s')+' ago</div><div class="t">'+escapeHtml(e.event_title)+'</div></div>'; }).join('');
+  box.innerHTML='<div class="otd-banner"><div class="l">🕰️ ON THIS DAY</div>'+items+'</div>';
+}
+function renderLifeInsights(){
+  var box=document.getElementById('lifeInsights'); if(!box) return;
+  var jan=new Date(new Date().getFullYear(),0,1).getTime();
+  var moments=0, members=0, bridges=0;
+  LIFE.forEach(function(e){ if(new Date(e.event_date).getTime()>=jan){ if(e.ref_kind==='moment') moments++; if(e.ref_kind==='relationship') members++; if(e.ref_kind==='bridge') bridges++; } });
+  if(!LIFE.length){ box.innerHTML=''; return; }
+  box.innerHTML='<div class="insights"><div class="ins-head">✨ This year in your life</div>'+
+    '<div class="ins-row"><span class="iv">'+moments+'</span>Moments captured</div>'+
+    '<div class="ins-row"><span class="iv">'+members+'</span>new relationships welcomed</div>'+
+    '<div class="ins-row"><span class="iv">'+bridges+'</span>Bridges built</div>'+
+    '<div class="ins-foot">Deeper Life Insights, Life Map & your printable Life Book are coming.</div></div>';
+}
+
+/* ---------- life event detail / edit / archive ---------- */
+async function openLifeDetail(id){
+  var e=LIFE.filter(function(x){return x.id===id;})[0]; if(!e) return;
+  var related='';
+  try{
+    if(e.ref_kind==='household' && e.ref_id){
+      var hm=await sb.from('household_members').select('member_phone').eq('household_id',e.ref_id).eq('status','active');
+      var pf=await fetchProfiles((hm.data||[]).map(function(x){return x.member_phone;}));
+      if((hm.data||[]).length) related='👥 '+(hm.data||[]).map(function(x){return (pf[x.member_phone]&&pf[x.member_phone].name)||x.member_phone;}).join(', ');
+    } else if(e.ref_kind==='moment' && e.ref_id){
+      var mp=await sb.from('moment_people').select('person_phone').eq('moment_id',e.ref_id);
+      var pf2=await fetchProfiles((mp.data||[]).map(function(x){return x.person_phone;}));
+      if((mp.data||[]).length) related='👥 '+(mp.data||[]).map(function(x){return (pf2[x.person_phone]&&pf2[x.person_phone].name)||x.person_phone;}).join(', ');
+    } else if(e.ref_kind==='relationship' && e.ref_id){
+      var rr=await sb.from('relationships').select('*').eq('id',e.ref_id).maybeSingle();
+      if(rr.data){ var other=rr.data.person_a_phone===myPhone()?rr.data.person_b_phone:rr.data.person_a_phone; var pf3=await fetchProfiles([other]); related='❤️ '+((pf3[other]&&pf3[other].name)||other); }
+    }
+  }catch(err){}
+  var m=document.getElementById('lifeModal');
+  m.innerHTML='<div class="modal-card" style="max-height:88vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div style="text-align:center;font-size:42px">'+(e.icon||'❤️')+'</div>'+
+    '<div class="le-date" style="text-align:center;margin-top:6px">'+escapeHtml(fmtLifeDate(e.event_date))+'</div>'+
+    '<div class="modal-q" style="text-align:center;font-size:21px;margin:4px 10px 10px">'+escapeHtml(e.event_title)+'</div>'+
+    (e.description?'<p style="text-align:center;color:var(--ink2);font-size:14px;line-height:1.55;margin:0 8px 14px">'+escapeHtml(e.description)+'</p>':'')+
+    (related?'<div class="pcard" style="text-align:center;font-size:13px;font-weight:700">'+escapeHtml(related)+'</div>':'')+
+    '<div style="height:16px"></div>'+
+    '<button class="btn btn-soft" onclick="openEditLife(\''+e.id+'\')">✏️ Edit title & description</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="archiveLife(\''+e.id+'\')">🗂️ Archive event</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeLifeModal()">Close</button></div>';
+  m.classList.add('show');
+}
+function closeLifeModal(){ document.getElementById('lifeModal').classList.remove('show'); }
+function openEditLife(id){
+  var e=LIFE.filter(function(x){return x.id===id;})[0]; if(!e) return;
+  var m=document.getElementById('lifeModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:19px;margin-bottom:12px">✏️ Edit event</div>'+
+    '<div class="field-label">Title</div><input class="fi" id="leTitle" value="'+escapeAttr(e.event_title)+'" style="margin-bottom:12px">'+
+    '<div class="field-label">Description</div><textarea class="fi" id="leDesc" rows="3" style="margin-bottom:12px;resize:vertical">'+escapeHtml(e.description||'')+'</textarea>'+
+    '<p class="muted" style="font-size:11.5px;margin:0 2px 12px">The original event stays preserved — only its title and description change.</p>'+
+    '<button class="btn" onclick="saveLife(\''+e.id+'\')">Save</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="openLifeDetail(\''+e.id+'\')">Back</button></div>';
+  m.classList.add('show');
+}
+async function saveLife(id){
+  if(!ensureSB()) return;
+  var title=(document.getElementById('leTitle').value||'').trim(); if(!title){ toast('Title cannot be empty.'); return; }
+  var desc=(document.getElementById('leDesc').value||'').trim()||null;
+  var r=await sb.from('life_events').update({ event_title:title, description:desc, source:'manual' }).eq('id',id);
+  if(r.error){ toast('Could not save.'); return; }
+  closeLifeModal(); toast('Event updated'); renderLife();
+}
+async function archiveLife(id){
+  if(!ensureSB()) return;
+  var r=await sb.from('life_events').update({ status:'archived' }).eq('id',id);
+  if(r.error){ toast('Could not archive.'); return; }
+  closeLifeModal(); toast('Event archived 🗂️'); renderLife();
+}
+
+/* ---------- Today in My Life (home) ---------- */
+async function renderLifeHome(){
+  var card=document.getElementById('lifeHome'), body=document.getElementById('lifeHomeBody'); if(!card||!body) return;
+  var ev=await loadLife();
+  if(!ev.length){ card.style.display='none'; return; }
+  card.style.display='';
+  var e=ev[0];
+  body.innerHTML='<div class="mhome-latest"><div class="ml-ic">'+(e.icon||'❤️')+'</div><div><div class="ml-t">'+escapeHtml(e.event_title)+'</div><div class="ml-d">'+escapeHtml(lifeRelative(e.event_date))+'</div></div></div>';
+}
+
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', bridge:'screen-bridge', profile:'screen-profileTab' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
   if(tab==='moments') renderMoments();
+  if(tab==='life') renderLife();
   if(tab==='bridge') renderBridge();
   if(tab==='profile') renderPassport();
   var btns=document.querySelectorAll('#bottomNav button');
