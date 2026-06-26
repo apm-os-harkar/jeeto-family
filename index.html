@@ -70,30 +70,31 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .topbar .nm{font-family:'Baloo 2';font-size:20px;font-weight:800;margin-top:-1px}
 
 /* HERO — family strength */
-.hero{position:relative;overflow:hidden;border-radius:30px;padding:34px 24px 30px;text-align:center;color:#fff;background:linear-gradient(160deg,#FF8A1E 0%,#E03A7A 56%,#7C3AED 116%);box-shadow:0 18px 44px rgba(224,58,122,.34);margin-bottom:24px}
-.hero::before{content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(255,255,255,.30),transparent 62%);pointer-events:none}
-.hero .he{font-size:11px;font-weight:800;letter-spacing:2px;opacity:.92;text-transform:uppercase}
-.hero .seed{font-size:46px;margin:14px 0 2px;display:inline-block;animation:breathe 3.2s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))}
+.hero{position:relative;overflow:hidden;border-radius:26px;padding:17px 22px;display:flex;align-items:center;gap:15px;color:#fff;background:linear-gradient(135deg,#FF8A1E 0%,#E03A7A 60%,#7C3AED 132%);box-shadow:0 14px 34px rgba(224,58,122,.30);margin-bottom:18px}
+.hero::before{content:"";position:absolute;top:-60%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 62%);pointer-events:none}
+.hero .he{font-size:10px;font-weight:800;letter-spacing:1.6px;opacity:.9;text-transform:uppercase}
+.hero .seed{font-size:38px;display:inline-block;animation:breathe 3.2s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,.18));flex:0 0 auto}
 @keyframes breathe{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.12) rotate(2deg)}}
-.hero .tier{font-family:'Baloo 2';font-size:25px;font-weight:800;margin-top:2px}
-.hero .sub{font-size:13.5px;opacity:.94;font-weight:500;margin-top:6px;max-width:230px;margin-left:auto;margin-right:auto;line-height:1.4}
-.hero .num{font-family:'Baloo 2';font-size:64px;font-weight:800;line-height:1;margin-top:14px;text-shadow:0 4px 14px rgba(0,0,0,.18)}
+.hero .hero-mid{flex:1;min-width:0}
+.hero .tier{font-family:'Baloo 2';font-size:21px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero .num{font-family:'Baloo 2';font-size:44px;font-weight:800;line-height:1;text-shadow:0 3px 10px rgba(0,0,0,.18);flex:0 0 auto}
 
-/* journey banner */
-.journey{display:flex;align-items:center;gap:14px;background:var(--grad-soft);border:1px solid #FAE0D2;border-radius:24px;padding:18px;box-shadow:var(--sh-1);margin-bottom:20px;cursor:pointer;transition:transform .12s}
-.journey:active{transform:scale(.98)}
-.journey .jic{width:50px;height:50px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto;box-shadow:var(--sh-1)}
-.journey .jt{font-family:'Baloo 2';font-weight:800;font-size:17px}
-.journey .js{font-size:12.5px;color:var(--ink2);font-weight:600;margin-top:1px}
-.journey .jar{margin-left:auto;color:var(--rani);font-size:20px;font-weight:800}
+/* dashboard card */
+.dash{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px 16px;box-shadow:var(--sh-1);margin-bottom:18px;animation:rise .5s ease both}
+.dash-head{font-family:'Baloo 2';font-weight:800;font-size:16px;margin-bottom:14px;padding-left:2px}
+.dash-row{display:flex;text-align:center}
+.dash-item{flex:1;position:relative}
+.dash-item+.dash-item::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:1px;background:var(--line)}
+.dash-item .dv{font-family:'Baloo 2';font-weight:800;font-size:25px;line-height:1}
+.dash-item .dl{font-size:11px;color:var(--ink2);font-weight:700;margin-top:6px;line-height:1.25}
 
 /* tiles */
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.tile{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-1);cursor:pointer;transition:transform .12s,box-shadow .2s}
-.tile:active{transform:scale(.97)}
-.tile .tic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--grad-soft)}
-.tile .tt{font-family:'Baloo 2';font-weight:700;font-size:16px;margin-top:12px}
-.tile .ts{font-size:12px;color:var(--rani-d);font-weight:700;margin-top:3px;line-height:1.35}
+.tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px 12px;box-shadow:var(--sh-1);cursor:pointer;transition:transform .12s,box-shadow .2s;text-align:center;animation:rise .5s ease both}
+.tile:active{transform:scale(.96)}
+.tile .tic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:23px;background:var(--grad-soft);margin:0 auto}
+.tile .tt{font-family:'Baloo 2';font-weight:700;font-size:14px;margin-top:10px}
+.tile .ts{font-size:10.5px;color:var(--rani-d);font-weight:700;margin-top:3px;line-height:1.3}
 
 /* section heads */
 .sec-head{display:flex;align-items:center;gap:10px;margin:26px 2px 13px}
@@ -102,7 +103,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .sec-head .sc{margin-left:auto;background:var(--grad-soft);color:var(--rani-d);font-weight:800;font-size:12px;padding:3px 11px;border-radius:20px}
 
 /* premium cards */
-.pcard{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-1);margin-bottom:14px;animation:rise .5s ease both}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:var(--sh-1);margin-bottom:16px;animation:rise .5s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .av-lg{width:58px;height:58px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:22px;box-shadow:var(--sh-1)}
 .av-lg img{width:100%;height:100%;object-fit:cover}
@@ -154,21 +155,29 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .tnode .tr{font-size:12px;font-weight:700;margin-top:1px;color:var(--rani-d)}
 .tnode.you .tr{color:rgba(255,255,255,.9)}
 
-/* bridge */
-.bridge-art{position:relative;height:170px;margin:8px 0 22px}
-.bridge-art svg{width:100%;height:100%;overflow:visible}
-.bridge-path{stroke-dasharray:240;stroke-dashoffset:240;animation:draw 2s ease .3s forwards}
-@keyframes draw{to{stroke-dashoffset:0}}
-.bridge-glow{animation:glow 2.4s ease-in-out 2s infinite}
-@keyframes glow{0%,100%{opacity:.35}50%{opacity:.9}}
+/* bridge — premium household cards */
+.hh-card{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);animation:rise .5s ease both}
+.hh-card.ghost{opacity:.62;box-shadow:var(--sh-1);border-style:dashed}
+.hh-ic{width:54px;height:54px;border-radius:16px;background:var(--grad-soft);display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto}
+.hh-name{font-family:'Baloo 2';font-weight:800;font-size:17px}
+.hh-loc{font-size:12.5px;color:var(--ink2);font-weight:600;margin-top:1px}
+.bridge-link{display:flex;align-items:center;gap:10px;padding:13px 28px}
+.bl-line{flex:1;height:3px;border-radius:3px;background:var(--grad);opacity:.85}
+.bl-ic{font-size:24px}
+.bridge-status{text-align:center;font-size:13px;font-weight:700;color:var(--ink2);margin:22px 0 16px}
+.bridge-status b{color:var(--rani-d)}
+.btn.glow{animation:btnglow 2.6s ease-in-out infinite}
+@keyframes btnglow{0%,100%{box-shadow:0 10px 26px rgba(224,58,122,.30)}50%{box-shadow:0 12px 38px rgba(224,58,122,.58)}}
 .house{animation:rise .6s ease both}
 
 /* bottom nav */
 .nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:9px 6px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(122,68,20,.07)}
-.nav button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink3);font-size:11px;font-weight:700;padding:5px 0;transition:color .2s}
-.nav button .ni{font-size:21px;transition:transform .2s}
-.nav button.on{color:var(--rani-d)}
-.nav button.on .ni{transform:translateY(-2px) scale(1.12)}
+.nav button{flex:1;background:none;border:none;outline:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink3);font-size:11px;font-weight:700;padding:5px 0}
+.nav button:focus{outline:none}
+.nav button .ni{font-size:21px;transition:transform .22s,filter .22s}
+.nav button .nl{transition:color .2s}
+.nav button.on .ni{transform:translateY(-2px) scale(1.16);filter:drop-shadow(0 3px 8px rgba(224,58,122,.55))}
+.nav button.on .nl{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .nav.hide{display:none}
 
 /* profile */
@@ -295,24 +304,27 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     </div>
 
     <div class="hero">
-      <div class="he">⭐ Family Strength</div>
       <div class="seed" id="heroSeed">🌱</div>
-      <div class="tier" id="statTier">Seed</div>
-      <div class="sub">Every relationship makes us stronger.</div>
+      <div class="hero-mid">
+        <div class="he">⭐ Family Strength</div>
+        <div class="tier" id="statTier">🌱 Seed</div>
+      </div>
       <div class="num" id="statStrength">0</div>
     </div>
 
-    <div class="journey" onclick="navTo('family')">
-      <div class="jic">❤️</div>
-      <div><div class="jt">Your Journey</div><div class="js">Every family starts with one relationship.</div></div>
-      <div class="jar">→</div>
+    <div class="dash">
+      <div class="dash-head">❤️ Today's Family</div>
+      <div class="dash-row">
+        <div class="dash-item"><div class="dv" id="dashPending">0</div><div class="dl">Pending<br>Requests</div></div>
+        <div class="dash-item"><div class="dv" id="dashMem">0</div><div class="dl">Today's<br>Memories</div></div>
+        <div class="dash-item"><div class="dv" id="dashStage">🌱</div><div class="dl" id="dashStageName">Seed</div></div>
+      </div>
     </div>
 
     <div class="tiles">
-      <div class="tile" onclick="navTo('family')"><div class="tic">❤️</div><div class="tt">Family</div><div class="ts" id="statFamily">Start building →</div></div>
-      <div class="tile" onclick="navTo('family')"><div class="tic">🌳</div><div class="tt">Family Tree</div><div class="ts" id="statTree">See your tree →</div></div>
-      <div class="tile" onclick="navTo('bridge')"><div class="tic">🌉</div><div class="tt">Bridge</div><div class="ts">Connect families →</div></div>
-      <div class="tile"><div class="tic">📸</div><div class="tt">Memories</div><div class="ts">Coming with love →</div></div>
+      <div class="tile" onclick="navTo('family')" style="animation-delay:.04s"><div class="tic">❤️</div><div class="tt">Family</div><div class="ts" id="statFamily">Start →</div></div>
+      <div class="tile" onclick="navTo('bridge')" style="animation-delay:.10s"><div class="tic">🌉</div><div class="tt">Bridge</div><div class="ts">Connect →</div></div>
+      <div class="tile" style="animation-delay:.16s"><div class="tic">📸</div><div class="tt">Memories</div><div class="ts">Capture →</div></div>
     </div>
   </section>
 
@@ -337,37 +349,15 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <!-- BRIDGE -->
   <section class="screen has-nav" id="screen-bridge">
     <div class="h1" style="margin-bottom:4px">🌉 Bridges</div>
-    <p class="muted" style="font-size:13px;margin:0 2px 8px">Bridges connect complete families, not individuals.</p>
-    <div class="bridge-art">
-      <svg viewBox="0 0 320 170" fill="none">
-        <defs>
-          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF8A1E"/><stop offset="1" stop-color="#E03A7A"/></linearGradient>
-          <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E03A7A"/><stop offset="1" stop-color="#C42466"/></linearGradient>
-        </defs>
-        <!-- left house -->
-        <g class="house" style="animation-delay:.1s">
-          <rect x="14" y="92" width="74" height="58" rx="10" fill="#fff" stroke="#F0E4D6"/>
-          <path d="M8 96 L51 60 L94 96 Z" fill="url(#roof)"/>
-          <rect x="42" y="116" width="20" height="34" rx="4" fill="#FFE7F0"/>
-        </g>
-        <!-- right house -->
-        <g class="house" style="animation-delay:.3s">
-          <rect x="232" y="92" width="74" height="58" rx="10" fill="#fff" stroke="#F0E4D6"/>
-          <path d="M226 96 L269 60 L312 96 Z" fill="url(#roof)"/>
-          <rect x="260" y="116" width="20" height="34" rx="4" fill="#FFE7F0"/>
-        </g>
-        <!-- glowing bridge -->
-        <path class="bridge-glow" d="M88 120 Q160 76 232 120" stroke="url(#bg)" stroke-width="13" stroke-linecap="round" opacity=".4"/>
-        <path class="bridge-path" d="M88 120 Q160 76 232 120" stroke="url(#bg)" stroke-width="5" stroke-linecap="round"/>
-        <circle class="bridge-glow" cx="160" cy="98" r="7" fill="#fff"/>
-      </svg>
-    </div>
-    <div class="empty" style="border:none;box-shadow:none;background:transparent;padding:0 8px">
-      <div class="e1">A bridge between two homes</div>
-      <div class="e2">When two families are complete, a bridge can join them into something bigger.</div>
-    </div>
-    <div style="height:18px"></div>
-    <button class="btn" onclick="bridgeCta()">Build Your First Bridge 🌉</button>
+    <p class="muted" style="font-size:13px;margin:0 2px 22px">Bridges connect complete households, not individuals.</p>
+
+    <div class="hh-card" style="animation-delay:.05s"><div class="hh-ic">🏠</div><div><div class="hh-name" id="hhA">Your Household</div><div class="hh-loc" id="hhAloc">Your family</div></div></div>
+    <div class="bridge-link"><span class="bl-line"></span><span class="bl-ic">🌉</span><span class="bl-line"></span></div>
+    <div class="hh-card ghost" style="animation-delay:.15s"><div class="hh-ic">🏠</div><div><div class="hh-name">A neighbouring household</div><div class="hh-loc">Waiting to connect</div></div></div>
+
+    <div class="bridge-status">Bridge Status · <b>Not Connected</b></div>
+    <button class="btn glow" onclick="bridgeCta()">Build Bridge 🌉</button>
+    <p class="muted" style="text-align:center;font-size:12.5px;margin-top:16px;line-height:1.5">Complete your family first to build your first Bridge.</p>
   </section>
 
   <!-- PROFILE -->
@@ -386,10 +376,10 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   </section>
 
   <nav class="nav hide" id="bottomNav">
-    <button data-tab="home" onclick="navTo('home')"><span class="ni">🏠</span>Home</button>
-    <button data-tab="family" onclick="navTo('family')"><span class="ni">❤️</span>Family</button>
-    <button data-tab="bridge" onclick="navTo('bridge')"><span class="ni">🌉</span>Bridge</button>
-    <button data-tab="profile" onclick="navTo('profile')"><span class="ni">👤</span>Profile</button>
+    <button data-tab="home" onclick="navTo('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
+    <button data-tab="family" onclick="navTo('family')"><span class="ni">❤️</span><span class="nl">Family</span></button>
+    <button data-tab="bridge" onclick="navTo('bridge')"><span class="ni">🌉</span><span class="nl">Bridge</span></button>
+    <button data-tab="profile" onclick="navTo('profile')"><span class="ni">👤</span><span class="nl">Profile</span></button>
   </nav>
 
   <div class="toast" id="toast"></div>
@@ -496,11 +486,11 @@ async function saveProfile(){
 /* ---------- HOME ---------- */
 function greetingWord(){ var h=new Date().getHours(); if(h<12) return 'Good morning,'; if(h<17) return 'Good afternoon,'; return 'Good evening,'; }
 function strengthTier(n){
-  if(n<=0) return {e:'🌱',name:'Seed'};
-  if(n<30) return {e:'🌿',name:'Sprout'};
-  if(n<60) return {e:'🌳',name:'Sapling'};
-  if(n<100) return {e:'🌳',name:'Growing Tree'};
-  return {e:'🌳',name:'Mighty Tree'};
+  if(n<10) return {e:'🌱',name:'Seed'};
+  if(n<30) return {e:'🌿',name:'Growing'};
+  if(n<60) return {e:'🌳',name:'Strong'};
+  if(n<100) return {e:'🌺',name:'Flourishing'};
+  return {e:'👑',name:'Legacy'};
 }
 function countUp(el, to){
   if(!el) return; var from=parseInt(el.textContent,10)||0; if(from===to){ el.textContent=to; return; }
@@ -513,13 +503,20 @@ async function renderHome(){
   document.getElementById('homeHi').textContent=greetingWord();
   document.getElementById('homeName').textContent=first+' 👋';
   setAvatar('homeAvatar',u);
-  var conns=await fetchConnections(myPhone()); var n=conns.length; var strength=n*10;
+  var me=myPhone();
+  var conns=await fetchConnections(me); var n=conns.length; var strength=n*10;
   var t=strengthTier(strength);
   document.getElementById('heroSeed').textContent=t.e;
   document.getElementById('statTier').textContent=t.e+' '+t.name;
   countUp(document.getElementById('statStrength'), strength);
-  document.getElementById('statFamily').textContent= n>0 ? (n+(n===1?' member ❤️':' members ❤️')) : 'Start building →';
-  document.getElementById('statTree').textContent= n>0 ? (n+(n===1?' relative →':' relatives →')) : 'See your tree →';
+  var sf=document.getElementById('statFamily'); if(sf) sf.textContent= n>0 ? (n+(n===1?' member':' members')) : 'Start →';
+  // dashboard — Today's Family
+  var pending=0;
+  try{ if(ensureSB()){ var pr=await sb.from('family_requests').select('id').eq('receiver_phone',me).eq('status','pending'); pending=(pr.data||[]).length; } }catch(e){}
+  var dp=document.getElementById('dashPending'); if(dp) dp.textContent=pending;
+  var dm=document.getElementById('dashMem'); if(dm) dm.textContent='0';
+  var ds=document.getElementById('dashStage'); if(ds) ds.textContent=t.e;
+  var dsn=document.getElementById('dashStageName'); if(dsn) dsn.textContent=t.name;
 }
 function setAvatar(elId,u){ var el=document.getElementById(elId); if(!el) return; if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; } else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); } }
 
@@ -618,7 +615,7 @@ async function renderFamily(){
   /* 4) Your Family */
   html+='<div class="sec-head"><span class="si">💛</span><span class="st">Your family</span>'+(conns.length?'<span class="sc">'+conns.length+'</span>':'')+'</div>';
   if(!conns.length){
-    html+='<div class="empty"><span class="big">🌱</span><div class="e1">No family members yet</div><div class="e2">Every family starts with one relationship.</div><div class="e3">Add someone you love ❤️</div></div>';
+    html+='<div class="empty"><span class="big">🌱</span><div class="e1">Every family begins with one relationship.</div><div class="e3" style="margin-top:10px">Add someone you love ❤️</div></div>';
   } else conns.forEach(function(c){
     var other=c.user_a_phone===me?c.user_b_phone:c.user_a_phone;
     var myRel=c.user_a_phone===me?c.user_a_relation:c.user_b_relation;
@@ -733,7 +730,12 @@ function drawTreeLines(){
 window.addEventListener('resize', function(){ var f=document.getElementById('screen-family'); if(f && f.classList.contains('active')) drawTreeLines(); });
 
 /* ---------- bridge ---------- */
-function bridgeCta(){ toast('Build your family first — bridges connect complete families 🌉'); }
+function renderBridge(){
+  var u=ME||{}; var parts=((u.name||'').trim().split(' ')); var last=parts[parts.length-1]||'Your';
+  var el=document.getElementById('hhA'); if(el) el.textContent=last+' Household';
+  var loc=document.getElementById('hhAloc'); if(loc) loc.textContent=(u.name||'Your family');
+}
+function bridgeCta(){ toast('Build your family first — bridges connect complete households 🌉'); }
 
 /* ---------- profile tab ---------- */
 function renderProfileTab(){
@@ -752,6 +754,7 @@ function navTo(tab){
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
+  if(tab==='bridge') renderBridge();
   if(tab==='profile') renderProfileTab();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
