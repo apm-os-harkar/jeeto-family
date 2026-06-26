@@ -1212,7 +1212,7 @@ body{
       <div id="gridManage" class="managebody" style="display:none">
         <button class="btn btn-ghost" id="myGridsBtn" style="display:none;margin-bottom:10px" onclick="openMyGrids()">🗂️ My grids</button>
         <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openJoinGrid()">＋ Join a grid</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openCreateGrid()">🔗 Create a grid</button></div>
-        <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button></div>
+        <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openConnectRelative()">➕ Connect a relative</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button></div>
         <button class="btn btn-ghost" id="gridSentBtn" style="display:none;margin-bottom:10px" onclick="openSentInvites()">📋 Sent invites &amp; status</button>
         <button class="btn btn-ghost" style="margin-bottom:10px" onclick="openConnections()">🤝 Connected households</button>
         <button class="btn btn-ghost" style="margin-bottom:4px" onclick="openGridBirthdays()">🎂 Grid birthdays</button>
@@ -1298,7 +1298,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 99</div>
+      <div class="psub">Powered by Skyvos AI · build 100</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -1324,7 +1324,7 @@ body{
         <div class="authhint" style="margin-top:6px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="joinPanel" style="display:none">
-        <div class="reghint">👪 If your captain <b>invited you by phone</b>, just fill these 3 and tap Join — leave the code blank. Otherwise add the family code they shared.</div>
+        <div class="reghint">👪 If a family member <b>invited you by phone</b>, just fill these 3 and tap Join — leave the code blank. Otherwise add the family code they shared.</div>
         <input id="jName" placeholder="Your name (e.g. Anu)">
         <input id="jPhone" inputmode="numeric" placeholder="Your phone number">
         <input id="jCode" inputmode="numeric" placeholder="Create a PIN (you'll log in with this)">
@@ -1334,8 +1334,8 @@ body{
         <div class="authhint"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="startPanel" style="display:none">
-        <div class="reghint">🏡 Just 3 quick things and you're in — you'll be the Head of your family. Add the rest later.</div>
-        <input id="hName" placeholder="Your name (you'll be the Head)">
+        <div class="reghint">🏡 Just 3 quick things and you're in — this becomes your family's space. Add the rest later.</div>
+        <input id="hName" placeholder="Your name (e.g. Sunil)">
         <input id="hPhone" inputmode="numeric" placeholder="Your phone number">
         <input id="hCode" inputmode="numeric" placeholder="Create a PIN (you'll log in with this)">
         <div class="reghint" style="background:#EAF7EF;border-color:#BCE6CC;color:#1A6B3C">\U0001f512 Your number is just your private login \u2014 never shown to anyone. You choose if you ever share it.</div>
@@ -2239,7 +2239,7 @@ async function refreshAll(){
   try{ if(typeof loadMerge==='function') loadMerge(); }catch(e){}
   document.getElementById('profName').textContent=ME.display_name;
   try{var fb=document.getElementById('founderBtn'); if(fb) fb.style.display=(window.AUTHEMAIL==='9971708833@jeeto.family')?'block':'none';}catch(e){}
-  document.getElementById('profRole').textContent=(ME.role==='captain'?'Family Captain':'Member')+' · '+(ME.streak_days||0)+'-day streak 🔥';
+  document.getElementById('profRole').textContent=(ME.streak_days||0)+'-day streak 🔥';
   document.getElementById('meCoins').textContent=(ME.coins||0).toLocaleString('en-IN');
   document.getElementById('herotag').textContent=(FAM?FAM.name:'Your family')+' 💛';
   document.getElementById('chatFamName').textContent=FAM?FAM.name:'Your family';
@@ -2273,7 +2273,7 @@ async function loadMembers(){
   document.getElementById('tRoom').textContent='Family room · '+n+(n===1?' player':' players');
   // member list in Me
   document.getElementById('memberList').innerHTML=MEMBERS.map(m=>
-    '<div class="lbrow"><div class="av" style="width:38px;height:38px;font-size:16px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(m.id===ME.id?' (You)':'')+'</div><div class="sub">'+(m.role==='captain'?'Captain':'Member')+'</div></div></div>'
+    '<div class="lbrow"><div class="av" style="width:38px;height:38px;font-size:16px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(m.id===ME.id?' (You)':'')+'</div><div class="sub">'+(m.id===ME.id?'You':'Family')+'</div></div></div>'
   ).join('');
   var di=document.getElementById('dobInput'); if(di && ME && ME.dob) di.value=ME.dob;
   var dn=document.getElementById('dobNote'); if(dn && ME) dn.value=ME.dob_note||'';
@@ -2339,7 +2339,7 @@ async function loadConnections(){
   var r=await sb.rpc('my_connections');
   if(r.error){box.innerHTML=emptyMsg(r.error.message);return;}
   var rows=(r.data||[]);
-  if(!rows.length){box.innerHTML=emptyMsg('No connected households yet. Use 🔍 Find households to connect.');return;}
+  if(!rows.length){box.innerHTML=emptyMsg('No connected households yet. Use ➕ Connect a relative to link up.');return;}
   box.innerHTML=rows.map(function(h){
     var nm=(h.surname||'Household')+(h.city?' · '+h.city:'');
     return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(h.surname||'H')+')">'+esc((h.surname||'H')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>'+Number(h.household_score||0).toLocaleString('en-IN')+' pts</div></div><span class="rel" style="color:#12A14B">Connected ✓</span></div>';
@@ -2371,7 +2371,7 @@ function renderLB(cat){
   if(!rows.length){el.innerHTML=emptyMsg('No members yet.');return;}
   el.innerHTML=rows.map((m,i)=>{const me=ME&&m.id===ME.id;const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
     const val=cat==='streak'?((m.streak_days||0)+' 🔥'):(m.today?m.today.toLocaleString('en-IN'):'0');
-    return '<div class="lbrow '+(me?'me':'')+'"><div class="rank">'+medal+'</div><div class="av" style="width:40px;height:40px;font-size:17px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(me?' (You)':'')+'</div><div class="sub">'+(m.role==='captain'?'Captain':'Member')+'</div></div><div class="val">'+val+'</div></div>';}).join('');
+    return '<div class="lbrow '+(me?'me':'')+'"><div class="rank">'+medal+'</div><div class="av" style="width:40px;height:40px;font-size:17px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(me?' (You)':'')+'</div><div class="sub">'+(m.id===ME.id?'You':'Family')+'</div></div><div class="val">'+val+'</div></div>';}).join('');
 }
 
 async function loadCoinsLedger(){
@@ -3085,67 +3085,105 @@ async function saveFamilyName(){
   try{var f=await sb.from('families').select('*').eq('id',FAM.id).maybeSingle(); if(f.data)FAM=f.data;}catch(e){}
   await _doJoinGridNow(window.__gridCode||'');
 }
+// ---- Auto-refresh helper: re-sync screen with server after any consent action ----
+async function _refreshAfterConnect(){
+  try{ if(typeof loadHousehold==='function') await loadHousehold(); }catch(e){}
+  try{ if(typeof loadGrid==='function') await loadGrid(); }catch(e){}
+}
+
+// ---- Open search is RETIRED (child safety: strangers must not find/reach minors) ----
+// Any stray caller now lands on consent-by-phone instead of an open directory.
 var _searchT=null;
-function openSearch(){
-  openSheet('<h3>Find households 🔍</h3><p class="s">Search by surname or city — in your grid or across all grids. Send a connect request to link up.</p>'+
-  '<input id="hhSearch" type="text" autocomplete="off" spellcheck="false" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:12px" oninput="doSearch()" placeholder="Surname or city…">'+
-  '<div id="searchResults">'+emptyMsg('Type at least 2 letters to search.')+'</div>');
+function openSearch(){ openConnectRelative(); }
+function doSearch(){ /* retired */ }
+function requestLink(){ openConnectRelative(); }
+
+// ---- B2/B3: Connect a relative by EXACT phone, both sides consent ----
+function openConnectRelative(){
+  if(!FAM){ toast('Set up your family first.'); return; }
+  openSheet('<div style="text-align:center"><div style="font-size:40px">🤝</div><h3>Connect a relative</h3></div>'+
+  '<p class="s">Enter a relative\'s <b>phone number</b> (the one they log in with). They get a request and tap <b>Accept</b> — then both your families are linked into a shared grid. <b>No search, no strangers</b> — only people you already know.</p>'+
+  '<input id="connPhone" inputmode="numeric" autocomplete="off" placeholder="Their phone number">'+
+  '<button class="btn btn-primary" onclick="doConnectRelative()">Send request</button>'+
+  '<div class="reghint" style="background:#EAF7EF;border-color:#BCE6CC;color:#1A6B3C;margin-top:12px">💛 Already on Jeeto? They\'ll see your request under 🔔 Requests. Not on Jeeto yet? Use \u201c\u2795 Invite a relative\u2019s household\u201d to send them a link.</div>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
 }
-function doSearch(){
-  clearTimeout(_searchT);
-  _searchT=setTimeout(async function(){
-    var q=(_v('hhSearch')||'').trim();
-    var box=document.getElementById('searchResults'); if(!box)return;
-    if(q.length<2){box.innerHTML=emptyMsg('Type at least 2 letters.');return;}
-    box.innerHTML=emptyMsg('Searching…');
-    var r=await sb.rpc('search_households',{p_q:q});
-    if(r.error){box.innerHTML=emptyMsg(r.error.message);return;}
-    var rows=(r.data||[]);
-    if(!rows.length){box.innerHTML=emptyMsg('No households found for "'+esc(q)+'".');return;}
-    box.innerHTML=rows.map(function(h){
-      var nm=(h.surname||h.name||'Household')+(h.city?' · '+h.city:'');
-      var act;
-      if(h.relation==='self')act='<span class="rel">You</span>';
-      else if(h.relation==='grid')act='<span class="rel" style="color:#12A14B">In your grid</span>';
-      else if(h.relation==='connected')act='<span class="rel" style="color:#12A14B">Connected ✓</span>';
-      else if(h.relation==='pending')act='<span class="rel">Requested…</span>';
-      else act='<button class="minibtn" onclick="requestLink(\''+h.id+'\')">Connect</button>';
-      return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(h.surname||h.name||'H')+')">'+esc((h.surname||h.name||'H')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>'+((h.household_score||0).toLocaleString('en-IN'))+' pts</div></div>'+act+'</div>';
-    }).join('');
-  }, 280);
+async function doConnectRelative(){
+  var phone=(_v('connPhone')||'').replace(/\D/g,'');
+  if(phone.length<6){ toast('Enter their phone number.'); return; }
+  var r=await sb.rpc('request_connect',{p_phone:phone,p_kind:'relative'});
+  if(r.error){ toast(r.error.message||'Could not send. Run the grid-consent SQL first.'); return; }
+  var d=r.data||{};
+  if(d.ok===false){
+    var em=d.error||'';
+    var msg = em==='no_user' ? 'They\u2019re not on Jeeto yet \u2014 use \u201cInvite a relative\u2019s household\u201d to send them a link instead.'
+      : em==='self' ? 'That\u2019s your own number 🙂'
+      : em==='same_family' ? 'They\u2019re already in your household.'
+      : em==='already_connected' ? 'You\u2019re already connected \u2014 you share a grid 💛'
+      : em==='already_pending' ? 'A request is already pending between you two.'
+      : em==='bad_phone' ? 'That phone number doesn\u2019t look right.'
+      : 'Could not send the request.';
+    toast(msg); return;
+  }
+  closeSheet();
+  toast('Request sent \u2014 waiting for them to accept 🤝');
 }
-async function requestLink(id){
-  var r=await sb.rpc('request_household_link',{p_target:id});
-  if(r.error){toast(r.error.message||'Could not send request');return;}
-  toast('Connection request sent 🤝'); doSearch();
-}
+
 function openRequests(){
-  openSheet('<h3>Requests 🔔</h3><p class="s">Households asking to connect with you, and (if you run a grid) households asking to join it.</p><div id="reqList">'+emptyMsg('Loading…')+'</div>');
+  openSheet('<h3>Requests 🔔</h3><p class="s">Relatives asking to connect with you, and households asking to join a grid you run. Accept to link up.</p><div id="reqList">'+emptyMsg('Loading…')+'</div>');
   loadRequests();
 }
 async function loadRequests(){
   var box=document.getElementById('reqList'); if(!box)return;
-  var r=await sb.rpc('my_incoming_requests');
-  if(r.error){box.innerHTML=emptyMsg(r.error.message);return;}
-  var rows=(r.data||[]);
-  if(!rows.length){box.innerHTML=emptyMsg('No pending requests right now.');return;}
-  box.innerHTML=rows.map(function(q){
-    var btns = (q.kind==='link')
-      ? '<button class="minibtn" onclick="respondLink(\''+q.ref1+'\',true)">Accept</button> <button class="minibtn ghost" onclick="respondLink(\''+q.ref1+'\',false)">Decline</button>'
-      : '<button class="minibtn" onclick="setGridHH(\''+q.ref1+'\',\''+q.ref2+'\',\'active\')">Approve</button> <button class="minibtn ghost" onclick="setGridHH(\''+q.ref1+'\',\''+q.ref2+'\',\'removed\')">Decline</button>';
-    return '<div style="border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px"><div style="font-weight:700">'+esc(q.label)+'</div><div style="font-size:12px;color:var(--ink2);margin-bottom:9px">'+esc(q.sub)+'</div>'+btns+'</div>';
-  }).join('');
+  var html='';
+  // NEW: person-to-person consent requests (and child requests I'm guardian for)
+  try{
+    var cr=await sb.rpc('my_connect_requests');
+    if(!cr.error){
+      var clist=cr.data||[]; if(typeof clist==='string'){ try{clist=JSON.parse(clist);}catch(e){clist=[];} }
+      html+=clist.map(function(q){
+        var who=esc(q.from_name||'Someone')+' \u00b7 '+esc(q.from_family_name||'their family');
+        var on = q.on_behalf ? ('<div style="font-size:11px;color:#9A6CC9;margin-bottom:6px">For '+esc(q.to_name||'your child')+' \u2014 you decide as their guardian.</div>') : '';
+        return '<div style="border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px"><div style="font-weight:700">'+who+'</div><div style="font-size:12px;color:var(--ink2);margin-bottom:9px">wants to connect your families</div>'+on+
+          '<button class="minibtn" onclick="respondConnect(\''+q.id+'\',true)">Accept</button> <button class="minibtn ghost" onclick="respondConnect(\''+q.id+'\',false)">Decline</button></div>';
+      }).join('');
+    }
+  }catch(e){}
+  // EXISTING fallback: household-link + grid-join requests (code path)
+  try{
+    var r=await sb.rpc('my_incoming_requests');
+    if(!r.error){
+      var rows=(r.data||[]);
+      html+=rows.map(function(q){
+        var btns = (q.kind==='link')
+          ? '<button class="minibtn" onclick="respondLink(\''+q.ref1+'\',true)">Accept</button> <button class="minibtn ghost" onclick="respondLink(\''+q.ref1+'\',false)">Decline</button>'
+          : '<button class="minibtn" onclick="setGridHH(\''+q.ref1+'\',\''+q.ref2+'\',\'active\')">Approve</button> <button class="minibtn ghost" onclick="setGridHH(\''+q.ref1+'\',\''+q.ref2+'\',\'removed\')">Decline</button>';
+        return '<div style="border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px"><div style="font-weight:700">'+esc(q.label)+'</div><div style="font-size:12px;color:var(--ink2);margin-bottom:9px">'+esc(q.sub)+'</div>'+btns+'</div>';
+      }).join('');
+    }
+  }catch(e){}
+  box.innerHTML = html || emptyMsg('No pending requests right now.');
+}
+async function respondConnect(id, accept){
+  var r=await sb.rpc('respond_connect',{p_id:id,p_accept:accept});
+  if(r.error){ toast(r.error.message||'Could not respond.'); return; }
+  var d=r.data||{};
+  if(d.ok===false){ toast(d.error==='not_yours'?'Only the person invited (or their guardian) can accept this.':'Could not respond.'); return; }
+  toast(accept?'Connected — you\u2019re now in a shared grid! 🎉':'Declined');
+  await loadRequests();           // refresh the inbox
+  await _refreshAfterConnect();   // refresh home + grid so the screen matches the server
 }
 async function respondLink(id, accept){
   var r=await sb.rpc('respond_household_link',{p_link:id,p_accept:accept});
   if(r.error){toast(r.error.message);return;}
-  toast(accept?'Connected 🤝':'Declined'); loadRequests();
+  toast(accept?'Connected 🤝':'Declined');
+  await loadRequests(); await _refreshAfterConnect();
 }
 async function setGridHH(grid, house, status){
   var r=await sb.rpc('set_grid_household_status',{p_grid:grid,p_house:house,p_status:status});
   if(r.error){toast(r.error.message);return;}
-  toast(status==='active'?'Approved ✓':'Declined'); loadRequests();
-  if(typeof loadGrid==='function') loadGrid();
+  toast(status==='active'?'Approved ✓':'Declined');
+  await loadRequests(); await _refreshAfterConnect();
 }
 
 
@@ -4172,7 +4210,7 @@ window.addEventListener('load', boot);
       <div class="tourcard"><div class="te">📸</div><div><b>2 · Walk &amp; earn together</b><p>On Home, tap <b>📸 Submit steps</b> and snap your step count from any step app (Pacer, Health, Fit). Everyone's steps lift the family up the board — you climb as a team, never alone.</p></div></div>
       <div class="tourcard"><div class="te">🧭</div><div><b>3 · Find your way</b><p>The tabs at the bottom: <b>🏠 Home</b> · <b>🏆 Ranks</b> · <b>🎮 Play</b> · <b>💛 Family</b> (chat, songs, album) · <b>🪙 Coins</b> · <b>😊 Me</b>. Tap around — you can't break anything!</p></div></div>
       <div class="tourcard"><div class="te">🔗</div><div><b>4 · Inside vs Outside</b><p>The toggle at the very top. <b>🏠 Inside the Home</b> is your own household. <b>🔗 Outside · Grid</b> connects you with relatives' households — to chat, walk &amp; play across the whole khandaan.</p></div></div>
-      <div class="tourcard"><div class="te">🔑</div><div><b>5 · What's a "grid code"?</b><p>A short code (like <b>AOUGRID</b>) your family head shares to link your household into the family grid. <b>You don't need it to begin</b> — explore your home first, and join a grid whenever you're ready.</p></div></div>
+      <div class="tourcard"><div class="te">🤝</div><div><b>5 · Connecting relatives</b><p>To link with a relative's household, add them by their <b>phone number</b> — they get a request and tap <b>Accept</b>. Both sides agree, so no stranger can reach your family. <b>You don't need it to begin</b> — explore your home first, connect whenever you're ready.</p></div></div>
       <div class="tournote">Stuck later? Open this guide anytime from the <b>😊 Me</b> tab → <b>How to use Jeeto</b>.</div>
       <button class="btn btn-primary" style="margin-top:6px" onclick="closeGuide()">Got it — let's go! 💛</button>
     </div>
