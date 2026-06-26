@@ -13,7 +13,7 @@
   --paper:#FFF9F1; --paper2:#FFEFDD;
   --ink:#241826; --ink2:#7A6A76; --ink3:#A99BA4;
   --saffron:#FF8A1E; --saffron-l:#FFB05A; --rani:#E03A7A; --rani-d:#C42466; --violet:#7C3AED;
-  --leaf:#2BA84A; --card:#FFFFFF; --line:#F0E4D6;
+  --leaf:#2BA84A; --card:#FFFFFF; --line:#F4ECE1;
   --grad:linear-gradient(135deg,#FF9A36,#E03A7A 62%,#B5379D);
   --grad-soft:linear-gradient(135deg,#FFF0E2,#FFE7F0);
   --sh-1:0 1px 2px rgba(122,68,20,.05), 0 8px 22px rgba(122,68,20,.07);
@@ -38,8 +38,9 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#E9D8C1;col
 .field-label{font-size:12px;font-weight:700;color:var(--ink2);margin:0 0 7px 3px;letter-spacing:.2px}
 input.fi,select.fi{width:100%;border:1.5px solid var(--line);border-radius:16px;padding:15px 16px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}
 input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgba(224,58,122,.10)}
-.btn{width:100%;border:none;border-radius:18px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;color:#fff;background:var(--grad);box-shadow:var(--sh-pop);transition:transform .1s,filter .2s,opacity .2s}
-.btn:active{transform:scale(.975)}
+.btn{width:100%;border:none;border-radius:18px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,#FF8A1E,#E03A7A);box-shadow:var(--sh-pop);transition:transform .12s,filter .2s,box-shadow .2s,opacity .2s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.btn:active{transform:scale(.97)}
 .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
 .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:var(--sh-1)}
 .btn-soft{background:var(--grad-soft);color:var(--rani-d);box-shadow:none}
@@ -85,8 +86,22 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .dash-row{display:flex;text-align:center}
 .dash-item{flex:1;position:relative}
 .dash-item+.dash-item::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:1px;background:var(--line)}
-.dash-item .dv{font-family:'Baloo 2';font-weight:800;font-size:25px;line-height:1}
-.dash-item .dl{font-size:11px;color:var(--ink2);font-weight:700;margin-top:6px;line-height:1.25}
+.dash-item .dv{font-family:'Baloo 2';font-weight:800;font-size:23px;line-height:1}
+.dash-item .dl{font-size:9.5px;color:var(--ink2);font-weight:700;margin-top:6px;line-height:1.25;letter-spacing:.1px}
+/* notification bell */
+.bell{position:relative;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:20px;cursor:pointer;box-shadow:var(--sh-1);flex:0 0 auto;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+.bell:active{transform:scale(.93)}
+.bell-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:10px;background:var(--ink3);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--paper)}
+.bell-badge.live{background:linear-gradient(135deg,#FF8A1E,#E03A7A)}
+/* personal Your Family header */
+.fam-personal{display:flex;align-items:center;gap:13px;margin:26px 2px 14px}
+.fam-personal .fp-ic{width:46px;height:46px;border-radius:14px;background:var(--grad-soft);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
+.fam-personal .fp-t{font-family:'Baloo 2';font-weight:800;font-size:19px}
+.fam-personal .fp-n{font-size:12.5px;color:var(--ink2);font-weight:600;margin-top:1px}
+.fam-personal .fp-add{margin-left:auto;background:var(--grad-soft);color:var(--rani-d);font-weight:800;font-size:12px;padding:8px 13px;border-radius:14px;cursor:pointer;white-space:nowrap}
+/* strength change bump */
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.28)}100%{transform:scale(1)}}
+.bump{animation:bump .8s cubic-bezier(.2,1.3,.4,1)}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -135,7 +150,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .fcard .meta b{color:var(--leaf)}
 
 /* empty states */
-.empty{background:#fff;border:1px solid var(--line);border-radius:24px;padding:34px 24px;text-align:center;box-shadow:var(--sh-1)}
+.empty{background:transparent;border:none;border-radius:24px;padding:30px 24px;text-align:center;box-shadow:none}
 .empty .big{font-size:42px;display:block;margin-bottom:12px;animation:breathe 3.4s ease-in-out infinite}
 .empty .e1{font-family:'Baloo 2';font-weight:700;font-size:17px;color:var(--ink)}
 .empty .e2{font-size:13.5px;color:var(--ink2);font-weight:600;margin-top:8px;line-height:1.5}
@@ -300,7 +315,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <section class="screen has-nav" id="screen-home">
     <div class="topbar">
       <div class="avatar" id="homeAvatar" style="cursor:pointer" onclick="navTo('profile')">J</div>
-      <div><div class="hi" id="homeHi">Good morning,</div><div class="nm" id="homeName">—</div></div>
+      <div style="flex:1"><div class="hi" id="homeHi">Good morning,</div><div class="nm" id="homeName">—</div></div>
+      <button class="bell" onclick="openNotifications()" aria-label="Notifications">🔔<span class="bell-badge" id="bellBadge">0</span></button>
     </div>
 
     <div class="hero">
@@ -316,8 +332,9 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
       <div class="dash-head">❤️ Today's Family</div>
       <div class="dash-row">
         <div class="dash-item"><div class="dv" id="dashPending">0</div><div class="dl">Pending<br>Requests</div></div>
+        <div class="dash-item"><div class="dv" id="dashAccepted">0</div><div class="dl">Accepted<br>Today</div></div>
+        <div class="dash-item"><div class="dv" id="dashBridge">0</div><div class="dl">Bridge<br>Requests</div></div>
         <div class="dash-item"><div class="dv" id="dashMem">0</div><div class="dl">Today's<br>Memories</div></div>
-        <div class="dash-item"><div class="dv" id="dashStage">🌱</div><div class="dl" id="dashStageName">Seed</div></div>
       </div>
     </div>
 
@@ -352,12 +369,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <p class="muted" style="font-size:13px;margin:0 2px 22px">Bridges connect complete households, not individuals.</p>
 
     <div class="hh-card" style="animation-delay:.05s"><div class="hh-ic">🏠</div><div><div class="hh-name" id="hhA">Your Household</div><div class="hh-loc" id="hhAloc">Your family</div></div></div>
-    <div class="bridge-link"><span class="bl-line"></span><span class="bl-ic">🌉</span><span class="bl-line"></span></div>
-    <div class="hh-card ghost" style="animation-delay:.15s"><div class="hh-ic">🏠</div><div><div class="hh-name">A neighbouring household</div><div class="hh-loc">Waiting to connect</div></div></div>
 
-    <div class="bridge-status">Bridge Status · <b>Not Connected</b></div>
-    <button class="btn glow" onclick="bridgeCta()">Build Bridge 🌉</button>
-    <p class="muted" style="text-align:center;font-size:12.5px;margin-top:16px;line-height:1.5">Complete your family first to build your first Bridge.</p>
+    <div id="bridgeBody"></div>
   </section>
 
   <!-- PROFILE -->
@@ -497,6 +510,7 @@ function countUp(el, to){
   var t0=null, dur=700; function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1); el.textContent=Math.round(from+(to-from)*p); if(p<1) requestAnimationFrame(step); }
   requestAnimationFrame(step);
 }
+var LAST_STRENGTH=null;
 async function renderHome(){
   if(!ME) ME=await fetchProfile(myPhone());
   var u=ME||{}; var first=((u.name||'').split(' ')[0])||'there';
@@ -506,18 +520,31 @@ async function renderHome(){
   var me=myPhone();
   var conns=await fetchConnections(me); var n=conns.length; var strength=n*10;
   var t=strengthTier(strength);
-  document.getElementById('heroSeed').textContent=t.e;
-  document.getElementById('statTier').textContent=t.e+' '+t.name;
+  var seedEl=document.getElementById('heroSeed'), tierEl=document.getElementById('statTier');
+  seedEl.textContent=t.e; tierEl.textContent=t.e+' '+t.name;
   countUp(document.getElementById('statStrength'), strength);
-  var sf=document.getElementById('statFamily'); if(sf) sf.textContent= n>0 ? (n+(n===1?' member':' members')) : 'Start →';
-  // dashboard — Today's Family
-  var pending=0;
-  try{ if(ensureSB()){ var pr=await sb.from('family_requests').select('id').eq('receiver_phone',me).eq('status','pending'); pending=(pr.data||[]).length; } }catch(e){}
-  var dp=document.getElementById('dashPending'); if(dp) dp.textContent=pending;
-  var dm=document.getElementById('dashMem'); if(dm) dm.textContent='0';
-  var ds=document.getElementById('dashStage'); if(ds) ds.textContent=t.e;
-  var dsn=document.getElementById('dashStageName'); if(dsn) dsn.textContent=t.name;
+  // rewarding animation when strength actually changes (e.g. first accept: Seed -> +10 -> Growing)
+  if(window.__rewardBump || (LAST_STRENGTH!==null && strength!==LAST_STRENGTH)){ bumpEl(seedEl); bumpEl(tierEl); bumpEl(document.getElementById('statStrength')); window.__rewardBump=false; }
+  LAST_STRENGTH=strength;
+  var sf=document.getElementById('statFamily'); if(sf) sf.textContent= n>0 ? 'View family →' : 'Start →';
+
+  // Today's Family — live from Supabase
+  var pending=0, acceptedToday=0;
+  var todayStart=new Date(); todayStart.setHours(0,0,0,0); var iso=todayStart.toISOString();
+  try{ if(ensureSB()){
+    var pr=await sb.from('family_requests').select('id').eq('receiver_phone',me).eq('status','pending'); pending=(pr.data||[]).length;
+    var ac=await sb.from('family_requests').select('id').eq('status','accepted').gte('responded_at',iso).or('sender_phone.eq.'+me+',receiver_phone.eq.'+me); acceptedToday=(ac.data||[]).length;
+  } }catch(e){}
+  setStat('dashPending',pending); setStat('dashAccepted',acceptedToday);
+  setStat('dashBridge',0);   // Bridge requests — engine plugs in next sprint
+  setStat('dashMem',0);      // Memories — feature arrives later
+
+  // notification bell (placeholder count = pending requests; wired fully next sprint)
+  var badge=document.getElementById('bellBadge');
+  if(badge){ badge.textContent=pending; badge.classList.toggle('live', pending>0); }
 }
+function setStat(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
+function bumpEl(el){ if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
 function setAvatar(elId,u){ var el=document.getElementById(elId); if(!el) return; if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; } else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); } }
 
 /* ---------- data ---------- */
@@ -612,8 +639,9 @@ async function renderFamily(){
       '</div></div>';
   });
 
-  /* 4) Your Family */
-  html+='<div class="sec-head"><span class="si">💛</span><span class="st">Your family</span>'+(conns.length?'<span class="sc">'+conns.length+'</span>':'')+'</div>';
+  /* 4) Your Family — personal, not statistical */
+  var myFirst=((ME&&ME.name)||'').split(' ')[0]||'Your family';
+  html+='<div class="fam-personal"><div class="fp-ic">❤️</div><div><div class="fp-t">Your Family</div><div class="fp-n">'+escapeHtml(myFirst)+'</div></div><div class="fp-add" onclick="focusAddMember()">＋ Add</div></div>';
   if(!conns.length){
     html+='<div class="empty"><span class="big">🌱</span><div class="e1">Every family begins with one relationship.</div><div class="e3" style="margin-top:10px">Add someone you love ❤️</div></div>';
   } else conns.forEach(function(c){
@@ -675,7 +703,7 @@ async function acceptFromModal(){
   if(!dupe){
     await sb.from('family_connections').insert({ user_a_phone:REVIEW.sender, user_a_relation:REVIEW.rel||null, user_b_phone:me, user_b_relation:recvRel });
   }
-  closeReview(); celebrate(); renderFamily(); renderHome();
+  closeReview(); celebrate(); window.__rewardBump=true; renderFamily(); renderHome();
 }
 async function rejectFromModal(){ if(!REVIEW) return; await rejectRequest(REVIEW.id); closeReview(); }
 async function rejectRequest(id){
@@ -734,6 +762,21 @@ function renderBridge(){
   var u=ME||{}; var parts=((u.name||'').trim().split(' ')); var last=parts[parts.length-1]||'Your';
   var el=document.getElementById('hhA'); if(el) el.textContent=last+' Household';
   var loc=document.getElementById('hhAloc'); if(loc) loc.textContent=(u.name||'Your family');
+  var body=document.getElementById('bridgeBody'); if(!body) return;
+  // Only real connected households are shown. None exist yet (engine builds them next sprint).
+  var bridges=fetchBridges();
+  if(!bridges.length){
+    body.innerHTML=
+      '<div class="bridge-link"><span class="bl-line"></span><span class="bl-ic">🌉</span><span class="bl-line"></span></div>'+
+      '<div class="empty"><span class="big">🌉</span>'+
+        '<div class="e1">Waiting for your first Bridge</div>'+
+        '<div class="e2">Your first Bridge will be created after two complete households mutually connect.</div></div>'+
+      '<div class="bridge-status">Bridge Status · <b>Not Connected</b></div>'+
+      '<button class="btn glow" onclick="bridgeCta()">Build Bridge 🌉</button>'+
+      '<p class="muted" style="text-align:center;font-size:12.5px;margin-top:16px;line-height:1.5">Complete your family before building your first Bridge.</p>';
+    return;
+  }
+  // (next sprint) render real connected households here
 }
 function bridgeCta(){ toast('Build your family first — bridges connect complete households 🌉'); }
 
@@ -760,6 +803,32 @@ function navTo(tab){
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
 function logout(){ clearSession(); ME=null; _gender=''; _photo=''; var lp=document.getElementById('loginPhone'); if(lp) lp.value=''; document.getElementById('loginBtn').disabled=true; clearOtp(); showScreen('screen-login'); }
+
+/* ---------- notifications (placeholder — wired next sprint) ---------- */
+function openNotifications(){ toast('No new notifications — we\'ll light this up soon 🔔'); }
+/* scroll up & focus the add-member field */
+function focusAddMember(){ try{ var f=document.getElementById('frPhone'); if(f){ f.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(function(){ f.focus(); },300); } }catch(e){} }
+
+/* ============================================================
+   RELATIONSHIP ENGINE — NEXT SPRINT (do not implement yet)
+   Single plug-in points. The UI already reads everything from
+   family_connections; the engine will enrich these:
+   - accepted relationships -> created in acceptFromModal()
+     (status='accepted' + family_connections row).
+   - Family Tree generation -> buildTreeHtml() renders from
+     connections today; swap its body for engine-derived nodes.
+   - Household generation -> generateHouseholds(): group people
+     into households. Returns [] until built.
+   - Bridge generation -> generateBridges(): join two complete
+     households. Returns [] until built.
+   fetchHouseholds()/fetchBridges() are the read stubs the UI calls;
+   point them at real tables next sprint. No fake data is shown now.
+   ============================================================ */
+function fetchHouseholds(){ /* TODO(engine): return real households */ return []; }
+function fetchBridges(){ /* TODO(engine): return real bridges */ return []; }
+function generateHouseholds(conns){ /* TODO(engine) */ return []; }
+function generateBridges(households){ /* TODO(engine) */ return []; }
+function generateFamilyTree(me, conns, profs){ /* TODO(engine): buildTreeHtml handles rendering today */ return buildTreeHtml(me, conns, profs); }
 
 function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function escapeAttr(s){ return String(s==null?'':s).replace(/'/g,'').replace(/"/g,''); }
