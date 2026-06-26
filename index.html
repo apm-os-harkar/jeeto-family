@@ -92,6 +92,24 @@ input.fi:focus,select.fi:focus{border-color:var(--rani)}
 .conn .nm{font-weight:800;font-size:15px}
 .conn .rl{font-size:12.5px;color:var(--rani-d);font-weight:700}
 .conn .pn{font-size:12px;color:var(--ink2);margin-top:1px}
+/* family tree */
+.tree-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tree-back{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex:0 0 auto}
+.strength-pill{margin-left:auto;background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;font-weight:800;font-family:'Baloo 2';padding:7px 15px;border-radius:20px;font-size:14px}
+.tree-wrap{position:relative;padding:14px 0 10px}
+#treeLines{position:absolute;left:0;top:0;pointer-events:none;z-index:0}
+.tree-me{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-bottom:38px}
+.tree-me .ph{width:88px;height:88px;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:34px;border:3px solid #fff;box-shadow:var(--shadow)}
+.tree-me .ph img{width:100%;height:100%;object-fit:cover}
+.tree-me .nm{font-family:'Baloo 2';font-weight:800;font-size:18px;margin-top:9px}
+.tree-me .meta{font-size:12.5px;color:var(--rani-d);font-weight:700;margin-top:1px}
+.tree-members{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tnode{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 10px;text-align:center;box-shadow:var(--shadow-sm);animation:fade .35s ease}
+.tnode .ph{width:56px;height:56px;border-radius:50%;overflow:hidden;margin:0 auto;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:20px}
+.tnode .ph img{width:100%;height:100%;object-fit:cover}
+.tnode .nm{font-weight:800;font-size:14px;margin-top:8px}
+.tnode .rl{font-size:12px;color:var(--rani-d);font-weight:700;margin-top:1px}
+.tnode .pn{font-size:11px;color:var(--ink2);margin-top:2px}
 /* bottom nav */
 .nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:#fff;border-top:1px solid var(--line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(122,68,20,.06)}
 .nav button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-size:11px;font-weight:700;padding:6px 0}
@@ -203,7 +221,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani)}
       <div class="card" onclick="navTo('family')" style="cursor:pointer"><div class="ic">❤️</div><div class="ct">Family</div><div class="cv" id="statFamily">Start Building Your Family →</div></div>
       <div class="card" onclick="navTo('bridge')" style="cursor:pointer"><div class="ic">🌉</div><div class="ct">Bridge</div><div class="cv" id="statBridge">Build Your First Bridge →</div></div>
       <div class="card" style="cursor:pointer"><div class="ic">📸</div><div class="ct">Memories</div><div class="cv" id="statMemories">Create your first memory ❤️</div></div>
-      <div class="card" onclick="navTo('family')" style="cursor:pointer"><div class="ic">✨</div><div class="ct">Get Started</div><div class="cv">Add your first relative →</div></div>
+      <div class="card" onclick="navTo('tree')" style="cursor:pointer"><div class="ic">🌳</div><div class="ct">Family Tree</div><div class="cv" id="statTree">Grows with your family →</div></div>
     </div>
   </section>
 
@@ -219,6 +237,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani)}
       <input class="fi" id="frMsg" placeholder="Message" value="Hi, I would love to connect with you on Jeeto Family." style="margin-bottom:10px">
       <button class="btn" id="frBtn" onclick="sendRequest()">Send request</button>
     </div>
+    <button class="btn btn-ghost" style="margin:8px 0 2px" onclick="navTo('tree')">🌳 View Family Tree</button>
     <div id="famBody"><div class="empty" style="margin-top:14px">Loading…</div></div>
   </section>
 
@@ -230,6 +249,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani)}
       <b style="color:var(--ink);font-size:16px;display:block;margin-bottom:6px">A Bridge connects two complete families.</b>
       Coming after your first family is created.
     </div>
+  </section>
+
+  <!-- SCREEN 8 — FAMILY TREE (auto-built from family_connections, never manual) -->
+  <section class="screen has-nav" id="screen-tree">
+    <div class="tree-head">
+      <div class="tree-back" onclick="navTo('home')">←</div>
+      <div class="section-title" style="margin:0">🌳 Family Tree</div>
+      <div class="strength-pill" id="treeStrength">⭐ 0</div>
+    </div>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 6px">Builds itself from every accepted relationship.</p>
+    <div id="treeBody"><div class="empty" style="margin-top:20px">Loading…</div></div>
   </section>
 
   <!-- SCREEN 7 — PROFILE -->
@@ -302,7 +332,7 @@ function closeCelebrate(){ document.getElementById('celebrate').classList.remove
 function showScreen(id){
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
-  var main=['screen-home','screen-family','screen-bridge','screen-profileTab'];
+  var main=['screen-home','screen-family','screen-bridge','screen-profileTab','screen-tree'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ window.scrollTo(0,0); }catch(e){}
 }
@@ -377,6 +407,7 @@ async function renderHome(){
   document.getElementById('statStrength').textContent=String(n*10);
   document.getElementById('statTier').textContent=strengthTier(n*10);
   document.getElementById('statFamily').textContent= n>0 ? (n+(n===1?' member ❤️':' members ❤️')) : 'Start Building Your Family →';
+  var st=document.getElementById('statTree'); if(st) st.textContent = n>0 ? (n+(n===1?' relative →':' relatives →')) : 'Grows with your family →';
 }
 function setAvatar(elId,u){ var el=document.getElementById(elId); if(!el) return; if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; } else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); } }
 
@@ -503,6 +534,87 @@ async function rejectRequest(id){
   toast('Request declined'); renderFamily();
 }
 
+/* ============================================================
+   FAMILY TREE ENGINE — auto-built from family_connections.
+   Never created manually. Me = root; each accepted relationship
+   becomes a branch. Connector lines are drawn live with SVG.
+   ============================================================ */
+async function renderTree(){
+  var me=myPhone();
+  var conns=await fetchConnections(me);
+  var n=conns.length;
+  var pill=document.getElementById('treeStrength'); if(pill) pill.textContent='⭐ '+(n*10);
+  var body=document.getElementById('treeBody'); if(!body) return;
+
+  if(!n){
+    body.innerHTML='<div class="empty" style="margin-top:24px"><span class="big">🌳</span>Your Family Tree will grow after your first accepted relationship.</div>';
+    return;
+  }
+
+  // resolve the people around me
+  var members=conns.map(function(c){
+    var other=c.user_a_phone===me?c.user_b_phone:c.user_a_phone;
+    var rel  =c.user_a_phone===me?c.user_a_relation:c.user_b_relation;   // how I label them
+    return { phone:other, rel:rel };
+  });
+  var profs=await fetchProfiles(members.map(function(m){return m.phone;}).concat([me]));
+  function nm(p){ return (profs[p] && profs[p].name) || p; }
+  function av(p){ return profs[p] && profs[p].avatar_url; }
+
+  var meName=(ME&&ME.name) || nm(me) || 'You';
+  var meAv=(ME&&ME.avatar_url) || av(me);
+
+  var nodes='';
+  members.forEach(function(m){
+    nodes+='<div class="tnode">'+
+      '<div class="ph">'+(av(m.phone)?'<img src="'+av(m.phone)+'">':escapeHtml((nm(m.phone)[0]||'?').toUpperCase()))+'</div>'+
+      '<div class="nm">'+escapeHtml(nm(m.phone))+'</div>'+
+      '<div class="rl">'+escapeHtml(m.rel||'family')+'</div>'+
+      '<div class="pn">+91 '+escapeHtml(m.phone)+'</div>'+
+    '</div>';
+  });
+
+  body.innerHTML=
+    '<div class="tree-wrap" id="treeWrap">'+
+      '<svg id="treeLines"></svg>'+
+      '<div class="tree-me">'+
+        '<div class="ph">'+(meAv?'<img src="'+meAv+'">':escapeHtml((meName[0]||'J').toUpperCase()))+'</div>'+
+        '<div class="nm">'+escapeHtml(meName)+' (You)</div>'+
+        '<div class="meta">⭐ Family Strength '+(n*10)+'</div>'+
+      '</div>'+
+      '<div class="tree-members" id="treeMembers"'+(members.length===1?' style="display:flex;justify-content:center"':'')+'>'+nodes+'</div>'+
+    '</div>';
+
+  // draw connector lines after layout settles
+  requestAnimationFrame(function(){ requestAnimationFrame(drawTreeLines); });
+}
+
+function drawTreeLines(){
+  var wrap=document.getElementById('treeWrap'); if(!wrap) return;
+  var svg=document.getElementById('treeLines'); if(!svg) return;
+  var meEl=wrap.querySelector('.tree-me .ph'); if(!meEl) return;
+  var nodes=wrap.querySelectorAll('.tnode');
+  var wr=wrap.getBoundingClientRect();
+  svg.setAttribute('width', wr.width); svg.setAttribute('height', wr.height);
+  var mr=meEl.getBoundingClientRect();
+  var x1=mr.left+mr.width/2-wr.left, y1=mr.bottom-wr.top;
+  var paths='';
+  nodes.forEach(function(node){
+    var r=node.getBoundingClientRect();
+    var x2=r.left+r.width/2-wr.left, y2=r.top-wr.top;
+    var midY=(y1+y2)/2;
+    paths+='<path d="M'+x1+' '+y1+' C '+x1+' '+midY+' '+x2+' '+midY+' '+x2+' '+y2+'" stroke="url(#tg)" stroke-width="2.5" fill="none" opacity="0.55"/>'+
+           '<circle cx="'+x2+'" cy="'+y2+'" r="3.5" fill="#E03A7A"/>';
+  });
+  svg.innerHTML='<defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A1E"/><stop offset="1" stop-color="#E03A7A"/></linearGradient></defs>'+paths;
+}
+
+/* redraw lines if the window resizes while the tree is open */
+window.addEventListener('resize', function(){
+  var t=document.getElementById('screen-tree');
+  if(t && t.classList.contains('active')) drawTreeLines();
+});
+
 /* ---------- profile tab ---------- */
 function renderProfileTab(){
   var u=ME||{}; setAvatar('profAvatar',u);
@@ -516,13 +628,15 @@ function renderProfileTab(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', bridge:'screen-bridge', profile:'screen-profileTab' };
+  var map={ home:'screen-home', family:'screen-family', bridge:'screen-bridge', profile:'screen-profileTab', tree:'screen-tree' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
   if(tab==='profile') renderProfileTab();
+  if(tab==='tree') renderTree();
+  var hi=(tab==='tree')?'family':tab;   // tree has no nav button; show Family active
   var btns=document.querySelectorAll('#bottomNav button');
-  for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
+  for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===hi);
 }
 
 function logout(){ clearSession(); ME=null; _gender=''; _photo=''; var lp=document.getElementById('loginPhone'); if(lp) lp.value=''; document.getElementById('loginBtn').disabled=true; clearOtp(); showScreen('screen-login'); }
