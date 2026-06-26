@@ -1210,7 +1210,6 @@ body{
         <span>⚙️ Manage grid</span><span class="managearrow" id="gridManageArrow">▾</span>
       </button>
       <div id="gridManage" class="managebody" style="display:none">
-        <button class="btn btn-primary" style="margin-bottom:10px" onclick="JF_open()">🤝 Your Khandaan <span id="jfBadge" style="display:none;align-items:center;background:#fff;color:#C2185B;border-radius:11px;padding:1px 8px;font-size:12px;font-weight:800;margin-left:6px">0</span></button>
         <button class="btn btn-ghost" id="myGridsBtn" style="display:none;margin-bottom:10px" onclick="openMyGrids()">🗂️ My grids</button>
         <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openJoinGrid()">＋ Join a grid</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openCreateGrid()">🔗 Create a grid</button></div>
         <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button></div>
@@ -1273,8 +1272,7 @@ body{
 
   <!-- BOTTOM NAV -->
   <nav class="nav">
-    <button class="on" data-v="tree" onclick="go('tree');treeBoot()"><span class="ni">🌳</span>Tree</button>
-    <button data-v="home" onclick="go('home')"><span class="ni">🏠</span>Home</button>
+    <button class="on" data-v="home" onclick="go('home')"><span class="ni">🏠</span>Home</button>
     <button data-v="lb" onclick="go('lb')"><span class="ni">🏆</span>Ranks</button>
     <button data-v="play" onclick="go('play')"><span class="ni">🎮</span>Play</button>
     <button data-v="family" onclick="go('family')"><span class="ni">💛</span>Family</button>
@@ -1300,7 +1298,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 104</div>
+      <div class="psub">Powered by Skyvos AI · build 99</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -1326,7 +1324,7 @@ body{
         <div class="authhint" style="margin-top:6px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="joinPanel" style="display:none">
-        <div class="reghint">👪 If a family member <b>invited you by phone</b>, just fill these 3 and tap Join — leave the code blank. Otherwise add the family code they shared.</div>
+        <div class="reghint">👪 If your captain <b>invited you by phone</b>, just fill these 3 and tap Join — leave the code blank. Otherwise add the family code they shared.</div>
         <input id="jName" placeholder="Your name (e.g. Anu)">
         <input id="jPhone" inputmode="numeric" placeholder="Your phone number">
         <input id="jCode" inputmode="numeric" placeholder="Create a PIN (you'll log in with this)">
@@ -1336,8 +1334,8 @@ body{
         <div class="authhint"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="startPanel" style="display:none">
-        <div class="reghint">🏡 Just 3 quick things and you're in — you'll set up your family. Add the rest later.</div>
-        <input id="hName" placeholder="Your name">
+        <div class="reghint">🏡 Just 3 quick things and you're in — you'll be the Head of your family. Add the rest later.</div>
+        <input id="hName" placeholder="Your name (you'll be the Head)">
         <input id="hPhone" inputmode="numeric" placeholder="Your phone number">
         <input id="hCode" inputmode="numeric" placeholder="Create a PIN (you'll log in with this)">
         <div class="reghint" style="background:#EAF7EF;border-color:#BCE6CC;color:#1A6B3C">\U0001f512 Your number is just your private login \u2014 never shown to anyone. You choose if you ever share it.</div>
@@ -1380,8 +1378,6 @@ function go(v){
     document.getElementById('chatBadge').style.display='none';
     setTimeout(()=>{const s=document.getElementById('screen');s.scrollTop=s.scrollHeight;},60);
   }
-  // entering the grid view re-pulls membership so an approval done elsewhere shows up immediately
-  try{ if(typeof ME!=='undefined' && ME && typeof sb!=='undefined' && sb && v==='grid'){ if(typeof loadGrid==='function') loadGrid(); if(typeof loadHousehold==='function') loadHousehold(); } }catch(e){}
 }
 
 /* ---------- animated count-ups on load ---------- */
@@ -1399,7 +1395,7 @@ function countTo(id,target,suffix='',dur=1100){
 
 /* ---------- leaderboard data ---------- */
 const LB={
-  steps:[['Tia','14,208','Marathon mode 🏃‍♀️','#E03A7A,#8E3CE0',true],['Sunil','11,540','You · Organiser','#FF8A1E,#F2700A',false,'me'],['Anu','9,880','Steady climber','#3AA0E0,#1c6aa8'],['Veer','7,420','Came back strong','#2BA84A,#10662b'],['Dadi','4,110','Garden walks 🌸','#F4B740,#E09A12']],
+  steps:[['Tia','14,208','Marathon mode 🏃‍♀️','#E03A7A,#8E3CE0',true],['Sunil','11,540','You · Captain','#FF8A1E,#F2700A',false,'me'],['Anu','9,880','Steady climber','#3AA0E0,#1c6aa8'],['Veer','7,420','Came back strong','#2BA84A,#10662b'],['Dadi','4,110','Garden walks 🌸','#F4B740,#E09A12']],
   improved:[['Sunil','+38%','You · biggest jump','#FF8A1E,#F2700A',true,'me'],['Dadi','+31%','From the garden!','#F4B740,#E09A12'],['Veer','+22%','Back on track','#2BA84A,#10662b'],['Anu','+12%','Consistent','#3AA0E0,#1c6aa8'],['Tia','+6%','Already a beast','#E03A7A,#8E3CE0']],
   streak:[['Dadi','9 🔥','Never misses 👑','#F4B740,#E09A12',true],['Sunil','9 🔥','You','#FF8A1E,#F2700A',false,'me'],['Anu','7 🔥','Strong','#3AA0E0,#1c6aa8'],['Tia','5 🔥','Building','#E03A7A,#8E3CE0'],['Veer','2 🔥','Restarted','#2BA84A,#10662b']],
   team:[['Anu','98','Cheers everyone on 💛','#3AA0E0,#1c6aa8',true],['Sunil','91','You','#FF8A1E,#F2700A',false,'me'],['Dadi','88','Best hype-dadi','#F4B740,#E09A12'],['Tia','74','Getting there','#E03A7A,#8E3CE0'],['Veer','60','Quiet supporter','#2BA84A,#10662b']],
@@ -1878,7 +1874,7 @@ function renderStepSlot(){
   else { el.style.display='none'; }
 }
 function openStepTime(){
-  if(!(ME&&ME.role==='captain')){toast('Only a family organiser can set this \ud83d\udd58');return;}
+  if(!(ME&&ME.role==='captain')){toast('Only the family head can set this \ud83d\udd58');return;}
   var opts=['Morning \u00b7 around 7 AM \ud83c\udf05','Midday \u00b7 around 12 PM \u2600\ufe0f','Evening \u00b7 around 7 PM \ud83c\udf06','Night \u00b7 around 9 PM \ud83c\udf19','Anytime \u2014 log whenever \ud83d\udd50'];
   var btns=opts.map(function(o){return '<button class="btn btn-ghost" style="margin-bottom:8px" onclick="setStepTime(\''+o.replace(/'/g,'')+'\')">'+o+'</button>';}).join('');
   openSheet('<div style="text-align:center"><div style="font-size:38px">\ud83d\udd58</div><h3>Family step time</h3></div><p class="s">Pick a daily time for everyone to log their steps. A shared rhythm keeps your family streak \ud83d\udd25 alive \u2014 everyone walks and logs around the same time.</p>'+btns+'<button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
@@ -1886,7 +1882,7 @@ function openStepTime(){
 async function setStepTime(label){
   closeSheet();
   var r=await sb.rpc('set_household_submit_time',{p_time:label});
-  if(r.error){toast(r.error.message.indexOf('head')>=0?'Only a family organiser can set this':r.error.message);return;}
+  if(r.error){toast(r.error.message.indexOf('head')>=0?'Only the family head can set this':r.error.message);return;}
   if(FAM)FAM.submit_time=label; toast('Family step time set \ud83d\udd58'); renderStepSlot();
 }
 function _myGridNames(){
@@ -2219,15 +2215,13 @@ async function boot(){
     return;
   }
   const {data:me,error}=await sb.from('members').select('*').eq('user_id',user.id).limit(1).maybeSingle();
-  if(error||!me){authMsg('Your profile is not set up yet. Ask a family adult to add you.');document.getElementById('authgate').classList.add('show');try{await sb.auth.signOut();}catch(e){}return;}
+  if(error||!me){authMsg('Your profile is not set up yet. Ask the captain to add you.');document.getElementById('authgate').classList.add('show');try{await sb.auth.signOut();}catch(e){}return;}
   ME=me; coins=ME.coins||0; window.AUTHEMAIL=(user.email||'');
   if(ME.family_id){const {data:fam}=await sb.from('families').select('*').eq('id',ME.family_id).maybeSingle();FAM=fam||null;}
   document.getElementById('authgate').classList.remove('show');
   try{ if(!localStorage.getItem('jeeto_guide_v1')){ setTimeout(function(){ if(typeof openGuide==='function') openGuide(); }, 700); } }catch(e){}
   await refreshAll();
   if(window.__pendingGrid && ME && ME.role==='captain' && (!GRID)){ _offerGridJoin(window.__pendingGrid); }
-  // tree-first: logged-in users land in the Family Tree (the heart of the app), not the old home dashboard
-  try{ go('tree'); if(typeof treeBoot==='function') treeBoot(); }catch(e){}
 }
 function _offerGridJoin(code){
   openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udd17</div><h3>Join this grid?</h3></div>'+
@@ -2245,7 +2239,7 @@ async function refreshAll(){
   try{ if(typeof loadMerge==='function') loadMerge(); }catch(e){}
   document.getElementById('profName').textContent=ME.display_name;
   try{var fb=document.getElementById('founderBtn'); if(fb) fb.style.display=(window.AUTHEMAIL==='9971708833@jeeto.family')?'block':'none';}catch(e){}
-  document.getElementById('profRole').textContent=(ME.role==='captain'?'Family Organiser':'Member')+' · '+(ME.streak_days||0)+'-day streak 🔥';
+  document.getElementById('profRole').textContent=(ME.role==='captain'?'Family Captain':'Member')+' · '+(ME.streak_days||0)+'-day streak 🔥';
   document.getElementById('meCoins').textContent=(ME.coins||0).toLocaleString('en-IN');
   document.getElementById('herotag').textContent=(FAM?FAM.name:'Your family')+' 💛';
   document.getElementById('chatFamName').textContent=FAM?FAM.name:'Your family';
@@ -2254,8 +2248,7 @@ async function refreshAll(){
   if(FAM){try{var _h=await sb.rpc('recalc_happiness',{p_house:FAM.id});if(!_h.error&&typeof _h.data==='number')FAM.happiness=_h.data;}catch(e){}}
   setHappy(FAM?(FAM.happiness||50):50);
   setHappyHint(FAM?(FAM.happiness||50):50);
-  document.getElementById('addMemberBtn').style.display = (FAM) ? 'block':'none';
-  try{ if(typeof JF_badge==='function') JF_badge(); }catch(e){}
+  document.getElementById('addMemberBtn').style.display = (ME.role==='captain'&&FAM) ? 'block':'none';
   document.getElementById('skyHome').innerHTML = (FAM?'':'You are not in a family yet. ')+'Tap <b>📸 Submit steps</b> to log today and climb the board 🪙';
   renderMorningQuote(); loadStreakNudge(); loadSchedule(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
   await loadMembers();
@@ -2280,7 +2273,7 @@ async function loadMembers(){
   document.getElementById('tRoom').textContent='Family room · '+n+(n===1?' player':' players');
   // member list in Me
   document.getElementById('memberList').innerHTML=MEMBERS.map(m=>
-    '<div class="lbrow"><div class="av" style="width:38px;height:38px;font-size:16px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(m.id===ME.id?' (You)':'')+'</div><div class="sub">'+(m.role==='captain'?'Organiser':'Member')+'</div></div></div>'
+    '<div class="lbrow"><div class="av" style="width:38px;height:38px;font-size:16px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(m.id===ME.id?' (You)':'')+'</div><div class="sub">'+(m.role==='captain'?'Captain':'Member')+'</div></div></div>'
   ).join('');
   var di=document.getElementById('dobInput'); if(di && ME && ME.dob) di.value=ME.dob;
   var dn=document.getElementById('dobNote'); if(dn && ME) dn.value=ME.dob_note||'';
@@ -2378,7 +2371,7 @@ function renderLB(cat){
   if(!rows.length){el.innerHTML=emptyMsg('No members yet.');return;}
   el.innerHTML=rows.map((m,i)=>{const me=ME&&m.id===ME.id;const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
     const val=cat==='streak'?((m.streak_days||0)+' 🔥'):(m.today?m.today.toLocaleString('en-IN'):'0');
-    return '<div class="lbrow '+(me?'me':'')+'"><div class="rank">'+medal+'</div><div class="av" style="width:40px;height:40px;font-size:17px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(me?' (You)':'')+'</div><div class="sub">'+(m.role==='captain'?'Organiser':'Member')+'</div></div><div class="val">'+val+'</div></div>';}).join('');
+    return '<div class="lbrow '+(me?'me':'')+'"><div class="rank">'+medal+'</div><div class="av" style="width:40px;height:40px;font-size:17px;background:linear-gradient(135deg,'+avFor(m.display_name)+')">'+esc(m.display_name[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.display_name)+(me?' (You)':'')+'</div><div class="sub">'+(m.role==='captain'?'Captain':'Member')+'</div></div><div class="val">'+val+'</div></div>';}).join('');
 }
 
 async function loadCoinsLedger(){
@@ -2490,19 +2483,6 @@ async function refreshMe(){
   const {data}=await sb.from('members').select('*').eq('id',ME.id).maybeSingle();
   if(data){ME=data;coins=ME.coins||0;setCoins();document.getElementById('meCoins').textContent=(ME.coins||0).toLocaleString('en-IN');}
   await loadCoinsLedger();
-}
-
-/* Re-pull everything from server after a state-changing action (join/connect/claim/approve)
-   so the screen always matches the server — kills the "shows on board but says not-in-grid" staleness. */
-async function syncAll(){
-  try{
-    var u=(await sb.auth.getUser()).data.user;
-    if(u){ var r=await sb.from('members').select('*').eq('user_id',u.id).limit(1).maybeSingle(); if(r.data){ ME=r.data; coins=ME.coins||0; } }
-    if(ME&&ME.family_id){ var f=await sb.from('families').select('*').eq('id',ME.family_id).maybeSingle(); if(f.data) FAM=f.data; }
-  }catch(e){}
-  try{ await refreshAll(); }catch(e){}
-  try{ if(typeof loadGrid==='function') await loadGrid(); }catch(e){}
-  try{ var tv=document.getElementById('v-tree'); if(tv&&tv.classList.contains('active')&&typeof treeBoot==='function') treeBoot(); }catch(e){}
 }
 
 function openAddMember(){
@@ -2786,7 +2766,7 @@ async function joinFamily(){
     btn.textContent='Join my family';btn.disabled=false;
     if(ci.error){
       var em=(ci.error.message||'');
-      if(em.indexOf('no_invite')>=0){ authMsg('No invite found for this number. Ask a family member to invite you, or enter the family code they shared.'); }
+      if(em.indexOf('no_invite')>=0){ authMsg('No invite found for this number. Ask your captain to invite you, or enter the family code they shared.'); }
       else { authMsg(em||'Could not join.'); }
       return;
     }
@@ -3086,7 +3066,7 @@ async function _doJoinGridNow(code){
   closeSheet();
   if(r.data==='pending'){toast('Request sent — waiting for the grid admin \u23f3');}
   else {confetti();toast('Joined the grid! \ud83c\udf89');}
-  await syncAll();
+  await loadHousehold(); await loadGrid();
 }
 function openNameFamily(){
   var city=(FAM&&FAM.city)?esc(FAM.city):'';
@@ -3159,13 +3139,13 @@ async function loadRequests(){
 async function respondLink(id, accept){
   var r=await sb.rpc('respond_household_link',{p_link:id,p_accept:accept});
   if(r.error){toast(r.error.message);return;}
-  toast(accept?'Connected 🤝':'Declined'); loadRequests(); if(accept) syncAll();
+  toast(accept?'Connected 🤝':'Declined'); loadRequests();
 }
 async function setGridHH(grid, house, status){
   var r=await sb.rpc('set_grid_household_status',{p_grid:grid,p_house:house,p_status:status});
   if(r.error){toast(r.error.message);return;}
   toast(status==='active'?'Approved ✓':'Declined'); loadRequests();
-  await syncAll();
+  if(typeof loadGrid==='function') loadGrid();
 }
 
 
@@ -3461,7 +3441,7 @@ async function loadHouseholdChallenges(){
   var r=await sb.rpc('household_challenges');
   if(r.error){ box.innerHTML=emptyMsg(r.error.message); return; }
   var rows=(r.data||[]); HCH={}; rows.forEach(function(c){HCH[c.id]=c;});
-  if(!rows.length){ box.innerHTML='<div class="empty">No challenges yet.'+(cap?' Tap <b>+ New</b> to set a family-time ritual 🍵':' Ask a family organiser to set one 🍵')+'</div>'; return; }
+  if(!rows.length){ box.innerHTML='<div class="empty">No challenges yet.'+(cap?' Tap <b>+ New</b> to set a family-time ritual 🍵':' Ask your captain to set one 🍵')+'</div>'; return; }
   box.innerHTML=rows.map(renderChallengeCard).join('');
 }
 function fmtChWhen(c){
@@ -3583,7 +3563,7 @@ function renderHearts(){
     var ready=HEARTS.treasury>=g.target;
     var btn = (cap&&ready)?'<button class="minibtn" onclick="redeemGoal(\''+g.id+'\')">🎉 Redeem</button>':('<span class="rel">'+pct+'%</span>');
     return '<div class="hgoal"><div style="display:flex;justify-content:space-between;align-items:center"><b>'+esc(g.title)+'</b>'+btn+'</div><div class="hbar"><i style="width:'+pct+'%"></i></div><div class="s">'+HEARTS.treasury+' / '+g.target+' hearts'+(ready?' · ready! 🎉':'')+'</div></div>';
-  }).join('') : '<div class="empty">No family goals yet.'+(cap?' Tap <b>+ New</b> to set one (e.g. Movie Night — 500).':' Ask a family organiser to set one.')+'</div>';
+  }).join('') : '<div class="empty">No family goals yet.'+(cap?' Tap <b>+ New</b> to set one (e.g. Movie Night — 500).':' Ask your captain to set one.')+'</div>';
   // members
   var mem='<div class="sectit">Hearts by member</div>'+HEARTS.members.map(function(m){
     return '<div class="lbrow"><div class="av" style="width:34px;height:34px;font-size:15px;background:linear-gradient(135deg,'+avFor(m.name)+')">'+esc((m.name||'?')[0].toUpperCase())+'</div><div class="info"><div class="nm">'+esc(m.name)+(m.id===ME.id?' (You)':'')+'</div></div><div class="hhsc">💜 '+m.hearts+'</div></div>';
@@ -3930,7 +3910,7 @@ async function saveTripGoal(name,budget){
   if(!FAM){toast('Join a family first');return;}
   var target=budget>=3?1000:budget===2?600:300;
   var r=await sb.rpc('set_treasury_goal',{p_title:'Trip: '+name,p_target:target});
-  if(r.error){ toast((r.error.message||'').indexOf('captain')>=0?'Only a family organiser can set this — ask them 💛':r.error.message); return; }
+  if(r.error){ toast((r.error.message||'').indexOf('captain')>=0?'Only the captain can set a family goal — ask them 💛':r.error.message); return; }
   confetti(); toast('🎯 Saving for '+name+'! Added to family goals 💜');
 }
 
@@ -4055,7 +4035,7 @@ async function loadMerge(){
 }
 function openMergeRequest(){
   openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udd00</div><h3>Merge into another household</h3></div>'+
-  '<p class="s">If your family ended up split into two, merge yours <b>into</b> the other one. Enter their family code \u2014 a family organiser there must approve. Your members move over and you become a member there.</p>'+
+  '<p class="s">If your family ended up split into two, merge yours <b>into</b> the other one. Enter their family code \u2014 their Head must approve. Your members move over and you become a member there.</p>'+
   '<input id="mrgCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" placeholder="Their family code">'+
   '<button class="btn btn-primary" onclick="requestMerge()">Send merge request</button>'+
   '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
@@ -4147,106 +4127,6 @@ function openLegal(which){
 }
 function closeLegal(){ document.getElementById('legalOverlay').style.display='none'; }
 
-/* ===================== KHANDAAN: consent-gated family connections ===================== */
-async function JF_open(){
-  openSheet('<h3>Your Khandaan 🤝</h3><p class="s">Link your family with relatives\u2019 families. A connection only happens when <b>every adult in BOTH families</b> ticks yes.</p>'+
-    '<div id="jfTasks"></div>'+
-    '<div class="sectit">Connected families</div><div id="jfList">'+emptyMsg('Loading\u2026')+'</div>'+
-    '<div style="height:12px"></div><button class="btn btn-primary" onclick="JF_openSearch()">\u2795 Connect another family</button>');
-  JF_loadTasks(); JF_loadList();
-}
-async function JF_loadTasks(){
-  var box=document.getElementById('jfTasks'); if(!box) return;
-  var r; try{ r=await sb.rpc('jf_my_link_tasks'); }catch(e){ box.innerHTML=''; return; }
-  if(r.error){ box.innerHTML=''; return; }
-  var tasks=(r.data&&r.data.tasks)||[];
-  if(!tasks.length){ box.innerHTML=''; return; }
-  box.innerHTML='<div class="sectit">Needs your family\u2019s tick</div>'+tasks.map(JF_taskCard).join('');
-}
-function JF_taskCard(t){
-  var other=t.mine_initiated?(t.to_name||'A family'):(t.from_name||'A family');
-  var needMe=t.my_turn && (t.my_vote===null||t.my_vote===undefined);
-  var title,sub,actions='';
-  if(needMe){
-    if(t.status==='collecting'){ title='Your family wants to connect with <b>'+esc(other)+'</b>'; sub='Tick if you agree to link your families into one khandaan.'; }
-    else { title='<b>'+esc(other)+'</b> wants to join your khandaan'; sub='Tick if you accept them into your family\u2019s grid.'; }
-    actions='<button class="minibtn" onclick="JF_vote(\''+t.id+'\',true)">\u2713 Agree</button> <button class="minibtn ghost" onclick="JF_vote(\''+t.id+'\',false)">\u2715 No</button>';
-  } else {
-    if(t.status==='collecting'){ title='Connecting with <b>'+esc(other)+'</b>'; }
-    else { title=(t.mine_initiated?('Sent to <b>'+esc(other)+'</b>'):('Your family agreed \u2014 '+esc(other))); }
-    sub=t.waiting_on?('\u23f3 Waiting on: '+esc(t.waiting_on)):'All adults ticked \u2014 moving forward \u2713';
-    if(t.mine_initiated) actions='<button class="minibtn ghost" onclick="JF_cancel(\''+t.id+'\')">Cancel request</button>';
-  }
-  return '<div style="border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px">'+
-    '<div style="font-weight:600;line-height:1.4">'+title+'</div>'+
-    '<div style="font-size:12px;color:var(--ink2);margin:4px 0 9px">'+sub+'</div>'+actions+'</div>';
-}
-async function JF_vote(link,agree){
-  var r; try{ r=await sb.rpc('jf_vote_link',{p_link:link,p_agree:agree}); }catch(e){ toast('Could not record that'); return; }
-  if(r.error||(r.data&&r.data.error)){ toast((r.data&&r.data.error)||(r.error&&r.error.message)||'Could not record that'); return; }
-  var st=r.data&&r.data.status;
-  if(st==='connected'){ confetti(); toast('Families connected! 🎉'); }
-  else toast(st==='declined'?'Declined':(agree?'Your tick is in \u2713':'Noted'));
-  JF_loadTasks(); JF_loadList(); JF_badge();
-}
-async function JF_cancel(link){
-  var r; try{ r=await sb.rpc('jf_cancel_link',{p_link:link}); }catch(e){ toast('Could not cancel'); return; }
-  if(r.error||(r.data&&r.data.error)){ toast((r.data&&r.data.error)||'Could not cancel'); return; }
-  toast('Request cancelled'); JF_loadTasks(); JF_loadList(); JF_badge();
-}
-async function JF_loadList(){
-  var box=document.getElementById('jfList'); if(!box) return;
-  var r; try{ r=await sb.rpc('jf_my_khandaan'); }catch(e){ box.innerHTML=emptyMsg('Could not load'); return; }
-  if(r.error){ box.innerHTML=emptyMsg('Could not load'); return; }
-  var rows=r.data||[];
-  if(!rows.length){ box.innerHTML=emptyMsg('No connected families yet. Add your first relative\u2019s family below 👇'); return; }
-  box.innerHTML=rows.map(function(f){
-    var nm=(f.name||'Family')+(f.city?' \u00b7 '+f.city:'');
-    return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(f.name||'F')+')">'+esc((f.name||'F')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>In your khandaan \u2713</div></div></div>';
-  }).join('');
-}
-var _jfST=null;
-function JF_openSearch(){
-  openSheet('<h3>Find a family 🔍</h3><p class="s">Search by family name or city. The request only goes out once <b>every adult in your family</b> ticks yes.</p>'+
-    '<input id="jfQ" autocomplete="off" spellcheck="false" oninput="JF_search()" placeholder="Family name or city\u2026" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:12px">'+
-    '<div id="jfRes">'+emptyMsg('Type at least 2 letters.')+'</div>');
-}
-function JF_search(){
-  clearTimeout(_jfST);
-  _jfST=setTimeout(async function(){
-    var q=(_v('jfQ')||'').trim(); var box=document.getElementById('jfRes'); if(!box) return;
-    if(q.length<2){ box.innerHTML=emptyMsg('Type at least 2 letters.'); return; }
-    box.innerHTML=emptyMsg('Searching\u2026');
-    var r; try{ r=await sb.rpc('jf_search_families',{p_q:q}); }catch(e){ box.innerHTML=emptyMsg('Search failed'); return; }
-    if(r.error){ box.innerHTML=emptyMsg(r.error.message); return; }
-    var rows=r.data||[];
-    if(!rows.length){ box.innerHTML=emptyMsg('No families found for "'+esc(q)+'".'); return; }
-    box.innerHTML=rows.map(function(f){
-      var nm=(f.name||'Family')+(f.city?' \u00b7 '+f.city:'');
-      var act = f.rel==='self' ? '<span class="rel">You</span>'
-        : f.rel==='connected' ? '<span class="rel" style="color:#12A14B">Connected \u2713</span>'
-        : f.rel==='pending'   ? '<span class="rel">In progress\u2026</span>'
-        : '<button class="minibtn" onclick="JF_request(\''+f.id+'\')">Request</button>';
-      return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(f.name||'F')+')">'+esc((f.name||'F')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b></div>'+act+'</div>';
-    }).join('');
-  },280);
-}
-async function JF_request(fam){
-  var r; try{ r=await sb.rpc('jf_request_link',{p_target:fam}); }catch(e){ toast('Could not send'); return; }
-  if(r.error||(r.data&&r.data.error)){ toast((r.data&&r.data.error)||(r.error&&r.error.message)||'Could not send'); return; }
-  var st=r.data&&r.data.status;
-  toast(st==='pending'?'Sent to their family for approval 🤝':'Sent to your family \u2014 every adult must tick \u2713');
-  JF_search(); JF_badge();
-}
-async function JF_badge(){
-  try{
-    var r=await sb.rpc('jf_my_link_tasks'); if(r.error) return;
-    var tasks=(r.data&&r.data.tasks)||[];
-    var n=tasks.filter(function(t){return t.my_turn && (t.my_vote===null||t.my_vote===undefined);}).length;
-    var b=document.getElementById('jfBadge'); if(b){ b.style.display=n?'inline-flex':'none'; b.textContent=n; }
-  }catch(e){}
-}
-
 window.addEventListener('load', boot);
 </script>
 
@@ -4292,7 +4172,7 @@ window.addEventListener('load', boot);
       <div class="tourcard"><div class="te">📸</div><div><b>2 · Walk &amp; earn together</b><p>On Home, tap <b>📸 Submit steps</b> and snap your step count from any step app (Pacer, Health, Fit). Everyone's steps lift the family up the board — you climb as a team, never alone.</p></div></div>
       <div class="tourcard"><div class="te">🧭</div><div><b>3 · Find your way</b><p>The tabs at the bottom: <b>🏠 Home</b> · <b>🏆 Ranks</b> · <b>🎮 Play</b> · <b>💛 Family</b> (chat, songs, album) · <b>🪙 Coins</b> · <b>😊 Me</b>. Tap around — you can't break anything!</p></div></div>
       <div class="tourcard"><div class="te">🔗</div><div><b>4 · Inside vs Outside</b><p>The toggle at the very top. <b>🏠 Inside the Home</b> is your own household. <b>🔗 Outside · Grid</b> connects you with relatives' households — to chat, walk &amp; play across the whole khandaan.</p></div></div>
-      <div class="tourcard"><div class="te">🔑</div><div><b>5 · What's a "grid code"?</b><p>A short code (like <b>AOUGRID</b>) a family member shares to link your household into the family grid. <b>You don't need it to begin</b> — explore your home first, and join a grid whenever you're ready.</p></div></div>
+      <div class="tourcard"><div class="te">🔑</div><div><b>5 · What's a "grid code"?</b><p>A short code (like <b>AOUGRID</b>) your family head shares to link your household into the family grid. <b>You don't need it to begin</b> — explore your home first, and join a grid whenever you're ready.</p></div></div>
       <div class="tournote">Stuck later? Open this guide anytime from the <b>😊 Me</b> tab → <b>How to use Jeeto</b>.</div>
       <button class="btn btn-primary" style="margin-top:6px" onclick="closeGuide()">Got it — let's go! 💛</button>
     </div>
@@ -4304,22 +4184,26 @@ window.addEventListener('load', boot);
     <div class="lgbody" id="lgBody"></div>
   </div>
 <script>
-/* SERVICE WORKER REMOVED (build 104).
-   It was precaching index.html and serving OLD builds — the reason deploys weren't showing.
-   This actively unregisters any worker already installed on the phone and wipes its caches,
-   then reloads once cleanly. After this runs once, every future deploy shows instantly. */
 if('serviceWorker' in navigator){
-  try{
-    navigator.serviceWorker.getRegistrations().then(function(regs){
-      var had = regs && regs.length;
-      regs.forEach(function(r){ try{ r.unregister(); }catch(e){} });
-      try{ if(window.caches && caches.keys){ caches.keys().then(function(keys){ keys.forEach(function(k){ caches.delete(k); }); }); } }catch(e){}
-      if(had && !sessionStorage.getItem('jeeto_sw_purged')){
-        try{ sessionStorage.setItem('jeeto_sw_purged','1'); }catch(e){}
-        setTimeout(function(){ try{ location.reload(); }catch(e){} }, 500);
-      }
-    }).catch(function(e){});
-  }catch(e){}
+  var _reloading=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(_reloading) return; _reloading=true; window.location.reload();
+  });
+  var _lastTag=null;
+  async function _checkFresh(reg){
+    try{ if(reg) reg.update(); }catch(e){}
+    try{
+      var r=await fetch('index.html',{method:'HEAD',cache:'no-store'});
+      var tag=r.headers.get('etag')||r.headers.get('last-modified');
+      if(tag){ if(_lastTag && tag!==_lastTag){ window.location.reload(); } _lastTag=tag; }
+    }catch(e){}
+  }
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(reg){
+      _checkFresh(reg);
+      document.addEventListener('visibilitychange',function(){ if(!document.hidden) _checkFresh(reg); });
+    }).catch(function(e){ console.log('SW failed',e); });
+  });
 }
 </script>
 <script>
