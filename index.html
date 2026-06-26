@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
 :root{
   --paper:#FFF9F1; --paper2:#FFEFDD;
@@ -184,6 +185,35 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .circle-opt.on{border-color:var(--rani);background:#FFF0F6}
 .circle-opt .ce{font-size:20px}
 .circle-opt .cd{font-size:11px;color:var(--ink3);font-weight:700;display:block;margin-top:1px}
+/* passport */
+.pp-card{background:linear-gradient(150deg,#2A1B33 0%,#4A2B52 52%,#7C3AED 128%);color:#fff;border-radius:30px;padding:24px 22px;box-shadow:var(--sh-pop);position:relative;overflow:hidden;animation:rise .5s ease both}
+.pp-card::after{content:"";position:absolute;top:-40%;right:-30%;width:75%;height:120%;background:radial-gradient(circle,rgba(255,138,30,.28),transparent 62%);pointer-events:none}
+.pp-top{display:flex;justify-content:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:1.2px;opacity:.92;position:relative}
+.pp-photo{width:100px;height:100px;border-radius:50%;border:3px solid rgba(255,255,255,.55);object-fit:cover;margin:15px auto 11px;display:block;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.3)}
+.pp-name{text-align:center;font-family:'Baloo 2';font-weight:800;font-size:25px;line-height:1.1}
+.pp-handle{text-align:center;font-size:14px;opacity:.92;font-weight:700;margin-top:2px}
+.pp-numwrap{text-align:center;margin-top:11px}
+.pp-num{font-family:'Baloo 2';letter-spacing:1.5px;font-size:15px;background:rgba(255,255,255,.15);border-radius:13px;padding:8px 16px;display:inline-block}
+.pp-badges{display:flex;justify-content:center;gap:8px;margin-top:13px;flex-wrap:wrap}
+.pp-badge{background:rgba(255,255,255,.17);border-radius:20px;padding:6px 13px;font-size:12px;font-weight:800}
+.pp-since{text-align:center;font-size:11.5px;opacity:.82;margin-top:13px;font-weight:700}
+.pp-qr{background:#fff;border-radius:18px;padding:11px;width:-moz-fit-content;width:fit-content;margin:16px auto 2px;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+.pp-qr img{display:block;width:118px;height:118px;image-rendering:pixelated}
+.pp-qr .qcap{text-align:center;font-size:9.5px;color:#9a8;font-weight:800;letter-spacing:.5px;margin-top:5px;color:var(--ink3)}
+.qr-ph{width:118px;height:118px;display:flex;align-items:center;justify-content:center;color:#bbb;font-weight:800}
+.pp-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.pp-stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px 14px;box-shadow:var(--sh-1)}
+.pp-stat .v{font-family:'Baloo 2';font-weight:800;font-size:22px;color:var(--ink)}
+.pp-stat .l{font-size:11.5px;color:var(--ink2);font-weight:700;margin-top:3px}
+.pp-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+.pp-act{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 12px;font-size:13.5px;font-weight:800;color:var(--ink);cursor:pointer;text-align:center;box-shadow:var(--sh-1);transition:transform .12s}
+.pp-act:active{transform:scale(.97)}
+.pp-journey{margin-top:24px}
+.jrow{display:flex;gap:12px;align-items:flex-start;padding:11px 2px;border-bottom:1px dashed var(--line)}
+.jrow:last-child{border-bottom:0}
+.jdot{width:32px;height:32px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+.jt{font-weight:800;font-size:14px}
+.jd{font-size:11.5px;color:var(--ink3);font-weight:700;margin-top:1px}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -477,16 +507,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
   <!-- PROFILE -->
   <section class="screen has-nav" id="screen-profileTab">
-    <div class="h1" style="margin-bottom:18px">👤 Profile</div>
-    <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px">
-      <div class="avatar" id="profAvatar" style="width:70px;height:70px;font-size:28px">J</div>
-      <div><div class="display" id="profName" style="font-size:23px;font-weight:800">—</div><div class="muted" id="profPhone" style="font-size:13px;font-weight:600">—</div></div>
-    </div>
-    <div class="prow"><span class="k">Name</span><span class="v" id="profNameRow">—</span></div>
-    <div class="prow"><span class="k">Phone</span><span class="v" id="profPhoneRow">—</span></div>
-    <div class="prow"><span class="k">Date of birth</span><span class="v" id="profDobRow">—</span></div>
-    <div class="prow"><span class="k">Gender</span><span class="v" id="profGenderRow">—</span></div>
-    <div style="height:26px"></div>
+    <div id="passportBody"><div class="muted" style="text-align:center;padding:40px">Loading your Passport…</div></div>
+    <div style="height:14px"></div>
     <button class="btn btn-ghost" onclick="logout()">Log out</button>
   </section>
 
@@ -504,6 +526,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <div class="modal" id="householdModal"></div>
   <div class="modal" id="bridgeModal"></div>
   <div class="modal" id="momentModal"></div>
+  <div class="modal" id="editModal"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -1555,15 +1578,160 @@ async function renderMomentsHome(){
   body.innerHTML=html;
 }
 
-/* ---------- profile tab ---------- */
-function renderProfileTab(){
-  var u=ME||{}; setAvatar('profAvatar',u);
-  document.getElementById('profName').textContent=u.name||'—';
-  document.getElementById('profPhone').textContent=u.phone?('+91 '+u.phone):'—';
-  document.getElementById('profNameRow').textContent=u.name||'—';
-  document.getElementById('profPhoneRow').textContent=u.phone?('+91 '+u.phone):'—';
-  document.getElementById('profDobRow').textContent=u.dob||'—';
-  document.getElementById('profGenderRow').textContent=u.gender?(u.gender[0].toUpperCase()+u.gender.slice(1)):'—';
+/* ============================================================
+   JEETO PASSPORT — the permanent root identity. One per person.
+   ============================================================ */
+var PASSPORT=null, EDIT_PHOTO=null;
+function ppErr(code){ code=String(code||'');
+  if(code.indexOf('handle_taken')>=0) return 'That handle is already taken.';
+  if(code.indexOf('handle_invalid')>=0) return 'Handle can use letters, numbers and _ only.';
+  return code||'Could not update.'; }
+async function ensurePassport(){
+  if(!ensureSB()) return null;
+  try{
+    var r=await sb.rpc('ensure_passport',{ p_phone:myPhone(), p_name:(ME&&ME.name)||'' });
+    if(r.error){ var s=await sb.from('jeeto_passports').select('*').eq('person_phone',myPhone()).maybeSingle(); PASSPORT=s.data||null; return PASSPORT; }
+    PASSPORT = Array.isArray(r.data)? r.data[0] : r.data;
+    return PASSPORT;
+  }catch(e){ return null; }
+}
+function renderQR(elId, text){
+  var el=document.getElementById(elId); if(!el) return;
+  try{
+    if(typeof qrcode==='undefined' || !text){ el.innerHTML='<div class="qr-ph">QR</div><div class="qcap">SCAN · COMING SOON</div>'; return; }
+    var qr=qrcode(0,'M'); qr.addData(text); qr.make();
+    el.innerHTML=qr.createImgTag(4,8)+'<div class="qcap">SCAN · COMING SOON</div>';
+    var im=el.querySelector('img'); if(im){ im.style.width='118px'; im.style.height='118px'; }
+  }catch(e){ el.innerHTML='<div class="qr-ph">QR</div><div class="qcap">SCAN · COMING SOON</div>'; }
+}
+function ppStat(ic,label,val){ return '<div class="pp-stat"><div class="v">'+ic+' '+val+'</div><div class="l">'+escapeHtml(label)+'</div></div>'; }
+
+async function renderPassport(){
+  var body=document.getElementById('passportBody'); if(!body) return;
+  if(!ME) ME=await fetchProfile(myPhone());
+  var pass=await ensurePassport();
+  var ctx=await myCircleContext();
+  var rels=await loadRelationships();
+  var famStr=calculateFamilyStrength(rels)+await loadMomentStrength();
+  var brStr=0; ctx.bridges.forEach(function(b){ brStr+=b.bridge_strength||0; });
+  var momentsCount=0; try{ momentsCount=((await sb.from('moments').select('id',{count:'exact',head:true}).eq('created_by',myPhone()).eq('status','active')).count)||0; }catch(e){}
+  var tier=strengthTier(famStr);
+  var years=(pass&&pass.member_since)? Math.max(0, Math.floor((Date.now()-new Date(pass.member_since).getTime())/(365.25*86400000))) : 0;
+  var sinceTxt=(pass&&pass.member_since)? new Date(pass.member_since).toLocaleDateString('en-US',{month:'long',year:'numeric'}) : '—';
+  var u=ME||{};
+  var photo=u.avatar_url ? '<img class="pp-photo" src="'+escapeAttr(u.avatar_url)+'">'
+    : '<div class="pp-photo" style="display:flex;align-items:center;justify-content:center;font-size:42px;color:#7C3AED">'+escapeHtml(((u.name||'J')[0]||'J').toUpperCase())+'</div>';
+
+  var html='<div class="pp-card">'+
+    '<div class="pp-top">❤️ JEETO PASSPORT</div>'+ photo +
+    '<div class="pp-name">'+escapeHtml(u.name||'—')+'</div>'+
+    '<div class="pp-handle">@'+escapeHtml(pass?pass.passport_handle:'')+'</div>'+
+    '<div class="pp-numwrap"><span class="pp-num">'+escapeHtml(pass?pass.jeeto_number:'JEETO')+'</span></div>'+
+    '<div class="pp-badges"><span class="pp-badge">✅ Verified Member</span><span class="pp-badge">'+tier.e+' '+tier.name+'</span></div>'+
+    '<div class="pp-since">Member since '+sinceTxt+' · '+years+(years===1?' year':' years')+' in Jeeto</div>'+
+    '<div class="pp-qr" id="ppQR"></div>'+
+  '</div>';
+
+  html+='<div class="pp-stats">'+
+    ppStat('❤️','Family Strength',famStr)+
+    ppStat('🌉','Bridge Strength',brStr)+
+    ppStat('🏠','Households',ctx.households.length)+
+    ppStat('👥','Family Members',rels.length)+
+    ppStat('🌉','Active Bridges',ctx.bridges.length)+
+    ppStat('💛','Moments',momentsCount)+
+  '</div>';
+
+  html+='<div class="pp-actions">'+
+    '<div class="pp-act" onclick="openEditProfile()">✏️ Edit Profile</div>'+
+    '<div class="pp-act" onclick="sharePassport()">🔗 Share Passport</div>'+
+    '<div class="pp-act" onclick="navTo(\'family\')">❤️ My Relationships</div>'+
+    '<div class="pp-act" onclick="navTo(\'family\')">🏠 My Households</div>'+
+    '<div class="pp-act" onclick="navTo(\'bridge\')">🌉 My Bridges</div>'+
+    '<div class="pp-act" onclick="viewJourney()">🧭 My Journey</div>'+
+  '</div>';
+
+  var events=await journeyEvents(pass);
+  html+='<div class="pp-journey"><div class="sec-head"><span class="si">🧭</span><span class="st">My Journey</span></div>';
+  if(events.length){ events.slice(0,5).forEach(function(ev){ html+='<div class="jrow"><div class="jdot">'+ev.icon+'</div><div style="flex:1;min-width:0"><div class="jt">'+escapeHtml(ev.title)+'</div><div class="jd">'+escapeHtml(ev.when)+'</div></div></div>'; }); }
+  else html+='<div class="muted" style="font-size:13px;padding:4px 2px">Your journey will unfold as you connect, build and capture.</div>';
+  html+='<div style="height:14px"></div><button class="btn btn-soft" onclick="viewJourney()">View Complete Journey →</button></div>';
+
+  body.innerHTML=html;
+  renderQR('ppQR', pass?pass.qr_code:'');
+}
+
+async function journeyEvents(pass){
+  var me=myPhone(); var ev=[];
+  if(pass&&pass.member_since) ev.push({icon:'🎉',title:'Joined Jeeto',when:fmtMomentDate(pass.member_since),ts:new Date(pass.member_since).getTime()});
+  try{
+    var rels=await loadRelationships();
+    var profs=await fetchProfiles(rels.map(function(c){return relView(c,me).other;}));
+    rels.forEach(function(c){ var v=relView(c,me); ev.push({icon:'❤️',title:'Connected with '+((profs[v.other]&&profs[v.other].name)||v.other),when:fmtMomentDate(v.since),ts:new Date(v.since).getTime()}); });
+  }catch(e){}
+  try{ var hh=await loadHouseholds(); hh.forEach(function(x){ ev.push({icon:'🏠',title:'Created '+x.h.household_name,when:fmtMomentDate(x.h.created_at),ts:new Date(x.h.created_at).getTime()}); });
+    var brs=await loadBridges(hh.map(function(x){return x.h.id;})); brs.forEach(function(b){ ev.push({icon:'🌉',title:'Built a Bridge with '+b._otherName,when:fmtMomentDate(b.connected_at),ts:new Date(b.connected_at).getTime()}); });
+  }catch(e){}
+  try{ var mr=await sb.from('moments').select('title,created_at').eq('created_by',me).eq('status','active').order('created_at',{ascending:false}).limit(5); (mr.data||[]).forEach(function(m){ ev.push({icon:'💛',title:'Captured “'+m.title+'”',when:fmtMomentDate(m.created_at),ts:new Date(m.created_at).getTime()}); }); }catch(e){}
+  ev.sort(function(a,b){ return b.ts-a.ts; });
+  return ev;
+}
+function viewJourney(){ toast('🧭 Your complete journey timeline arrives in Sprint 8.'); }
+
+async function sharePassport(){
+  var p=PASSPORT||{}; var url=p.qr_code||('https://jeeto-families.pages.dev/p/'+(p.passport_handle||''));
+  var text='My Jeeto Passport — '+(p.jeeto_number||'')+' · @'+(p.passport_handle||'')+'\n'+url;
+  try{ if(navigator.share){ await navigator.share({ title:'Jeeto Passport', text:text, url:url }); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
+  try{ await navigator.clipboard.writeText(text); toast('Passport link copied 🔗'); }catch(e){ toast(url); }
+}
+
+/* ---------- edit profile ---------- */
+function openEditProfile(){
+  var u=ME||{}; var p=PASSPORT||{}; EDIT_PHOTO=null;
+  var m=document.getElementById('editModal');
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">✏️ Edit Passport</div>'+
+    '<div id="epPhotoWrap" style="text-align:center;margin-bottom:14px"><label style="cursor:pointer"><div id="epPhoto" class="pp-photo" style="margin:0 auto;border-color:var(--line);'+(u.avatar_url?'':'display:flex;align-items:center;justify-content:center;font-size:38px;color:var(--rani-d);background:var(--paper)')+'">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">':escapeHtml(((u.name||'J')[0]||'J').toUpperCase()))+'</div><div class="muted" style="font-size:12px;margin-top:6px;font-weight:700">Tap to change photo</div><input type="file" accept="image/*" style="display:none" onchange="epPickPhoto(event)"></label></div>'+
+    '<div class="field-label">Display name</div><input class="fi" id="epName" value="'+escapeAttr(u.name||'')+'" style="margin-bottom:12px">'+
+    '<div class="field-label">Handle (public)</div><input class="fi" id="epHandle" value="'+escapeAttr(p.passport_handle||'')+'" placeholder="yourhandle" style="margin-bottom:12px">'+
+    '<div class="field-label">Bio</div><textarea class="fi" id="epBio" rows="2" placeholder="A line about you" style="margin-bottom:12px;resize:vertical">'+escapeHtml(u.bio||'')+'</textarea>'+
+    '<div class="field-label">Languages</div><input class="fi" id="epLangs" value="'+escapeAttr(u.languages||'')+'" placeholder="Hindi, English" style="margin-bottom:12px">'+
+    '<div class="field-label">Current city</div><input class="fi" id="epCity" value="'+escapeAttr(u.city||'')+'" placeholder="Delhi NCR" style="margin-bottom:12px">'+
+    '<div class="field-label">Occupation (optional)</div><input class="fi" id="epOcc" value="'+escapeAttr(u.occupation||'')+'" placeholder="Founder, Skyvos AI" style="margin-bottom:8px">'+
+    '<p class="muted" style="font-size:11.5px;margin:0 2px 14px">Your phone number and Jeeto Number are permanent and can\'t be changed here.</p>'+
+    '<button class="btn" id="epSave" onclick="submitEditProfile()">Save Passport ❤️</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeEditModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+function closeEditModal(){ document.getElementById('editModal').classList.remove('show'); }
+function epPickPhoto(ev){ var f=ev.target.files&&ev.target.files[0]; if(!f) return; EDIT_PHOTO=f; var box=document.getElementById('epPhoto'); if(box){ box.style.cssText='margin:0 auto;border-color:var(--line)'; box.innerHTML='<img src="'+URL.createObjectURL(f)+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">'; } }
+async function submitEditProfile(){
+  var name=(document.getElementById('epName').value||'').trim();
+  if(!name){ toast('Name cannot be empty.'); return; }
+  var handle=(document.getElementById('epHandle').value||'').trim();
+  var btn=document.getElementById('epSave'); btn.disabled=true; btn.textContent='Saving…';
+  var avatar=(ME&&ME.avatar_url)||null;
+  try{
+    if(EDIT_PHOTO){
+      var safe=(EDIT_PHOTO.name||'avatar').replace(/[^a-zA-Z0-9._-]/g,'_');
+      var path=myPhone()+'/avatar-'+Date.now()+'-'+safe;
+      var up=await sb.storage.from('moments').upload(path, EDIT_PHOTO, { upsert:true, contentType:EDIT_PHOTO.type||undefined });
+      if(up.error) throw up.error;
+      avatar=sb.storage.from('moments').getPublicUrl(path).data.publicUrl;
+    }
+  }catch(e){ btn.disabled=false; btn.textContent='Save Passport ❤️'; toast('Photo upload failed.'); return; }
+  var patch={ name:name, avatar_url:avatar,
+    bio:(document.getElementById('epBio').value||'').trim()||null,
+    languages:(document.getElementById('epLangs').value||'').trim()||null,
+    city:(document.getElementById('epCity').value||'').trim()||null,
+    occupation:(document.getElementById('epOcc').value||'').trim()||null };
+  var up2=await sb.from('profiles').update(patch).eq('phone',myPhone());
+  if(up2.error){ btn.disabled=false; btn.textContent='Save Passport ❤️'; toast(up2.error.message||'Could not save.'); return; }
+  if(handle && PASSPORT && handle.toLowerCase()!==(PASSPORT.passport_handle||'')){
+    var hr=await sb.rpc('set_handle',{ p_phone:myPhone(), p_handle:handle });
+    if(hr && hr.error){ btn.disabled=false; btn.textContent='Save Passport ❤️'; toast(ppErr(hr.error.message)); return; }
+  }
+  ME=await fetchProfile(myPhone()); PASSPORT=null;
+  closeEditModal(); toast('Passport updated ❤️'); renderPassport();
 }
 
 /* ---------- nav ---------- */
@@ -1574,7 +1742,7 @@ function navTo(tab){
   if(tab==='family') renderFamily();
   if(tab==='moments') renderMoments();
   if(tab==='bridge') renderBridge();
-  if(tab==='profile') renderProfileTab();
+  if(tab==='profile') renderPassport();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
