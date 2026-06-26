@@ -1294,21 +1294,24 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 96</div>
+      <div class="psub">Powered by Skyvos AI · build 97</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
         <p class="welcomelede">Your family, closer. 💛</p>
-        <button class="btn btn-primary welcomebtn" onclick="showPanel('start')">✨ Set up my family<small>I'm the first one. I'll invite everyone after.</small></button>
-        <button class="btn btn-ghost welcomebtn" style="margin-top:10px" onclick="showPanel('join')">🏠 Join with a code<small>Someone shared a family code with me.</small></button>
-        <div class="authhint" style="margin-top:16px">Curious how it works? <a onclick="openTour()"><b>👀 Take a quick tour</b></a></div>
-        <div class="authhint" style="margin-top:8px">Already have an account? <a onclick="showPanel('login')"><b>Log in</b></a></div>
+        <input id="quName" placeholder="Your name">
+        <input id="quPhone" inputmode="numeric" placeholder="Phone number">
+        <input id="quCode" inputmode="numeric" placeholder="Create a PIN" onkeydown="if(event.key==='Enter')quickSignup()">
+        <button class="btn btn-primary" id="quBtn" onclick="quickSignup()">Create my account 🌳</button>
+        <div class="reghint" style="background:#EAF7EF;border-color:#BCE6CC;color:#1A6B3C;margin-top:10px">🔒 Your number is just your private login — never shown to anyone.</div>
+        <div class="authhint" style="margin-top:14px">Already have an account? <a onclick="showPanel('login')"><b>Log in</b></a></div>
+        <div class="authhint" style="margin-top:6px">Got a family invite code? <a onclick="showPanel('join')">Join with a code</a></div>
       </div>
       <div id="loginPanel" style="display:none">
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
         <input id="aCode" type="text" placeholder="Your PIN or password" onkeydown="if(event.key==='Enter')doLogin()">
         <button class="btn btn-primary" id="aBtn" onclick="doLogin()">Log in</button>
-        <div class="authhint">New to Jeeto? <a onclick="showPanel('start')"><b>Start your family →</b></a></div><div class="authhint" style="margin-top:6px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
+        <div class="authhint">New to Jeeto? <a onclick="showPanel('welcome')"><b>Create an account →</b></a></div><div class="authhint" style="margin-top:6px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="joinPanel" style="display:none">
         <div class="reghint">👪 If your captain <b>invited you by phone</b>, just fill these 3 and tap Join — leave the code blank. Otherwise add the family code they shared.</div>
@@ -2851,6 +2854,33 @@ async function claimJoin(){
     authMsg(em||'Could not join.'); return;
   }
   window.__claimPhone=null; confetti(); await boot();
+}
+async function quickSignup(){
+  if(!ensureSB()){authMsg('Still loading — check internet and try again.');return;}
+  var name=_v('quName').trim(), phone=_v('quPhone').replace(/\D/g,''), code=_v('quCode').trim();
+  if(!name){authMsg('What should we call you? 🙂');return;}
+  if(phone.length<7){authMsg('Enter your phone number — it\'s your private login.');return;}
+  if(code.length<4){authMsg('Pick a PIN (at least 4 digits) — that\'s how you log in.');return;}
+  var btn=document.getElementById('quBtn');btn.textContent='Creating…';btn.disabled=true;authMsg('');
+  var email=phone+'@jeeto.family';
+  var su=await sb.auth.signUp({email:email,password:code,options:{data:{display_name:name,phone:phone}}});
+  if(su.error){
+    var m=(su.error.message||'').toLowerCase();
+    btn.textContent='Create my account 🌳';btn.disabled=false;
+    authMsg((m.indexOf('regist')>=0||m.indexOf('already')>=0)?'That phone already has an account — tap Log in below.':su.error.message);
+    return;
+  }
+  if(!su.data.session){
+    var si=await sb.auth.signInWithPassword({email:email,password:code});
+    if(si.error){btn.textContent='Create my account 🌳';btn.disabled=false;authMsg('Created — turn OFF "Confirm email" in Supabase, then log in.');return;}
+  }
+  try{ var inv=await sb.rpc('check_my_invite');
+    if(!inv.error && inv.data && inv.data.found){ await sb.rpc('claim_invite',{p_name:name}); btn.textContent='Create my account 🌳';btn.disabled=false; await boot(); try{go('tree');treeBoot();}catch(e){} return; }
+  }catch(e){}
+  var r=await sb.rpc('create_household',{p_surname:name,p_city:'',p_name:name});
+  btn.textContent='Create my account 🌳';btn.disabled=false;
+  if(r.error){authMsg(r.error.message||'Could not create your account.');return;}
+  await boot(); try{go('tree');treeBoot();}catch(e){}
 }
 async function createHousehold(){
   if(!ensureSB()){authMsg('Still loading — check internet and try again.');return;}
