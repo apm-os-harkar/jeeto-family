@@ -362,7 +362,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
       <div class="field-label">Who is this person to you?</div>
       <select class="fi" id="frRel" style="margin-bottom:11px"><option value="">Choose relationship…</option></select>
       <input class="fi" id="frMsg" value="Hi, I would love to connect with you on Jeeto Family." style="margin-bottom:12px">
-      <button class="btn" id="frBtn" onclick="sendFamilyRequest()">Send request ❤️</button>
+      <button class="btn" id="frBtn" onclick="sendRequest()">Send request ❤️</button>
     </div>
 
     <div id="famBody"></div>
@@ -435,14 +435,15 @@ function flyHeart(srcEl){
     document.body.appendChild(h); setTimeout(function(){ h.remove(); },1100);
   }catch(e){}
 }
-function celebrate(){
+function celebrate(plus){
+  var delta=plus||10;
   var c=document.getElementById('celebrate');
   var conf=''; var ems=['🎉','💛','🌱','✨','❤️','🎊'];
   for(var i=0;i<14;i++){ conf+='<span class="confetti" style="left:'+(Math.random()*100)+'%;animation-duration:'+(2+Math.random()*2).toFixed(2)+'s;animation-delay:'+(Math.random()*0.8).toFixed(2)+'s">'+ems[i%ems.length]+'</span>'; }
   c.innerHTML=conf+
     '<div style="text-align:center">'+
       '<div class="hearts"><span class="hl">❤️</span><span class="hr">💛</span><span class="big-heart">❤️</span></div>'+
-      '<div class="box"><h2>Welcome to Jeeto Family</h2><div class="plus">Relationship created · 🌱 +10</div>'+
+      '<div class="box"><h2>Welcome to Jeeto Family</h2><div class="plus">Relationship created · 🌱 +'+delta+'</div>'+
       '<div style="margin-top:22px"><button class="btn" style="background:rgba(255,255,255,.22);width:auto;padding:13px 30px" onclick="closeCelebrate()">Continue</button></div></div>'+
     '</div>';
   c.classList.add('show');
@@ -523,64 +524,72 @@ async function renderHome(){
   document.getElementById('homeHi').textContent=greetingWord();
   document.getElementById('homeName').textContent=first+' 👋';
   setAvatar('homeAvatar',u);
-  var me=myPhone();
-  var conns=await fetchConnections(me); var n=conns.length; var strength=n*10;
-  var t=strengthTier(strength);
-  var seedEl=document.getElementById('heroSeed'), tierEl=document.getElementById('statTier');
-  seedEl.textContent=t.e; tierEl.textContent=t.e+' '+t.name;
-  countUp(document.getElementById('statStrength'), strength);
-  // rewarding animation when strength actually changes (e.g. first accept: Seed -> +10 -> Growing)
-  if(window.__rewardBump || (LAST_STRENGTH!==null && strength!==LAST_STRENGTH)){ bumpEl(seedEl); bumpEl(tierEl); bumpEl(document.getElementById('statStrength')); window.__rewardBump=false; }
-  LAST_STRENGTH=strength;
-  var sf=document.getElementById('statFamily'); if(sf) sf.textContent= n>0 ? 'View family →' : 'Start →';
-
-  // Today's Family — live from Supabase
-  var pending=0, acceptedToday=0;
-  var todayStart=new Date(); todayStart.setHours(0,0,0,0); var iso=todayStart.toISOString();
-  try{ if(ensureSB()){
-    var pr=await sb.from('family_requests').select('id').eq('receiver_phone',me).eq('status','pending'); pending=(pr.data||[]).length;
-    var ac=await sb.from('family_requests').select('id').eq('status','accepted').gte('responded_at',iso).or('sender_phone.eq.'+me+',receiver_phone.eq.'+me); acceptedToday=(ac.data||[]).length;
-  } }catch(e){}
-  setStat('dashStrength', strength);
-  setStat('dashMembers', n);
-  setStat('dashAccepted', acceptedToday);
-  setStat('dashPending', pending);
-
-  // notifications (STEP 6) — bell badge = unseen
-  var notifs=await loadNotifications(); NOTIFS=notifs;
-  var unseen=unseenCount(notifs);
-  var badge=document.getElementById('bellBadge');
-  if(badge){ badge.textContent=unseen; badge.classList.toggle('live', unseen>0); }
+  await loadDashboard();
 }
 function setStat(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
 function bumpEl(el){ if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
 function setAvatar(elId,u){ var el=document.getElementById(elId); if(!el) return; if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; } else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); } }
 
+/* family strength — modular scoring. First relationship +10, each next +5.
+   (relationship types can carry different weights later; keep this the only place.) */
+var STRENGTH_FIRST=10, STRENGTH_NEXT=5;
+function calculateFamilyStrength(rels){
+  var n=(rels||[]).length;
+  if(n<=0) return 0;
+  return STRENGTH_FIRST + (n-1)*STRENGTH_NEXT;   // 0→0, 1→10, 2→15, 3→20 …
+}
+
+/* loadDashboard — refresh hero + 4 stats + bell, with no page reload */
+async function loadDashboard(){
+  var me=myPhone();
+  var rels=await loadRelationships(); var n=rels.length;
+  var strength=calculateFamilyStrength(rels);
+  var t=strengthTier(strength);
+  var seedEl=document.getElementById('heroSeed'), tierEl=document.getElementById('statTier');
+  if(seedEl) seedEl.textContent=t.e;
+  if(tierEl) tierEl.textContent=t.e+' '+t.name;
+  countUp(document.getElementById('statStrength'), strength);
+  if(window.__rewardBump || (LAST_STRENGTH!==null && strength!==LAST_STRENGTH)){ bumpEl(seedEl); bumpEl(tierEl); bumpEl(document.getElementById('statStrength')); window.__rewardBump=false; }
+  LAST_STRENGTH=strength;
+  var sf=document.getElementById('statFamily'); if(sf) sf.textContent= n>0 ? 'View family →' : 'Start →';
+
+  var pending=(await loadPendingRequests()).length, acceptedToday=0;
+  try{ if(ensureSB()){ var ts=new Date(); ts.setHours(0,0,0,0);
+    var ac=await sb.from('family_requests').select('id').eq('status','accepted').gte('responded_at',ts.toISOString()).or('sender_phone.eq.'+me+',receiver_phone.eq.'+me); acceptedToday=(ac.data||[]).length; } }catch(e){}
+  setStat('dashStrength', strength); setStat('dashMembers', n); setStat('dashAccepted', acceptedToday); setStat('dashPending', pending);
+
+  NOTIFS=await loadNotifications();
+  var unread=NOTIFS.filter(function(x){ return !x.is_read; }).length;
+  var badge=document.getElementById('bellBadge');
+  if(badge){ badge.textContent=unread; badge.classList.toggle('live', unread>0); }
+}
+
 /* ---------- data ---------- */
-async function fetchConnections(phone){
-  if(!ensureSB() || !phone) return [];
+/* loadRelationships — the canonical read. Family & tree are GENERATED from these. */
+async function loadRelationships(){
+  var me=myPhone(); if(!ensureSB()||!me) return [];
   try{
-    var r=await sb.from('family_connections').select('*').or('user_a_phone.eq.'+phone+',user_b_phone.eq.'+phone);
+    var r=await sb.from('relationships').select('*').eq('status','active').or('person_a_phone.eq.'+me+',person_b_phone.eq.'+me);
     var rows=r.data||[];
-    // one relationship per person: keep a single row per "other" phone
     var seen={}, out=[];
-    rows.forEach(function(c){
-      var other=c.user_a_phone===phone?c.user_b_phone:c.user_a_phone;
-      if(other && !seen[other]){ seen[other]=true; out.push(c); }
-    });
+    rows.forEach(function(c){ var other=c.person_a_phone===me?c.person_b_phone:c.person_a_phone; if(other && !seen[other]){ seen[other]=true; out.push(c); } });
     return out;
   }catch(e){ return []; }
 }
+/* relView — my view of a relationship: the other person + how I label them + since */
+function relView(c, me){
+  var aIsMe=c.person_a_phone===me;
+  return { other: aIsMe?c.person_b_phone:c.person_a_phone, rel: aIsMe?c.relation_a_to_b:c.relation_b_to_a, since: c.created_at };
+}
 async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
 
-/* ---------- send request ---------- */
 /* ============================================================
-   RELATIONSHIP ENGINE — public API (STEP 9)
-   sendFamilyRequest · acceptFamilyRequest · rejectFamilyRequest
-   createRelationship · updateFamilyStrength · generateFamilyTree
-   loadFamilyMembers · loadPendingRequests
+   RELATIONSHIP ENGINE — public API
+   sendRequest · acceptRequest · rejectRequest · createRelationship
+   loadRelationships · calculateFamilyStrength · generateFamilyTree
+   loadDashboard · loadNotifications
    ============================================================ */
-async function sendFamilyRequest(){
+async function sendRequest(){
   var rec=(document.getElementById('frPhone').value||'').replace(/\D/g,'');
   var rel=document.getElementById('frRel').value||'';
   var msg=(document.getElementById('frMsg').value||'').trim();
@@ -594,6 +603,8 @@ async function sendFamilyRequest(){
   var r=await sb.from('family_requests').insert({ sender_phone:me, receiver_phone:rec, relationship:rel, message:msg, status:'pending' });
   btn.disabled=false; btn.textContent='Send request ❤️';
   if(r.error){ toast(r.error.message||'Could not send.'); return; }
+  // light up the receiver's bell
+  try{ await sb.from('notifications').insert({ recipient_phone:rec, kind:'request', body:'👋 '+((ME&&ME.name)||'Someone')+' wants to connect with you.' }); }catch(e){}
   flyHeart(btn);
   document.getElementById('frPhone').value=''; document.getElementById('frRel').value='';
   document.getElementById('frMsg').value='Hi, I would love to connect with you on Jeeto Family.';
@@ -601,23 +612,20 @@ async function sendFamilyRequest(){
   renderFamily();
 }
 
-/* atomic accept — update request + create connection + 2 relationship records, or rollback */
-async function acceptFamilyRequest(requestId, receiverRelation){
+/* atomic accept — request + relationship + notifications in ONE transaction, or rollback */
+async function acceptRequest(requestId, receiverRelation){
   if(!ensureSB()) return { error:{ message:'Connection problem.' } };
   return await sb.rpc('accept_family_request', { p_request_id: requestId, p_receiver_relation: receiverRelation });
 }
-/* createRelationship + updateFamilyStrength run server-side, atomically, inside the
-   accept_family_request transaction above. These wrappers exist for the engine API. */
-function createRelationship(){ /* performed atomically inside accept_family_request RPC (STEP 2,3) */ }
-function updateFamilyStrength(){ renderHome(); /* strength is computed = members × 10 (STEP 4) */ }
+/* createRelationship runs server-side, atomically, inside accept_family_request */
+function createRelationship(){ /* performed atomically inside the accept_family_request RPC */ }
 
-async function rejectFamilyRequest(id){
+async function rejectRequest(id){
   if(!ensureSB()) return;
   var up=await sb.from('family_requests').update({ status:'rejected', responded_at:new Date().toISOString() }).eq('id',id);
   if(up.error){ toast(up.error.message||'Could not decline.'); return; }
   toast('Request declined'); renderFamily();
 }
-async function loadFamilyMembers(){ return await fetchConnections(myPhone()); }
 async function loadPendingRequests(){
   var me=myPhone(); if(!ensureSB()||!me) return [];
   try{ var r=await sb.from('family_requests').select('*').eq('receiver_phone',me).eq('status','pending').order('created_at',{ascending:false}); return r.data||[]; }catch(e){ return []; }
@@ -643,20 +651,42 @@ async function renderFamily(){
   if(!ensureSB() || !me){ box.innerHTML='<div class="empty"><div class="e1">Connection problem</div></div>'; return; }
   var incoming=await loadPendingRequests();
   var sent=await loadSentRequests();
-  var conns=await loadFamilyMembers();
+  var rels=await loadRelationships();
 
   var phones=[]; incoming.forEach(function(x){ phones.push(x.sender_phone); }); sent.forEach(function(x){ phones.push(x.receiver_phone); });
-  conns.forEach(function(c){ phones.push(c.user_a_phone===me?c.user_b_phone:c.user_a_phone); });
+  rels.forEach(function(c){ phones.push(relView(c,me).other); });
   var profs=await fetchProfiles(phones);
   window.__profs=profs;
   function nm(p){ return (profs[p] && profs[p].name) || p; }
   function av(p){ return profs[p] && profs[p].avatar_url; }
   function avHtml(p,cls){ return '<div class="'+(cls||'av-lg')+'">'+(av(p)?'<img src="'+av(p)+'">':escapeHtml((nm(p)[0]||'?').toUpperCase()))+'</div>'; }
 
+  var n=rels.length, strength=calculateFamilyStrength(rels), t=strengthTier(strength);
+  var myFirst=((ME&&ME.name)||'').split(' ')[0]||'Your family';
   var html='';
 
-  /* 2) Requests for you */
-  html+='<div class="sec-head"><span class="si">📥</span><span class="st">Requests for you</span>'+(incoming.length?'<span class="sc">'+incoming.length+'</span>':'')+'</div>';
+  /* 1) Family Status */
+  html+='<div class="pcard" style="display:flex;align-items:center;gap:14px;margin-bottom:18px">'+
+    avHtml(me)+
+    '<div style="flex:1;min-width:0"><div class="nm" style="font-family:\'Baloo 2\';font-size:18px;font-weight:800">'+escapeHtml(myFirst)+'\'s Family</div>'+
+    '<div class="meta" style="margin-top:5px"><span>👥 '+n+(n===1?' member':' members')+'</span> &nbsp; <span>'+t.e+' '+t.name+' · ⭐ '+strength+'</span></div></div>'+
+    '<div class="fp-add" onclick="focusAddMember()">＋ Add</div></div>';
+
+  /* 2) Connected Members */
+  html+='<div class="sec-head"><span class="si">👥</span><span class="st">Connected members</span>'+(n?'<span class="sc">'+n+'</span>':'')+'</div>';
+  if(!n){
+    html+='<div class="empty"><span class="big">🌱</span><div class="e1">Every family begins with one relationship.</div><div class="e3" style="margin-top:10px">Add someone you love ❤️</div></div>';
+  } else rels.forEach(function(c){
+    var v=relView(c,me);
+    html+='<div class="pcard"><div class="fcard">'+avHtml(v.other)+
+      '<div class="info"><div class="nm">'+escapeHtml(nm(v.other))+'</div>'+
+      '<div style="margin-top:5px"><span class="rl-pill">'+escapeHtml(v.rel||'family')+'</span></div>'+
+      '<div class="meta"><span>🗓️ '+escapeHtml(fmtJoined(v.since))+'</span><span>📞 +91 '+escapeHtml(v.other)+'</span></div>'+
+      '</div></div></div>';
+  });
+
+  /* 3) Pending Requests (for you) */
+  html+='<div class="sec-head"><span class="si">📥</span><span class="st">Pending requests</span>'+(incoming.length?'<span class="sc">'+incoming.length+'</span>':'')+'</div>';
   if(!incoming.length){
     html+='<div class="empty"><span class="big">📭</span><div class="e1">No requests right now</div><div class="e2">When someone adds you, their request will appear here.</div></div>';
   } else incoming.forEach(function(x){
@@ -666,12 +696,12 @@ async function renderFamily(){
       '<div class="ph">+91 '+escapeHtml(x.sender_phone)+'</div>'+
       '<div style="margin-top:8px"><span class="rl-pill">'+pr.p+' '+pr.v+' you are '+pr.pos+' '+escapeHtml(x.relationship||'family')+'</span></div>'+
       '<div class="row"><button class="btn btn-sm" onclick="openReview(\''+x.id+'\',\''+x.sender_phone+'\',\''+escapeAttr(x.relationship||'')+'\')">Review</button>'+
-      '<button class="btn btn-sm btn-ghost" onclick="rejectFamilyRequest(\''+x.id+'\')">Decline</button></div>'+
+      '<button class="btn btn-sm btn-ghost" onclick="rejectRequest(\''+x.id+'\')">Decline</button></div>'+
       '</div></div></div>';
   });
 
-  /* 3) Family Requests (sent) */
-  html+='<div class="sec-head"><span class="si">❤️</span><span class="st">Family requests</span>'+(sent.length?'<span class="sc">'+sent.length+'</span>':'')+'</div>';
+  /* 4) Requests Sent */
+  html+='<div class="sec-head"><span class="si">📤</span><span class="st">Requests sent</span>'+(sent.length?'<span class="sc">'+sent.length+'</span>':'')+'</div>';
   if(!sent.length){
     html+='<div class="empty"><span class="big">✉️</span><div class="e1">No requests sent yet</div><div class="e2">Add a family member above to send your first one.</div></div>';
   } else sent.forEach(function(x){
@@ -685,29 +715,9 @@ async function renderFamily(){
       '</div></div>';
   });
 
-  /* 4) Your Family — personal identity header */
-  var myFirst=((ME&&ME.name)||'').split(' ')[0]||'Your family';
-  html+='<div class="fam-personal"><div class="fp-ic">❤️</div><div><div class="fp-t">Your Family</div><div class="fp-n">'+escapeHtml(myFirst)+'</div></div><div class="fp-add" onclick="focusAddMember()">＋ Add</div></div>';
-
-  /* 4b) Connected Members — beautiful cards */
-  if(!conns.length){
-    html+='<div class="empty"><span class="big">🌱</span><div class="e1">Every family begins with one relationship.</div><div class="e3" style="margin-top:10px">Add someone you love ❤️</div></div>';
-  } else {
-    html+='<div class="sec-head"><span class="si">👥</span><span class="st">Connected members</span><span class="sc">'+conns.length+'</span></div>';
-    conns.forEach(function(c){
-      var other=c.user_a_phone===me?c.user_b_phone:c.user_a_phone;
-      var myRel=c.user_a_phone===me?c.user_a_relation:c.user_b_relation;
-      html+='<div class="pcard"><div class="fcard">'+avHtml(other)+
-        '<div class="info"><div class="nm">'+escapeHtml(nm(other))+'</div>'+
-        '<div style="margin-top:5px"><span class="rl-pill">'+escapeHtml(myRel||'family')+'</span></div>'+
-        '<div class="meta"><span>📞 +91 '+escapeHtml(other)+'</span><span>🗓️ '+escapeHtml(fmtJoined(c.created_at))+'</span></div>'+
-        '</div></div></div>';
-    });
-  }
-
   /* 5) Family Tree — generated automatically from relationships */
   html+='<div class="sec-head"><span class="si">🌳</span><span class="st">Family tree</span></div>';
-  html+=generateFamilyTree(me, conns, profs);
+  html+=generateFamilyTree(me, rels, profs);
 
   box.innerHTML=html;
   requestAnimationFrame(function(){ requestAnimationFrame(drawTreeLines); });
@@ -743,38 +753,39 @@ async function acceptFromModal(){
   var recvRel=(document.getElementById('modalRel')||{}).value||'';
   if(!recvRel){ toast('Please choose who they are to you.'); return; }
   var btn=document.getElementById('modalAccept'); if(btn){ btn.disabled=true; btn.textContent='Connecting…'; }
-  // atomic: marks accepted + creates connection + two relationship records, or rolls back (STEP 2,3,8)
-  var r=await acceptFamilyRequest(REVIEW.id, recvRel);
+  // ONE transaction: request -> relationship -> notifications, or full rollback
+  var r=await acceptRequest(REVIEW.id, recvRel);
   if(r && r.error){ if(btn){ btn.disabled=false; btn.textContent='Accept ❤️'; } toast(r.error.message||'Could not accept — nothing was changed.'); return; }
   closeReview();
-  celebrate();                 // 🎉 Welcome to Jeeto Family — Relationship created successfully (STEP 6)
+  var rels=await loadRelationships();
+  celebrate(rels.length<=1?10:5);     // first +10, then +5 (matches calculateFamilyStrength)
   window.__rewardBump=true;
-  renderFamily(); renderHome();
+  renderFamily(); loadDashboard();   // dashboard + family refresh, no page reload
 }
-async function rejectFromModal(){ if(!REVIEW) return; await rejectFamilyRequest(REVIEW.id); closeReview(); }
+async function rejectFromModal(){ if(!REVIEW) return; await rejectRequest(REVIEW.id); closeReview(); }
 
 /* ============================================================
-   FAMILY TREE — signature. Auto-built from family_connections.
-   Not a technical diagram: You at the top, then relationship
-   cards flowing down, joined by elegant curved "vine" lines.
+   FAMILY TREE — generated from relationships (never manual).
+   You at the top, relationship cards flowing down, joined by
+   elegant curved "vine" lines.
    ============================================================ */
-function buildTreeHtml(me, conns, profs){
+function generateFamilyTree(me, rels, profs){
   function nm(p){ return (profs[p] && profs[p].name) || p; }
   function av(p){ return profs[p] && profs[p].avatar_url; }
-  var n=conns.length;
+  var n=rels.length;
   if(!n){ return '<div class="empty"><span class="big">🌳</span><div class="e1">Your tree is just a seed</div><div class="e2">Your Family Tree will grow after your first accepted relationship.</div></div>'; }
+  var strength=calculateFamilyStrength(rels);
   var meName=(ME&&ME.name) || nm(me) || 'You'; var meAv=(ME&&ME.avatar_url) || av(me);
   var youCard='<div class="tnode you" style="animation-delay:0s">'+
     '<div class="ph">'+(meAv?'<img src="'+meAv+'">':escapeHtml((meName[0]||'J').toUpperCase()))+'</div>'+
-    '<div><div class="tn">'+escapeHtml(meName)+'</div><div class="tr">You · ⭐ '+(n*10)+'</div></div></div>';
-  var nodes=conns.map(function(c,i){
-    var other=c.user_a_phone===me?c.user_b_phone:c.user_a_phone;
-    var rel=c.user_a_phone===me?c.user_a_relation:c.user_b_relation;
+    '<div><div class="tn">'+escapeHtml(meName)+'</div><div class="tr">You · ⭐ '+strength+'</div></div></div>';
+  var nodes=rels.map(function(c,i){
+    var v=relView(c,me);
     return '<div class="tnode" style="animation-delay:'+(0.08*(i+1)).toFixed(2)+'s">'+
-      '<div class="ph">'+(av(other)?'<img src="'+av(other)+'">':escapeHtml((nm(other)[0]||'?').toUpperCase()))+'</div>'+
-      '<div><div class="tn">'+escapeHtml(nm(other))+'</div><div class="tr">'+escapeHtml(rel||'family')+'</div></div></div>';
+      '<div class="ph">'+(av(v.other)?'<img src="'+av(v.other)+'">':escapeHtml((nm(v.other)[0]||'?').toUpperCase()))+'</div>'+
+      '<div><div class="tn">'+escapeHtml(nm(v.other))+'</div><div class="tr">'+escapeHtml(v.rel||'family')+'</div></div></div>';
   }).join('');
-  return '<div class="tree-strength">⭐ Family Strength · '+(n*10)+'</div>'+
+  return '<div class="tree-strength">⭐ Family Strength · '+strength+'</div>'+
     '<div class="tree-wrap" id="treeWrap"><svg id="treeLines"></svg>'+
     '<div class="tree-col" id="treeCol">'+youCard+nodes+'</div></div>';
 }
@@ -844,28 +855,14 @@ function navTo(tab){
 }
 function logout(){ clearSession(); ME=null; _gender=''; _photo=''; var lp=document.getElementById('loginPhone'); if(lp) lp.value=''; document.getElementById('loginBtn').disabled=true; clearOtp(); showScreen('screen-login'); }
 
-/* ---------- notifications (STEP 6) ---------- */
+/* ---------- notifications ---------- */
 var NOTIFS=[];
-var NOTIF_SEEN_KEY='jeeto_notif_seen';
-function notifSeenAt(){ return parseInt(localStorage.getItem(NOTIF_SEEN_KEY)||'0',10); }
-function unseenCount(list){ var s=notifSeenAt(); return (list||[]).filter(function(x){ return new Date(x.ts).getTime()>s; }).length; }
 async function loadNotifications(){
   var me=myPhone(); if(!ensureSB()||!me) return [];
-  var list=[];
   try{
-    // requests I SENT that were accepted -> "X accepted your request. Your family has grown."
-    var acc=await sb.from('family_requests').select('*').eq('sender_phone',me).eq('status','accepted').order('responded_at',{ascending:false});
-    var rows=acc.data||[];
-    // pending requests FOR me -> "X wants to connect with you."
-    var pend=await sb.from('family_requests').select('*').eq('receiver_phone',me).eq('status','pending').order('created_at',{ascending:false});
-    var prows=pend.data||[];
-    var profs=await fetchProfiles(rows.map(function(x){return x.receiver_phone;}).concat(prows.map(function(x){return x.sender_phone;})));
-    function nm(p){ return (profs[p]&&profs[p].name)||p; }
-    rows.forEach(function(x){ list.push({ icon:'🎉', text:nm(x.receiver_phone)+' accepted your request. Your family has grown.', ts:x.responded_at||x.created_at }); });
-    prows.forEach(function(x){ list.push({ icon:'👋', text:nm(x.sender_phone)+' wants to connect with you.', ts:x.created_at }); });
-  }catch(e){}
-  list.sort(function(a,b){ return new Date(b.ts)-new Date(a.ts); });
-  return list;
+    var r=await sb.from('notifications').select('*').eq('recipient_phone',me).order('created_at',{ascending:false}).limit(40);
+    return (r.data||[]).map(function(x){ return { icon:(x.body||'').slice(0,2), text:(x.body||'').replace(/^\S+\s/,''), ts:x.created_at, is_read:x.is_read }; });
+  }catch(e){ return []; }
 }
 function timeAgo(ts){
   try{ var s=Math.floor((Date.now()-new Date(ts).getTime())/1000);
@@ -873,18 +870,19 @@ function timeAgo(ts){
     if(s<86400) return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago';
   }catch(e){ return ''; }
 }
-function openNotifications(){
+async function openNotifications(){
+  if(!NOTIFS.length) NOTIFS=await loadNotifications();
   var m=document.getElementById('notifModal');
   var items = NOTIFS.length
-    ? NOTIFS.map(function(x){ return '<div class="notif-item"><div class="notif-ic">'+x.icon+'</div><div style="flex:1"><div class="notif-tx">'+escapeHtml(x.text)+'</div><div class="notif-ago">'+timeAgo(x.ts)+'</div></div></div>'; }).join('')
+    ? NOTIFS.map(function(x){ return '<div class="notif-item"><div class="notif-ic">'+escapeHtml(x.icon)+'</div><div style="flex:1"><div class="notif-tx">'+escapeHtml(x.text)+'</div><div class="notif-ago">'+timeAgo(x.ts)+'</div></div></div>'; }).join('')
     : '<div class="empty"><span class="big">🔔</span><div class="e1">No notifications yet</div><div class="e2">Requests and accepted relationships will show up here.</div></div>';
   m.innerHTML='<div class="modal-card"><div class="modal-grab"></div>'+
     '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">🔔 Notifications</div>'+
     items+
     '<div style="height:14px"></div><button class="btn btn-soft" onclick="closeNotifications()">Close</button></div>';
   m.classList.add('show');
-  // mark seen -> clears badge
-  localStorage.setItem(NOTIF_SEEN_KEY, String(Date.now()));
+  // mark all read -> clears the bell
+  try{ var me=myPhone(); if(ensureSB()&&me) await sb.from('notifications').update({ is_read:true }).eq('recipient_phone',me).eq('is_read',false); }catch(e){}
   var badge=document.getElementById('bellBadge'); if(badge){ badge.textContent='0'; badge.classList.remove('live'); }
 }
 function closeNotifications(){ document.getElementById('notifModal').classList.remove('show'); }
@@ -892,25 +890,18 @@ function closeNotifications(){ document.getElementById('notifModal').classList.r
 function focusAddMember(){ try{ var f=document.getElementById('frPhone'); if(f){ f.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(function(){ f.focus(); },300); } }catch(e){} }
 
 /* ============================================================
-   RELATIONSHIP ENGINE — NEXT SPRINT (do not implement yet)
-   Single plug-in points. The UI already reads everything from
-   family_connections; the engine will enrich these:
-   - accepted relationships -> created in acceptFromModal()
-     (status='accepted' + family_connections row).
-   - Family Tree generation -> buildTreeHtml() renders from
-     connections today; swap its body for engine-derived nodes.
-   - Household generation -> generateHouseholds(): group people
-     into households. Returns [] until built.
-   - Bridge generation -> generateBridges(): join two complete
-     households. Returns [] until built.
+   NEXT SPRINT — HOUSEHOLDS & BRIDGES (not built yet)
+   The Relationship Engine above is the source of truth; these will
+   be GENERATED from `relationships`, never created manually:
+   - generateHouseholds(): group connected people into households.
+   - generateBridges(): join two complete households.
    fetchHouseholds()/fetchBridges() are the read stubs the UI calls;
    point them at real tables next sprint. No fake data is shown now.
    ============================================================ */
 function fetchHouseholds(){ /* TODO(engine): return real households */ return []; }
 function fetchBridges(){ /* TODO(engine): return real bridges */ return []; }
-function generateHouseholds(conns){ /* TODO(engine) */ return []; }
+function generateHouseholds(rels){ /* TODO(engine) */ return []; }
 function generateBridges(households){ /* TODO(engine) */ return []; }
-function generateFamilyTree(me, conns, profs){ /* TODO(engine): buildTreeHtml handles rendering today */ return buildTreeHtml(me, conns, profs); }
 
 function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function escapeAttr(s){ return String(s==null?'':s).replace(/'/g,'').replace(/"/g,''); }
