@@ -1303,7 +1303,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 103</div>
+      <div class="psub">Powered by Skyvos AI · build 104</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -2495,19 +2495,13 @@ async function refreshMe(){
 
 function openAddMember(){
   window.__inviteRows=3;
-  var code=(FAM&&FAM.invite_code)?FAM.invite_code:'\u2014';
   var rows=''; for(var i=0;i<3;i++) rows+=_inviteRowHtml(i);
-  openSheet('<div style="text-align:center"><div style="font-size:42px">👪</div><h3>Add your family</h3></div>'+
-  '<p class="s">Share your <b>family code</b>. Relatives create their own account, enter this code, and you tap Accept in Requests 🔔 — just like joining a grid.</p>'+
-  '<div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;margin:4px 0 8px"><div style="font-size:10px;color:var(--ink2);font-weight:800;letter-spacing:1px">FAMILY CODE</div><div style="font-family:\'Baloo 2\';font-size:34px;letter-spacing:5px;color:var(--rani)">'+esc(code)+'</div></div>'+
-  '<button class="btn btn-primary" onclick="shareCodeInvite()">Share family code 💬</button>'+
-  '<div style="font-size:11.5px;color:var(--ink2);margin:10px 2px 0;line-height:1.5">They: ① open Jeeto → <b>Create new account</b> ② tap <b>Join your family with a code</b> ③ enter <b>'+esc(code)+'</b>. You accept in <b>Requests 🔔</b>.</div>'+
-  '<div style="height:18px"></div>'+
-  '<div style="font-size:11px;color:var(--ink2);font-weight:700;text-align:center;letter-spacing:1px">CAN\'T SIGN UP THEMSELVES? (young kids, elders)</div>'+
-  '<p class="s" style="font-size:12px;color:var(--ink2);margin:6px 0">Add them yourself — name + phone. As their parent or guardian, you\'re adding them with love. 💛</p>'+
+  openSheet('<div style="text-align:center"><div style="font-size:42px">👪</div><h3>Add a family member</h3></div>'+
+  '<p class="s">Just enter their <b>name + phone number</b>. If they\'re on Jeeto, they get a request to <b>Accept</b>. If not, they join your family automatically when they sign up with that number. No codes.</p>'+
   '<div id="inviteRows">'+rows+'</div>'+
   '<div class="authhint" style="text-align:left;margin:2px 0 12px"><a onclick="addInviteRow()">➕ Add another person</a></div>'+
-  '<button class="btn btn-ghost" onclick="inviteBulk()">Add them to my family</button>');
+  '<button class="btn btn-primary" onclick="inviteBulk()">Add to my family</button>'+
+  '<p class="s" style="font-size:11.5px;color:var(--ink2);margin-top:10px">Adding little ones or elders? As their parent or guardian, you\'re adding them with love. 💛</p>');
 }
 function _inviteRowHtml(i){
   return '<div style="display:flex;gap:6px;margin-bottom:6px"><input id="amName'+i+'" placeholder="Name" style="flex:1;margin:0"><input id="amPhone'+i+'" inputmode="numeric" placeholder="Phone number" style="flex:1.25;margin:0"></div>';
@@ -2517,17 +2511,25 @@ function addInviteRow(){
   if(d){ d.insertAdjacentHTML('beforeend', _inviteRowHtml(i)); window.__inviteRows=i+1; }
 }
 async function inviteBulk(){
-  var n=window.__inviteRows||0, ok=[], fail=[];
+  var n=window.__inviteRows||0, invited=[], pending=[], already=[], fail=[];
   for(var i=0;i<n;i++){
     var nm=((document.getElementById('amName'+i)||{}).value||'').trim();
     var ph=((document.getElementById('amPhone'+i)||{}).value||'').replace(/\D/g,'');
     if(!nm&&!ph) continue;
     if(!nm||ph.length<6){ fail.push((nm||'A row')+': needs a name and a valid phone'); continue; }
-    var r=await sb.rpc('invite_member',{p_name:nm,p_phone:ph});
-    if(r.error){ fail.push(nm+': '+(r.error.message||'could not add')); } else { ok.push({name:nm,phone:ph}); }
+    var r=await sb.rpc('family_add_by_phone',{p_name:nm,p_phone:ph});
+    if(r.error){ fail.push(nm+': '+(r.error.message||'could not add')); continue; }
+    var st=(r.data&&r.data.status)||'';
+    if(st==='invited') invited.push(nm);
+    else if(st==='already_in') already.push(nm);
+    else pending.push(nm);
   }
-  if(!ok.length){ toast(fail.length? fail[0] : 'Add at least one person.'); return; }
-  _showInviteShare(ok,fail);
+  if(!invited.length && !pending.length && !already.length){ toast(fail.length? fail[0] : 'Add at least one person.'); return; }
+  var msg=[];
+  if(invited.length) msg.push(invited.join(', ')+' — request sent, ask them to tap Accept 🔔');
+  if(pending.length) msg.push(pending.join(', ')+' — they\'ll join when they sign up');
+  if(already.length) msg.push(already.join(', ')+' — already in your family');
+  closeSheet(); toast(msg.join(' · ')); await refreshAll();
 }
 function _showInviteShare(ok,fail){
   var url=location.origin;
@@ -3128,38 +3130,36 @@ async function loadRequests(){
    appears without needing a full app reload. */
 function _setHtml(id,html){ var el=document.getElementById(id); if(el) el.innerHTML=html; }
 async function loadReqBanners(){
-  var fam=0, grid=0;
-  try{ var mq=await sb.rpc('merge_requests'); var m=(mq&&mq.data)||[]; if(typeof m==='string'){ try{m=JSON.parse(m);}catch(e){m=[];} } fam=(m||[]).length; }catch(e){}
+  var inv=null, grid=0;
+  try{ var iq=await sb.rpc('my_family_invite'); inv=(iq&&iq.data)||null; if(typeof inv==='string'){ try{inv=JSON.parse(inv);}catch(e){inv=null;} } }catch(e){}
   try{ var gq=await sb.rpc('my_incoming_requests'); grid=((gq&&gq.data)||[]).length; }catch(e){}
-  window.__joinIncoming=fam;
-  var famCard = fam>0 ? '<div class="mergecard" onclick="openFamilyRequests()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+fam+'</b> '+(fam==1?'person wants':'people want')+' to join your family. <a>Review →</a></div>' : '';
+  var famCard = (inv&&inv.from_id) ? '<div class="mergecard" onclick="openFamilyInvite()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+esc(inv.from_name||'A family')+'</b> invited you to join their family. <a>Review →</a></div>' : '';
   var gridCard = grid>0 ? '<div class="mergecard" onclick="openRequests()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+grid+'</b> '+(grid==1?'household wants':'households want')+' to join your grid. <a>Review →</a></div>' : '';
   _setHtml('homeReqBanner', famCard+gridCard);
   _setHtml('famReqBanner', famCard);
   _setHtml('gridReqBanner', gridCard);
 }
 function loadGridReqBanner(){ return loadReqBanners(); } /* legacy alias */
-/* FAMILY-join requests only (lives in the Family area). */
-function openFamilyRequests(){
-  openSheet('<div style="text-align:center"><div style="font-size:40px">👪</div><h3>Family join requests</h3></div><p class="s">Relatives asking to join your family. Accept and they move into your family.</p><div id="famReqList">'+emptyMsg('Loading…')+'</div>');
-  loadFamilyRequests();
+/* Family INVITE — someone added you by phone; you Accept to join them. */
+function openFamilyRequests(){ openFamilyInvite(); } /* legacy alias */
+async function openFamilyInvite(){
+  var inv=null;
+  try{ var iq=await sb.rpc('my_family_invite'); inv=(iq&&iq.data)||null; if(typeof inv==='string'){ try{inv=JSON.parse(inv);}catch(e){inv=null;} } }catch(e){}
+  if(!inv||!inv.from_id){ toast('No pending invite right now.'); loadReqBanners(); return; }
+  openSheet('<div style="text-align:center"><div style="font-size:42px">👪</div><h3>Join '+esc(inv.from_name||'this family')+'?</h3></div>'+
+  '<p class="s">You\'ve been invited to join <b>'+esc(inv.from_name||'this family')+'</b>. Accept and your account joins their family — you\'ll share their family space and tree. 💛</p>'+
+  '<button class="btn btn-primary" onclick="acceptInvite()">Accept &amp; join 💛</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="declineInvite()">Decline</button>');
 }
-async function loadFamilyRequests(){
-  var box=document.getElementById('famReqList'); if(!box)return;
-  var html='';
-  try{
-    var mq=await sb.rpc('merge_requests');
-    var mreqs=(mq&&mq.data)||[]; if(typeof mreqs==='string'){ try{mreqs=JSON.parse(mreqs);}catch(e){mreqs=[];} }
-    (mreqs||[]).forEach(function(r){
-      var ppl=r.members+' '+(r.members==1?'person':'people');
-      html+='<div style="border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px">'+
-        '<div style="font-weight:700">👪 '+esc(r.from_name)+' wants to join your family</div>'+
-        '<div style="font-size:12px;color:var(--ink2);margin-bottom:9px">'+ppl+' will move into '+esc((FAM&&FAM.name)||'your family')+'</div>'+
-        '<button class="minibtn" onclick="approveMerge(\''+r.from_id+'\')">Accept</button> '+
-        '<button class="minibtn ghost" onclick="declineMerge(\''+r.from_id+'\')">Decline</button></div>';
-    });
-  }catch(e){ box.innerHTML=emptyMsg('Could not load requests.'); return; }
-  box.innerHTML = html || emptyMsg('No family join requests right now.');
+async function acceptInvite(){
+  var r=await sb.rpc('accept_family_invite');
+  if(r.error){ toast(r.error.message||'Could not join'); return; }
+  closeSheet(); confetti&&confetti(); toast('You\'re in the family now 💛'); await refreshAll();
+}
+async function declineInvite(){
+  var r=await sb.rpc('decline_family_invite');
+  if(r.error){ toast(r.error.message||'Could not decline'); return; }
+  closeSheet(); toast('Invite declined'); await refreshAll();
 }
 async function respondLink(id, accept){
   var r=await sb.rpc('respond_household_link',{p_link:id,p_accept:accept});
@@ -4038,37 +4038,20 @@ async function callTripAI(avg,budget,region,kids,elders,voters){
 /* ========== LEGAL · Privacy Policy & Terms of Service ========== */
 var LEGAL_PRIVACY = "<p class=\"lgmeta\">Last updated: 20 June 2026</p>\n<p>Jeeto Family (\"Jeeto\", \"we\", \"us\") is a family wellness and togetherness app operated by Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI) (\"the Company\"), based in Delhi NCR, India. This Privacy Policy explains what information we collect, how we use it, and the choices you have. We are committed to handling your information responsibly and in line with India\\u2019s Digital Personal Data Protection Act, 2023 (DPDP Act).</p>\n\n<h3>1. Information we collect</h3>\n<p>When you use Jeeto, we may collect:</p>\n<ul>\n<li><b>Account details</b> \\u2014 your mobile number, display name, and the family/household and grid you belong to.</li>\n<li><b>Wellness data</b> \\u2014 step counts and activity you submit, including screenshots of step counters you choose to upload.</li>\n<li><b>Photos, videos and documents</b> you add to your Family Vault.</li>\n<li><b>Family details you choose to add</b> \\u2014 birthdays, and care reminders such as medicine times or appointments.</li>\n<li><b>Your contributions</b> \\u2014 answers to the daily family question, \"proud of today\" notes, songs, Hearts and Coins activity, challenge and game participation.</li>\n<li><b>Basic technical data</b> \\u2014 information needed to keep the app running on your device.</li>\n</ul>\n\n<h3>2. How we use your information</h3>\n<p>We use your information only to run Jeeto: to show your family their shared activity, calculate wellness scores and Hearts, run challenges and games, surface birthdays and reminders, and keep your family\\u2019s space working. We do <b>not</b> sell your personal data, and we do not show third-party advertising inside Jeeto.</p>\n\n<h3>3. AI processing of step images</h3>\n<p>When you submit a step screenshot, the image is processed by an artificial-intelligence service (Anthropic\\u2019s Claude) solely to read the step number shown, so we can record your activity. The image is used for this purpose and not for advertising or profiling.</p>\n\n<h3>4. Who can see your information</h3>\n<p>Your information is visible based on where you place it:</p>\n<ul>\n<li><b>Household-only</b> content (daily answers, proud notes, care schedule, private Vault items) is visible only to members of your own household.</li>\n<li><b>Grid</b> content (items you choose to share to your grid, grid games, grid trip votes) is visible to other households in that grid.</li>\n<li>You control what you share to a grid. We never automatically connect one grid to another.</li>\n</ul>\n\n<h3>5. Service providers</h3>\n<p>We use trusted providers to operate Jeeto, including Supabase (database and storage), Cloudflare (hosting and delivery) and Anthropic (AI step reading). These providers process data on our behalf under their own security and privacy commitments.</p>\n\n<h3>6. Children\\u2019s information</h3>\n<p>Jeeto is designed for families, and a household may include children. Accounts are created and managed by an adult family member (\"captain\"), who confirms they have authority to add family members. By adding a child\\u2019s information, the managing adult provides parental consent for that child\\u2019s data to be processed within their family\\u2019s private space. We do not knowingly allow children to be contacted by adults outside their own household, and we do not profile children for advertising. If you believe a child\\u2019s data has been added without proper consent, contact us and we will remove it.</p>\n\n<h3>7. Health and medicine reminders</h3>\n<p>Care reminders (such as medicine times) are a convenience feature to help families look after each other. <b>Jeeto is not a medical device and does not provide medical advice.</b> Reminders may not always be delivered on time and must not be relied upon for critical medication. Always follow your doctor and use a dedicated medical alarm where needed.</p>\n\n<h3>8. Your rights</h3>\n<p>You may ask us to access, correct, or delete your personal data, or withdraw consent, by contacting us at the address below. Deleted Vault items are held in a recovery area for up to 30 days before permanent removal. When you delete your account, we remove your personal data except where we must keep it for legal reasons.</p>\n\n<h3>9. Data security &amp; retention</h3>\n<p>We use industry-standard measures to protect your information and keep it only as long as needed to provide Jeeto or as required by law.</p>\n\n<h3>10. Changes to this policy</h3>\n<p>We may update this policy as Jeeto evolves. We will revise the date above and, for significant changes, let you know within the app.</p>\n\n<h3>11. Contact &amp; grievances</h3>\n<p>For any privacy question or to exercise your rights, contact our grievance officer at <b>admin@skyvos.in</b>, Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI), Delhi NCR, India.</p>";
 var LEGAL_TERMS = "<p class=\"lgmeta\">Last updated: 20 June 2026</p>\n<p>These Terms of Service (\"Terms\") govern your use of the Jeeto Family app (\"Jeeto\"), operated by Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI) (\"the Company\"). By using Jeeto, you agree to these Terms.</p>\n\n<h3>1. Who can use Jeeto</h3>\n<p>You must be at least 18 years old to create and manage an account. Children may take part only as members of a household added and supervised by an adult family member who consents on their behalf.</p>\n\n<h3>2. Your account, household and grid</h3>\n<p>You are responsible for activity under your account. A household \"captain\" manages their family\\u2019s space and members; a grid \"admin\" manages which households join their grid. These roles are local \\u2014 they give no rights over other families or grids.</p>\n\n<h3>3. Hearts and Coins are not money</h3>\n<p>Jeeto Hearts and Jeeto Coins are in-app symbols of family activity and togetherness. <b>They have no monetary value, cannot be purchased, cannot be exchanged for cash, and cannot be transferred outside your family for money.</b> They are not a payment instrument, currency, or gambling stake. We may adjust how they work at any time.</p>\n\n<h3>4. Content you share</h3>\n<p>You keep ownership of the photos, videos, notes and other content you add. You grant us permission to store and display that content within Jeeto so your family and chosen grid can see it. You are responsible for what you upload and confirm you have the right to share it. You must not upload anything unlawful, abusive, hateful, or that infringes others\\u2019 rights.</p>\n\n<h3>5. Acceptable use &amp; community conduct</h3>\n<p>Jeeto exists to bring families closer. You agree not to: harass or harm others; share illegal or explicit content; attempt to contact children outside your household; misuse grids to spam or deceive; or interfere with the app\\u2019s security. We may suspend or remove accounts that break these rules, especially to protect children.</p>\n\n<h3>6. Health and medicine reminders</h3>\n<p>Care and medicine reminders are a helper feature only. <b>Jeeto is not a medical device and gives no medical advice.</b> Do not rely on Jeeto for critical medication timing; follow your doctor and use proper medical tools.</p>\n\n<h3>7. Availability &amp; changes</h3>\n<p>We provide Jeeto on an \"as is\" and \"as available\" basis and may add, change, or remove features. We aim to keep Jeeto running smoothly but cannot guarantee it will always be uninterrupted or error-free.</p>\n\n<h3>8. Limitation of liability</h3>\n<p>To the extent permitted by law, the Company is not liable for indirect or consequential losses arising from your use of Jeeto, including missed reminders or lost content. Nothing in these Terms limits liability that cannot be limited by law.</p>\n\n<h3>9. Termination</h3>\n<p>You may stop using Jeeto and delete your account at any time. We may suspend access where these Terms are breached or where needed to protect users.</p>\n\n<h3>10. Governing law</h3>\n<p>These Terms are governed by the laws of India, and disputes are subject to the courts of Delhi NCR.</p>\n\n<h3>11. Contact</h3>\n<p>Questions about these Terms? Contact us at <b>admin@skyvos.in</b>, Skyvos Automation &amp; Engineering Pvt. Ltd. (Skyvos AI), Delhi NCR, India.</p>";
-/* build 100 — "merge" is now the FAMILY-JOIN mechanic (same as joining a grid):
-   enter a family code -> pending request -> a family member approves in Requests 🔔.
-   Incoming approvals live in Requests (loadRequests), so #mergeBox only shows a slim
-   status/entry strip. The underlying request_merge / approve_merge SQL (which safely
-   moves members and removes the now-empty household) is reused unchanged. */
+/* build 104 — family-join is now BY PHONE: a family member adds you by your number,
+   you Accept. mergeBox simply surfaces any invite waiting for you. No codes. */
 async function loadMerge(){
   var box=document.getElementById('mergeBox'); if(!box) return;
   if(!ME){ box.innerHTML=''; return; }
-  var html=''; window.__joinIncoming=0;
-  try{
-    var rq=await sb.rpc('merge_requests');
-    var reqs=(rq&&rq.data)||[]; if(typeof reqs==='string'){ try{reqs=JSON.parse(reqs);}catch(e){reqs=[];} }
-    window.__joinIncoming=(reqs||[]).length;
-  }catch(e){}
-  if(window.__joinIncoming>0){
-    html+='<div class="mergecard" onclick="openFamilyRequests()" style="cursor:pointer">🔔 <b>'+window.__joinIncoming+'</b> '+(window.__joinIncoming==1?'person wants':'people want')+' to join your family. <a>Review →</a></div>';
-  }
-  if(FAM&&FAM.merge_to){
-    html+='<div class="mergecard">⏳ You asked to join another family. Waiting for a family member there to accept in Requests 🔔. <a onclick="cancelMerge()">Cancel request</a></div>';
+  var inv=null;
+  try{ var iq=await sb.rpc('my_family_invite'); inv=(iq&&iq.data)||null; if(typeof inv==='string'){ try{inv=JSON.parse(inv);}catch(e){inv=null;} } }catch(e){}
+  if(inv&&inv.from_id){
+    box.innerHTML='<div class="mergecard" onclick="openFamilyInvite()" style="cursor:pointer">🔔 <b>'+esc(inv.from_name||'A family')+'</b> invited you to join their family. <a>Review →</a></div>';
   } else {
-    html+='<div class="authhint" style="text-align:left;margin:6px 0 2px"><a onclick="openJoinFamily()">👪 Join your family with a code</a></div>';
+    box.innerHTML='';
   }
-  box.innerHTML=html;
 }
-function openJoinFamily(){
-  openSheet('<div style="text-align:center"><div style="font-size:40px">👪</div><h3>Join your family</h3></div>'+
-  '<p class="s">Relatives already on Jeeto? Enter the <b>family code</b> they shared (just like joining a grid). A family member taps Accept in Requests 🔔, and you\'re in — your account moves into their family.</p>'+
-  '<input id="mrgCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" placeholder="Family code (e.g. HARKAR)">'+
-  '<button class="btn btn-primary" onclick="requestMerge()">Send request</button>'+
-  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
-}
+function openJoinFamily(){ toast('Ask a family member to add you by your phone number 💛'); }
 function openMergeRequest(){ openJoinFamily(); } /* legacy alias */
 async function requestMerge(){
   var code=(document.getElementById('mrgCode').value||'').trim().toUpperCase();
@@ -4189,7 +4172,6 @@ window.addEventListener('load', boot);
       <div class="tourcard"><div class="te">💛</div><div><b>Care & rewards</b><p>Gentle medicine & appointment reminders, family hearts, and rewards you earn together as a household.</p></div></div>
       <div class="tournote">No money, no ads — just your family, closer. Setup takes about a minute.</div>
       <button class="btn btn-primary" style="margin-top:6px" onclick="closeTour();showPanel('start')">✨ Start my family</button>
-      <button class="btn btn-ghost" style="margin-top:8px" onclick="closeTour();showPanel('join')">I have a family code</button>
     </div>
   </div>
 
