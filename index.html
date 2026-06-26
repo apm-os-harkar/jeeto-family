@@ -107,6 +107,10 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .notif-ic{font-size:22px;flex:0 0 auto}
 .notif-tx{font-size:13.5px;font-weight:600;line-height:1.4}
 .notif-ago{font-size:11px;color:var(--ink3);font-weight:700;margin-top:3px}
+/* household */
+.dash-sub{text-align:center;font-size:12px;color:var(--ink2);font-weight:700;margin:-6px 2px 18px}
+.hh-pick{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:9px;font-size:14px;font-weight:700;cursor:pointer;text-align:left}
+.hh-pick input{width:20px;height:20px;accent-color:var(--rani);flex:0 0 auto}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -342,6 +346,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
         <div class="dash-item"><div class="dv" id="dashPending">0</div><div class="dl">Pending<br>Requests</div></div>
       </div>
     </div>
+    <div class="dash-sub" id="dashHousehold">🏠 0 households · 👥 0 in household</div>
 
     <div class="tiles">
       <div class="tile" onclick="navTo('family')" style="animation-delay:.04s"><div class="tic">❤️</div><div class="tt">Family</div><div class="ts" id="statFamily">Start →</div></div>
@@ -403,6 +408,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <div class="toast" id="toast"></div>
   <div class="modal" id="reviewModal"></div>
   <div class="modal" id="notifModal"></div>
+  <div class="modal" id="householdModal"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -562,6 +568,12 @@ async function loadDashboard(){
   var unread=NOTIFS.filter(function(x){ return !x.is_read; }).length;
   var badge=document.getElementById('bellBadge');
   if(badge){ badge.textContent=unread; badge.classList.toggle('live', unread>0); }
+
+  // household summary (Sprint 4)
+  var households=await loadHouseholds();
+  var hc=households.length, hmem=0; households.forEach(function(x){ hmem+=x.members.length; });
+  var dh=document.getElementById('dashHousehold');
+  if(dh) dh.textContent='🏠 '+hc+(hc===1?' household':' households')+' · 👥 '+hmem+' in household';
 }
 
 /* ---------- data ---------- */
@@ -663,6 +675,9 @@ async function renderFamily(){
 
   var n=rels.length, strength=calculateFamilyStrength(rels), t=strengthTier(strength);
   var myFirst=((ME&&ME.name)||'').split(' ')[0]||'Your family';
+  // connected family list (for the household member picker)
+  window.__connected=rels.map(function(c){ var v=relView(c,me); return { phone:v.other, name:(profs[v.other]&&profs[v.other].name)||v.other }; });
+  var households=await loadHouseholds();
   var html='';
 
   /* 1) Family Status */
@@ -718,6 +733,10 @@ async function renderFamily(){
   /* 5) Family Tree — generated automatically from relationships */
   html+='<div class="sec-head"><span class="si">🌳</span><span class="st">Family tree</span></div>';
   html+=generateFamilyTree(me, rels, profs);
+
+  /* 6) Household */
+  html+='<div class="sec-head"><span class="si">🏠</span><span class="st">Household</span>'+(households.length?'<span class="sc">'+households.length+'</span>':'')+'</div>';
+  html+=householdHtml(households);
 
   box.innerHTML=html;
   requestAnimationFrame(function(){ requestAnimationFrame(drawTreeLines); });
@@ -807,6 +826,72 @@ function drawTreeLines(){
   svg.innerHTML='<defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A1E"/><stop offset="1" stop-color="#E03A7A"/></linearGradient></defs>'+paths;
 }
 window.addEventListener('resize', function(){ var f=document.getElementById('screen-family'); if(f && f.classList.contains('active')) drawTreeLines(); });
+
+/* ============================================================
+   HOUSEHOLD ENGINE — people who live together, formed from
+   existing relationships. loadHouseholds · createHousehold
+   ============================================================ */
+async function loadHouseholds(){
+  var me=myPhone(); if(!ensureSB()||!me) return [];
+  try{
+    var hm=await sb.from('household_members').select('household_id').eq('member_phone',me).eq('status','active');
+    var ids=(hm.data||[]).map(function(x){return x.household_id;});
+    if(!ids.length) return [];
+    var hh=await sb.from('households').select('*').in('id',ids).eq('status','active').order('created_at',{ascending:true});
+    var households=hh.data||[];
+    var mem=await sb.from('household_members').select('*').in('household_id',ids).eq('status','active');
+    var rows=mem.data||[];
+    var profs=await fetchProfiles(rows.map(function(x){return x.member_phone;}));
+    return households.map(function(h){
+      var members=rows.filter(function(x){return x.household_id===h.id;}).map(function(x){ return { phone:x.member_phone, role:x.role, name:(profs[x.member_phone]&&profs[x.member_phone].name)||x.member_phone }; });
+      return { h:h, members:members };
+    });
+  }catch(e){ return []; }
+}
+function householdHtml(households){
+  if(!households.length){
+    return '<div class="empty"><span class="big">🏠</span><div class="e1">Create your first household</div><div class="e2">A household is the people who live together — built from your connected family.</div></div>'+
+      '<button class="btn" onclick="openHouseholdForm()" style="margin-top:4px">Create Household 🏠</button>';
+  }
+  var cards=households.map(function(x){
+    var names=x.members.map(function(m){return escapeHtml(m.name);}).join(', ');
+    return '<div class="pcard"><div class="fcard"><div class="hh-ic">🏠</div>'+
+      '<div class="info"><div class="nm">'+escapeHtml(x.h.household_name)+'</div>'+
+      (x.h.city?'<div style="margin-top:5px"><span class="rl-pill">City: '+escapeHtml(x.h.city)+'</span></div>':'')+
+      '<div class="meta"><span>👥 '+names+'</span></div></div></div></div>';
+  }).join('');
+  return cards+'<button class="btn btn-ghost" onclick="openHouseholdForm()" style="margin-top:4px">＋ New household</button>';
+}
+async function createHousehold(name, city, memberPhones){
+  if(!ensureSB()) return { error:{ message:'Connection problem.' } };
+  return await sb.rpc('create_household', { p_name:name, p_city:city, p_creator:myPhone(), p_members:memberPhones });
+}
+function openHouseholdForm(){
+  var connected=window.__connected||[];
+  var checks = connected.length
+    ? connected.map(function(m){ return '<label class="hh-pick"><input type="checkbox" value="'+escapeAttr(m.phone)+'"> '+escapeHtml(m.name)+'</label>'; }).join('')
+    : '<div class="muted" style="font-size:13px;padding:4px 2px 8px">Add family members first to include them — you can still create a household with just yourself.</div>';
+  var m=document.getElementById('householdModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">🏠 Create Household</div>'+
+    '<input class="fi" id="hhName" placeholder="Household name (e.g. Dwarka Household)" style="margin-bottom:11px">'+
+    '<input class="fi" id="hhCity" placeholder="City" style="margin-bottom:14px">'+
+    '<div class="field-label">Who lives here?</div>'+
+    '<div id="hhPicks" style="margin-bottom:14px">'+checks+'</div>'+
+    '<button class="btn" onclick="submitHousehold()">Create Household 🏠</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHouseholdForm()">Cancel</button></div>';
+  m.classList.add('show');
+}
+function closeHouseholdForm(){ document.getElementById('householdModal').classList.remove('show'); }
+async function submitHousehold(){
+  var name=(document.getElementById('hhName').value||'').trim();
+  var city=(document.getElementById('hhCity').value||'').trim();
+  if(!name){ toast('Enter a household name.'); return; }
+  var picks=[].slice.call(document.querySelectorAll('#hhPicks input:checked')).map(function(c){ return c.value; });
+  var r=await createHousehold(name, city, picks);
+  if(r && r.error){ toast(r.error.message||'Could not create household — nothing was changed.'); return; }
+  closeHouseholdForm(); toast('Household created 🏠'); renderFamily(); loadDashboard();
+}
 
 /* ---------- bridge ---------- */
 function renderBridge(){
