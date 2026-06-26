@@ -1298,7 +1298,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 100</div>
+      <div class="psub">Powered by Skyvos AI · build 101</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -2224,6 +2224,8 @@ async function boot(){
   try{ if(!localStorage.getItem('jeeto_guide_v1')){ setTimeout(function(){ if(typeof openGuide==='function') openGuide(); }, 700); } }catch(e){}
   await refreshAll();
   if(window.__pendingGrid && ME && ME.role==='captain' && (!GRID)){ _offerGridJoin(window.__pendingGrid); }
+  // tree-first: logged-in users land in the Family Tree (the heart of the app), not the old home dashboard
+  try{ go('tree'); if(typeof treeBoot==='function') treeBoot(); }catch(e){}
 }
 function _offerGridJoin(code){
   openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udd17</div><h3>Join this grid?</h3></div>'+
