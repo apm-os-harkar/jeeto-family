@@ -230,6 +230,16 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .ins-row{font-size:14px;font-weight:700;color:var(--ink2);margin-bottom:7px}
 .ins-row .iv{font-family:'Baloo 2';font-weight:800;font-size:18px;color:var(--rani-d);margin-right:7px}
 .ins-foot{font-size:11.5px;color:var(--ink3);font-weight:700;margin-top:9px}
+/* relationship graph */
+.gtop{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.gback{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:18px;cursor:pointer;flex:0 0 auto}
+#graphCanvas{position:relative;width:100%;margin-top:8px;min-height:120px}
+.gnode{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;z-index:1;text-align:center}
+.gnode .gav{border-radius:50%;background:#fff;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--rani-d);overflow:hidden;box-shadow:var(--sh-1);font-size:18px}
+.gnode .gav img{width:100%;height:100%;object-fit:cover}
+.gnode.center .gav{border-color:var(--rani);background:var(--grad);color:#fff;box-shadow:var(--sh-2)}
+.gnode .glabel{font-size:10px;font-weight:800;color:var(--rani-d);margin-top:4px;line-height:1.05;max-width:78px}
+.gnode .gname{font-size:10px;font-weight:700;color:var(--ink2);line-height:1.1;max-width:78px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -543,6 +553,15 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <button class="btn btn-ghost" onclick="logout()">Log out</button>
   </section>
 
+  <section class="screen" id="screen-graph">
+    <div class="gtop"><button class="gback" onclick="navTo('profile')">←</button><div class="h1" style="margin:0;font-size:24px">🕸 Relationship Graph</div></div>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 12px">You add only direct relationships. Jeeto understands the rest — uncles, aunts, grandparents — on its own. Tap anyone to see how.</p>
+    <input class="fi" id="graphSearch" placeholder="Ask the graph — cousins, maternal, nieces…" oninput="searchGraph()" style="margin-bottom:8px">
+    <div id="graphCanvas"></div>
+    <div id="graphResults"></div>
+    <div style="height:20px"></div>
+  </section>
+
   <nav class="nav hide" id="bottomNav">
     <button data-tab="home" onclick="navTo('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')"><span class="ni">❤️</span><span class="nl">Family</span></button>
@@ -560,6 +579,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <div class="modal" id="momentModal"></div>
   <div class="modal" id="editModal"></div>
   <div class="modal" id="lifeModal"></div>
+  <div class="modal" id="graphModal"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -937,6 +957,8 @@ async function acceptFromModal(){
   if(!REVIEW) return;
   var recvRel=(document.getElementById('modalRel')||{}).value||'';
   if(!recvRel){ toast('Please choose who they are to you.'); return; }
+  var vr=await validateRelationship(REVIEW.sender, recvRel);
+  if(!vr.ok && !confirm(vr.message+'\n\nSave anyway?')) return;
   var btn=document.getElementById('modalAccept'); if(btn){ btn.disabled=true; btn.textContent='Connecting…'; }
   // ONE transaction: request -> relationship -> notifications, or full rollback
   var r=await acceptRequest(REVIEW.id, recvRel);
@@ -1683,6 +1705,7 @@ async function renderPassport(){
     '<div class="pp-act" onclick="navTo(\'bridge\')">🌉 My Bridges</div>'+
     '<div class="pp-act" onclick="viewJourney()">🧭 My Journey</div>'+
   '</div>';
+  html+='<button class="btn glow" style="margin-top:13px" onclick="navTo(\'graph\')">🕸 Open Relationship Graph</button>';
 
   var events=await journeyEvents(pass);
   html+='<div class="pp-journey"><div class="sec-head"><span class="si">🧭</span><span class="st">My Journey</span></div>';
@@ -1934,9 +1957,144 @@ async function renderLifeHome(){
   body.innerHTML='<div class="mhome-latest"><div class="ml-ic">'+(e.icon||'❤️')+'</div><div><div class="ml-t">'+escapeHtml(e.event_title)+'</div><div class="ml-d">'+escapeHtml(lifeRelative(e.event_date))+'</div></div></div>';
 }
 
+/* ============================================================
+   RELATIONSHIP GRAPH ENGINE — the intelligence layer.
+   Direct edges are entered by users; indirect ones are derived
+   server-side. Graph API: loadGraph · deriveRelationships ·
+   getRelationshipLabel · getRelationshipPath · searchGraph ·
+   validateRelationship · createRelationship · deleteRelationship
+   ============================================================ */
+var GRAPH_CACHE={ edges:[], profs:{} };
+async function loadGraph(){
+  if(!ensureSB()) return { edges:[], profs:{} };
+  var me=myPhone();
+  try{
+    var r=await sb.from('relationship_graph').select('*').eq('person_a_phone',me).order('relationship_distance',{ascending:true});
+    var edges=r.data||[];
+    var phones=edges.map(function(e){return e.person_b_phone;}).concat(edges.map(function(e){return e.via_phone;}).filter(Boolean));
+    return { edges:edges, profs:await fetchProfiles(phones) };
+  }catch(e){ return { edges:[], profs:{} }; }
+}
+async function deriveRelationships(){ if(!ensureSB()) return; try{ await sb.rpc('rebuild_graph'); }catch(e){} }
+function getRelationshipLabel(edges, phone){ var e=(edges||GRAPH_CACHE.edges).filter(function(x){return x.person_b_phone===phone;})[0]; return e?e.relationship_type:''; }
+function getRelationshipPath(edge, profs){
+  if(!edge || edge.relationship_origin!=='derived' || !edge.via_phone) return '';
+  profs=profs||GRAPH_CACHE.profs;
+  var via=(profs[edge.via_phone]&&profs[edge.via_phone].name)||edge.via_phone;
+  var them=(profs[edge.person_b_phone]&&profs[edge.person_b_phone].name)||edge.person_b_phone;
+  return via+' is your '+(edge.via_r1||'relative')+'  ·  '+them+' is '+via+'\u2019s '+(edge.via_r2||'relative');
+}
+function relCategory(t){ t=t||'';
+  if(['Father','Mother'].indexOf(t)>=0) return 'parent';
+  if(['Son','Daughter'].indexOf(t)>=0) return 'child';
+  if(['Brother','Sister'].indexOf(t)>=0) return 'sibling';
+  if(['Husband','Wife'].indexOf(t)>=0) return 'spouse';
+  return 'other';
+}
+async function validateRelationship(targetPhone, proposedType){
+  try{
+    var me=myPhone();
+    var r=await sb.from('relationship_graph').select('relationship_type').eq('person_a_phone',me).eq('person_b_phone',targetPhone).maybeSingle();
+    if(r.data){
+      var ex=relCategory(r.data.relationship_type), pr=relCategory(proposedType);
+      if(ex!=='other' && pr!=='other' && ex!==pr)
+        return { ok:false, message:'Jeeto already knows them as your '+r.data.relationship_type+'. One person can\u2019t also be your '+proposedType+'.' };
+    }
+  }catch(e){}
+  return { ok:true };
+}
+async function createRelationship(otherPhone, otherIsMyRel, iAmTheirRel){
+  if(!ensureSB()) return { error:{message:'Connection problem.'} };
+  var me=myPhone();
+  return await sb.from('relationships').insert({ person_a_phone:me, person_b_phone:otherPhone, relation_a_to_b:otherIsMyRel, relation_b_to_a:iAmTheirRel, status:'active', created_by:me });
+}
+async function deleteRelationship(id){ if(!ensureSB()) return; await sb.from('relationships').delete().eq('id',id); }
+
+/* ---------- graph view ---------- */
+async function renderGraph(){
+  if(!ME) ME=await fetchProfile(myPhone());
+  var canvas=document.getElementById('graphCanvas'); if(canvas) canvas.innerHTML='<div class="muted" style="text-align:center;padding:40px">Building your graph…</div>';
+  await deriveRelationships();
+  GRAPH_CACHE=await loadGraph();
+  var sr=document.getElementById('graphResults'); if(sr) sr.innerHTML='';
+  var gs=document.getElementById('graphSearch'); if(gs) gs.value='';
+  drawGraph();
+}
+function gNodeHtml(x,y,name,label,av,center,phone,origin){
+  var size=center?68:54;
+  var click=phone?(' onclick="openGraphNode(\''+phone+'\')"'):'';
+  var avHtml=av?'<img src="'+escapeAttr(av)+'">':escapeHtml((((center?name:name)||'?')[0]||'?').toUpperCase());
+  return '<div class="gnode'+(center?' center':'')+'" style="left:'+(x-size/2)+'px;top:'+(y-size/2)+'px;width:'+size+'px"'+click+'>'+
+    '<div class="gav" style="width:'+size+'px;height:'+size+'px">'+avHtml+'</div>'+
+    '<div class="glabel">'+escapeHtml(center?'You':label)+(origin==='derived'?' \u2728':'')+'</div>'+
+    '<div class="gname">'+escapeHtml(center?(name||'You'):name)+'</div></div>';
+}
+function drawGraph(){
+  var canvas=document.getElementById('graphCanvas'); if(!canvas) return;
+  var edges=GRAPH_CACHE.edges, profs=GRAPH_CACHE.profs;
+  if(!edges.length){ canvas.style.height='auto'; canvas.innerHTML='<div class="empty"><span class="big">🕸</span><div class="e1">Your graph is waiting</div><div class="e2">Connect with family in the Family tab — Jeeto will derive uncles, aunts and grandparents automatically.</div></div>'; return; }
+  var ring1=edges.filter(function(e){return e.relationship_distance===1;});
+  var ring2=edges.filter(function(e){return e.relationship_distance!==1;});
+  var W=canvas.clientWidth||340, cx=W/2, cy=232, r1=92, r2=170;
+  var nodes=[];
+  ring1.forEach(function(e,i){ var a=(-Math.PI/2)+(i/Math.max(ring1.length,1))*2*Math.PI; nodes.push({phone:e.person_b_phone,label:e.relationship_type,x:cx+r1*Math.cos(a),y:cy+r1*Math.sin(a),ring:1,via:null,origin:e.relationship_origin}); });
+  ring2.forEach(function(e,i){ var a=(-Math.PI/2)+((i+0.5)/Math.max(ring2.length,1))*2*Math.PI; nodes.push({phone:e.person_b_phone,label:e.relationship_type,x:cx+r2*Math.cos(a),y:cy+r2*Math.sin(a),ring:2,via:e.via_phone,origin:e.relationship_origin}); });
+  var lines='';
+  nodes.forEach(function(n){
+    var fx=cx, fy=cy;
+    if(n.ring===2 && n.via){ var p=nodes.filter(function(m){return m.ring===1 && m.phone===n.via;})[0]; if(p){ fx=p.x; fy=p.y; } }
+    lines+='<line x1="'+fx+'" y1="'+fy+'" x2="'+n.x+'" y2="'+n.y+'" stroke="'+(n.ring===2?'#E9DCC9':'#F4B98E')+'" stroke-width="2"/>';
+  });
+  var H=cy+r2+64;
+  var html='<svg width="'+W+'" height="'+H+'" style="position:absolute;left:0;top:0;pointer-events:none">'+lines+'</svg>';
+  html+=gNodeHtml(cx,cy,(ME&&ME.name)||'You','You',(ME&&ME.avatar_url),true,null,null);
+  nodes.forEach(function(n){ var nm=(profs[n.phone]&&profs[n.phone].name)||n.phone; var av=profs[n.phone]&&profs[n.phone].avatar_url; html+=gNodeHtml(n.x,n.y,nm,n.label,av,false,n.phone,n.origin); });
+  canvas.style.height=H+'px';
+  canvas.innerHTML=html;
+}
+async function openGraphNode(phone){
+  var edges=GRAPH_CACHE.edges, profs=GRAPH_CACHE.profs;
+  var e=edges.filter(function(x){return x.person_b_phone===phone;})[0]; if(!e) return;
+  var nm=(profs[phone]&&profs[phone].name)||phone;
+  var explain = e.relationship_origin==='derived'
+    ? '<div class="pcard" style="font-size:13px;line-height:1.6"><div style="font-weight:800;margin-bottom:6px">🔎 Derived because</div>'+escapeHtml(getRelationshipPath(e,profs))+'</div>'
+    : '<div class="muted" style="font-size:12.5px;text-align:center">A relationship you added directly.</div>';
+  var m=document.getElementById('graphModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div>'+
+    '<div style="text-align:center;font-size:38px">🕸</div>'+
+    '<div class="modal-q" style="text-align:center;font-size:21px;margin:6px 0 4px">'+escapeHtml(nm)+'</div>'+
+    '<div style="text-align:center;margin-bottom:14px"><span class="rl-pill">'+escapeHtml(e.relationship_type)+'</span>'+(e.relationship_origin==='derived'?' <span class="vt" style="display:inline-block">auto-derived \u2728</span>':'')+'</div>'+
+    explain+'<div style="height:14px"></div><button class="btn btn-soft" onclick="closeGraphModal()">Close</button></div>';
+  m.classList.add('show');
+}
+function closeGraphModal(){ document.getElementById('graphModal').classList.remove('show'); }
+function graphRow(e,profs){
+  var nm=(profs[e.person_b_phone]&&profs[e.person_b_phone].name)||e.person_b_phone;
+  var av=profs[e.person_b_phone]&&profs[e.person_b_phone].avatar_url;
+  return '<div class="pcard" onclick="openGraphNode(\''+e.person_b_phone+'\')"><div class="fcard"><div class="hh-ic" style="overflow:hidden">'+(av?'<img src="'+escapeAttr(av)+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">':escapeHtml((nm[0]||'?').toUpperCase()))+'</div><div class="info"><div class="nm">'+escapeHtml(nm)+'</div><div style="margin-top:4px"><span class="rl-pill">'+escapeHtml(e.relationship_type)+'</span>'+(e.relationship_origin==='derived'?' <span class="vt" style="display:inline-block">derived ✨</span>':'')+'</div></div></div></div>';
+}
+function searchGraph(){
+  var q=((document.getElementById('graphSearch')||{}).value||'').trim().toLowerCase();
+  var box=document.getElementById('graphResults'); if(!box) return;
+  if(!q){ box.innerHTML=''; return; }
+  var edges=GRAPH_CACHE.edges, profs=GRAPH_CACHE.profs;
+  var side=null; if(q.indexOf('maternal')>=0) side='Mother'; else if(q.indexOf('paternal')>=0) side='Father';
+  var kinMap={cousin:'Cousin',cousins:'Cousin',niece:'Niece',nieces:'Niece',nephew:'Nephew',nephews:'Nephew',uncle:'Uncle',uncles:'Uncle',aunt:'Aunt',aunts:'Aunt',grandparent:['Grandfather','Grandmother'],grandparents:['Grandfather','Grandmother'],grandfather:'Grandfather',grandmother:'Grandmother',grandchild:['Grandson','Granddaughter'],grandchildren:['Grandson','Granddaughter'],brother:'Brother',sister:'Sister',son:'Son',daughter:'Daughter',father:'Father',mother:'Mother'};
+  var want=null; Object.keys(kinMap).forEach(function(k){ if(q.indexOf(k)>=0) want=kinMap[k]; });
+  var res=edges.filter(function(e){
+    var ok;
+    if(want){ var ws=Array.isArray(want)?want:[want]; ok=ws.indexOf(e.relationship_type)>=0; }
+    else { var nm=((profs[e.person_b_phone]&&profs[e.person_b_phone].name)||'').toLowerCase(); ok=e.relationship_type.toLowerCase().indexOf(q)>=0 || nm.indexOf(q)>=0; }
+    if(ok && side) ok = e.via_r1===side;
+    return ok;
+  });
+  if(!res.length){ box.innerHTML='<div class="empty" style="padding:22px"><div class="e1">No matches in your graph</div><div class="e2">Try “cousins”, “maternal uncle”, “nieces”, “grandparents”…</div></div>'; return; }
+  box.innerHTML='<div class="sec-head" style="margin-top:18px"><span class="si">🔎</span><span class="st">'+res.length+' found</span></div>'+res.map(function(e){ return graphRow(e,profs); }).join('');
+}
+
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -1944,6 +2102,7 @@ function navTo(tab){
   if(tab==='life') renderLife();
   if(tab==='bridge') renderBridge();
   if(tab==='profile') renderPassport();
+  if(tab==='graph') renderGraph();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
