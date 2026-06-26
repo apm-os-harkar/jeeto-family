@@ -799,6 +799,7 @@ body{
 
     <!-- ============ HOME ============ -->
     <section class="view active" id="v-home">
+      <div id="homeReqBanner"></div>
       <div class="mqcard" id="mqCard"></div>
       <div id="dailyCard" style="display:none"></div>
       <div id="streakNudge"></div>
@@ -930,6 +931,7 @@ body{
 
     <!-- ============ FAMILY TIME ============ -->
     <section class="view" id="v-family">
+      <div id="famReqBanner"></div>
       <div class="sectit" style="margin-top:10px">Family Time 💛</div>
       <div class="skyvos">
         <div class="face">✦</div>
@@ -1301,7 +1303,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 102</div>
+      <div class="psub">Powered by Skyvos AI · build 103</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -1381,6 +1383,8 @@ function go(v){
     document.getElementById('chatBadge').style.display='none';
     setTimeout(()=>{const s=document.getElementById('screen');s.scrollTop=s.scrollHeight;},60);
   }
+  try{ if(typeof loadReqBanners==='function') loadReqBanners(); }catch(e){}
+  try{ if(v==='me' && typeof loadMerge==='function') loadMerge(); }catch(e){}
 }
 
 /* ---------- animated count-ups on load ---------- */
@@ -2240,6 +2244,7 @@ async function _acceptGridJoin(code){
 async function refreshAll(){
   setCoins();
   try{ if(typeof loadMerge==='function') loadMerge(); }catch(e){}
+  try{ if(typeof loadReqBanners==='function') loadReqBanners(); }catch(e){}
   document.getElementById('profName').textContent=ME.display_name;
   try{var fb=document.getElementById('founderBtn'); if(fb) fb.style.display=(window.AUTHEMAIL==='9971708833@jeeto.family')?'block':'none';}catch(e){}
   document.getElementById('profRole').textContent=(ME.role==='captain'?'Family organiser':'Member')+' · '+(ME.streak_days||0)+'-day streak 🔥';
@@ -3118,18 +3123,22 @@ async function loadRequests(){
   });
   box.innerHTML = html || emptyMsg('No grid requests right now.');
 }
-/* Prominent grid-request banner at the top of the grid view (not buried in Manage). */
-async function loadGridReqBanner(){
-  var box=document.getElementById('gridReqBanner'); if(!box) return;
-  box.innerHTML='';
-  try{
-    var r=await sb.rpc('my_incoming_requests');
-    var n=((r&&r.data)||[]).length;
-    if(n>0){
-      box.innerHTML='<div class="mergecard" onclick="openRequests()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+n+'</b> '+(n==1?'household wants':'households want')+' to join your grid. <a>Review →</a></div>';
-    }
-  }catch(e){}
+/* Prominent request banners — surfaced on Home (both), Family tab (family-join),
+   and Grid view (grid-join). Refreshed on boot and on every tab switch so a request
+   appears without needing a full app reload. */
+function _setHtml(id,html){ var el=document.getElementById(id); if(el) el.innerHTML=html; }
+async function loadReqBanners(){
+  var fam=0, grid=0;
+  try{ var mq=await sb.rpc('merge_requests'); var m=(mq&&mq.data)||[]; if(typeof m==='string'){ try{m=JSON.parse(m);}catch(e){m=[];} } fam=(m||[]).length; }catch(e){}
+  try{ var gq=await sb.rpc('my_incoming_requests'); grid=((gq&&gq.data)||[]).length; }catch(e){}
+  window.__joinIncoming=fam;
+  var famCard = fam>0 ? '<div class="mergecard" onclick="openFamilyRequests()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+fam+'</b> '+(fam==1?'person wants':'people want')+' to join your family. <a>Review →</a></div>' : '';
+  var gridCard = grid>0 ? '<div class="mergecard" onclick="openRequests()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+grid+'</b> '+(grid==1?'household wants':'households want')+' to join your grid. <a>Review →</a></div>' : '';
+  _setHtml('homeReqBanner', famCard+gridCard);
+  _setHtml('famReqBanner', famCard);
+  _setHtml('gridReqBanner', gridCard);
 }
+function loadGridReqBanner(){ return loadReqBanners(); } /* legacy alias */
 /* FAMILY-join requests only (lives in the Family area). */
 function openFamilyRequests(){
   openSheet('<div style="text-align:center"><div style="font-size:40px">👪</div><h3>Family join requests</h3></div><p class="s">Relatives asking to join your family. Accept and they move into your family.</p><div id="famReqList">'+emptyMsg('Loading…')+'</div>');
@@ -4083,7 +4092,7 @@ async function _doApprove(fromId){
 async function declineMerge(fromId){
   var r=await sb.rpc('decline_merge',{p_from:fromId});
   if(r.error){toast(r.error.message||'Could not decline');return;}
-  toast('Declined'); try{loadFamilyRequests();}catch(e){} loadMerge();
+  toast('Declined'); try{loadFamilyRequests();}catch(e){} loadMerge(); try{loadReqBanners();}catch(e){}
 }
 async function cancelMerge(){
   var r=await sb.rpc('cancel_merge');
