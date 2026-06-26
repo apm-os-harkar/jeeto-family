@@ -1300,7 +1300,8 @@ body{
         <div id="gridInviteBanner" style="display:none"></div>
         <p class="welcomelede">Your family, closer. 💛</p>
         <button class="btn btn-primary welcomebtn" onclick="showPanel('signup')">✨ Create new account</button>
-        <button class="btn btn-ghost welcomebtn" style="margin-top:10px" onclick="showPanel('login')">Log in</button>
+        <div style="display:flex;align-items:center;gap:10px;margin:16px 0 10px;color:var(--ink2);font-size:12px;font-weight:600"><div style="flex:1;height:1px;background:var(--line)"></div>already a Jeeto member?<div style="flex:1;height:1px;background:var(--line)"></div></div>
+        <button class="btn btn-ghost welcomebtn" onclick="showPanel('login')">Log in to my account</button>
       </div>
       <div id="signupPanel" style="display:none">
         <input id="quName" placeholder="Your name">
@@ -1311,10 +1312,12 @@ body{
         <div class="authhint" style="margin-top:12px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="loginPanel" style="display:none">
+        <p class="welcomelede" style="margin-bottom:14px">Welcome back 👋</p>
         <input id="aPhone" inputmode="numeric" placeholder="Your phone number">
         <input id="aCode" type="text" placeholder="Your PIN" onkeydown="if(event.key==='Enter')doLogin()">
         <button class="btn btn-primary" id="aBtn" onclick="doLogin()">Log in</button>
-        <div class="authhint" style="margin-top:10px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
+        <div class="authhint" style="margin-top:12px">New here? <a onclick="showPanel('signup')"><b>Create an account →</b></a></div>
+        <div class="authhint" style="margin-top:6px"><a onclick="showPanel('welcome')">&larr; Back</a></div>
       </div>
       <div id="joinPanel" style="display:none">
         <div class="reghint">👪 If your captain <b>invited you by phone</b>, just fill these 3 and tap Join — leave the code blank. Otherwise add the family code they shared.</div>
