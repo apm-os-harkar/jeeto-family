@@ -132,6 +132,58 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .bbar{height:8px;border-radius:8px;background:var(--line);overflow:hidden;margin:9px 22px 4px}
 .bbar > i{display:block;height:100%;background:var(--grad);border-radius:8px;transition:width .5s}
 .bstage{text-align:center;font-size:12px;font-weight:800;color:var(--ink2);margin:2px 0 8px}
+/* moments — home card */
+.mhome{background:linear-gradient(135deg,#FFF3E6,#FFE9F1);border:1px solid var(--line);border-radius:24px;padding:18px;margin-top:16px;box-shadow:var(--sh-2);cursor:pointer}
+.mhome-head{display:flex;justify-content:space-between;align-items:center;font-family:'Baloo 2';font-weight:800;font-size:17px;margin-bottom:10px}
+.mhome-cta{font-size:13px;color:var(--rani-d);font-weight:800}
+.mhome-empty{font-size:13px;color:var(--ink2);font-weight:600;line-height:1.5}
+.mhome-otd{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.mhome-otd .ot-l{font-size:11px;font-weight:800;color:var(--rani-d);letter-spacing:.3px}
+.mhome-otd .ot-t{font-family:'Baloo 2';font-weight:800;font-size:15px;margin-top:2px}
+.mhome-latest{display:flex;gap:11px;align-items:center}
+.mhome-latest img{width:54px;height:54px;border-radius:13px;object-fit:cover;flex:0 0 auto}
+.mhome-latest .ml-ic{width:54px;height:54px;border-radius:13px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
+.mhome-latest .ml-t{font-family:'Baloo 2';font-weight:800;font-size:15px}
+.mhome-latest .ml-d{font-size:12px;color:var(--ink2);font-weight:600}
+/* moments — tabs */
+.mtabs{display:flex;gap:7px;margin:4px 0 12px}
+.mtabs button{flex:1;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:10px 4px;font-size:19px;font-weight:800;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .16s}
+.mtabs button span{font-size:10.5px;font-weight:800;color:var(--ink2)}
+.mtabs button.on{border-color:transparent;background:var(--grad);box-shadow:var(--sh-2)}
+.mtabs button.on span{color:#fff}
+/* moments — On This Day banner */
+.otd-banner{background:linear-gradient(135deg,#241826,#3d2a42);color:#fff;border-radius:22px;padding:18px;margin-bottom:4px;box-shadow:var(--sh-pop)}
+.otd-banner .l{font-size:11px;font-weight:800;letter-spacing:.4px;opacity:.85}
+.otd-banner .y{font-family:'Baloo 2';font-weight:800;font-size:20px;margin:3px 0 2px}
+.otd-banner .t{font-size:14px;font-weight:700;opacity:.95}
+.otd-banner .relive{margin-top:11px;display:inline-block;background:rgba(255,255,255,.18);border-radius:11px;padding:7px 14px;font-size:12.5px;font-weight:800;cursor:pointer}
+/* moments — card */
+.mcard{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--sh-2);margin-bottom:18px;animation:rise .5s ease both}
+.mcard .media{display:block;width:100%;background:var(--paper)}
+.mcard .media img{width:100%;display:block;max-height:380px;object-fit:cover}
+.mcard .media .filechip{display:inline-flex;align-items:center;gap:7px;margin:10px;padding:9px 13px;background:var(--paper);border-radius:12px;font-size:13px;font-weight:700}
+.mcard .mbody{padding:16px 17px 14px}
+.mcard .mtitle{font-family:'Baloo 2';font-weight:800;font-size:19px;line-height:1.2}
+.mcard .mdesc{font-size:14px;color:var(--ink2);font-weight:500;line-height:1.55;margin-top:6px}
+.mcard .mmeta{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px;font-size:12px;color:var(--ink3);font-weight:700}
+.mcard .mmeta .pill{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:3px 9px}
+.mreacts{display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--line);padding:11px 13px;background:#FFFDFA}
+.mreacts button{background:var(--paper);border:1.5px solid var(--line);border-radius:13px;padding:6px 11px;font-size:14px;font-weight:800;color:var(--ink2);cursor:pointer;transition:all .14s}
+.mreacts button.mine{border-color:var(--rani);color:var(--rani-d);background:#FFF0F6}
+.mreacts .rc{font-size:12px;margin-left:3px}
+.mmenu{margin-left:auto;font-size:18px;color:var(--ink3);cursor:pointer;padding:0 4px;background:none;border:none}
+/* moments — timeline group */
+.tl-head{font-family:'Baloo 2';font-weight:800;font-size:15px;color:var(--ink2);margin:6px 2px 12px}
+/* capture */
+.cap-files{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+.cap-thumb{width:66px;height:66px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
+.cap-thumb.doc{display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--paper)}
+.cap-add{width:66px;height:66px;border-radius:14px;border:1.5px dashed var(--rani);background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--rani-d);cursor:pointer}
+.circle-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.circle-opt{display:flex;align-items:center;gap:11px;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:13px 14px;font-size:14.5px;font-weight:800;cursor:pointer;transition:all .14s}
+.circle-opt.on{border-color:var(--rani);background:#FFF0F6}
+.circle-opt .ce{font-size:20px}
+.circle-opt .cd{font-size:11px;color:var(--ink3);font-weight:700;display:block;margin-top:1px}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -373,7 +425,12 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div class="tiles">
       <div class="tile" onclick="navTo('family')" style="animation-delay:.04s"><div class="tic">❤️</div><div class="tt">Family</div><div class="ts" id="statFamily">Start →</div></div>
       <div class="tile" onclick="navTo('bridge')" style="animation-delay:.10s"><div class="tic">🌉</div><div class="tt">Bridge</div><div class="ts">Connect →</div></div>
-      <div class="tile" style="animation-delay:.16s"><div class="tic">📸</div><div class="tt">Memories</div><div class="ts">Capture →</div></div>
+      <div class="tile" onclick="navTo('moments')" style="animation-delay:.16s"><div class="tic">💛</div><div class="tt">Moments</div><div class="ts">Capture →</div></div>
+    </div>
+
+    <div class="mhome" id="momentsHome" onclick="navTo('moments')">
+      <div class="mhome-head"><span>❤️ Moments</span><span class="mhome-cta">Open →</span></div>
+      <div id="momentsHomeBody"><div class="mhome-empty">Capture your first Moment — a lunch, a milestone, a festival. It becomes family heritage.</div></div>
     </div>
   </section>
 
@@ -393,6 +450,22 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     </div>
 
     <div id="famBody"></div>
+  </section>
+
+  <section class="screen has-nav" id="screen-moments">
+    <div class="h1" style="margin-bottom:4px">❤️ Moments</div>
+    <p class="muted" style="font-size:13px;margin:0 2px 16px">Not photos — Moments. Each one belongs to a circle and becomes family heritage.</p>
+    <button class="btn glow" onclick="openCapture()">＋ Capture a Moment</button>
+    <div id="onThisDay" style="margin-top:18px"></div>
+    <div class="mtabs" id="mtabs">
+      <button data-circle="private" class="on" onclick="setCircle('private')">👤<span>My</span></button>
+      <button data-circle="household" onclick="setCircle('household')">🏠<span>Household</span></button>
+      <button data-circle="family" onclick="setCircle('family')">❤️<span>Family</span></button>
+      <button data-circle="bridge" onclick="setCircle('bridge')">🌉<span>Bridge</span></button>
+    </div>
+    <input class="fi" id="momentSearch" placeholder="Search this circle…" oninput="renderMomentFeed()" style="margin:4px 0 14px">
+    <div id="momentFeed"></div>
+    <div id="archivedLink" style="text-align:center;margin:18px 0 4px"></div>
   </section>
 
   <!-- BRIDGE -->
@@ -420,6 +493,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <nav class="nav hide" id="bottomNav">
     <button data-tab="home" onclick="navTo('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')"><span class="ni">❤️</span><span class="nl">Family</span></button>
+    <button data-tab="moments" onclick="navTo('moments')"><span class="ni">💛</span><span class="nl">Moments</span></button>
     <button data-tab="bridge" onclick="navTo('bridge')"><span class="ni">🌉</span><span class="nl">Bridge</span></button>
     <button data-tab="profile" onclick="navTo('profile')"><span class="ni">👤</span><span class="nl">Profile</span></button>
   </nav>
@@ -429,6 +503,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <div class="modal" id="notifModal"></div>
   <div class="modal" id="householdModal"></div>
   <div class="modal" id="bridgeModal"></div>
+  <div class="modal" id="momentModal"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -481,7 +556,7 @@ function closeCelebrate(){ document.getElementById('celebrate').classList.remove
 function showScreen(id){
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
-  var main=['screen-home','screen-family','screen-bridge','screen-profileTab'];
+  var main=['screen-home','screen-family','screen-moments','screen-bridge','screen-profileTab'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ window.scrollTo(0,0); }catch(e){}
 }
@@ -569,7 +644,8 @@ function calculateFamilyStrength(rels){
 async function loadDashboard(){
   var me=myPhone();
   var rels=await loadRelationships(); var n=rels.length;
-  var strength=calculateFamilyStrength(rels);
+  var momentStr=await loadMomentStrength();
+  var strength=calculateFamilyStrength(rels)+momentStr;
   var t=strengthTier(strength);
   var seedEl=document.getElementById('heroSeed'), tierEl=document.getElementById('statTier');
   if(seedEl) seedEl.textContent=t.e;
@@ -598,10 +674,12 @@ async function loadDashboard(){
   var myIds=households.map(function(x){return x.h.id;});
   var bridges=await loadBridges(myIds);
   var proposals=await loadBridgeProposals(myIds);
-  var active=bridges.length, strength=0; bridges.forEach(function(b){ strength+=b.bridge_strength||0; });
+  var active=bridges.length, bstrength=0; bridges.forEach(function(b){ bstrength+=b.bridge_strength||0; });
   var pendingVotes=proposals.filter(function(p){ return p.canVote; }).length;
   var db=document.getElementById('dashBridges');
-  if(db) db.textContent='🌉 '+active+(active===1?' active':' active')+' · '+pendingVotes+' pending · ⭐ '+strength+' strength';
+  if(db) db.textContent='🌉 '+active+(active===1?' active':' active')+' · '+pendingVotes+' pending · ⭐ '+bstrength+' strength';
+
+  renderMomentsHome();
 }
 
 /* ---------- data ---------- */
@@ -1170,6 +1248,312 @@ function celebrateBridge(aName, bName){
   c.classList.add('show');
 }
 
+/* ============================================================
+   MOMENT PROTOCOL — Moments belong to ONE circle and become
+   family heritage. private / household / family / bridge.
+   ============================================================ */
+var MCIRCLE='private', MCACHE={}, CAP={files:[]};
+var REACTS=[['loved','❤️'],['happy','😊'],['grateful','🙏'],['emotional','🥹'],['celebrated','🎉']];
+var MOMENT_W={ private:1, household:2, family:5, bridge:10 };
+function momentErr(code){ code=String(code||'');
+  if(code.indexOf('title_required')>=0) return 'Give your Moment a title.';
+  if(code.indexOf('household_required')>=0) return 'Pick which household.';
+  if(code.indexOf('bridge_required')>=0) return 'Pick which Bridge.';
+  return code||'Could not save the Moment.'; }
+function fmtMomentDate(d){ try{ return new Date(d).toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return d; } }
+function mediaKind(file){ var t=(file&&file.type)||''; if(t.indexOf('image')===0) return 'image'; if(t.indexOf('video')===0) return 'video'; if(t.indexOf('audio')===0) return 'voice'; return 'document'; }
+
+async function myCircleContext(){
+  var me=myPhone();
+  var rels=await loadRelationships();
+  var conns=rels.map(function(c){ return relView(c,me).other; });
+  var households=await loadHouseholds();
+  var hhIds=households.map(function(x){return x.h.id;});
+  var bridges=await loadBridges(hhIds);
+  return { me:me, conns:conns, households:households, hhIds:hhIds, bridges:bridges, brIds:bridges.map(function(b){return b.id;}) };
+}
+async function enrichMoments(rows){
+  if(!rows.length) return [];
+  var me=myPhone(); var ids=rows.map(function(r){return r.id;});
+  var media=[], people=[], reacts=[];
+  try{ media=(await sb.from('moment_media').select('*').in('moment_id',ids)).data||[]; }catch(e){}
+  try{ people=(await sb.from('moment_people').select('*').in('moment_id',ids)).data||[]; }catch(e){}
+  try{ reacts=(await sb.from('moment_reactions').select('*').in('moment_id',ids)).data||[]; }catch(e){}
+  var profs=await fetchProfiles(people.map(function(x){return x.person_phone;}).concat(rows.map(function(r){return r.created_by;})));
+  return rows.map(function(m){
+    var rs=reacts.filter(function(x){return x.moment_id===m.id;}); var counts={}, mine=null;
+    rs.forEach(function(x){ counts[x.reaction]=(counts[x.reaction]||0)+1; if(x.person_phone===me) mine=x.reaction; });
+    return { m:m,
+      media: media.filter(function(x){return x.moment_id===m.id;}),
+      people: people.filter(function(x){return x.moment_id===m.id;}).map(function(x){ return (profs[x.person_phone]&&profs[x.person_phone].name)||x.person_phone; }),
+      counts:counts, mine:mine, creator:(profs[m.created_by]&&profs[m.created_by].name)||m.created_by };
+  });
+}
+async function loadMoments(circle, ctx){
+  if(!ensureSB()) return [];
+  ctx=ctx||await myCircleContext();
+  try{
+    var rows=[];
+    if(circle==='private'){
+      rows=((await sb.from('moments').select('*').eq('status','active').eq('moment_type','private').eq('created_by',ctx.me).order('moment_date',{ascending:false}).order('created_at',{ascending:false})).data)||[];
+    } else if(circle==='household'){
+      if(!ctx.hhIds.length) return [];
+      var mids=((await sb.from('moment_households').select('moment_id').in('household_id',ctx.hhIds)).data||[]).map(function(x){return x.moment_id;});
+      if(!mids.length) return [];
+      rows=((await sb.from('moments').select('*').eq('status','active').eq('moment_type','household').in('id',mids).order('moment_date',{ascending:false})).data)||[];
+    } else if(circle==='family'){
+      rows=((await sb.from('moments').select('*').eq('status','active').eq('moment_type','family').in('created_by',ctx.conns.concat([ctx.me])).order('moment_date',{ascending:false})).data)||[];
+    } else if(circle==='bridge'){
+      if(!ctx.brIds.length) return [];
+      var bmids=((await sb.from('moment_bridges').select('moment_id').in('bridge_id',ctx.brIds)).data||[]).map(function(x){return x.moment_id;});
+      if(!bmids.length) return [];
+      rows=((await sb.from('moments').select('*').eq('status','active').eq('moment_type','bridge').in('id',bmids).order('moment_date',{ascending:false})).data)||[];
+    }
+    return await enrichMoments(rows);
+  }catch(e){ return []; }
+}
+function setCircle(c){
+  MCIRCLE=c;
+  var btns=document.querySelectorAll('#mtabs button');
+  for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-circle')===c);
+  var s=document.getElementById('momentSearch'); if(s) s.value='';
+  (async function(){ if(!MCACHE[c]) MCACHE[c]=await loadMoments(c, window.__mctx); renderMomentFeed(); })();
+}
+async function renderMoments(){
+  if(!ME) ME=await fetchProfile(myPhone());
+  window.__mctx=await myCircleContext();
+  renderOnThisDay();
+  MCACHE={}; MCACHE[MCIRCLE]=await loadMoments(MCIRCLE, window.__mctx);
+  renderMomentFeed();
+  var al=document.getElementById('archivedLink');
+  if(al) al.innerHTML='<span style="font-size:12.5px;cursor:pointer;font-weight:700;color:var(--ink2)" onclick="openArchived()">🗂️ View archived Moments</span>';
+}
+function tlGroup(dateStr){
+  var d=new Date(dateStr), now=new Date(); if(isNaN(d)) return 'Past Years';
+  var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var dd=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  var diff=(today-dd)/86400000;
+  if(diff<=0) return 'Today';
+  if(diff<7) return 'This Week';
+  if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) return 'This Month';
+  if(d.getFullYear()===now.getFullYear()) return 'This Year';
+  return 'Past Years';
+}
+function renderMomentFeed(){
+  var box=document.getElementById('momentFeed'); if(!box) return;
+  var list=MCACHE[MCIRCLE]||[];
+  var q=((document.getElementById('momentSearch')||{}).value||'').trim().toLowerCase();
+  if(q){ list=list.filter(function(x){ return (x.m.title||'').toLowerCase().indexOf(q)>=0 || (x.m.description||'').toLowerCase().indexOf(q)>=0 || x.people.join(' ').toLowerCase().indexOf(q)>=0; }); }
+  if(!list.length){
+    var msg={ private:'No personal Moments yet.', household:'No household Moments yet.', family:'No family Moments yet.', bridge:'No bridge Moments yet.' }[MCIRCLE];
+    box.innerHTML='<div class="empty"><span class="big">💛</span><div class="e1">'+msg+'</div><div class="e2">Tap “Capture a Moment” to begin this circle’s story.</div></div>';
+    return;
+  }
+  var order=['Today','This Week','This Month','This Year','Past Years'], groups={};
+  list.forEach(function(x){ var g=tlGroup(x.m.moment_date||x.m.created_at); (groups[g]=groups[g]||[]).push(x); });
+  var html=''; order.forEach(function(g){ if(groups[g]){ html+='<div class="tl-head">'+g+'</div>'; groups[g].forEach(function(x){ html+=momentCard(x); }); } });
+  box.innerHTML=html;
+}
+function momentCard(x){
+  var m=x.m, me=myPhone();
+  var img=x.media.filter(function(md){return md.media_type==='image';})[0];
+  var other=x.media.filter(function(md){return md.media_type!=='image';});
+  var mediaHtml='';
+  if(img){ mediaHtml='<div class="media"><img src="'+escapeAttr(img.media_url)+'" alt=""></div>'; }
+  else if(other.length){ mediaHtml='<div class="media">'+other.map(function(md){ var ic=md.media_type==='video'?'🎬':md.media_type==='voice'?'🎙️':'📄'; return '<a class="filechip" href="'+escapeAttr(md.media_url)+'" target="_blank" rel="noopener">'+ic+' '+escapeHtml(md.media_type)+'</a>'; }).join('')+'</div>'; }
+  var meta='';
+  if(x.people.length) meta+='<span class="pill">👥 '+escapeHtml(x.people.slice(0,3).join(', '))+(x.people.length>3?' +'+(x.people.length-3):'')+'</span>';
+  if(m.moment_date) meta+='<span class="pill">🗓️ '+escapeHtml(fmtMomentDate(m.moment_date))+'</span>';
+  meta+='<span class="pill">✨ '+escapeHtml(x.creator)+'</span>';
+  var reactsHtml=REACTS.map(function(r){ var n=x.counts[r[0]]||0; return '<button class="'+(x.mine===r[0]?'mine':'')+'" onclick="react(\''+m.id+'\',\''+r[0]+'\')">'+r[1]+(n?'<span class="rc">'+n+'</span>':'')+'</button>'; }).join('');
+  var menu = m.created_by===me ? '<button class="mmenu" onclick="momentMenu(\''+m.id+'\')">⋯</button>' : '';
+  return '<div class="mcard">'+mediaHtml+
+    '<div class="mbody"><div style="display:flex;align-items:flex-start;gap:8px"><div style="flex:1;min-width:0"><div class="mtitle">'+escapeHtml(m.title)+'</div>'+
+    (m.description?'<div class="mdesc">'+escapeHtml(m.description)+'</div>':'')+'</div>'+menu+'</div>'+
+    '<div class="mmeta">'+meta+'</div></div>'+
+    '<div class="mreacts">'+reactsHtml+'</div></div>';
+}
+async function react(momentId, reaction){
+  if(!ensureSB()) return;
+  var r=await sb.rpc('set_moment_reaction', { p_moment:momentId, p_person:myPhone(), p_reaction:reaction });
+  if(r && r.error){ toast('Could not react.'); return; }
+  MCACHE[MCIRCLE]=await loadMoments(MCIRCLE, window.__mctx||await myCircleContext());
+  renderMomentFeed();
+}
+
+/* ---------- On This Day ---------- */
+async function loadOnThisDay(){
+  if(!ensureSB()) return [];
+  try{ var r=await sb.rpc('on_this_day',{ p_phone:myPhone() }); if(r.error) return []; return await enrichMoments(r.data||[]); }catch(e){ return []; }
+}
+async function renderOnThisDay(){
+  var box=document.getElementById('onThisDay'); if(!box) return;
+  var list=await loadOnThisDay();
+  if(!list.length){ box.innerHTML=''; return; }
+  var x=list[0]; var yrs=new Date().getFullYear()-new Date(x.m.moment_date).getFullYear();
+  box.innerHTML='<div class="otd-banner"><div class="l">🕰️ ON THIS DAY</div><div class="y">Exactly '+yrs+' year'+(yrs===1?'':'s')+' ago</div><div class="t">'+escapeHtml(x.m.title)+'</div><span class="relive" onclick="reliveMoment(\''+x.m.id+'\')">Tap to relive →</span></div>';
+}
+async function reliveMoment(id){
+  if(!ensureSB()) return;
+  var r=await sb.from('moments').select('*').eq('id',id).maybeSingle();
+  if(!r.data) return;
+  var x=(await enrichMoments([r.data]))[0];
+  var m=document.getElementById('momentModal');
+  m.innerHTML='<div class="modal-card" style="max-height:88vh;overflow:auto"><div class="modal-grab"></div>'+momentCard(x)+'<button class="btn btn-soft" onclick="closeMomentModal()">Close</button></div>';
+  m.classList.add('show');
+}
+
+/* ---------- capture ---------- */
+async function openCapture(){
+  if(!ensureSB()){ toast('Connection problem.'); return; }
+  CAP={ files:[], type:'' };
+  var me=myPhone();
+  var rels=await loadRelationships();
+  var profs=await fetchProfiles(rels.map(function(c){return relView(c,me).other;}));
+  CAP.connected=rels.map(function(c){ var v=relView(c,me); return { phone:v.other, name:(profs[v.other]&&profs[v.other].name)||v.other }; });
+  var households=await loadHouseholds(); CAP.households=households.map(function(x){return {id:x.h.id,name:x.h.household_name};});
+  var bridges=await loadBridges(households.map(function(x){return x.h.id;})); CAP.bridges=bridges.map(function(b){return {id:b.id,name:b._otherName};});
+  buildCaptureModal();
+}
+function buildCaptureModal(){
+  var connected=CAP.connected||[];
+  var people = connected.length ? connected.map(function(p){ return '<label class="hh-pick"><input type="checkbox" value="'+escapeAttr(p.phone)+'"> '+escapeHtml(p.name)+'</label>'; }).join('') : '<div class="muted" style="font-size:13px;padding:2px">Connect with family first to tag them — you can still save the Moment.</div>';
+  var circles=[['private','👤','My Moment','Visible only to me'],['household','🏠','Household Moment','Your household only'],['family','❤️','Family Moment','Your whole family'],['bridge','🌉','Bridge Moment','Connected bridge households']];
+  var copts=circles.map(function(c){ return '<div class="circle-opt" data-c="'+c[0]+'" onclick="pickCircle(\''+c[0]+'\')"><span class="ce">'+c[1]+'</span><span style="flex:1">'+c[2]+'<span class="cd">'+c[3]+'</span></span><span class="cradio">○</span></div>'; }).join('');
+  var m=document.getElementById('momentModal');
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">❤️ Capture a Moment</div>'+
+    '<div class="field-label">Photos, video, voice or documents</div>'+
+    '<div class="cap-files" id="capFiles"></div>'+
+    '<div class="field-label" style="margin-top:14px">Moment title</div>'+
+    '<input class="fi" id="capTitle" placeholder="e.g. Sunday Lunch" style="margin-bottom:13px">'+
+    '<div class="field-label">What made this moment special?</div>'+
+    '<textarea class="fi" id="capDesc" rows="3" placeholder="Describe what happened…" style="margin-bottom:13px;resize:vertical"></textarea>'+
+    '<div class="field-label">When did it happen?</div>'+
+    '<input class="fi" id="capDate" type="date" style="margin-bottom:13px">'+
+    '<div class="field-label">Who was with you?</div>'+
+    '<div id="capPeople" style="margin-bottom:14px">'+people+'</div>'+
+    '<div class="field-label">Choose Moment circle (only one)</div>'+
+    '<div class="circle-opts" id="capCircles">'+copts+'</div>'+
+    '<div id="capExtra"></div>'+
+    '<button class="btn" id="capSaveBtn" onclick="submitMoment()">Save Moment ❤️</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeMomentModal()">Cancel</button></div>';
+  m.classList.add('show');
+  var dt=document.getElementById('capDate'); if(dt) dt.value=new Date().toISOString().slice(0,10);
+  renderCapFiles();
+}
+function closeMomentModal(){ document.getElementById('momentModal').classList.remove('show'); }
+function capAddFiles(ev){ var fs=ev.target.files; if(fs){ for(var i=0;i<fs.length;i++) CAP.files.push(fs[i]); } renderCapFiles(); }
+function capRemove(i){ CAP.files.splice(i,1); renderCapFiles(); }
+function renderCapFiles(){
+  var box=document.getElementById('capFiles'); if(!box) return;
+  var thumbs=CAP.files.map(function(f,i){
+    if(mediaKind(f)==='image'){ return '<img class="cap-thumb" src="'+URL.createObjectURL(f)+'" onclick="capRemove('+i+')" title="Remove">'; }
+    var ic=mediaKind(f)==='video'?'🎬':mediaKind(f)==='voice'?'🎙️':'📄';
+    return '<div class="cap-thumb doc" onclick="capRemove('+i+')" title="Remove">'+ic+'</div>';
+  }).join('');
+  box.innerHTML=thumbs+'<label class="cap-add">＋<input type="file" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx" style="display:none" onchange="capAddFiles(event)"></label>';
+}
+function pickCircle(c){
+  CAP.type=c;
+  var opts=document.querySelectorAll('#capCircles .circle-opt');
+  for(var i=0;i<opts.length;i++){ var on=opts[i].getAttribute('data-c')===c; opts[i].classList.toggle('on',on); var rad=opts[i].querySelector('.cradio'); if(rad) rad.textContent=on?'●':'○'; }
+  var extra=document.getElementById('capExtra'); if(!extra) return;
+  if(c==='household'){
+    var hs=CAP.households||[];
+    extra.innerHTML = hs.length>1 ? '<div class="field-label">Which household?</div><select class="fi" id="capHH" style="margin-bottom:13px">'+hs.map(function(h){return '<option value="'+escapeAttr(h.id)+'">'+escapeHtml(h.name)+'</option>';}).join('')+'</select>'
+      : (hs.length===1 ? '<input type="hidden" id="capHH" value="'+escapeAttr(hs[0].id)+'">' : '<div class="muted" style="font-size:13px;margin-bottom:10px">Create a household first to use this circle.</div>');
+  } else if(c==='bridge'){
+    var bs=CAP.bridges||[];
+    extra.innerHTML = bs.length ? '<div class="field-label">Which Bridge?</div><select class="fi" id="capBR" style="margin-bottom:13px">'+bs.map(function(b){return '<option value="'+escapeAttr(b.id)+'">'+escapeHtml(b.name)+'</option>';}).join('')+'</select>'
+      : '<div class="muted" style="font-size:13px;margin-bottom:10px">Build a Bridge first to use this circle.</div>';
+  } else { extra.innerHTML=''; }
+}
+async function submitMoment(){
+  var title=(document.getElementById('capTitle').value||'').trim();
+  if(!title){ toast('Give your Moment a title.'); return; }
+  if(!CAP.type){ toast('Choose a Moment circle.'); return; }
+  var desc=(document.getElementById('capDesc').value||'').trim();
+  var date=(document.getElementById('capDate').value||'')||null;
+  var people=[].slice.call(document.querySelectorAll('#capPeople input:checked')).map(function(c){return c.value;});
+  var household=null, bridge=null;
+  if(CAP.type==='household'){ var hh=document.getElementById('capHH'); if(!hh||!hh.value){ toast('Create a household first.'); return; } household=hh.value; }
+  if(CAP.type==='bridge'){ var br=document.getElementById('capBR'); if(!br||!br.value){ toast('Build a Bridge first.'); return; } bridge=br.value; }
+  var btn=document.getElementById('capSaveBtn'); btn.disabled=true; btn.textContent='Saving…';
+  var media=[];
+  try{
+    for(var i=0;i<CAP.files.length;i++){
+      var f=CAP.files[i]; var safe=(f.name||'file').replace(/[^a-zA-Z0-9._-]/g,'_');
+      var path=myPhone()+'/'+Date.now()+'-'+i+'-'+safe;
+      btn.textContent='Uploading '+(i+1)+'/'+CAP.files.length+'…';
+      var up=await sb.storage.from('moments').upload(path, f, { upsert:false, contentType:f.type||undefined });
+      if(up.error) throw up.error;
+      media.push({ url:sb.storage.from('moments').getPublicUrl(path).data.publicUrl, type:mediaKind(f) });
+    }
+  }catch(e){ btn.disabled=false; btn.textContent='Save Moment ❤️'; toast('Upload failed — '+((e&&e.message)||'try smaller files')); return; }
+  var r=await sb.rpc('create_moment', { p_creator:myPhone(), p_title:title, p_desc:desc, p_type:CAP.type, p_date:date, p_people:people, p_household:household, p_bridge:bridge, p_media:media });
+  btn.disabled=false; btn.textContent='Save Moment ❤️';
+  if(r && r.error){ toast(momentErr(r.error.message)); return; }
+  closeMomentModal(); celebrateMoment(CAP.type);
+  MCACHE={}; setCircle(CAP.type); loadDashboard();
+}
+function celebrateMoment(type){
+  var plus=MOMENT_W[type]||1;
+  var label={private:'My Moment',household:'Household Moment',family:'Family Moment',bridge:'Bridge Moment'}[type]||'Moment';
+  var c=document.getElementById('celebrate'); if(!c){ toast('Moment captured ❤️ +'+plus); return; }
+  var conf=''; var ems=['❤️','✨','💛','🎉','📸','🙏'];
+  for(var i=0;i<14;i++){ conf+='<span class="confetti" style="left:'+(Math.random()*100)+'%;animation-duration:'+(2+Math.random()*2).toFixed(2)+'s;animation-delay:'+(Math.random()*0.8).toFixed(2)+'s">'+ems[i%ems.length]+'</span>'; }
+  c.innerHTML=conf+'<div style="text-align:center"><div class="hearts"><span class="hl">❤️</span><span class="hr">💛</span><span class="big-heart">📸</span></div>'+
+    '<div class="box"><h2>Moment captured</h2><div class="plus">'+label+' · Family Strength +'+plus+(type==='bridge'?' · Bridge +10':'')+'</div>'+
+    '<div style="margin-top:22px"><button class="btn" style="background:rgba(255,255,255,.22);width:auto;padding:13px 30px" onclick="closeCelebrate()">Continue</button></div></div></div>';
+  c.classList.add('show');
+}
+
+/* ---------- archive / delete (30-day recovery) ---------- */
+function momentMenu(id){
+  var m=document.getElementById('momentModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:18px;margin-bottom:14px">Manage Moment</div>'+
+    '<button class="btn btn-soft" onclick="archiveMoment(\''+id+'\')">🗂️ Archive · 30-day recovery</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeMomentModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+async function archiveMoment(id){
+  if(!ensureSB()) return;
+  var r=await sb.from('moments').update({ status:'archived', archived_at:new Date().toISOString() }).eq('id',id);
+  if(r.error){ toast('Could not archive.'); return; }
+  closeMomentModal(); toast('Moment archived 🗂️'); MCACHE={}; renderMoments(); loadDashboard();
+}
+async function openArchived(){
+  if(!ensureSB()) return;
+  var rows=((await sb.from('moments').select('*').eq('created_by',myPhone()).eq('status','archived').order('archived_at',{ascending:false})).data)||[];
+  var list=await enrichMoments(rows);
+  var body = list.length ? list.map(function(x){
+    return '<div class="pcard"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><div class="nm">'+escapeHtml(x.m.title)+'</div><div class="vt" style="display:inline-block;margin-top:4px">archived '+escapeHtml(fmtMomentDate(x.m.archived_at||x.m.created_at))+'</div></div>'+
+      '<button class="btn btn-sm" style="width:auto;padding:0 13px" onclick="restoreMoment(\''+x.m.id+'\')">Restore</button>'+
+      '<button class="btn btn-sm btn-ghost" style="width:auto;padding:0 11px" onclick="deleteMoment(\''+x.m.id+'\')">Delete</button></div></div>';
+  }).join('') : '<div class="empty"><span class="big">🗂️</span><div class="e1">No archived Moments</div></div>';
+  var m=document.getElementById('momentModal');
+  m.innerHTML='<div class="modal-card" style="max-height:86vh;overflow:auto"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:18px;margin-bottom:4px">🗂️ Archived Moments</div><p class="muted" style="text-align:center;font-size:12px;margin:0 0 14px">Archived Moments stay recoverable for 30 days.</p>'+body+'<div style="height:10px"></div><button class="btn btn-soft" onclick="closeMomentModal()">Close</button></div>';
+  m.classList.add('show');
+}
+async function restoreMoment(id){ if(!ensureSB()) return; await sb.from('moments').update({status:'active',archived_at:null}).eq('id',id); toast('Restored ❤️'); MCACHE={}; openArchived(); loadDashboard(); }
+async function deleteMoment(id){ if(!ensureSB()) return; if(!confirm('Permanently delete this Moment? This cannot be undone.')) return; await sb.from('moments').delete().eq('id',id); toast('Permanently deleted'); openArchived(); loadDashboard(); }
+
+/* ---------- moment strength + home card ---------- */
+async function loadMomentStrength(){
+  if(!ensureSB()) return 0;
+  try{ var rows=((await sb.from('moments').select('moment_type').eq('created_by',myPhone()).eq('status','active')).data)||[]; var s=0; rows.forEach(function(x){ s+=MOMENT_W[x.moment_type]||0; }); return s; }catch(e){ return 0; }
+}
+async function renderMomentsHome(){
+  var body=document.getElementById('momentsHomeBody'); if(!body) return;
+  var otd=await loadOnThisDay(); var latest=null;
+  try{ var r=await sb.from('moments').select('*').eq('status','active').eq('created_by',myPhone()).order('created_at',{ascending:false}).limit(1); if(r.data&&r.data.length) latest=(await enrichMoments(r.data))[0]; }catch(e){}
+  var html='';
+  if(otd.length){ var x=otd[0]; var yrs=new Date().getFullYear()-new Date(x.m.moment_date).getFullYear(); html+='<div class="mhome-otd"><div class="ot-l">🕰️ ON THIS DAY · '+yrs+'y ago</div><div class="ot-t">'+escapeHtml(x.m.title)+'</div></div>'; }
+  if(latest){ var im=latest.media.filter(function(md){return md.media_type==='image';})[0]; html+='<div class="mhome-latest">'+(im?'<img src="'+escapeAttr(im.media_url)+'">':'<div class="ml-ic">💛</div>')+'<div><div class="ml-t">'+escapeHtml(latest.m.title)+'</div><div class="ml-d">'+escapeHtml(fmtMomentDate(latest.m.moment_date||latest.m.created_at))+'</div></div></div>'; }
+  if(!html) html='<div class="mhome-empty">Capture your first Moment — a lunch, a milestone, a festival. It becomes family heritage.</div>';
+  body.innerHTML=html;
+}
 
 /* ---------- profile tab ---------- */
 function renderProfileTab(){
@@ -1184,10 +1568,11 @@ function renderProfileTab(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', bridge:'screen-bridge', profile:'screen-profileTab' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', bridge:'screen-bridge', profile:'screen-profileTab' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
+  if(tab==='moments') renderMoments();
   if(tab==='bridge') renderBridge();
   if(tab==='profile') renderProfileTab();
   var btns=document.querySelectorAll('#bottomNav button');
