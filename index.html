@@ -111,6 +111,27 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .dash-sub{text-align:center;font-size:12px;color:var(--ink2);font-weight:700;margin:-6px 2px 18px}
 .hh-pick{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:9px;font-size:14px;font-weight:700;cursor:pointer;text-align:left}
 .hh-pick input{width:20px;height:20px;accent-color:var(--rani);flex:0 0 auto}
+/* bridge */
+.hh-two{display:flex;align-items:stretch;gap:6px;margin:6px 0 4px}
+.hh-mini{flex:1;text-align:center;background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px 8px;box-shadow:var(--sh-1)}
+.hh-mini.ghost{border-style:dashed;opacity:.7}
+.hh-mini .e{font-size:30px}
+.hh-mini .nm{font-family:'Baloo 2';font-weight:800;font-size:13.5px;margin-top:4px;line-height:1.2}
+.hh-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:54px}
+.hh-mid .ln{height:3px;width:100%;border-radius:3px;background:var(--grad);opacity:.85}
+.hh-mid .ic{font-size:22px;margin:-2px 0}
+.bridge-build .ln{animation:glowpulse 1.4s ease-in-out infinite}
+@keyframes glowpulse{0%,100%{opacity:.5}50%{opacity:1;filter:drop-shadow(0 0 7px rgba(224,58,122,.75))}}
+.vote-row{display:flex;align-items:center;gap:10px;padding:10px 2px;font-size:14px;font-weight:700;border-bottom:1px dashed var(--line)}
+.vote-row:last-child{border-bottom:0}
+.vote-row .vn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vote-row .vt{font-size:10.5px;color:var(--ink3);font-weight:800;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:2px 7px}
+.vote-row .vs{font-size:16px}
+.bprog{text-align:center;font-size:13px;font-weight:800;color:var(--rani-d);margin:14px 0 2px}
+.bprog small{display:block;color:var(--ink2);font-weight:700;font-size:11px;margin-top:3px}
+.bbar{height:8px;border-radius:8px;background:var(--line);overflow:hidden;margin:9px 22px 4px}
+.bbar > i{display:block;height:100%;background:var(--grad);border-radius:8px;transition:width .5s}
+.bstage{text-align:center;font-size:12px;font-weight:800;color:var(--ink2);margin:2px 0 8px}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -347,6 +368,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
       </div>
     </div>
     <div class="dash-sub" id="dashHousehold">🏠 0 households · 👥 0 in household</div>
+    <div class="dash-sub" id="dashBridges" style="margin-top:-12px">🌉 0 active · 0 pending · ⭐ 0 strength</div>
 
     <div class="tiles">
       <div class="tile" onclick="navTo('family')" style="animation-delay:.04s"><div class="tic">❤️</div><div class="tt">Family</div><div class="ts" id="statFamily">Start →</div></div>
@@ -376,10 +398,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <!-- BRIDGE -->
   <section class="screen has-nav" id="screen-bridge">
     <div class="h1" style="margin-bottom:4px">🌉 Bridges</div>
-    <p class="muted" style="font-size:13px;margin:0 2px 22px">Bridges connect complete households, not individuals.</p>
-
-    <div class="hh-card" style="animation-delay:.05s"><div class="hh-ic">🏠</div><div><div class="hh-name" id="hhA">Your Household</div><div class="hh-loc" id="hhAloc">Your family</div></div></div>
-
+    <p class="muted" style="font-size:13px;margin:0 2px 20px">We don't add contacts. We build trusted Bridges between households.</p>
     <div id="bridgeBody"></div>
   </section>
 
@@ -409,6 +428,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <div class="modal" id="reviewModal"></div>
   <div class="modal" id="notifModal"></div>
   <div class="modal" id="householdModal"></div>
+  <div class="modal" id="bridgeModal"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -569,11 +589,19 @@ async function loadDashboard(){
   var badge=document.getElementById('bellBadge');
   if(badge){ badge.textContent=unread; badge.classList.toggle('live', unread>0); }
 
-  // household summary (Sprint 4)
+  // household + bridge summary (Sprint 4 + 5)
   var households=await loadHouseholds();
   var hc=households.length, hmem=0; households.forEach(function(x){ hmem+=x.members.length; });
   var dh=document.getElementById('dashHousehold');
   if(dh) dh.textContent='🏠 '+hc+(hc===1?' household':' households')+' · 👥 '+hmem+' in household';
+
+  var myIds=households.map(function(x){return x.h.id;});
+  var bridges=await loadBridges(myIds);
+  var proposals=await loadBridgeProposals(myIds);
+  var active=bridges.length, strength=0; bridges.forEach(function(b){ strength+=b.bridge_strength||0; });
+  var pendingVotes=proposals.filter(function(p){ return p.canVote; }).length;
+  var db=document.getElementById('dashBridges');
+  if(db) db.textContent='🌉 '+active+(active===1?' active':' active')+' · '+pendingVotes+' pending · ⭐ '+strength+' strength';
 }
 
 /* ---------- data ---------- */
@@ -678,6 +706,9 @@ async function renderFamily(){
   // connected family list (for the household member picker)
   window.__connected=rels.map(function(c){ var v=relView(c,me); return { phone:v.other, name:(profs[v.other]&&profs[v.other].name)||v.other }; });
   var households=await loadHouseholds();
+  var myHHids=households.map(function(x){return x.h.id;});
+  var allBridges=await loadBridges(myHHids);
+  var bridgesByHH={}; allBridges.forEach(function(b){ (bridgesByHH[b._mine]=bridgesByHH[b._mine]||[]).push(b); });
   var html='';
 
   /* 1) Family Status */
@@ -736,7 +767,7 @@ async function renderFamily(){
 
   /* 6) Household */
   html+='<div class="sec-head"><span class="si">🏠</span><span class="st">Household</span>'+(households.length?'<span class="sc">'+households.length+'</span>':'')+'</div>';
-  html+=householdHtml(households);
+  html+=householdHtml(households, bridgesByHH);
 
   box.innerHTML=html;
   requestAnimationFrame(function(){ requestAnimationFrame(drawTreeLines); });
@@ -848,17 +879,28 @@ async function loadHouseholds(){
     });
   }catch(e){ return []; }
 }
-function householdHtml(households){
+function householdHtml(households, bridgesByHH){
   if(!households.length){
     return '<div class="empty"><span class="big">🏠</span><div class="e1">Create your first household</div><div class="e2">A household is the people who live together — built from your connected family.</div></div>'+
       '<button class="btn" onclick="openHouseholdForm()" style="margin-top:4px">Create Household 🏠</button>';
   }
+  bridgesByHH=bridgesByHH||{};
   var cards=households.map(function(x){
     var names=x.members.map(function(m){return escapeHtml(m.name);}).join(', ');
+    var brs=bridgesByHH[x.h.id]||[];
+    var bridgeBlock='';
+    if(brs.length){
+      bridgeBlock='<div style="margin-top:13px;border-top:1px dashed var(--line);padding-top:12px"><div class="field-label" style="margin-bottom:9px">🌉 Connected Bridges</div>'+
+        brs.map(function(b){
+          return '<div class="vote-row"><span class="vs">🌉</span><span class="vn">'+escapeHtml(b._otherName)+'</span>'+
+            '<span class="vt">'+escapeHtml(fmtJoined(b.connected_at))+'</span><span class="vt">⭐ '+b.bridge_strength+'</span><span class="vt">'+escapeHtml(b.status)+'</span></div>';
+        }).join('')+'</div>';
+    }
     return '<div class="pcard"><div class="fcard"><div class="hh-ic">🏠</div>'+
       '<div class="info"><div class="nm">'+escapeHtml(x.h.household_name)+'</div>'+
       (x.h.city?'<div style="margin-top:5px"><span class="rl-pill">City: '+escapeHtml(x.h.city)+'</span></div>':'')+
-      '<div class="meta"><span>👥 '+names+'</span></div></div></div></div>';
+      '<div class="meta"><span>👥 '+names+'</span></div></div></div>'+
+      bridgeBlock+'</div>';
   }).join('');
   return cards+'<button class="btn btn-ghost" onclick="openHouseholdForm()" style="margin-top:4px">＋ New household</button>';
 }
@@ -893,28 +935,241 @@ async function submitHousehold(){
   closeHouseholdForm(); toast('Household created 🏠'); renderFamily(); loadDashboard();
 }
 
-/* ---------- bridge ---------- */
-function renderBridge(){
-  var u=ME||{}; var parts=((u.name||'').trim().split(' ')); var last=parts[parts.length-1]||'Your';
-  var el=document.getElementById('hhA'); if(el) el.textContent=last+' Household';
-  var loc=document.getElementById('hhAloc'); if(loc) loc.textContent=(u.name||'Your family');
+/* ============================================================
+   BRIDGE PROTOCOL — a trusted connection between two households,
+   built only after unanimous adult approval on both sides.
+   ============================================================ */
+function bridgeErr(code){
+  code=String(code||'');
+  if(code.indexOf('same_household')>=0) return 'Pick a different household.';
+  if(code.indexOf('already_bridged')>=0) return 'You already have a Bridge with that household.';
+  if(code.indexOf('already_pending')>=0) return 'A Bridge proposal is already in progress.';
+  if(code.indexOf('not_a_voter')>=0) return 'Only that household can vote right now.';
+  if(code.indexOf('already_voted')>=0) return 'You have already voted.';
+  if(code.indexOf('not_open')>=0) return 'This proposal is closed.';
+  return code || 'Something went wrong.';
+}
+async function fetchHouseholdNames(ids){
+  var map={}; ids=(ids||[]).filter(function(x,i){ return x && ids.indexOf(x)===i; });
+  if(!ids.length || !ensureSB()) return map;
+  try{ var r=await sb.from('households').select('id,household_name,city').in('id',ids); (r.data||[]).forEach(function(h){ map[h.id]={ name:h.household_name, city:h.city }; }); }catch(e){}
+  return map;
+}
+async function loadBridges(myIds){
+  if(!ensureSB()||!myIds.length) return [];
+  try{
+    var or=myIds.map(function(id){return 'household_a_id.eq.'+id;}).concat(myIds.map(function(id){return 'household_b_id.eq.'+id;})).join(',');
+    var r=await sb.from('bridge_connections').select('*').eq('status','active').or(or);
+    var rows=r.data||[];
+    var otherIds=rows.map(function(b){ return myIds.indexOf(b.household_a_id)>=0 ? b.household_b_id : b.household_a_id; });
+    var hmap=await fetchHouseholdNames(otherIds.concat(myIds));
+    rows.forEach(function(b){
+      var mineA=myIds.indexOf(b.household_a_id)>=0; var mine=mineA?b.household_a_id:b.household_b_id; var other=mineA?b.household_b_id:b.household_a_id;
+      b._mine=mine; b._mineName=(hmap[mine]&&hmap[mine].name)||'Your household';
+      b._other=other; b._otherName=(hmap[other]&&hmap[other].name)||'A household';
+    });
+    return rows;
+  }catch(e){ return []; }
+}
+async function loadBridgeProposals(myIds){
+  if(!ensureSB()||!myIds.length) return [];
+  try{
+    var or=myIds.map(function(id){return 'sender_household_id.eq.'+id;}).concat(myIds.map(function(id){return 'receiver_household_id.eq.'+id;})).join(',');
+    var r=await sb.from('bridge_requests').select('*').in('status',['pending_sender_approval','pending_receiver_approval']).or(or);
+    var reqs=r.data||[]; if(!reqs.length) return [];
+    var ids=reqs.map(function(x){return x.id;});
+    var vr=await sb.from('bridge_votes').select('*').in('bridge_request_id',ids); var votes=vr.data||[];
+    var hhIds={}, phs={};
+    reqs.forEach(function(q){ hhIds[q.sender_household_id]=1; hhIds[q.receiver_household_id]=1; });
+    votes.forEach(function(v){ phs[v.member_phone]=1; });
+    var hmap=await fetchHouseholdNames(Object.keys(hhIds));
+    var pmap=await fetchProfiles(Object.keys(phs));
+    var me=myPhone();
+    function nmH(id){ return (hmap[id]&&hmap[id].name)||'Household'; }
+    return reqs.map(function(q){
+      var activeHH = q.status==='pending_sender_approval'? q.sender_household_id : q.receiver_household_id;
+      var vs=votes.filter(function(v){ return v.bridge_request_id===q.id && v.household_id===activeHH; });
+      var adults=vs.filter(function(v){ return v.member_role==='Adult'; });
+      var approved=adults.filter(function(v){ return v.vote==='approved'; }).length;
+      var myVote=vs.filter(function(v){ return v.member_phone===me; })[0];
+      return {
+        id:q.id, status:q.status,
+        senderName:nmH(q.sender_household_id), receiverName:nmH(q.receiver_household_id),
+        activeName:nmH(activeHH),
+        members: vs.map(function(v){ return { name:(pmap[v.member_phone]&&pmap[v.member_phone].name)||v.member_phone, role:v.member_role, vote:v.vote, isMe:v.member_phone===me }; }),
+        adultsTotal:adults.length, adultsApproved:approved,
+        hasTeen: vs.some(function(v){ return v.member_role==='Teen'; }),
+        canVote: !!(myVote && myVote.vote==='pending'),
+        myVote: myVote? myVote.vote : null
+      };
+    });
+  }catch(e){ return []; }
+}
+
+async function renderBridge(){
   var body=document.getElementById('bridgeBody'); if(!body) return;
-  // Only real connected households are shown. None exist yet (engine builds them next sprint).
-  var bridges=fetchBridges();
-  if(!bridges.length){
+  if(!ME) ME=await fetchProfile(myPhone());
+  var households=await loadHouseholds();
+  if(!households.length){
     body.innerHTML=
-      '<div class="bridge-link"><span class="bl-line"></span><span class="bl-ic">🌉</span><span class="bl-line"></span></div>'+
-      '<div class="empty"><span class="big">🌉</span>'+
-        '<div class="e1">Waiting for your first Bridge</div>'+
-        '<div class="e2">Your first Bridge will be created after two complete households mutually connect.</div></div>'+
-      '<div class="bridge-status">Bridge Status · <b>Not Connected</b></div>'+
-      '<button class="btn glow" onclick="bridgeCta()">Build Bridge 🌉</button>'+
-      '<p class="muted" style="text-align:center;font-size:12.5px;margin-top:16px;line-height:1.5">Complete your family before building your first Bridge.</p>';
+      '<div class="hh-two"><div class="hh-mini ghost"><div class="e">🏠</div><div class="nm">Your household</div></div>'+
+      '<div class="hh-mid"><span class="ln"></span><span class="ic">🤝</span><span class="ln"></span></div>'+
+      '<div class="hh-mini ghost"><div class="e">🏠</div><div class="nm">Another household</div></div></div>'+
+      '<div class="empty"><span class="big">🌉</span><div class="e1">A Bridge needs a household first</div>'+
+      '<div class="e2">Create your household in the Family tab, then you can build a Bridge to another household.</div></div>'+
+      '<button class="btn" onclick="navTo(\'family\')">Go to Family →</button>';
     return;
   }
-  // (next sprint) render real connected households here
+  window.__myHH=households.map(function(x){ return { id:x.h.id, name:x.h.household_name }; });
+  var myIds=window.__myHH.map(function(x){return x.id;});
+  var bridges=await loadBridges(myIds);
+  var proposals=await loadBridgeProposals(myIds);
+  var mineName=households[0].h.household_name;
+
+  var html='';
+  /* signature illustration */
+  html+='<div class="hh-two"><div class="hh-mini"><div class="e">🏠</div><div class="nm">'+escapeHtml(mineName)+'</div></div>'+
+    '<div class="hh-mid"><span class="ln"></span><span class="ic">🤝</span><span class="ln"></span></div>'+
+    '<div class="hh-mini ghost"><div class="e">🏠</div><div class="nm">'+(bridges.length?'+ '+bridges.length+' connected':'A household')+'</div></div></div>';
+  html+='<button class="btn glow" onclick="openProposeModal()" style="margin-top:14px">🤝 Propose a Bridge</button>';
+  html+='<p class="muted" style="text-align:center;font-size:12.5px;margin:12px 6px 4px;line-height:1.5">A Bridge is created only after unanimous household approval.</p>';
+
+  /* active bridges */
+  html+='<div class="sec-head" style="margin-top:26px"><span class="si">🌉</span><span class="st">Active bridges</span>'+(bridges.length?'<span class="sc">'+bridges.length+'</span>':'')+'</div>';
+  if(!bridges.length){
+    html+='<div class="empty"><span class="big">🌱</span><div class="e1">No bridges yet</div><div class="e2">Propose your first Bridge to a household you trust.</div></div>';
+  } else bridges.forEach(function(b){
+    html+='<div class="pcard"><div class="fcard"><div class="hh-ic">🌉</div><div class="info">'+
+      '<div class="nm">'+escapeHtml(b._otherName)+'</div>'+
+      '<div style="margin-top:5px"><span class="rl-pill">⭐ Strength '+b.bridge_strength+'</span> <span class="badge b-accepted">🟢 '+escapeHtml(b.status)+'</span></div>'+
+      '<div class="meta"><span>🗓️ '+escapeHtml(fmtJoined(b.connected_at))+'</span></div></div></div></div>';
+  });
+
+  /* pending proposals */
+  html+='<div class="sec-head" style="margin-top:22px"><span class="si">⏳</span><span class="st">Pending bridge proposals</span>'+(proposals.length?'<span class="sc">'+proposals.length+'</span>':'')+'</div>';
+  if(!proposals.length){
+    html+='<div class="empty"><span class="big">🤝</span><div class="e1">No proposals in progress</div></div>';
+  } else proposals.forEach(function(p){
+    var pct = p.adultsTotal? Math.round(100*p.adultsApproved/p.adultsTotal) : 100;
+    var stageTxt = p.status==='pending_sender_approval' ? 'Waiting for '+escapeHtml(p.senderName)+' to approve' : 'Now with '+escapeHtml(p.receiverName)+' for approval';
+    html+='<div class="pcard">'+
+      '<div class="nm" style="text-align:center;font-family:\'Baloo 2\';font-size:16px">'+escapeHtml(p.senderName)+' &nbsp;🤝&nbsp; '+escapeHtml(p.receiverName)+'</div>'+
+      '<div class="bstage">'+stageTxt+'</div>';
+    p.members.forEach(function(m){
+      var icon = m.vote==='approved'?'✅':m.vote==='rejected'?'❌':'⏳';
+      html+='<div class="vote-row"><span class="vs">'+icon+'</span><span class="vn">'+escapeHtml(m.name)+(m.isMe?' (you)':'')+'</span>'+(m.role!=='Adult'?'<span class="vt">'+escapeHtml(m.role)+'</span>':'')+'</div>';
+    });
+    html+='<div class="bbar"><i style="width:'+pct+'%"></i></div>';
+    html+='<div class="bprog">'+p.adultsApproved+' / '+p.adultsTotal+' Adults Approved'+(p.hasTeen?'<small>Teen vote optional</small>':'')+'</div>';
+    if(p.canVote){
+      html+='<div class="row" style="margin-top:10px"><button class="btn btn-sm" onclick="castVote(\''+p.id+'\',\'approved\')">Approve ✅</button>'+
+        '<button class="btn btn-sm btn-ghost" onclick="castVote(\''+p.id+'\',\'rejected\')">Decline</button></div>';
+    } else if(p.myVote==='approved'){
+      html+='<div class="bstage" style="color:var(--leaf);margin-top:8px">You approved ✅ — waiting on the others</div>';
+    } else if(p.myVote==='rejected'){
+      html+='<div class="bstage" style="color:var(--rani-d);margin-top:8px">You declined this Bridge</div>';
+    } else {
+      html+='<div class="bstage" style="margin-top:8px">Waiting for '+escapeHtml(p.activeName)+' to approve</div>';
+    }
+    html+='</div>';
+  });
+
+  body.innerHTML=html;
 }
-function bridgeCta(){ toast('Build your family first — bridges connect complete households 🌉'); }
+
+/* ---------- propose ---------- */
+function openProposeModal(){
+  var mine=window.__myHH||[];
+  var senderPick = mine.length>1
+    ? '<div class="field-label">From which of your households?</div><select class="fi" id="bSender" style="margin-bottom:14px">'+mine.map(function(h){ return '<option value="'+escapeAttr(h.id)+'">'+escapeHtml(h.name)+'</option>'; }).join('')+'</select>'
+    : '<input type="hidden" id="bSender" value="'+escapeAttr((mine[0]||{}).id||'')+'">';
+  var m=document.getElementById('bridgeModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:6px">🤝 Propose a Bridge</div>'+
+    '<p class="muted" style="text-align:center;font-size:12.5px;margin:0 4px 16px">Find a household by its name, a family member\'s name, or their phone number.</p>'+
+    senderPick+
+    '<div style="display:flex;gap:8px;margin-bottom:6px"><input class="fi" id="bSearch" placeholder="Search households…" onkeydown="if(event.key===\'Enter\')runHouseholdSearch()"><button class="btn btn-sm" style="width:auto;padding:0 18px" onclick="runHouseholdSearch()">Search</button></div>'+
+    '<div id="bResults" style="margin:8px 0 6px"></div>'+
+    '<button class="btn btn-soft" onclick="closeBridgeModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+function closeBridgeModal(){ document.getElementById('bridgeModal').classList.remove('show'); }
+async function runHouseholdSearch(){
+  var q=(document.getElementById('bSearch').value||'').trim();
+  var box=document.getElementById('bResults'); if(!box) return;
+  if(!q){ box.innerHTML=''; return; }
+  box.innerHTML='<div class="muted" style="font-size:13px;padding:6px 2px">Searching…</div>';
+  var results=await searchHouseholds(q);
+  if(!results.length){ box.innerHTML='<div class="empty" style="padding:18px"><div class="e1">No households found</div><div class="e2">Try a household name or a member\'s phone number.</div></div>'; return; }
+  box.innerHTML=results.map(function(h){
+    return '<div class="hh-pick" style="cursor:default"><div style="flex:1;min-width:0"><div class="nm">'+escapeHtml(h.name)+'</div>'+(h.city?'<div class="vt" style="display:inline-block;margin-top:4px">'+escapeHtml(h.city)+'</div>':'')+'</div>'+
+      '<button class="btn btn-sm" style="width:auto;padding:0 16px" onclick="proposeBridge(\''+escapeAttr(h.id)+'\')">Propose 🤝</button></div>';
+  }).join('');
+}
+async function searchHouseholds(q){
+  if(!ensureSB()) return [];
+  var mineIds=(window.__myHH||[]).map(function(x){return x.id;});
+  var found={};
+  try{
+    var digits=q.replace(/\D/g,'');
+    if(digits.length===10){
+      var hm=await sb.from('household_members').select('household_id').eq('member_phone',digits).eq('status','active');
+      (hm.data||[]).forEach(function(x){ found[x.household_id]=1; });
+    }
+    var byName=await sb.from('households').select('id').eq('status','active').ilike('household_name','%'+q+'%').limit(10);
+    (byName.data||[]).forEach(function(x){ found[x.id]=1; });
+    // family name -> member profiles -> their households
+    var pr=await sb.from('profiles').select('phone').ilike('name','%'+q+'%').limit(10);
+    var phones=(pr.data||[]).map(function(x){return x.phone;});
+    if(phones.length){
+      var hm2=await sb.from('household_members').select('household_id').in('member_phone',phones).eq('status','active');
+      (hm2.data||[]).forEach(function(x){ found[x.household_id]=1; });
+    }
+    var ids=Object.keys(found).filter(function(id){ return mineIds.indexOf(id)<0; });
+    if(!ids.length) return [];
+    var hmap=await fetchHouseholdNames(ids);
+    return ids.map(function(id){ return { id:id, name:(hmap[id]&&hmap[id].name)||'Household', city:(hmap[id]&&hmap[id].city)||'' }; });
+  }catch(e){ return []; }
+}
+async function proposeBridge(receiverId){
+  if(!ensureSB()) return;
+  var sender=(document.getElementById('bSender')||{}).value||'';
+  if(!sender){ toast('Pick your household first.'); return; }
+  var r=await sb.rpc('propose_bridge', { p_sender:sender, p_receiver:receiverId, p_initiator:myPhone() });
+  if(r && r.error){ toast(bridgeErr(r.error.message)); return; }
+  closeBridgeModal(); toast('Bridge proposed 🤝'); renderBridge(); loadDashboard();
+}
+
+/* ---------- vote ---------- */
+async function castVote(reqId, vote){
+  if(!ensureSB()) return;
+  var r=await sb.rpc('cast_bridge_vote', { p_req:reqId, p_voter:myPhone(), p_vote:vote });
+  if(r && r.error){ toast(bridgeErr(r.error.message)); return; }
+  // did this complete the bridge?
+  try{
+    var chk=await sb.from('bridge_requests').select('status,sender_household_id,receiver_household_id').eq('id',reqId).maybeSingle();
+    if(chk.data && chk.data.status==='approved'){
+      var hmap=await fetchHouseholdNames([chk.data.sender_household_id, chk.data.receiver_household_id]);
+      celebrateBridge((hmap[chk.data.sender_household_id]&&hmap[chk.data.sender_household_id].name)||'Your household', (hmap[chk.data.receiver_household_id]&&hmap[chk.data.receiver_household_id].name)||'Their household');
+    } else { toast(vote==='approved'?'Approved ✅':'Declined'); }
+  }catch(e){}
+  renderBridge(); loadDashboard();
+}
+function celebrateBridge(aName, bName){
+  var c=document.getElementById('celebrate'); if(!c) return;
+  var conf=''; var ems=['🌉','🎉','✨','💛','🏠','🤝'];
+  for(var i=0;i<14;i++){ conf+='<span class="confetti" style="left:'+(Math.random()*100)+'%;animation-duration:'+(2+Math.random()*2).toFixed(2)+'s;animation-delay:'+(Math.random()*0.8).toFixed(2)+'s">'+ems[i%ems.length]+'</span>'; }
+  c.innerHTML=conf+
+    '<div style="text-align:center">'+
+      '<div class="hh-two bridge-build" style="width:300px;max-width:80vw;margin:0 auto 6px"><div class="hh-mini"><div class="e">🏠</div><div class="nm">'+escapeHtml(aName)+'</div></div>'+
+      '<div class="hh-mid"><span class="ln"></span><span class="ic">🌉</span><span class="ln"></span></div>'+
+      '<div class="hh-mini"><div class="e">🏠</div><div class="nm">'+escapeHtml(bName)+'</div></div></div>'+
+      '<div class="box"><h2>🌉 Bridge Built</h2><div class="plus">'+escapeHtml(aName)+' is now connected with '+escapeHtml(bName)+' · Strength 0</div>'+
+      '<div style="margin-top:22px"><button class="btn" style="background:rgba(255,255,255,.22);width:auto;padding:13px 30px" onclick="closeCelebrate()">Continue</button></div></div>'+
+    '</div>';
+  c.classList.add('show');
+}
+
 
 /* ---------- profile tab ---------- */
 function renderProfileTab(){
@@ -973,20 +1228,6 @@ async function openNotifications(){
 function closeNotifications(){ document.getElementById('notifModal').classList.remove('show'); }
 /* scroll up & focus the add-member field */
 function focusAddMember(){ try{ var f=document.getElementById('frPhone'); if(f){ f.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(function(){ f.focus(); },300); } }catch(e){} }
-
-/* ============================================================
-   NEXT SPRINT — HOUSEHOLDS & BRIDGES (not built yet)
-   The Relationship Engine above is the source of truth; these will
-   be GENERATED from `relationships`, never created manually:
-   - generateHouseholds(): group connected people into households.
-   - generateBridges(): join two complete households.
-   fetchHouseholds()/fetchBridges() are the read stubs the UI calls;
-   point them at real tables next sprint. No fake data is shown now.
-   ============================================================ */
-function fetchHouseholds(){ /* TODO(engine): return real households */ return []; }
-function fetchBridges(){ /* TODO(engine): return real bridges */ return []; }
-function generateHouseholds(rels){ /* TODO(engine) */ return []; }
-function generateBridges(households){ /* TODO(engine) */ return []; }
 
 function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function escapeAttr(s){ return String(s==null?'':s).replace(/'/g,'').replace(/"/g,''); }
