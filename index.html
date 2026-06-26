@@ -240,6 +240,57 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gnode.center .gav{border-color:var(--rani);background:var(--grad);color:#fff;box-shadow:var(--sh-2)}
 .gnode .glabel{font-size:10px;font-weight:800;color:var(--rani-d);margin-top:4px;line-height:1.05;max-width:78px}
 .gnode .gname{font-size:10px;font-weight:700;color:var(--ink2);line-height:1.1;max-width:78px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* home engine */
+.home-search{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 16px;font-size:14px;color:var(--ink3);font-weight:600;margin-bottom:18px;cursor:pointer;box-shadow:var(--sh-1)}
+.skyvos{background:linear-gradient(135deg,#241826,#43295c 70%,#7C3AED);color:#fff;border-radius:24px;padding:18px 20px;box-shadow:var(--sh-pop);margin-bottom:18px;position:relative;overflow:hidden}
+.skyvos::after{content:"";position:absolute;right:-20%;top:-50%;width:60%;height:140%;background:radial-gradient(circle,rgba(255,138,30,.3),transparent 60%)}
+.skyvos .sk-l{font-size:11px;font-weight:800;letter-spacing:.6px;opacity:.9;position:relative}
+.skyvos .sk-t{font-size:15px;font-weight:700;line-height:1.45;margin-top:7px;position:relative}
+.home-sec{font-family:'Baloo 2';font-weight:800;font-size:17px;margin:0 2px 11px;display:flex;align-items:center;justify-content:space-between}
+.home-sec a{font-size:12.5px;color:var(--rani-d);font-weight:800;cursor:pointer}
+.today-card{background:linear-gradient(150deg,#FFFFFF,#FFF6EC);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);margin-bottom:20px}
+.today-card .tc-head{font-family:'Baloo 2';font-weight:800;font-size:16px;margin-bottom:12px}
+.today-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.today-row:last-child{border-bottom:0}
+.today-row .tr-ic{font-size:20px;flex:0 0 auto}
+.today-row .tr-t{font-weight:700;font-size:14px;flex:1;min-width:0}
+.today-empty{font-size:13.5px;color:var(--ink2);font-weight:600;line-height:1.5}
+.qa-row{display:flex;gap:9px;overflow-x:auto;padding:2px 0 6px;margin-bottom:22px;-webkit-overflow-scrolling:touch}
+.qa{flex:0 0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 8px;width:78px;text-align:center;cursor:pointer;box-shadow:var(--sh-1);transition:transform .12s}
+.qa:active{transform:scale(.95)}
+.qa .qi{font-size:23px}
+.qa .ql{font-size:10.5px;font-weight:800;color:var(--ink2);margin-top:5px;line-height:1.15}
+.tm-row{display:flex;gap:12px;overflow-x:auto;padding:2px 0 8px;margin-bottom:22px}
+.tm-card{flex:0 0 auto;width:200px;background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--sh-1);cursor:pointer}
+.tm-card .tm-media{height:118px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:34px}
+.tm-card .tm-media img{width:100%;height:100%;object-fit:cover}
+.tm-card .tm-b{padding:11px 13px}
+.tm-card .tm-k{font-size:10px;font-weight:800;color:var(--rani-d);letter-spacing:.3px}
+.tm-card .tm-t{font-family:'Baloo 2';font-weight:800;font-size:14.5px;margin-top:3px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cele{background:#fff;border:1px solid var(--line);border-radius:20px;padding:6px 16px;box-shadow:var(--sh-1);margin-bottom:22px}
+.cele-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.cele-row:last-child{border-bottom:0}
+.cele-ic{width:40px;height:40px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto}
+.cele-t{font-weight:800;font-size:14px}
+.cele-d{font-size:11.5px;color:var(--ink3);font-weight:700;margin-top:1px}
+.cele-when{margin-left:auto;font-size:11.5px;color:var(--rani-d);font-weight:800;text-align:right;flex:0 0 auto}
+.task{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px 14px;margin-bottom:9px;box-shadow:var(--sh-1)}
+.task .tk-box{width:24px;height:24px;border-radius:8px;border:2px solid var(--line);flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--leaf)}
+.task.done .tk-box{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.task .tk-t{flex:1;min-width:0;font-weight:700;font-size:14px}
+.task.done .tk-t{text-decoration:line-through;color:var(--ink3)}
+.task .tk-m{font-size:11px;color:var(--ink3);font-weight:700}
+.wall-row{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line)}
+.wall-row:last-child{border-bottom:0}
+.wall-ic{width:34px;height:34px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto}
+.wall-t{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.4}
+.wall-t b{font-weight:800}
+.wall-d{font-size:11px;color:var(--ink3);font-weight:700;margin-top:1px}
+.weather{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EAF4FF,#F3ECFF);border:1px solid var(--line);border-radius:20px;padding:15px 18px;margin-bottom:22px}
+.weather .w-ic{font-size:32px}
+.weather .w-t{font-weight:800;font-size:14px}
+.weather .w-s{font-size:11.5px;color:var(--ink2);font-weight:700}
+.gs-group{margin-bottom:14px}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -454,45 +505,11 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div class="topbar">
       <div class="avatar" id="homeAvatar" style="cursor:pointer" onclick="navTo('profile')">J</div>
       <div style="flex:1"><div class="hi" id="homeHi">Good morning,</div><div class="nm" id="homeName">—</div></div>
+      <button class="bell" onclick="openHomeSettings()" aria-label="Settings" style="margin-right:6px">⚙️</button>
       <button class="bell" onclick="openNotifications()" aria-label="Notifications">🔔<span class="bell-badge" id="bellBadge">0</span></button>
     </div>
-
-    <div class="hero">
-      <div class="seed" id="heroSeed">🌱</div>
-      <div class="hero-mid">
-        <div class="he">⭐ Family Strength</div>
-        <div class="tier" id="statTier">🌱 Seed</div>
-      </div>
-      <div class="num" id="statStrength">0</div>
-    </div>
-
-    <div class="dash">
-      <div class="dash-head">❤️ Today's Family</div>
-      <div class="dash-row">
-        <div class="dash-item"><div class="dv" id="dashStrength">0</div><div class="dl">Family<br>Strength</div></div>
-        <div class="dash-item"><div class="dv" id="dashMembers">0</div><div class="dl">Family<br>Members</div></div>
-        <div class="dash-item"><div class="dv" id="dashAccepted">0</div><div class="dl">Accepted<br>Today</div></div>
-        <div class="dash-item"><div class="dv" id="dashPending">0</div><div class="dl">Pending<br>Requests</div></div>
-      </div>
-    </div>
-    <div class="dash-sub" id="dashHousehold">🏠 0 households · 👥 0 in household</div>
-    <div class="dash-sub" id="dashBridges" style="margin-top:-12px">🌉 0 active · 0 pending · ⭐ 0 strength</div>
-
-    <div class="tiles">
-      <div class="tile" onclick="navTo('family')" style="animation-delay:.04s"><div class="tic">❤️</div><div class="tt">Family</div><div class="ts" id="statFamily">Start →</div></div>
-      <div class="tile" onclick="navTo('bridge')" style="animation-delay:.10s"><div class="tic">🌉</div><div class="tt">Bridge</div><div class="ts">Connect →</div></div>
-      <div class="tile" onclick="navTo('moments')" style="animation-delay:.16s"><div class="tic">💛</div><div class="tt">Moments</div><div class="ts">Capture →</div></div>
-    </div>
-
-    <div class="mhome" id="momentsHome" onclick="navTo('moments')">
-      <div class="mhome-head"><span>❤️ Moments</span><span class="mhome-cta">Open →</span></div>
-      <div id="momentsHomeBody"><div class="mhome-empty">Capture your first Moment — a lunch, a milestone, a festival. It becomes family heritage.</div></div>
-    </div>
-
-    <div class="mhome" id="lifeHome" onclick="navTo('life')" style="display:none;background:linear-gradient(135deg,#EFE6FF,#FFE9F1)">
-      <div class="mhome-head"><span>❤️ Today in My Life</span><span class="mhome-cta">View Journey →</span></div>
-      <div id="lifeHomeBody"></div>
-    </div>
+    <div class="home-search" onclick="openGlobalSearch()"><span>🔎</span> Search people, moments, anything…</div>
+    <div id="homeBody"><div class="muted" style="text-align:center;padding:40px">Coming home…</div></div>
   </section>
 
   <!-- FAMILY -->
@@ -562,6 +579,14 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div style="height:20px"></div>
   </section>
 
+  <section class="screen" id="screen-calendar">
+    <div class="gtop"><button class="gback" onclick="navTo('home')">←</button><div class="h1" style="margin:0;font-size:24px">📅 Family Calendar</div></div>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 12px">Birthdays and anniversaries appear here on their own. Add anything else your family should remember.</p>
+    <button class="btn" onclick="openCalEventForm()">＋ Add an event</button>
+    <div id="calendarBody" style="margin-top:18px"></div>
+    <div style="height:20px"></div>
+  </section>
+
   <nav class="nav hide" id="bottomNav">
     <button data-tab="home" onclick="navTo('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')"><span class="ni">❤️</span><span class="nl">Family</span></button>
@@ -580,6 +605,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <div class="modal" id="editModal"></div>
   <div class="modal" id="lifeModal"></div>
   <div class="modal" id="graphModal"></div>
+  <div class="modal" id="homeModal"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -697,67 +723,313 @@ function countUp(el, to){
 var LAST_STRENGTH=null;
 async function renderHome(){
   if(!ME) ME=await fetchProfile(myPhone());
+  applyAccent();
   var u=ME||{}; var first=((u.name||'').split(' ')[0])||'there';
-  document.getElementById('homeHi').textContent=greetingWord();
-  document.getElementById('homeName').textContent=first+' 👋';
+  document.getElementById('homeHi').textContent=homeGreetingCustom()||greetingWord();
+  document.getElementById('homeName').textContent=first+' '+greetingEmoji();
   setAvatar('homeAvatar',u);
-  await loadDashboard();
+  // bell
+  try{ NOTIFS=await loadNotifications(); var unread=NOTIFS.filter(function(x){return !x.is_read;}).length; var badge=document.getElementById('bellBadge'); if(badge){ badge.textContent=unread; badge.classList.toggle('live', unread>0); } }catch(e){}
+  await buildHome();
 }
+/* back-compat: every engine calls loadDashboard() to refresh Home */
+async function loadDashboard(){ return renderHome(); }
 function setStat(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
 function bumpEl(el){ if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
 function setAvatar(elId,u){ var el=document.getElementById(elId); if(!el) return; if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; } else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); } }
 
-/* family strength — modular scoring. First relationship +10, each next +5.
-   (relationship types can carry different weights later; keep this the only place.) */
+/* family strength — modular scoring. First relationship +10, each next +5. */
 var STRENGTH_FIRST=10, STRENGTH_NEXT=5;
-function calculateFamilyStrength(rels){
-  var n=(rels||[]).length;
-  if(n<=0) return 0;
-  return STRENGTH_FIRST + (n-1)*STRENGTH_NEXT;   // 0→0, 1→10, 2→15, 3→20 …
+function calculateFamilyStrength(rels){ var n=(rels||[]).length; if(n<=0) return 0; return STRENGTH_FIRST + (n-1)*STRENGTH_NEXT; }
+
+/* ============================================================
+   HOME ENGINE — the family's digital living room.
+   ============================================================ */
+function greetingEmoji(){ var h=new Date().getHours(); return h<12?'☀️':h<17?'❤️':'🌙'; }
+var SKYVOS_LINES=[
+  'Today is a great day to capture a Family Moment.',
+  'Your family is the story you write every day.',
+  'A small hello can strengthen a Bridge today.',
+  'Someone in your family would love to hear from you.',
+  'Every Moment you keep becomes family heritage.',
+  'Welcome home. Your people are right here.'
+];
+function skyvosLine(){ var d=new Date(); var i=(d.getFullYear()+d.getMonth()*31+d.getDate())%SKYVOS_LINES.length; return SKYVOS_LINES[i]; }
+function homeAccent(){ try{ return localStorage.getItem('jeeto_accent')||''; }catch(e){ return ''; } }
+function applyAccent(){ var a=homeAccent(); var root=document.documentElement;
+  if(a==='violet'){ root.style.setProperty('--rani','#7C3AED'); root.style.setProperty('--rani-d','#5b21b6'); }
+  else if(a==='leaf'){ root.style.setProperty('--rani','#2BA84A'); root.style.setProperty('--rani-d','#1c7a33'); }
+  else { root.style.setProperty('--rani','#E03A7A'); root.style.setProperty('--rani-d','#C42466'); }
+}
+function homeGreetingCustom(){ try{ return localStorage.getItem('jeeto_greeting')||''; }catch(e){ return ''; } }
+
+function fmtUpcoming(date){
+  var now=new Date(); var d=new Date(date);
+  var a=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var b=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  var diff=Math.round((b-a)/86400000);
+  if(diff===0) return 'Today';
+  if(diff===1) return 'Tomorrow';
+  if(diff<7) return 'in '+diff+' days';
+  return d.toLocaleDateString('en-US',{day:'numeric',month:'short'});
+}
+function nextOccurrence(monthDay){ // monthDay = {m,d}; returns next Date (this year or next)
+  var now=new Date(); var y=now.getFullYear();
+  var cand=new Date(y, monthDay.m, monthDay.d);
+  var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  if(cand<today) cand=new Date(y+1, monthDay.m, monthDay.d);
+  return cand;
 }
 
-/* loadDashboard — refresh hero + 4 stats + bell, with no page reload */
-async function loadDashboard(){
+async function buildHome(){
+  var body=document.getElementById('homeBody'); if(!body) return;
   var me=myPhone();
-  var rels=await loadRelationships(); var n=rels.length;
-  var momentStr=await loadMomentStrength();
-  var strength=calculateFamilyStrength(rels)+momentStr;
-  var t=strengthTier(strength);
-  var seedEl=document.getElementById('heroSeed'), tierEl=document.getElementById('statTier');
-  if(seedEl) seedEl.textContent=t.e;
-  if(tierEl) tierEl.textContent=t.e+' '+t.name;
-  countUp(document.getElementById('statStrength'), strength);
-  if(window.__rewardBump || (LAST_STRENGTH!==null && strength!==LAST_STRENGTH)){ bumpEl(seedEl); bumpEl(tierEl); bumpEl(document.getElementById('statStrength')); window.__rewardBump=false; }
-  LAST_STRENGTH=strength;
-  var sf=document.getElementById('statFamily'); if(sf) sf.textContent= n>0 ? 'View family →' : 'Start →';
+  var ctx=await myCircleContext();
+  var rels=ctx.conns;
+  // family phone set (me + connections + household members)
+  var fam={}; fam[me]=1; rels.forEach(function(p){ fam[p]=1; });
+  ctx.households.forEach(function(h){ (h.members||[]).forEach(function(m){ fam[m.phone]=1; }); });
+  var famPhones=Object.keys(fam);
+  var profs=await fetchProfiles(famPhones);
 
-  var pending=(await loadPendingRequests()).length, acceptedToday=0;
-  try{ if(ensureSB()){ var ts=new Date(); ts.setHours(0,0,0,0);
-    var ac=await sb.from('family_requests').select('id').eq('status','accepted').gte('responded_at',ts.toISOString()).or('sender_phone.eq.'+me+',receiver_phone.eq.'+me); acceptedToday=(ac.data||[]).length; } }catch(e){}
-  setStat('dashStrength', strength); setStat('dashMembers', n); setStat('dashAccepted', acceptedToday); setStat('dashPending', pending);
+  // ---- gather data in parallel-ish ----
+  var pending=(await loadPendingRequests()).length;
+  var todayMoments=await loadTodaysMoments(ctx);
+  var cele=await buildCelebrations(ctx, profs);
+  var tasks=await loadTasks(ctx.hhIds);
+  var wall=await loadHomeWall(famPhones, profs);
+  var todayEvents=buildTodayEvents(cele, todayMoments, pending, ctx);
 
-  NOTIFS=await loadNotifications();
-  var unread=NOTIFS.filter(function(x){ return !x.is_read; }).length;
-  var badge=document.getElementById('bellBadge');
-  if(badge){ badge.textContent=unread; badge.classList.toggle('live', unread>0); }
+  var html='';
 
-  // household + bridge summary (Sprint 4 + 5)
-  var households=await loadHouseholds();
-  var hc=households.length, hmem=0; households.forEach(function(x){ hmem+=x.members.length; });
-  var dh=document.getElementById('dashHousehold');
-  if(dh) dh.textContent='🏠 '+hc+(hc===1?' household':' households')+' · 👥 '+hmem+' in household';
+  /* Skyvos */
+  html+='<div class="skyvos"><div class="sk-l">🤖 SKYVOS</div><div class="sk-t">'+escapeHtml(skyvosLine())+'</div></div>';
 
-  var myIds=households.map(function(x){return x.h.id;});
-  var bridges=await loadBridges(myIds);
-  var proposals=await loadBridgeProposals(myIds);
-  var active=bridges.length, bstrength=0; bridges.forEach(function(b){ bstrength+=b.bridge_strength||0; });
-  var pendingVotes=proposals.filter(function(p){ return p.canVote; }).length;
-  var db=document.getElementById('dashBridges');
-  if(db) db.textContent='🌉 '+active+(active===1?' active':' active')+' · '+pendingVotes+' pending · ⭐ '+bstrength+' strength';
+  /* Today */
+  html+='<div class="today-card"><div class="tc-head">❤️ Today</div>';
+  if(todayEvents.length){ todayEvents.forEach(function(e){ html+='<div class="today-row"><span class="tr-ic">'+e.icon+'</span><span class="tr-t">'+escapeHtml(e.text)+'</span></div>'; }); }
+  else html+='<div class="today-empty">A calm day. Nothing urgent — maybe capture a Moment or say hello to family. ❤️</div>';
+  html+='</div>';
 
-  renderMomentsHome();
-  renderLifeHome();
+  /* Quick actions */
+  html+='<div class="qa-row">'+
+    qa('❤️','Capture','openCapture()')+
+    qa('👥','Add Family','goAddFamily()')+
+    qa('🏠','Household','goHousehold()')+
+    qa('🌉','Bridges','navTo(\'bridge\')')+
+    qa('📅','Calendar','navTo(\'calendar\')')+
+  '</div>';
+
+  /* Today's Moments */
+  if(todayMoments.any){
+    html+='<div class="home-sec">📸 Today\u2019s Moments<a onclick="navTo(\'moments\')">All →</a></div><div class="tm-row">';
+    ['family','household','bridge'].forEach(function(k){ var x=todayMoments[k]; if(x){ html+=tmCard(x, k); } });
+    html+='</div>';
+  }
+
+  /* Celebrations */
+  html+='<div class="home-sec">🎉 Family Celebrations</div>';
+  if(cele.length){ html+='<div class="cele">'+cele.slice(0,5).map(function(c){ return '<div class="cele-row"><div class="cele-ic">'+c.icon+'</div><div style="flex:1;min-width:0"><div class="cele-t">'+escapeHtml(c.title)+'</div><div class="cele-d">'+escapeHtml(c.sub)+'</div></div><div class="cele-when">'+escapeHtml(fmtUpcoming(c.date))+'</div></div>'; }).join('')+'</div>'; }
+  else html+='<div class="cele"><div class="cele-row"><div class="cele-ic">🎈</div><div class="cele-t" style="font-weight:600;color:var(--ink2)">No celebrations coming up — add birthdays in the Calendar.</div></div></div>';
+
+  /* Household tasks */
+  html+='<div class="home-sec">🏠 Household Tasks<a onclick="openTaskForm()">＋ Add</a></div>';
+  if(tasks.length){ html+=tasks.map(function(t){ return taskHtml(t, profs); }).join(''); }
+  else html+='<div class="today-empty" style="margin-bottom:22px">Your household has no pending tasks. ✨</div>';
+
+  /* Home wall */
+  html+='<div class="home-sec">🌿 Home Wall</div>';
+  if(wall.length){ html+='<div class="cele" style="padding:4px 16px">'+wall.map(function(w){ return '<div class="wall-row"><div class="wall-ic">'+w.icon+'</div><div style="flex:1;min-width:0"><div class="wall-t">'+w.html+'</div><div class="wall-d">'+escapeHtml(w.when)+'</div></div></div>'; }).join('')+'</div>'; }
+  else html+='<div class="today-empty">When your family connects, captures and celebrates, it gently appears here.</div>';
+
+  /* Weather (placeholder) */
+  var city=(ctx.households[0]&&ctx.households[0].h.city)||(ME&&ME.city)||'';
+  html+='<div class="weather"><div class="w-ic">⛅</div><div><div class="w-t">'+(city?escapeHtml(city):'Your household')+'</div><div class="w-s">Weather for your home — coming soon</div></div></div>';
+
+  body.innerHTML=html;
 }
+function qa(ic,label,fn){ return '<div class="qa" onclick="'+fn+'"><div class="qi">'+ic+'</div><div class="ql">'+label+'</div></div>'; }
+function goAddFamily(){ navTo('family'); setTimeout(focusAddMember, 350); }
+function goHousehold(){ navTo('family'); }
+function tmCard(x, kind){
+  var k={family:'❤️ FAMILY MOMENT',household:'🏠 HOUSEHOLD MOMENT',bridge:'🌉 BRIDGE MOMENT'}[kind];
+  var im=x.media.filter(function(m){return m.media_type==='image';})[0];
+  return '<div class="tm-card" onclick="reliveMoment(\''+x.m.id+'\')"><div class="tm-media">'+(im?'<img src="'+escapeAttr(im.media_url)+'">':'💛')+'</div><div class="tm-b"><div class="tm-k">'+k+'</div><div class="tm-t">'+escapeHtml(x.m.title)+'</div></div></div>';
+}
+
+async function loadTodaysMoments(ctx){
+  var out={any:false}; var start=new Date(); start.setHours(0,0,0,0); var iso=start.toISOString();
+  try{
+    for(var k of ['family','household','bridge']){
+      var list=await loadMoments(k, ctx);
+      var todays=list.filter(function(x){ return new Date(x.m.created_at)>=start; });
+      if(todays.length){ out[k]=todays[0]; out.any=true; }
+    }
+  }catch(e){}
+  return out;
+}
+async function buildCelebrations(ctx, profs){
+  var me=myPhone(); var list=[];
+  // birthdays of family
+  var fam={}; fam[me]=1; ctx.conns.forEach(function(p){fam[p]=1;}); ctx.households.forEach(function(h){(h.members||[]).forEach(function(m){fam[m.phone]=1;});});
+  Object.keys(fam).forEach(function(p){
+    var pr=profs[p]; if(pr && pr.dob){ var d=new Date(pr.dob); if(!isNaN(d)){ var nx=nextOccurrence({m:d.getMonth(),d:d.getDate()}); list.push({icon:'🎂',title:(p===me?'Your':((pr.name||'Someone')+'\u2019s'))+' birthday',sub:'Birthday',date:nx}); } }
+  });
+  // passport / household / bridge anniversaries
+  try{ var pass=PASSPORT||await ensurePassport(); if(pass && pass.member_since){ var d=new Date(pass.member_since); var nx=nextOccurrence({m:d.getMonth(),d:d.getDate()}); list.push({icon:'🆔',title:'Your Jeeto anniversary',sub:'Member since '+d.getFullYear(),date:nx}); } }catch(e){}
+  ctx.households.forEach(function(h){ var d=new Date(h.h.created_at); var nx=nextOccurrence({m:d.getMonth(),d:d.getDate()}); list.push({icon:'🏠',title:h.h.household_name+' anniversary',sub:'Household since '+d.getFullYear(),date:nx}); });
+  ctx.bridges.forEach(function(b){ var d=new Date(b.connected_at); var nx=nextOccurrence({m:d.getMonth(),d:d.getDate()}); list.push({icon:'🌉',title:'Bridge with '+b._otherName,sub:'Bridge anniversary',date:nx}); });
+  // manual calendar events (upcoming)
+  try{ var ev=await sb.from('calendar_events').select('*').eq('owner_phone',me).order('event_date',{ascending:true}); (ev.data||[]).forEach(function(e){ var d=new Date(e.event_date); var nx=(d>=new Date(new Date().toDateString()))?d:nextOccurrence({m:d.getMonth(),d:d.getDate()}); var ic={birthday:'🎂',anniversary:'💍',festival:'🪔',school:'🎒',travel:'✈️',medical:'🩺',meeting:'🗓️'}[e.event_type]||'📅'; list.push({icon:ic,title:e.title,sub:(e.event_type||'event'),date:nx}); }); }catch(e){}
+  // sort by next date, keep within ~120 days
+  var cutoff=new Date(); cutoff.setDate(cutoff.getDate()+120);
+  list=list.filter(function(c){ return c.date<=cutoff; }).sort(function(a,b){ return a.date-b.date; });
+  return list;
+}
+function buildTodayEvents(cele, todayMoments, pending, ctx){
+  var ev=[];
+  cele.forEach(function(c){ if(fmtUpcoming(c.date)==='Today'){ ev.push({icon:c.icon, text:c.title+' is today!'}); } });
+  if(todayMoments.any){ ['family','household','bridge'].forEach(function(k){ if(todayMoments[k]) ev.push({icon:({family:'❤️',household:'🏠',bridge:'🌉'})[k], text:'New '+k+' Moment captured today'}); }); }
+  if(pending>0) ev.push({icon:'📥', text:pending+' family request'+(pending>1?'s':'')+' waiting for you'});
+  return ev;
+}
+async function loadTasks(hhIds){
+  if(!ensureSB() || !hhIds.length) return [];
+  try{ var r=await sb.from('household_tasks').select('*').in('household_id',hhIds).order('status',{ascending:true}).order('due_date',{ascending:true}); return (r.data||[]).slice(0,8); }catch(e){ return []; }
+}
+function taskHtml(t, profs){
+  var who=t.assigned_phone?((profs[t.assigned_phone]&&profs[t.assigned_phone].name)||t.assigned_phone):'';
+  var meta=[who?('👤 '+who):'', t.due_date?('🗓️ '+fmtUpcoming(t.due_date)):''].filter(Boolean).join(' · ');
+  var done=t.status==='completed';
+  return '<div class="task'+(done?' done':'')+'"><div class="tk-box" onclick="toggleTask(\''+t.id+'\','+(done?'false':'true')+')">'+(done?'✓':'')+'</div><div style="flex:1;min-width:0"><div class="tk-t">'+escapeHtml(t.title)+'</div>'+(meta?'<div class="tk-m">'+escapeHtml(meta)+'</div>':'')+'</div></div>';
+}
+async function loadHomeWall(famPhones, profs){
+  if(!ensureSB()||!famPhones.length) return [];
+  try{
+    var r=await sb.from('life_events').select('*').in('person_phone',famPhones).eq('status','active').order('event_date',{ascending:false}).limit(14);
+    var rows=r.data||[]; var me=myPhone();
+    return rows.map(function(e){
+      var nm=(e.person_phone===me)?'You':((profs[e.person_phone]&&profs[e.person_phone].name)||'Family');
+      var action={moment:'captured a Moment',relationship:'added a family relationship',household:'created a household',bridge:'built a Bridge',passport:'joined Jeeto'}[e.ref_kind]||'updated the family';
+      return { icon:e.icon||'❤️', html:'<b>'+escapeHtml(nm)+'</b> '+escapeHtml(action), when:lifeRelative(e.event_date) };
+    });
+  }catch(e){ return []; }
+}
+async function toggleTask(id, complete){
+  if(!ensureSB()) return;
+  await sb.from('household_tasks').update({ status:complete?'completed':'pending', completed_at:complete?new Date().toISOString():null }).eq('id',id);
+  renderHome();
+}
+async function openTaskForm(){
+  var ctx=await myCircleContext();
+  if(!ctx.households.length){ toast('Create a household first to add tasks.'); navTo('family'); return; }
+  var hOpts=ctx.households.map(function(h){ return '<option value="'+escapeAttr(h.h.id)+'">'+escapeHtml(h.h.household_name)+'</option>'; }).join('');
+  var members=[]; ctx.households.forEach(function(h){ (h.members||[]).forEach(function(m){ if(members.filter(function(x){return x.phone===m.phone;}).length===0) members.push(m); }); });
+  var profs=await fetchProfiles(members.map(function(m){return m.phone;}));
+  var aOpts='<option value="">Anyone</option>'+members.map(function(m){ return '<option value="'+escapeAttr(m.phone)+'">'+escapeHtml((profs[m.phone]&&profs[m.phone].name)||m.phone)+'</option>'; }).join('');
+  var m=document.getElementById('homeModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">🏠 Add a task</div>'+
+    '<div class="field-label">Task</div><input class="fi" id="tkTitle" placeholder="e.g. Buy groceries" style="margin-bottom:12px">'+
+    (ctx.households.length>1?'<div class="field-label">Household</div><select class="fi" id="tkHH" style="margin-bottom:12px">'+hOpts+'</select>':'<input type="hidden" id="tkHH" value="'+escapeAttr(ctx.households[0].h.id)+'">')+
+    '<div class="field-label">Assign to</div><select class="fi" id="tkWho" style="margin-bottom:12px">'+aOpts+'</select>'+
+    '<div class="field-label">Due date</div><input class="fi" id="tkDue" type="date" style="margin-bottom:14px">'+
+    '<button class="btn" onclick="submitTask()">Add task</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+function closeHomeModal(){ document.getElementById('homeModal').classList.remove('show'); }
+async function submitTask(){
+  var title=(document.getElementById('tkTitle').value||'').trim(); if(!title){ toast('Enter a task.'); return; }
+  var hh=(document.getElementById('tkHH')||{}).value||null;
+  var who=(document.getElementById('tkWho')||{}).value||null;
+  var due=(document.getElementById('tkDue')||{}).value||null;
+  var r=await sb.from('household_tasks').insert({ household_id:hh, title:title, assigned_phone:who, due_date:due, created_by:myPhone(), status:'pending' });
+  if(r.error){ toast('Could not add task.'); return; }
+  closeHomeModal(); toast('Task added 🏠'); renderHome();
+}
+
+/* ---------- calendar ---------- */
+async function renderCalendar(){
+  var box=document.getElementById('calendarBody'); if(!box) return;
+  if(!ME) ME=await fetchProfile(myPhone());
+  box.innerHTML='<div class="muted" style="text-align:center;padding:30px">Loading your calendar…</div>';
+  var ctx=await myCircleContext();
+  var fam={}; var me=myPhone(); fam[me]=1; ctx.conns.forEach(function(p){fam[p]=1;}); ctx.households.forEach(function(h){(h.members||[]).forEach(function(m){fam[m.phone]=1;});});
+  var profs=await fetchProfiles(Object.keys(fam));
+  var cele=await buildCelebrations(ctx, profs);
+  if(!cele.length){ box.innerHTML='<div class="empty"><span class="big">📅</span><div class="e1">No events yet</div><div class="e2">Add birthdays, anniversaries or festivals and they\u2019ll appear here.</div></div>'; return; }
+  // group by month
+  var groups={}; cele.forEach(function(c){ var key=c.date.toLocaleDateString('en-US',{month:'long',year:'numeric'}); (groups[key]=groups[key]||[]).push(c); });
+  var html=''; Object.keys(groups).forEach(function(g){ html+='<div class="tl-head">'+g+'</div><div class="cele">'+groups[g].map(function(c){ return '<div class="cele-row"><div class="cele-ic">'+c.icon+'</div><div style="flex:1;min-width:0"><div class="cele-t">'+escapeHtml(c.title)+'</div><div class="cele-d">'+escapeHtml(c.sub)+'</div></div><div class="cele-when">'+c.date.toLocaleDateString('en-US',{day:'numeric',month:'short'})+'</div></div>'; }).join('')+'</div>'; });
+  box.innerHTML=html;
+}
+function openCalEventForm(){
+  var m=document.getElementById('homeModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">📅 Add an event</div>'+
+    '<div class="field-label">Title</div><input class="fi" id="ceTitle" placeholder="e.g. Diwali dinner" style="margin-bottom:12px">'+
+    '<div class="field-label">Type</div><select class="fi" id="ceType" style="margin-bottom:12px"><option value="event">Event</option><option value="birthday">Birthday</option><option value="anniversary">Anniversary</option><option value="festival">Festival</option><option value="school">School</option><option value="travel">Travel</option><option value="medical">Medical</option><option value="meeting">Meeting</option></select>'+
+    '<div class="field-label">Date</div><input class="fi" id="ceDate" type="date" style="margin-bottom:14px">'+
+    '<button class="btn" onclick="submitCalEvent()">Add to calendar</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+async function submitCalEvent(){
+  var title=(document.getElementById('ceTitle').value||'').trim(); if(!title){ toast('Enter a title.'); return; }
+  var type=(document.getElementById('ceType')||{}).value||'event';
+  var date=(document.getElementById('ceDate')||{}).value; if(!date){ toast('Pick a date.'); return; }
+  var r=await sb.from('calendar_events').insert({ owner_phone:myPhone(), title:title, event_type:type, event_date:date });
+  if(r.error){ toast('Could not add event.'); return; }
+  closeHomeModal(); toast('Added to calendar 📅'); renderCalendar(); 
+}
+
+/* ---------- global search ---------- */
+function openGlobalSearch(){
+  var m=document.getElementById('homeModal');
+  m.innerHTML='<div class="modal-card" style="max-height:88vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:12px">🔎 Search Jeeto</div>'+
+    '<input class="fi" id="gsInput" placeholder="People, moments, households, bridges…" oninput="runGlobalSearch()" style="margin-bottom:6px">'+
+    '<div id="gsResults" style="margin-top:8px"><div class="muted" style="font-size:13px;text-align:center;padding:18px">Search across your people, Passport, households, Bridges, Moments, Life and Calendar.</div></div>'+
+    '<div style="height:10px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
+  m.classList.add('show');
+  setTimeout(function(){ var i=document.getElementById('gsInput'); if(i) i.focus(); }, 150);
+}
+var GS_T=null;
+function runGlobalSearch(){ if(GS_T) clearTimeout(GS_T); GS_T=setTimeout(doGlobalSearch, 220); }
+async function doGlobalSearch(){
+  var q=((document.getElementById('gsInput')||{}).value||'').trim();
+  var box=document.getElementById('gsResults'); if(!box) return;
+  if(q.length<2){ box.innerHTML='<div class="muted" style="font-size:13px;text-align:center;padding:18px">Keep typing…</div>'; return; }
+  box.innerHTML='<div class="muted" style="font-size:13px;text-align:center;padding:14px">Searching…</div>';
+  var groups=[]; var me=myPhone();
+  try{
+    var ppl=await sb.from('profiles').select('phone,name,avatar_url').ilike('name','%'+q+'%').limit(6);
+    if((ppl.data||[]).length) groups.push({ t:'👥 People', items:(ppl.data).map(function(p){ return { label:p.name||p.phone, sub:'+91 '+p.phone, go:"navTo('family')" }; }) });
+    var pass=await sb.from('jeeto_passports').select('passport_handle,jeeto_number,person_phone').or('passport_handle.ilike.%'+q+'%,jeeto_number.ilike.%'+q+'%').limit(5);
+    if((pass.data||[]).length) groups.push({ t:'🆔 Passports', items:(pass.data).map(function(p){ return { label:'@'+p.passport_handle, sub:p.jeeto_number, go:"navTo('profile')" }; }) });
+    var hh=await sb.from('households').select('household_name,city,id').ilike('household_name','%'+q+'%').limit(5);
+    if((hh.data||[]).length) groups.push({ t:'🏠 Households', items:(hh.data).map(function(h){ return { label:h.household_name, sub:h.city||'', go:"navTo('family')" }; }) });
+    var mo=await sb.from('moments').select('title,id,moment_type').eq('status','active').ilike('title','%'+q+'%').limit(6);
+    if((mo.data||[]).length) groups.push({ t:'💛 Moments', items:(mo.data).map(function(x){ return { label:x.title, sub:x.moment_type+' moment', go:"reliveMoment('"+x.id+"')" }; }) });
+    var le=await sb.from('life_events').select('event_title,event_date').eq('person_phone',me).eq('status','active').ilike('event_title','%'+q+'%').limit(6);
+    if((le.data||[]).length) groups.push({ t:'🧭 Life events', items:(le.data).map(function(x){ return { label:x.event_title, sub:fmtMomentDate(x.event_date), go:"navTo('life')" }; }) });
+    var ce=await sb.from('calendar_events').select('title,event_type,event_date').eq('owner_phone',me).ilike('title','%'+q+'%').limit(5);
+    if((ce.data||[]).length) groups.push({ t:'📅 Calendar', items:(ce.data).map(function(x){ return { label:x.title, sub:x.event_type, go:"navTo('calendar')" }; }) });
+  }catch(e){}
+  if(!groups.length){ box.innerHTML='<div class="empty" style="padding:24px"><div class="e1">Nothing found</div><div class="e2">Try a different name or word.</div></div>'; return; }
+  box.innerHTML=groups.map(function(g){ return '<div class="gs-group"><div class="field-label">'+g.t+'</div>'+g.items.map(function(it){ return '<div class="task" style="cursor:pointer" onclick="closeHomeModal();'+it.go+'"><div style="flex:1;min-width:0"><div class="tk-t">'+escapeHtml(it.label)+'</div>'+(it.sub?'<div class="tk-m">'+escapeHtml(it.sub)+'</div>':'')+'</div><span style="color:var(--ink3);font-weight:800">→</span></div>'; }).join('')+'</div>'; }).join('');
+}
+
+/* ---------- home settings (minimal) ---------- */
+function openHomeSettings(){
+  var cur=homeAccent()||'rani'; var g=homeGreetingCustom();
+  function opt(v,label,sw){ return '<div class="circle-opt'+(cur===v?' on':'')+'" onclick="setAccent(\''+v+'\')"><span class="ce" style="width:22px;height:22px;border-radius:50%;background:'+sw+'"></span><span style="flex:1">'+label+'</span><span class="cradio">'+(cur===v?'●':'○')+'</span></div>'; }
+  var m=document.getElementById('homeModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">⚙️ Home Settings</div>'+
+    '<div class="field-label">Greeting line (optional)</div><input class="fi" id="hsGreet" value="'+escapeAttr(g)+'" placeholder="Welcome home ❤️" style="margin-bottom:14px">'+
+    '<div class="field-label">Accent</div><div class="circle-opts">'+opt('rani','Rani Pink','#E03A7A')+opt('violet','Violet','#7C3AED')+opt('leaf','Leaf Green','#2BA84A')+'</div>'+
+    '<button class="btn" onclick="saveHomeSettings()">Save</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+function setAccent(v){ try{ localStorage.setItem('jeeto_accent',v); }catch(e){} applyAccent(); openHomeSettings(); }
+function saveHomeSettings(){ var g=(document.getElementById('hsGreet').value||'').trim(); try{ localStorage.setItem('jeeto_greeting',g); }catch(e){} closeHomeModal(); toast('Home updated'); renderHome(); }
 
 /* ---------- data ---------- */
 /* loadRelationships — the canonical read. Family & tree are GENERATED from these. */
@@ -2094,7 +2366,7 @@ function searchGraph(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -2103,6 +2375,7 @@ function navTo(tab){
   if(tab==='bridge') renderBridge();
   if(tab==='profile') renderPassport();
   if(tab==='graph') renderGraph();
+  if(tab==='calendar') renderCalendar();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
