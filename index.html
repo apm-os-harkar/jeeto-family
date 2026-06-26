@@ -7,11 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Supabase client (data storage only; auth stays mock-OTP for now) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ============================================================
-   JEETO — LOGIN + HOME FOUNDATION (single file, LocalStorage)
-   Visual tokens copied from the existing Jeeto app so this
-   matches the rest of the product.
+   JEETO — LOGIN + FAMILY (single file). Data in Supabase.
+   Visual tokens copied from the main Jeeto app.
    ============================================================ */
 :root{
   --paper:#FFF8EE; --paper2:#FFEFD9;
@@ -25,171 +26,98 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{
-  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
-  background:#EAD9C2;color:var(--ink);
-  min-height:100vh;
-}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#EAD9C2;color:var(--ink);min-height:100vh}
 .display{font-family:'Baloo 2',cursive}
-
-/* phone shell — centers the app on larger screens */
-#app{
-  max-width:440px;margin:0 auto;min-height:100vh;
-  background:var(--paper);position:relative;
-  box-shadow:0 0 50px rgba(0,0,0,.08);
-  display:flex;flex-direction:column;
-}
-
-/* screen system — only the .active screen is visible */
-.screen{display:none;flex:1;flex-direction:column;padding:26px 22px 26px}
+#app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--paper);position:relative;box-shadow:0 0 50px rgba(0,0,0,.08);display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column;padding:26px 22px}
 .screen.active{display:flex}
-.screen.has-nav{padding-bottom:92px}   /* room for bottom nav */
-
-/* ---------- shared bits ---------- */
-.logo{
-  width:74px;height:74px;border-radius:22px;
-  background:linear-gradient(135deg,var(--saffron),var(--rani));
-  display:flex;align-items:center;justify-content:center;font-size:38px;
-  box-shadow:var(--shadow);margin:0 auto;
-}
+.screen.has-nav{padding-bottom:92px}
+.logo{width:74px;height:74px;border-radius:22px;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:var(--shadow);margin:0 auto}
 .wordmark{font-family:'Baloo 2';font-weight:800;font-size:34px;text-align:center;margin:16px 0 2px;letter-spacing:.5px}
 .tagline{text-align:center;color:var(--rani-d);font-weight:700;font-size:14px;letter-spacing:.3px}
 .muted{color:var(--ink2)}
 .field-label{font-size:12.5px;font-weight:700;color:var(--ink2);margin:0 0 6px 2px;letter-spacing:.2px}
-input.fi{
-  width:100%;border:1.5px solid var(--line);border-radius:14px;
-  padding:15px 16px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);
-  outline:none;transition:border-color .15s;
-}
-input.fi:focus{border-color:var(--rani)}
-.btn{
-  width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;font-weight:800;
-  font-family:inherit;cursor:pointer;color:#fff;
-  background:linear-gradient(135deg,var(--saffron),var(--rani));
-  box-shadow:var(--shadow-sm);transition:transform .08s,opacity .15s;
-}
+input.fi,select.fi{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);outline:none;transition:border-color .15s}
+input.fi:focus,select.fi:focus{border-color:var(--rani)}
+.btn{width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--saffron),var(--rani));box-shadow:var(--shadow-sm);transition:transform .08s,opacity .15s}
 .btn:active{transform:scale(.98)}
 .btn[disabled]{opacity:.5;cursor:not-allowed}
 .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.btn-sm{width:auto;padding:9px 16px;font-size:13.5px;border-radius:12px}
 .link{color:var(--rani-d);font-weight:700;cursor:pointer;font-size:13.5px}
 .err{color:var(--rani-d);font-size:13px;font-weight:600;min-height:18px;margin:8px 2px 0}
 .spacer{flex:1}
-
-/* gender chips */
 .chips{display:flex;gap:8px}
-.chip{
-  flex:1;text-align:center;padding:13px 6px;border-radius:14px;border:1.5px solid var(--line);
-  background:#fff;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink2);
-}
+.chip{flex:1;text-align:center;padding:13px 6px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink2)}
 .chip.on{background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border-color:transparent}
-
-/* photo picker */
 .photo-pick{display:flex;align-items:center;gap:14px}
-.photo-ring{
-  width:72px;height:72px;border-radius:50%;border:2px dashed var(--line);
-  display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink2);
-  background:#fff;overflow:hidden;flex:0 0 auto;
-}
+.photo-ring{width:72px;height:72px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink2);background:#fff;overflow:hidden;flex:0 0 auto}
 .photo-ring img{width:100%;height:100%;object-fit:cover}
-
-/* OTP boxes */
 .otp-row{display:flex;gap:9px;justify-content:space-between}
-.otp-box{
-  width:48px;height:56px;border:1.5px solid var(--line);border-radius:13px;
-  text-align:center;font-size:24px;font-weight:800;font-family:'Baloo 2';background:#fff;color:var(--ink);outline:none;
-}
+.otp-box{width:48px;height:56px;border:1.5px solid var(--line);border-radius:13px;text-align:center;font-size:24px;font-weight:800;font-family:'Baloo 2';background:#fff;color:var(--ink);outline:none}
 .otp-box:focus{border-color:var(--rani)}
-
-/* ---------- HOME ---------- */
 .greeting{font-size:14px;color:var(--ink2);font-weight:600}
 .greeting b{display:block;font-family:'Baloo 2';font-size:26px;color:var(--ink);font-weight:800;margin-top:2px}
 .home-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.avatar{
-  width:50px;height:50px;border-radius:50%;flex:0 0 auto;overflow:hidden;
-  background:linear-gradient(135deg,var(--saffron),var(--rani));
-  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;font-family:'Baloo 2';
-}
+.avatar{width:50px;height:50px;border-radius:50%;flex:0 0 auto;overflow:hidden;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;font-family:'Baloo 2'}
 .avatar img{width:100%;height:100%;object-fit:cover}
-
-/* strength hero */
-.strength{
-  background:linear-gradient(135deg,#FF7A00 0%,#E03A7A 52%,#7C3AED 100%);
-  color:#fff;border-radius:20px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:16px;
-  display:flex;align-items:center;justify-content:space-between;
-}
+.strength{background:linear-gradient(135deg,#FF7A00 0%,#E03A7A 52%,#7C3AED 100%);color:#fff;border-radius:20px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
 .strength .lbl{font-size:13px;font-weight:700;opacity:.92}
 .strength .num{font-family:'Baloo 2';font-size:40px;font-weight:800;line-height:1}
-
-/* stat cards */
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{
-  background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;
-  box-shadow:var(--shadow-sm);
-}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow-sm)}
 .card .ic{font-size:26px}
 .card .ct{font-family:'Baloo 2';font-weight:700;font-size:15px;margin-top:8px}
 .card .cv{font-size:13px;color:var(--ink2);font-weight:600;margin-top:2px}
-
 .section-title{font-family:'Baloo 2';font-weight:700;font-size:18px;margin:6px 0 12px}
-.empty{
-  background:var(--card);border:1px dashed var(--line);border-radius:18px;
-  padding:30px 20px;text-align:center;color:var(--ink2);font-weight:600;
-}
+.sub-title{font-size:11px;font-weight:800;color:var(--ink2);letter-spacing:1px;margin:18px 2px 8px}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:18px;padding:26px 20px;text-align:center;color:var(--ink2);font-weight:600}
 .empty .big{font-size:34px;display:block;margin-bottom:8px}
-
-/* ---------- BOTTOM NAV ---------- */
-.nav{
-  position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;
-  background:#fff;border-top:1px solid var(--line);
-  display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-  box-shadow:0 -6px 20px rgba(122,68,20,.06);
-}
-.nav button{
-  flex:1;background:none;border:none;cursor:pointer;font-family:inherit;
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  color:var(--ink2);font-size:11px;font-weight:700;padding:6px 0;
-}
+.reqcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow-sm)}
+.reqcard .nm{font-weight:800;font-size:15px}
+.reqcard .rl{font-size:12.5px;color:var(--rani-d);font-weight:700}
+.reqcard .ms{font-size:13px;color:var(--ink2);margin-top:4px}
+.badge{display:inline-block;font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:20px}
+.b-pending{background:#FEF3D6;color:#B4791F}
+.b-accepted{background:#E4F7EA;color:#177A3B}
+.b-rejected{background:#FBE3E3;color:#B23A3A}
+.row-actions{display:flex;gap:8px;margin-top:10px}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:#fff;border-top:1px solid var(--line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(122,68,20,.06)}
+.nav button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-size:11px;font-weight:700;padding:6px 0}
 .nav button .ni{font-size:21px}
 .nav button.on{color:var(--rani-d)}
 .nav.hide{display:none}
-
-/* profile tab rows */
 .prow{display:flex;justify-content:space-between;padding:14px 2px;border-bottom:1px solid var(--line);font-size:14px}
 .prow .k{color:var(--ink2);font-weight:600}
 .prow .v{font-weight:700}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:30px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;max-width:88%;text-align:center}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ============================================================
-       SCREEN 1 — PHONE LOGIN
-       ============================================================ -->
+  <!-- SCREEN 1 — PHONE LOGIN -->
   <section class="screen active" id="screen-login">
     <div class="spacer"></div>
     <div class="logo">🌳</div>
     <div class="wordmark">Jeeto</div>
     <div class="tagline">Connecting Generations</div>
-
     <div style="height:36px"></div>
     <div class="field-label">PHONE NUMBER</div>
-    <input class="fi" id="loginPhone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"
-           oninput="onPhoneInput()" onkeydown="if(event.key==='Enter')submitPhone()">
+    <input class="fi" id="loginPhone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" oninput="onPhoneInput()" onkeydown="if(event.key==='Enter')submitPhone()">
     <div class="err" id="loginErr"></div>
     <button class="btn" id="loginBtn" onclick="submitPhone()" disabled>Continue</button>
     <p class="muted" style="text-align:center;font-size:12px;margin-top:14px">We'll send a one-time code to verify it's you.</p>
     <div class="spacer"></div>
   </section>
 
-  <!-- ============================================================
-       SCREEN 2 — OTP  (temporary code is always 123456)
-       ============================================================ -->
+  <!-- SCREEN 2 — OTP (always 123456) -->
   <section class="screen" id="screen-otp">
     <div class="spacer"></div>
     <div class="logo">🔐</div>
     <div class="wordmark" style="font-size:26px">Enter the code</div>
     <p class="muted" style="text-align:center;font-size:13.5px">Sent to <b id="otpPhoneEcho"></b> &nbsp;<span class="link" onclick="showScreen('screen-login')">change</span></p>
-
     <div style="height:24px"></div>
     <div class="otp-row" id="otpRow">
       <input class="otp-box" inputmode="numeric" maxlength="1" data-i="0" oninput="otpType(this)" onkeydown="otpKey(this,event)">
@@ -205,23 +133,18 @@ input.fi:focus{border-color:var(--rani)}
     <div class="spacer"></div>
   </section>
 
-  <!-- ============================================================
-       SCREEN 3 — FIRST-LOGIN PROFILE SETUP
-       ============================================================ -->
+  <!-- SCREEN 3 — FIRST-LOGIN PROFILE -->
   <section class="screen" id="screen-profile">
     <div style="height:6px"></div>
     <div class="logo">👋</div>
     <div class="wordmark" style="font-size:26px">Welcome to Jeeto</div>
     <p class="muted" style="text-align:center;font-size:13.5px;margin-top:2px">A few details to set up your profile.</p>
-
     <div style="height:22px"></div>
     <div class="field-label">YOUR NAME</div>
     <input class="fi" id="pfName" placeholder="Full name">
-
     <div style="height:14px"></div>
     <div class="field-label">DATE OF BIRTH</div>
     <input class="fi" id="pfDob" type="date">
-
     <div style="height:14px"></div>
     <div class="field-label">GENDER</div>
     <div class="chips" id="pfGender">
@@ -229,87 +152,68 @@ input.fi:focus{border-color:var(--rani)}
       <div class="chip" data-g="female" onclick="pickGender('female')">Female</div>
       <div class="chip" data-g="other" onclick="pickGender('other')">Other</div>
     </div>
-
     <div style="height:18px"></div>
     <div class="field-label">PROFILE PHOTO <span class="muted" style="font-weight:600">(optional)</span></div>
     <div class="photo-pick">
       <label class="photo-ring" id="photoRing" for="pfPhoto"><span id="photoPlaceholder">📷</span></label>
-      <div>
-        <div style="font-weight:700;font-size:14px">Add a photo</div>
-        <div class="muted" style="font-size:12px">Tap the circle to choose</div>
-      </div>
+      <div><div style="font-weight:700;font-size:14px">Add a photo</div><div class="muted" style="font-size:12px">Tap the circle to choose</div></div>
       <input type="file" id="pfPhoto" accept="image/*" style="display:none" onchange="onPhotoPick(event)">
     </div>
-
     <div class="err" id="pfErr"></div>
-    <button class="btn" onclick="saveProfile()">Save &amp; continue</button>
+    <button class="btn" id="pfBtn" onclick="saveProfile()">Save &amp; continue</button>
     <div style="height:10px"></div>
   </section>
 
-  <!-- ============================================================
-       SCREEN 4 — HOME  (rendered by renderHome())
-       ============================================================ -->
+  <!-- SCREEN 4 — HOME -->
   <section class="screen has-nav" id="screen-home">
     <div class="home-head">
       <div class="avatar" id="homeAvatar">J</div>
       <div class="greeting" id="homeGreeting">Good Morning,<b>—</b></div>
     </div>
-
-    <!-- FAMILY STRENGTH — PLUG-IN: compute real score later -->
     <div class="strength">
       <div><div class="lbl">⭐ Family Strength</div></div>
       <div class="num" id="statStrength">0</div>
     </div>
-
     <div class="cards">
-      <!-- PLUG-IN: Family module reads/writes here -->
-      <div class="card" onclick="navTo('family')" style="cursor:pointer">
-        <div class="ic">❤️</div><div class="ct">Family</div><div class="cv" id="statFamily">Not connected</div>
-      </div>
-      <!-- PLUG-IN: Bridge module -->
-      <div class="card" onclick="navTo('bridge')" style="cursor:pointer">
-        <div class="ic">🌉</div><div class="ct">Bridge</div><div class="cv" id="statBridge">No Bridges</div>
-      </div>
-      <!-- PLUG-IN: Memories module -->
-      <div class="card">
-        <div class="ic">📸</div><div class="ct">Memories</div><div class="cv" id="statMemories">0</div>
-      </div>
-      <!-- PLUG-IN: any 4th tile -->
-      <div class="card">
-        <div class="ic">🌳</div><div class="ct">Family Tree</div><div class="cv">Coming soon</div>
-      </div>
+      <div class="card" onclick="navTo('family')" style="cursor:pointer"><div class="ic">❤️</div><div class="ct">Family</div><div class="cv" id="statFamily">Not connected</div></div>
+      <div class="card" onclick="navTo('bridge')" style="cursor:pointer"><div class="ic">🌉</div><div class="ct">Bridge</div><div class="cv" id="statBridge">No Bridges</div></div>
+      <div class="card"><div class="ic">📸</div><div class="ct">Memories</div><div class="cv" id="statMemories">0</div></div>
+      <div class="card"><div class="ic">🌳</div><div class="ct">Family Tree</div><div class="cv">Coming soon</div></div>
     </div>
   </section>
 
-  <!-- ============================================================
-       SCREEN 5 — FAMILY TAB (placeholder for the Family module)
-       ============================================================ -->
+  <!-- SCREEN 5 — FAMILY (request flow) -->
   <section class="screen has-nav" id="screen-family">
     <div class="section-title">❤️ Family</div>
-    <!-- PLUG-IN: Family connect-by-phone flow mounts here -->
-    <div class="empty"><span class="big">❤️</span>You're not connected to family yet.<br>This is where adding &amp; connecting family will live.</div>
+    <div class="card" style="margin-bottom:6px">
+      <div style="font-weight:800;font-family:'Baloo 2';font-size:16px;margin-bottom:9px">➕ Send a family request</div>
+      <input class="fi" id="frPhone" inputmode="numeric" maxlength="10" placeholder="Their phone number" style="margin-bottom:10px" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
+      <select class="fi" id="frRel" style="margin-bottom:10px">
+        <option value="">Relationship…</option>
+        <option>Father</option><option>Mother</option><option>Brother</option><option>Sister</option>
+        <option>Son</option><option>Daughter</option><option>Husband</option><option>Wife</option>
+        <option>Grandfather</option><option>Grandmother</option><option>Uncle</option><option>Aunt</option>
+        <option>Cousin</option><option>Other</option>
+      </select>
+      <input class="fi" id="frMsg" placeholder="Message (optional)" style="margin-bottom:10px">
+      <button class="btn" id="frBtn" onclick="sendRequest()">Send request</button>
+    </div>
+    <div id="famBody"><div class="empty" style="margin-top:14px">Loading…</div></div>
   </section>
 
-  <!-- ============================================================
-       SCREEN 6 — BRIDGE TAB (placeholder for the Bridge module)
-       ============================================================ -->
+  <!-- SCREEN 6 — BRIDGE (placeholder) -->
   <section class="screen has-nav" id="screen-bridge">
     <div class="section-title">🌉 Bridge</div>
     <!-- PLUG-IN: Bridge module mounts here -->
     <div class="empty"><span class="big">🌉</span>No bridges yet.<br>Bridges between families will appear here.</div>
   </section>
 
-  <!-- ============================================================
-       SCREEN 7 — PROFILE TAB
-       ============================================================ -->
+  <!-- SCREEN 7 — PROFILE -->
   <section class="screen has-nav" id="screen-profileTab">
     <div class="section-title">👤 Profile</div>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
       <div class="avatar" id="profAvatar" style="width:64px;height:64px;font-size:26px">J</div>
-      <div>
-        <div class="display" id="profName" style="font-size:22px;font-weight:800">—</div>
-        <div class="muted" id="profPhone" style="font-size:13px;font-weight:600">—</div>
-      </div>
+      <div><div class="display" id="profName" style="font-size:22px;font-weight:800">—</div><div class="muted" id="profPhone" style="font-size:13px;font-weight:600">—</div></div>
     </div>
     <div class="prow"><span class="k">Name</span><span class="v" id="profNameRow">—</span></div>
     <div class="prow"><span class="k">Phone</span><span class="v" id="profPhoneRow">—</span></div>
@@ -319,231 +223,314 @@ input.fi:focus{border-color:var(--rani)}
     <button class="btn btn-ghost" onclick="logout()">Log out</button>
   </section>
 
-  <!-- ============================================================
-       BOTTOM NAVIGATION (hidden on login/otp/profile-setup)
-       ============================================================ -->
   <nav class="nav hide" id="bottomNav">
-    <button data-tab="home"    onclick="navTo('home')"><span class="ni">🏠</span>Home</button>
-    <button data-tab="family"  onclick="navTo('family')"><span class="ni">❤️</span>Family</button>
-    <button data-tab="bridge"  onclick="navTo('bridge')"><span class="ni">🌉</span>Bridge</button>
+    <button data-tab="home" onclick="navTo('home')"><span class="ni">🏠</span>Home</button>
+    <button data-tab="family" onclick="navTo('family')"><span class="ni">❤️</span>Family</button>
+    <button data-tab="bridge" onclick="navTo('bridge')"><span class="ni">🌉</span>Bridge</button>
     <button data-tab="profile" onclick="navTo('profile')"><span class="ni">👤</span>Profile</button>
   </nav>
 
+  <div class="toast" id="toast"></div>
 </div>
 
 <script>
 /* ============================================================
-   JEETO LOGIN FOUNDATION — pure LocalStorage, no backend.
-   Future features plug in at the marked PLUG-IN points above
-   and read the current user via Store.user().
+   JEETO — phone login + family requests.
+   Auth is a MOCK OTP (123456). Data lives in Supabase tables:
+   profiles, family_requests, family_connections.
+   The logged-in identity is simply the user's PHONE, stored in
+   LocalStorage as the session. Future features read it via myPhone().
    ============================================================ */
 
-/* ---------- LocalStorage layer ---------- */
-var Store = {
-  KEY: 'jeeto_user',           // the signed-in user record
-  TEMP_PHONE: 'jeeto_tmp_phone', // phone held between Continue and OTP
-  user: function(){ try{ return JSON.parse(localStorage.getItem(this.KEY) || 'null'); }catch(e){ return null; } },
-  saveUser: function(u){ localStorage.setItem(this.KEY, JSON.stringify(u)); },
-  clear: function(){ localStorage.removeItem(this.KEY); localStorage.removeItem(this.TEMP_PHONE); }
-};
+/* ---------- Supabase ---------- */
+var SB_URL = "https://ebimsihjzwpmdtzqopmz.supabase.co";
+var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaW1zaWhqendwbWR0enFvcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjQ2NzIsImV4cCI6MjA5NjYwMDY3Mn0.QgXTRYH384R0EY-rkCBhW5gmuCizKHY_akLcembBEMA";
+var sb = null;
+function ensureSB(){ if(sb) return true; if(window.supabase && window.supabase.createClient){ sb = window.supabase.createClient(SB_URL, SB_KEY); return true; } return false; }
 
-/* ---------- mock OTP ----------
-   PLUG-IN: swap this constant + submitOtp() for a real SMS/auth
-   provider when you go live. The rest of the flow stays the same. */
-var MOCK_OTP = '123456';
+/* ---------- session (phone only) ---------- */
+var SESSION_KEY = 'jeeto_phone';
+function myPhone(){ return localStorage.getItem(SESSION_KEY) || ''; }
+function setMyPhone(p){ localStorage.setItem(SESSION_KEY, p); }
+function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+var ME = null;          // cached profile
+var TMP_PHONE = '';     // phone between Continue and OTP
+var MOCK_OTP = '123456';   // PLUG-IN: swap for real SMS verification later
+
+/* ---------- toast ---------- */
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(function(){t.classList.remove('show');},2600); }
 
 /* ---------- screen routing ---------- */
 function showScreen(id){
-  var screens = document.querySelectorAll('.screen');
-  for(var i=0;i<screens.length;i++) screens[i].classList.remove('active');
-  var el = document.getElementById(id);
-  if(el) el.classList.add('active');
-  // bottom nav only shows on the four main tabs
-  var mainTabs = ['screen-home','screen-family','screen-bridge','screen-profileTab'];
-  document.getElementById('bottomNav').classList.toggle('hide', mainTabs.indexOf(id) === -1);
+  var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
+  var el=document.getElementById(id); if(el) el.classList.add('active');
+  var main=['screen-home','screen-family','screen-bridge','screen-profileTab'];
+  document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ window.scrollTo(0,0); }catch(e){}
 }
 
 /* ---------- launch ---------- */
-function init(){
-  var u = Store.user();
-  if(u && u.name){
-    // returning user -> straight to Home
-    renderHome();
-    navTo('home');
-  } else {
-    showScreen('screen-login');
+async function init(){
+  ensureSB();
+  var phone = myPhone();
+  if(phone){
+    TMP_PHONE = phone;
+    ME = await fetchProfile(phone);
+    if(ME && ME.name){ await renderHome(); navTo('home'); return; }
+    showScreen('screen-profile'); return;   // logged in but no profile yet
   }
+  showScreen('screen-login');
+}
+
+async function fetchProfile(phone){
+  if(!ensureSB()) return null;
+  try{ var r = await sb.from('profiles').select('*').eq('phone', phone).maybeSingle(); return r.data || null; }
+  catch(e){ return null; }
 }
 
 /* ============================================================
-   SCREEN 1 — PHONE
+   PHONE
    ============================================================ */
 function onPhoneInput(){
-  var el = document.getElementById('loginPhone');
-  el.value = el.value.replace(/\D/g,'').slice(0,10);   // digits only, max 10
-  document.getElementById('loginBtn').disabled = el.value.length !== 10;
-  document.getElementById('loginErr').textContent = '';
+  var el=document.getElementById('loginPhone');
+  el.value=el.value.replace(/\D/g,'').slice(0,10);
+  document.getElementById('loginBtn').disabled = el.value.length!==10;
+  document.getElementById('loginErr').textContent='';
 }
 function submitPhone(){
-  var phone = (document.getElementById('loginPhone').value || '').replace(/\D/g,'');
-  if(phone.length !== 10){
-    document.getElementById('loginErr').textContent = 'Enter a valid 10-digit number.';
-    return;
-  }
-  localStorage.setItem(Store.TEMP_PHONE, phone);
-  document.getElementById('otpPhoneEcho').textContent = '+91 ' + phone;
-  clearOtp();
-  showScreen('screen-otp');
-  setTimeout(function(){ var f = document.querySelector('.otp-box'); if(f) f.focus(); }, 120);
+  var phone=(document.getElementById('loginPhone').value||'').replace(/\D/g,'');
+  if(phone.length!==10){ document.getElementById('loginErr').textContent='Enter a valid 10-digit number.'; return; }
+  TMP_PHONE=phone;
+  document.getElementById('otpPhoneEcho').textContent='+91 '+phone;
+  clearOtp(); showScreen('screen-otp');
+  setTimeout(function(){ var f=document.querySelector('.otp-box'); if(f) f.focus(); },120);
 }
 
 /* ============================================================
-   SCREEN 2 — OTP
+   OTP
    ============================================================ */
 function otpBoxes(){ return document.querySelectorAll('.otp-box'); }
-function clearOtp(){ var b = otpBoxes(); for(var i=0;i<b.length;i++) b[i].value=''; document.getElementById('otpErr').textContent=''; }
-function readOtp(){ var b = otpBoxes(), s=''; for(var i=0;i<b.length;i++) s += (b[i].value||''); return s; }
+function clearOtp(){ var b=otpBoxes(); for(var i=0;i<b.length;i++) b[i].value=''; document.getElementById('otpErr').textContent=''; }
+function readOtp(){ var b=otpBoxes(),s=''; for(var i=0;i<b.length;i++) s+=(b[i].value||''); return s; }
 function otpType(box){
-  box.value = box.value.replace(/\D/g,'').slice(0,1);
-  var i = parseInt(box.getAttribute('data-i'),10);
-  var boxes = otpBoxes();
-  if(box.value && i < boxes.length-1) boxes[i+1].focus();   // auto-advance
-  if(readOtp().length === 6) submitOtp();                    // auto-submit when full
+  box.value=box.value.replace(/\D/g,'').slice(0,1);
+  var i=parseInt(box.getAttribute('data-i'),10), boxes=otpBoxes();
+  if(box.value && i<boxes.length-1) boxes[i+1].focus();
+  if(readOtp().length===6) submitOtp();
 }
-function otpKey(box, e){
-  var i = parseInt(box.getAttribute('data-i'),10), boxes = otpBoxes();
-  if(e.key === 'Backspace' && !box.value && i > 0) boxes[i-1].focus();  // backspace to previous
-}
-function submitOtp(){
-  var code = readOtp();
-  if(code.length !== 6){ document.getElementById('otpErr').textContent = 'Enter the 6-digit code.'; return; }
-  // PLUG-IN: replace this check with a real verification call.
-  if(code !== MOCK_OTP){
-    document.getElementById('otpErr').textContent = 'Incorrect code. Try 123456.';
-    clearOtp(); var f = document.querySelector('.otp-box'); if(f) f.focus();
-    return;
-  }
-  // correct code
-  var u = Store.user();
-  var phone = localStorage.getItem(Store.TEMP_PHONE);
-  if(u && u.name){
-    // already has a profile on this device -> Home
-    renderHome(); navTo('home');
-  } else {
-    // first login -> profile setup
-    showScreen('screen-profile');
-  }
+function otpKey(box,e){ var i=parseInt(box.getAttribute('data-i'),10),boxes=otpBoxes(); if(e.key==='Backspace' && !box.value && i>0) boxes[i-1].focus(); }
+async function submitOtp(){
+  var code=readOtp();
+  if(code.length!==6){ document.getElementById('otpErr').textContent='Enter the 6-digit code.'; return; }
+  if(code!==MOCK_OTP){ document.getElementById('otpErr').textContent='Incorrect code. Try 123456.'; clearOtp(); var f=document.querySelector('.otp-box'); if(f) f.focus(); return; }
+  setMyPhone(TMP_PHONE);                 // this phone is now the session
+  ME = await fetchProfile(TMP_PHONE);
+  if(ME && ME.name){ await renderHome(); navTo('home'); }
+  else { showScreen('screen-profile'); }
 }
 
 /* ============================================================
-   SCREEN 3 — PROFILE SETUP
+   PROFILE SETUP  (saved to Supabase 'profiles')
    ============================================================ */
-var _gender = '';
-var _photo  = '';   // dataURL or ''
-function pickGender(g){
-  _gender = g;
-  var chips = document.querySelectorAll('#pfGender .chip');
-  for(var i=0;i<chips.length;i++) chips[i].classList.toggle('on', chips[i].getAttribute('data-g') === g);
-}
+var _gender='', _photo='';
+function pickGender(g){ _gender=g; var c=document.querySelectorAll('#pfGender .chip'); for(var i=0;i<c.length;i++) c[i].classList.toggle('on', c[i].getAttribute('data-g')===g); }
 function onPhotoPick(e){
-  var file = e.target.files && e.target.files[0];
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(ev){
-    _photo = ev.target.result;
-    document.getElementById('photoRing').innerHTML = '<img src="'+_photo+'" alt="">';
-  };
-  reader.readAsDataURL(file);   // store as base64 in LocalStorage
+  var file=e.target.files && e.target.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(ev){ _photo=ev.target.result; document.getElementById('photoRing').innerHTML='<img src="'+_photo+'" alt="">'; };
+  reader.readAsDataURL(file);   // stored as a data URL in avatar_url (fine for prototype)
 }
-function saveProfile(){
-  var name = (document.getElementById('pfName').value || '').trim();
-  var dob  = document.getElementById('pfDob').value || '';
-  if(!name){ document.getElementById('pfErr').textContent = 'Please enter your name.'; return; }
-  if(!_gender){ document.getElementById('pfErr').textContent = 'Please choose a gender.'; return; }
-  var user = {
-    phone: localStorage.getItem(Store.TEMP_PHONE) || '',
-    name: name,
-    dob: dob,
-    gender: _gender,
-    photo: _photo,
-    createdAt: Date.now()
-  };
-  Store.saveUser(user);
-  // PLUG-IN: this is where you'd also create the user on a backend.
-  renderHome();
-  navTo('home');
+async function saveProfile(){
+  var name=(document.getElementById('pfName').value||'').trim();
+  var dob=document.getElementById('pfDob').value||null;
+  if(!name){ document.getElementById('pfErr').textContent='Please enter your name.'; return; }
+  if(!_gender){ document.getElementById('pfErr').textContent='Please choose a gender.'; return; }
+  if(!ensureSB()){ document.getElementById('pfErr').textContent='Connection problem. Try again.'; return; }
+  var btn=document.getElementById('pfBtn'); btn.disabled=true; btn.textContent='Saving…';
+  var row={ phone: myPhone()||TMP_PHONE, name:name, dob:dob, gender:_gender, avatar_url:_photo||null };
+  var r=await sb.from('profiles').upsert(row,{onConflict:'phone'}).select().maybeSingle();
+  btn.disabled=false; btn.textContent='Save & continue';
+  if(r.error){ document.getElementById('pfErr').textContent=r.error.message||'Could not save.'; return; }
+  ME=r.data||row;
+  await renderHome(); navTo('home');
 }
 
 /* ============================================================
-   SCREEN 4 — HOME
+   HOME
    ============================================================ */
-function greetingWord(){
-  var h = new Date().getHours();
-  if(h < 12) return 'Good Morning';
-  if(h < 17) return 'Good Afternoon';
-  return 'Good Evening';
+function greetingWord(){ var h=new Date().getHours(); if(h<12) return 'Good Morning'; if(h<17) return 'Good Afternoon'; return 'Good Evening'; }
+async function renderHome(){
+  if(!ME) ME=await fetchProfile(myPhone());
+  var u=ME||{};
+  var first=((u.name||'').split(' ')[0])||'there';
+  document.getElementById('homeGreeting').innerHTML=greetingWord()+',<b>'+escapeHtml(first)+' 👋</b>';
+  setAvatar('homeAvatar',u);
+  var conns=await fetchConnections(myPhone());
+  var n=conns.length;
+  document.getElementById('statStrength').textContent=String(n*10);          // +10 per connection
+  document.getElementById('statFamily').textContent= n>0 ? (n+(n===1?' member':' members')) : 'Not connected';
+  document.getElementById('statBridge').textContent='No Bridges';
+  document.getElementById('statMemories').textContent='0';
 }
-function renderHome(){
-  var u = Store.user(); if(!u) return;
-  var first = (u.name || '').split(' ')[0] || 'there';
-  document.getElementById('homeGreeting').innerHTML = greetingWord() + ',<b>' + escapeHtml(first) + ' 👋</b>';
-  setAvatar('homeAvatar', u);
+function setAvatar(elId,u){
+  var el=document.getElementById(elId); if(!el) return;
+  if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; }
+  else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); }
+}
 
-  // PLUG-IN: replace these static values when the modules exist.
-  document.getElementById('statStrength').textContent = '0';
-  document.getElementById('statFamily').textContent   = 'Not connected';
-  document.getElementById('statBridge').textContent   = 'No Bridges';
-  document.getElementById('statMemories').textContent = '0';
+/* ============================================================
+   FAMILY — requests + connections
+   ============================================================ */
+async function fetchConnections(phone){
+  if(!ensureSB() || !phone) return [];
+  try{ var r=await sb.from('family_connections').select('*').or('user_a_phone.eq.'+phone+',user_b_phone.eq.'+phone); return r.data||[]; }
+  catch(e){ return []; }
 }
-function setAvatar(elId, u){
-  var el = document.getElementById(elId); if(!el) return;
-  if(u.photo){ el.innerHTML = '<img src="'+u.photo+'" alt="">'; }
-  else { el.textContent = ((u.name||'J').trim()[0] || 'J').toUpperCase(); }
+/* look up names for a list of phones -> { phone: name } */
+async function fetchNames(phones){
+  var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; });
+  if(!phones.length || !ensureSB()) return map;
+  try{ var r=await sb.from('profiles').select('phone,name').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p.name; }); }catch(e){}
+  return map;
+}
+
+async function sendRequest(){
+  var rec=(document.getElementById('frPhone').value||'').replace(/\D/g,'');
+  var rel=document.getElementById('frRel').value||'';
+  var msg=(document.getElementById('frMsg').value||'').trim();
+  var me=myPhone();
+  if(rec.length!==10){ toast('Enter their 10-digit number.'); return; }
+  if(rec===me){ toast('That is your own number.'); return; }
+  if(!rel){ toast('Choose the relationship.'); return; }
+  if(!ensureSB()){ toast('Connection problem.'); return; }
+  // avoid duplicate pending request
+  try{
+    var dup=await sb.from('family_requests').select('id').eq('sender_phone',me).eq('receiver_phone',rec).eq('status','pending');
+    if(dup.data && dup.data.length){ toast('Request already pending for that number.'); return; }
+  }catch(e){}
+  var btn=document.getElementById('frBtn'); btn.disabled=true; btn.textContent='Sending…';
+  var r=await sb.from('family_requests').insert({ sender_phone:me, receiver_phone:rec, relationship:rel, message:msg, status:'pending' });
+  btn.disabled=false; btn.textContent='Send request';
+  if(r.error){ toast(r.error.message||'Could not send.'); return; }
+  document.getElementById('frPhone').value=''; document.getElementById('frRel').value=''; document.getElementById('frMsg').value='';
+  toast('Request sent — waiting for them to accept 💛');
+  renderFamily();
+}
+
+async function renderFamily(){
+  var box=document.getElementById('famBody'); if(!box) return;
+  var me=myPhone();
+  if(!ensureSB() || !me){ box.innerHTML='<div class="empty">Connection problem.</div>'; return; }
+  // pull everything for this phone
+  var incoming=[], sent=[], conns=[];
+  try{ var ri=await sb.from('family_requests').select('*').eq('receiver_phone',me).eq('status','pending').order('created_at',{ascending:false}); incoming=ri.data||[]; }catch(e){}
+  try{ var rs=await sb.from('family_requests').select('*').eq('sender_phone',me).order('created_at',{ascending:false}); sent=rs.data||[]; }catch(e){}
+  conns=await fetchConnections(me);
+
+  // names for everyone referenced
+  var phones=[];
+  incoming.forEach(function(x){ phones.push(x.sender_phone); });
+  sent.forEach(function(x){ phones.push(x.receiver_phone); });
+  conns.forEach(function(c){ phones.push(c.user_a_phone===me?c.user_b_phone:c.user_a_phone); });
+  var names=await fetchNames(phones);
+  function nm(p){ return names[p] || p; }
+
+  var html='';
+
+  // 1) incoming pending -> accept / reject
+  html+='<div class="sub-title">📥 REQUESTS FOR YOU</div>';
+  if(!incoming.length){ html+='<div class="empty">No pending requests.</div>'; }
+  else incoming.forEach(function(x){
+    html+='<div class="reqcard"><div class="nm">'+escapeHtml(nm(x.sender_phone))+'</div>'+
+      '<div class="rl">wants to connect as your '+escapeHtml(x.relationship||'family')+'</div>'+
+      (x.message?'<div class="ms">"'+escapeHtml(x.message)+'"</div>':'')+
+      '<div class="row-actions">'+
+      '<button class="btn btn-sm" onclick="acceptRequest(\''+x.id+'\',\''+x.sender_phone+'\',\''+escapeAttr(x.relationship||'')+'\')">Accept</button>'+
+      '<button class="btn btn-sm btn-ghost" onclick="rejectRequest(\''+x.id+'\')">Reject</button>'+
+      '</div></div>';
+  });
+
+  // 2) sent -> live status
+  html+='<div class="sub-title">📤 REQUESTS YOU SENT</div>';
+  if(!sent.length){ html+='<div class="empty">You haven\'t sent any requests yet.</div>'; }
+  else sent.forEach(function(x){
+    var b=x.status==='accepted'?'b-accepted':(x.status==='rejected'?'b-rejected':'b-pending');
+    var lbl=x.status==='accepted'?'Accepted ✓':(x.status==='rejected'?'Rejected':'Waiting…');
+    html+='<div class="reqcard" style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div class="nm">'+escapeHtml(nm(x.receiver_phone))+'</div><div class="rl">'+escapeHtml(x.relationship||'family')+'</div></div><span class="badge '+b+'">'+lbl+'</span></div>';
+  });
+
+  // 3) connections
+  html+='<div class="sub-title">💛 YOUR FAMILY ('+conns.length+')</div>';
+  if(!conns.length){ html+='<div class="empty">No connections yet.</div>'; }
+  else conns.forEach(function(c){
+    var other=c.user_a_phone===me?c.user_b_phone:c.user_a_phone;
+    html+='<div class="reqcard" style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:40px;height:40px;font-size:16px">'+escapeHtml((nm(other)[0]||'?').toUpperCase())+'</div><div><div class="nm" style="font-size:14px">'+escapeHtml(nm(other))+'</div><div class="rl">'+escapeHtml(c.relationship||'family')+'</div></div></div>';
+  });
+
+  box.innerHTML=html;
+}
+
+async function acceptRequest(id, senderPhone, relationship){
+  if(!ensureSB()) return;
+  var me=myPhone();
+  // 1) mark the request accepted
+  var up=await sb.from('family_requests').update({ status:'accepted', responded_at:new Date().toISOString() }).eq('id',id);
+  if(up.error){ toast(up.error.message||'Could not accept.'); return; }
+  // 2) create the connection (sender = A, me = B)
+  await sb.from('family_connections').insert({ user_a_phone:senderPhone, user_b_phone:me, relationship:relationship||null });
+  toast('Connected 💛  Family Strength +10');
+  renderFamily(); renderHome();   // strength updates on Home
+}
+async function rejectRequest(id){
+  if(!ensureSB()) return;
+  var up=await sb.from('family_requests').update({ status:'rejected', responded_at:new Date().toISOString() }).eq('id',id);
+  if(up.error){ toast(up.error.message||'Could not reject.'); return; }
+  toast('Request declined');
+  renderFamily();
 }
 
 /* ============================================================
    PROFILE TAB
    ============================================================ */
 function renderProfileTab(){
-  var u = Store.user(); if(!u) return;
-  setAvatar('profAvatar', u);
-  document.getElementById('profName').textContent      = u.name || '—';
-  document.getElementById('profPhone').textContent     = u.phone ? ('+91 ' + u.phone) : '—';
-  document.getElementById('profNameRow').textContent   = u.name || '—';
-  document.getElementById('profPhoneRow').textContent  = u.phone ? ('+91 ' + u.phone) : '—';
-  document.getElementById('profDobRow').textContent    = u.dob || '—';
-  document.getElementById('profGenderRow').textContent = u.gender ? (u.gender[0].toUpperCase()+u.gender.slice(1)) : '—';
+  var u=ME||{};
+  setAvatar('profAvatar',u);
+  document.getElementById('profName').textContent=u.name||'—';
+  document.getElementById('profPhone').textContent=u.phone?('+91 '+u.phone):'—';
+  document.getElementById('profNameRow').textContent=u.name||'—';
+  document.getElementById('profPhoneRow').textContent=u.phone?('+91 '+u.phone):'—';
+  document.getElementById('profDobRow').textContent=u.dob||'—';
+  document.getElementById('profGenderRow').textContent=u.gender?(u.gender[0].toUpperCase()+u.gender.slice(1)):'—';
 }
 
 /* ============================================================
    BOTTOM NAV
    ============================================================ */
 function navTo(tab){
-  var map = { home:'screen-home', family:'screen-family', bridge:'screen-bridge', profile:'screen-profileTab' };
-  var id = map[tab] || 'screen-home';
-  if(tab === 'home')    renderHome();
-  if(tab === 'profile') renderProfileTab();
+  var map={ home:'screen-home', family:'screen-family', bridge:'screen-bridge', profile:'screen-profileTab' };
+  var id=map[tab]||'screen-home';
   showScreen(id);
-  var btns = document.querySelectorAll('#bottomNav button');
-  for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab') === tab);
+  if(tab==='home') renderHome();
+  if(tab==='family') renderFamily();
+  if(tab==='profile') renderProfileTab();
+  var btns=document.querySelectorAll('#bottomNav button');
+  for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
 
 /* ============================================================
    LOGOUT
    ============================================================ */
 function logout(){
-  Store.clear();
-  // reset transient UI state
-  _gender=''; _photo='';
-  var lp = document.getElementById('loginPhone'); if(lp) lp.value='';
-  document.getElementById('loginBtn').disabled = true;
-  clearOtp();
+  clearSession(); ME=null; _gender=''; _photo='';
+  var lp=document.getElementById('loginPhone'); if(lp) lp.value='';
+  document.getElementById('loginBtn').disabled=true; clearOtp();
   showScreen('screen-login');
 }
 
-/* ---------- util ---------- */
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+/* ---------- utils ---------- */
+function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function escapeAttr(s){ return String(s==null?'':s).replace(/'/g,'').replace(/"/g,''); }
 
 /* go */
 init();
