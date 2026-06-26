@@ -1300,7 +1300,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 103</div>
+      <div class="psub">Powered by Skyvos AI · build 104</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -4304,26 +4304,22 @@ window.addEventListener('load', boot);
     <div class="lgbody" id="lgBody"></div>
   </div>
 <script>
+/* SERVICE WORKER REMOVED (build 104).
+   It was precaching index.html and serving OLD builds — the reason deploys weren't showing.
+   This actively unregisters any worker already installed on the phone and wipes its caches,
+   then reloads once cleanly. After this runs once, every future deploy shows instantly. */
 if('serviceWorker' in navigator){
-  var _reloading=false;
-  navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(_reloading) return; _reloading=true; window.location.reload();
-  });
-  var _lastTag=null;
-  async function _checkFresh(reg){
-    try{ if(reg) reg.update(); }catch(e){}
-    try{
-      var r=await fetch('index.html',{method:'HEAD',cache:'no-store'});
-      var tag=r.headers.get('etag')||r.headers.get('last-modified');
-      if(tag){ if(_lastTag && tag!==_lastTag){ window.location.reload(); } _lastTag=tag; }
-    }catch(e){}
-  }
-  window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(reg){
-      _checkFresh(reg);
-      document.addEventListener('visibilitychange',function(){ if(!document.hidden) _checkFresh(reg); });
-    }).catch(function(e){ console.log('SW failed',e); });
-  });
+  try{
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      var had = regs && regs.length;
+      regs.forEach(function(r){ try{ r.unregister(); }catch(e){} });
+      try{ if(window.caches && caches.keys){ caches.keys().then(function(keys){ keys.forEach(function(k){ caches.delete(k); }); }); } }catch(e){}
+      if(had && !sessionStorage.getItem('jeeto_sw_purged')){
+        try{ sessionStorage.setItem('jeeto_sw_purged','1'); }catch(e){}
+        setTimeout(function(){ try{ location.reload(); }catch(e){} }, 500);
+      }
+    }).catch(function(e){});
+  }catch(e){}
 }
 </script>
 <script>
