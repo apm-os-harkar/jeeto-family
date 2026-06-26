@@ -1210,6 +1210,7 @@ body{
         <span>⚙️ Manage grid</span><span class="managearrow" id="gridManageArrow">▾</span>
       </button>
       <div id="gridManage" class="managebody" style="display:none">
+        <button class="btn btn-primary" style="margin-bottom:10px" onclick="JF_open()">🤝 Your Khandaan <span id="jfBadge" style="display:none;align-items:center;background:#fff;color:#C2185B;border-radius:11px;padding:1px 8px;font-size:12px;font-weight:800;margin-left:6px">0</span></button>
         <button class="btn btn-ghost" id="myGridsBtn" style="display:none;margin-bottom:10px" onclick="openMyGrids()">🗂️ My grids</button>
         <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openJoinGrid()">＋ Join a grid</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openCreateGrid()">🔗 Create a grid</button></div>
         <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openSearch()">🔍 Find households</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openRequests()">🔔 Requests</button></div>
@@ -1272,7 +1273,8 @@ body{
 
   <!-- BOTTOM NAV -->
   <nav class="nav">
-    <button class="on" data-v="home" onclick="go('home')"><span class="ni">🏠</span>Home</button>
+    <button class="on" data-v="tree" onclick="go('tree');treeBoot()"><span class="ni">🌳</span>Tree</button>
+    <button data-v="home" onclick="go('home')"><span class="ni">🏠</span>Home</button>
     <button data-v="lb" onclick="go('lb')"><span class="ni">🏆</span>Ranks</button>
     <button data-v="play" onclick="go('play')"><span class="ni">🎮</span>Play</button>
     <button data-v="family" onclick="go('family')"><span class="ni">💛</span>Family</button>
@@ -1298,7 +1300,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 101</div>
+      <div class="psub">Powered by Skyvos AI · build 103</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -2252,7 +2254,8 @@ async function refreshAll(){
   if(FAM){try{var _h=await sb.rpc('recalc_happiness',{p_house:FAM.id});if(!_h.error&&typeof _h.data==='number')FAM.happiness=_h.data;}catch(e){}}
   setHappy(FAM?(FAM.happiness||50):50);
   setHappyHint(FAM?(FAM.happiness||50):50);
-  document.getElementById('addMemberBtn').style.display = (ME.role==='captain'&&FAM) ? 'block':'none';
+  document.getElementById('addMemberBtn').style.display = (FAM) ? 'block':'none';
+  try{ if(typeof JF_badge==='function') JF_badge(); }catch(e){}
   document.getElementById('skyHome').innerHTML = (FAM?'':'You are not in a family yet. ')+'Tap <b>📸 Submit steps</b> to log today and climb the board 🪙';
   renderMorningQuote(); loadStreakNudge(); loadSchedule(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
   await loadMembers();
@@ -4143,6 +4146,106 @@ function openLegal(which){
   document.getElementById('lgBody').scrollTop=0;
 }
 function closeLegal(){ document.getElementById('legalOverlay').style.display='none'; }
+
+/* ===================== KHANDAAN: consent-gated family connections ===================== */
+async function JF_open(){
+  openSheet('<h3>Your Khandaan 🤝</h3><p class="s">Link your family with relatives\u2019 families. A connection only happens when <b>every adult in BOTH families</b> ticks yes.</p>'+
+    '<div id="jfTasks"></div>'+
+    '<div class="sectit">Connected families</div><div id="jfList">'+emptyMsg('Loading\u2026')+'</div>'+
+    '<div style="height:12px"></div><button class="btn btn-primary" onclick="JF_openSearch()">\u2795 Connect another family</button>');
+  JF_loadTasks(); JF_loadList();
+}
+async function JF_loadTasks(){
+  var box=document.getElementById('jfTasks'); if(!box) return;
+  var r; try{ r=await sb.rpc('jf_my_link_tasks'); }catch(e){ box.innerHTML=''; return; }
+  if(r.error){ box.innerHTML=''; return; }
+  var tasks=(r.data&&r.data.tasks)||[];
+  if(!tasks.length){ box.innerHTML=''; return; }
+  box.innerHTML='<div class="sectit">Needs your family\u2019s tick</div>'+tasks.map(JF_taskCard).join('');
+}
+function JF_taskCard(t){
+  var other=t.mine_initiated?(t.to_name||'A family'):(t.from_name||'A family');
+  var needMe=t.my_turn && (t.my_vote===null||t.my_vote===undefined);
+  var title,sub,actions='';
+  if(needMe){
+    if(t.status==='collecting'){ title='Your family wants to connect with <b>'+esc(other)+'</b>'; sub='Tick if you agree to link your families into one khandaan.'; }
+    else { title='<b>'+esc(other)+'</b> wants to join your khandaan'; sub='Tick if you accept them into your family\u2019s grid.'; }
+    actions='<button class="minibtn" onclick="JF_vote(\''+t.id+'\',true)">\u2713 Agree</button> <button class="minibtn ghost" onclick="JF_vote(\''+t.id+'\',false)">\u2715 No</button>';
+  } else {
+    if(t.status==='collecting'){ title='Connecting with <b>'+esc(other)+'</b>'; }
+    else { title=(t.mine_initiated?('Sent to <b>'+esc(other)+'</b>'):('Your family agreed \u2014 '+esc(other))); }
+    sub=t.waiting_on?('\u23f3 Waiting on: '+esc(t.waiting_on)):'All adults ticked \u2014 moving forward \u2713';
+    if(t.mine_initiated) actions='<button class="minibtn ghost" onclick="JF_cancel(\''+t.id+'\')">Cancel request</button>';
+  }
+  return '<div style="border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px">'+
+    '<div style="font-weight:600;line-height:1.4">'+title+'</div>'+
+    '<div style="font-size:12px;color:var(--ink2);margin:4px 0 9px">'+sub+'</div>'+actions+'</div>';
+}
+async function JF_vote(link,agree){
+  var r; try{ r=await sb.rpc('jf_vote_link',{p_link:link,p_agree:agree}); }catch(e){ toast('Could not record that'); return; }
+  if(r.error||(r.data&&r.data.error)){ toast((r.data&&r.data.error)||(r.error&&r.error.message)||'Could not record that'); return; }
+  var st=r.data&&r.data.status;
+  if(st==='connected'){ confetti(); toast('Families connected! 🎉'); }
+  else toast(st==='declined'?'Declined':(agree?'Your tick is in \u2713':'Noted'));
+  JF_loadTasks(); JF_loadList(); JF_badge();
+}
+async function JF_cancel(link){
+  var r; try{ r=await sb.rpc('jf_cancel_link',{p_link:link}); }catch(e){ toast('Could not cancel'); return; }
+  if(r.error||(r.data&&r.data.error)){ toast((r.data&&r.data.error)||'Could not cancel'); return; }
+  toast('Request cancelled'); JF_loadTasks(); JF_loadList(); JF_badge();
+}
+async function JF_loadList(){
+  var box=document.getElementById('jfList'); if(!box) return;
+  var r; try{ r=await sb.rpc('jf_my_khandaan'); }catch(e){ box.innerHTML=emptyMsg('Could not load'); return; }
+  if(r.error){ box.innerHTML=emptyMsg('Could not load'); return; }
+  var rows=r.data||[];
+  if(!rows.length){ box.innerHTML=emptyMsg('No connected families yet. Add your first relative\u2019s family below 👇'); return; }
+  box.innerHTML=rows.map(function(f){
+    var nm=(f.name||'Family')+(f.city?' \u00b7 '+f.city:'');
+    return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(f.name||'F')+')">'+esc((f.name||'F')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>In your khandaan \u2713</div></div></div>';
+  }).join('');
+}
+var _jfST=null;
+function JF_openSearch(){
+  openSheet('<h3>Find a family 🔍</h3><p class="s">Search by family name or city. The request only goes out once <b>every adult in your family</b> ticks yes.</p>'+
+    '<input id="jfQ" autocomplete="off" spellcheck="false" oninput="JF_search()" placeholder="Family name or city\u2026" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;margin-bottom:12px">'+
+    '<div id="jfRes">'+emptyMsg('Type at least 2 letters.')+'</div>');
+}
+function JF_search(){
+  clearTimeout(_jfST);
+  _jfST=setTimeout(async function(){
+    var q=(_v('jfQ')||'').trim(); var box=document.getElementById('jfRes'); if(!box) return;
+    if(q.length<2){ box.innerHTML=emptyMsg('Type at least 2 letters.'); return; }
+    box.innerHTML=emptyMsg('Searching\u2026');
+    var r; try{ r=await sb.rpc('jf_search_families',{p_q:q}); }catch(e){ box.innerHTML=emptyMsg('Search failed'); return; }
+    if(r.error){ box.innerHTML=emptyMsg(r.error.message); return; }
+    var rows=r.data||[];
+    if(!rows.length){ box.innerHTML=emptyMsg('No families found for "'+esc(q)+'".'); return; }
+    box.innerHTML=rows.map(function(f){
+      var nm=(f.name||'Family')+(f.city?' \u00b7 '+f.city:'');
+      var act = f.rel==='self' ? '<span class="rel">You</span>'
+        : f.rel==='connected' ? '<span class="rel" style="color:#12A14B">Connected \u2713</span>'
+        : f.rel==='pending'   ? '<span class="rel">In progress\u2026</span>'
+        : '<button class="minibtn" onclick="JF_request(\''+f.id+'\')">Request</button>';
+      return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(f.name||'F')+')">'+esc((f.name||'F')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b></div>'+act+'</div>';
+    }).join('');
+  },280);
+}
+async function JF_request(fam){
+  var r; try{ r=await sb.rpc('jf_request_link',{p_target:fam}); }catch(e){ toast('Could not send'); return; }
+  if(r.error||(r.data&&r.data.error)){ toast((r.data&&r.data.error)||(r.error&&r.error.message)||'Could not send'); return; }
+  var st=r.data&&r.data.status;
+  toast(st==='pending'?'Sent to their family for approval 🤝':'Sent to your family \u2014 every adult must tick \u2713');
+  JF_search(); JF_badge();
+}
+async function JF_badge(){
+  try{
+    var r=await sb.rpc('jf_my_link_tasks'); if(r.error) return;
+    var tasks=(r.data&&r.data.tasks)||[];
+    var n=tasks.filter(function(t){return t.my_turn && (t.my_vote===null||t.my_vote===undefined);}).length;
+    var b=document.getElementById('jfBadge'); if(b){ b.style.display=n?'inline-flex':'none'; b.textContent=n; }
+  }catch(e){}
+}
 
 window.addEventListener('load', boot);
 </script>
