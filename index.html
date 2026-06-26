@@ -39,7 +39,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#E9D8C1;col
 .field-label{font-size:12px;font-weight:700;color:var(--ink2);margin:0 0 7px 3px;letter-spacing:.2px}
 input.fi,select.fi{width:100%;border:1.5px solid var(--line);border-radius:16px;padding:15px 16px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}
 input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgba(224,58,122,.10)}
-.btn{width:100%;border:none;border-radius:18px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,#FF8A1E,#E03A7A);box-shadow:var(--sh-pop);transition:transform .12s,filter .2s,box-shadow .2s,opacity .2s}
+.btn{width:100%;border:none;border-radius:18px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,#FF8A1E,#E03A7A);box-shadow:var(--sh-pop);transition:transform .3s ease,filter .3s ease,box-shadow .3s ease,opacity .3s ease}
 .btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
 .btn:active{transform:scale(.97)}
 .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
@@ -90,7 +90,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .dash-item .dv{font-family:'Baloo 2';font-weight:800;font-size:23px;line-height:1}
 .dash-item .dl{font-size:9.5px;color:var(--ink2);font-weight:700;margin-top:6px;line-height:1.25;letter-spacing:.1px}
 /* notification bell */
-.bell{position:relative;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:20px;cursor:pointer;box-shadow:var(--sh-1);flex:0 0 auto;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+.bell{position:relative;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:20px;cursor:pointer;box-shadow:var(--sh-1);flex:0 0 auto;display:flex;align-items:center;justify-content:center;transition:transform .3s ease}
 .bell:active{transform:scale(.93)}
 .bell-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:10px;background:var(--ink3);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--paper)}
 .bell-badge.live{background:linear-gradient(135deg,#FF8A1E,#E03A7A)}
@@ -101,8 +101,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .fam-personal .fp-n{font-size:12.5px;color:var(--ink2);font-weight:600;margin-top:1px}
 .fam-personal .fp-add{margin-left:auto;background:var(--grad-soft);color:var(--rani-d);font-weight:800;font-size:12px;padding:8px 13px;border-radius:14px;cursor:pointer;white-space:nowrap}
 /* strength change bump */
-@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.28)}100%{transform:scale(1)}}
-.bump{animation:bump .8s cubic-bezier(.2,1.3,.4,1)}
+@keyframes bump{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}
+.bump{animation:bump .45s ease}
 /* notifications */
 .notif-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-bottom:10px;text-align:left;box-shadow:var(--sh-1)}
 .notif-ic{font-size:22px;flex:0 0 auto}
@@ -206,7 +206,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .pp-stat .v{font-family:'Baloo 2';font-weight:800;font-size:22px;color:var(--ink)}
 .pp-stat .l{font-size:11.5px;color:var(--ink2);font-weight:700;margin-top:3px}
 .pp-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
-.pp-act{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 12px;font-size:13.5px;font-weight:800;color:var(--ink);cursor:pointer;text-align:center;box-shadow:var(--sh-1);transition:transform .12s}
+.pp-act{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 12px;font-size:13.5px;font-weight:800;color:var(--ink);cursor:pointer;text-align:center;box-shadow:var(--sh-1);transition:transform .3s ease}
 .pp-act:active{transform:scale(.97)}
 .pp-journey{margin-top:24px}
 .jrow{display:flex;gap:12px;align-items:flex-start;padding:11px 2px;border-bottom:1px dashed var(--line)}
@@ -219,7 +219,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .le-card::before{content:"";position:absolute;left:18px;top:36px;bottom:-6px;width:2px;background:var(--line)}
 .le-card.last::before{display:none}
 .le-ic{width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;z-index:1;box-shadow:var(--sh-1)}
-.le-body{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 15px;margin-bottom:14px;box-shadow:var(--sh-1);transition:transform .12s}
+.le-body{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 15px;margin-bottom:14px;box-shadow:var(--sh-1);transition:transform .3s ease}
 .le-card:active .le-body{transform:scale(.99)}
 .le-date{font-size:11.5px;color:var(--rani-d);font-weight:800;letter-spacing:.2px}
 .le-title{font-family:'Baloo 2';font-weight:800;font-size:16px;margin-top:2px;line-height:1.2}
@@ -256,7 +256,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .today-row .tr-t{font-weight:700;font-size:14px;flex:1;min-width:0}
 .today-empty{font-size:13.5px;color:var(--ink2);font-weight:600;line-height:1.5}
 .qa-row{display:flex;gap:9px;overflow-x:auto;padding:2px 0 6px;margin-bottom:22px;-webkit-overflow-scrolling:touch}
-.qa{flex:0 0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 8px;width:78px;text-align:center;cursor:pointer;box-shadow:var(--sh-1);transition:transform .12s}
+.qa{flex:0 0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 8px;width:78px;text-align:center;cursor:pointer;box-shadow:var(--sh-1);transition:transform .3s ease}
 .qa:active{transform:scale(.95)}
 .qa .qi{font-size:23px}
 .qa .ql{font-size:10.5px;font-weight:800;color:var(--ink2);margin-top:5px;line-height:1.15}
@@ -291,10 +291,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .weather .w-t{font-weight:800;font-size:14px}
 .weather .w-s{font-size:11.5px;color:var(--ink2);font-weight:700}
 .gs-group{margin-bottom:14px}
+/* skeleton loading (warm) */
+.sk{background:linear-gradient(100deg,#F4ECE1 30%,#FBF4EA 50%,#F4ECE1 70%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;border-radius:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-card{height:88px;margin-bottom:14px}
+.sk-line{height:14px;margin:8px 0;border-radius:8px}
+.sk-hero{height:120px;margin-bottom:18px;border-radius:24px}
+:focus-visible{outline:2px solid var(--rani);outline-offset:2px}
 
 /* tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.tile{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px 12px;box-shadow:var(--sh-1);cursor:pointer;transition:transform .12s,box-shadow .2s;text-align:center;animation:rise .5s ease both}
+.tile{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px 12px;box-shadow:var(--sh-1);cursor:pointer;transition:transform .3s ease,box-shadow .3s ease;text-align:center;animation:rise .5s ease both}
 .tile:active{transform:scale(.96)}
 .tile .tic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:23px;background:var(--grad-soft);margin:0 auto}
 .tile .tt{font-family:'Baloo 2';font-weight:700;font-size:14px;margin-top:10px}
@@ -375,12 +382,12 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .house{animation:rise .6s ease both}
 
 /* bottom nav */
-.nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:9px 3px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(122,68,20,.07)}
-.nav button{flex:1;background:none;border:none;outline:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink3);font-size:9.5px;font-weight:700;padding:5px 0}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:9px 6px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(122,68,20,.07)}
+.nav button{flex:1;background:none;border:none;outline:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink3);font-size:10.5px;font-weight:700;padding:6px 0;min-height:48px}
 .nav button:focus{outline:none}
-.nav button .ni{font-size:19px;transition:transform .22s,filter .22s}
+.nav button .ni{font-size:21px;transition:transform .3s ease,filter .3s ease}
 .nav button .nl{transition:color .2s}
-.nav button.on .ni{transform:translateY(-2px) scale(1.16);filter:drop-shadow(0 3px 8px rgba(224,58,122,.55))}
+.nav button.on .ni{transform:translateY(-2px) scale(1.1);filter:drop-shadow(0 2px 6px rgba(224,58,122,.4))}
 .nav button.on .nl{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .nav.hide{display:none}
 
@@ -421,7 +428,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .celebrate .hr{right:20px;animation:mergeR .9s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes mergeL{0%{left:0;transform:scale(.8)}70%{left:72px;transform:scale(1.05)}100%{left:72px;transform:scale(0)}}
 @keyframes mergeR{0%{right:0;transform:scale(.8)}70%{right:72px;transform:scale(1.05)}100%{right:72px;transform:scale(0)}}
-.celebrate .big-heart{position:absolute;top:8px;left:50%;transform:translateX(-50%) scale(0);font-size:76px;animation:popHeart .5s cubic-bezier(.2,1.4,.4,1) .8s forwards;filter:drop-shadow(0 8px 16px rgba(0,0,0,.22))}
+.celebrate .big-heart{position:absolute;top:8px;left:50%;transform:translateX(-50%) scale(0);font-size:76px;animation:popHeart .5s cubic-bezier(.2,.85,.3,1) .8s forwards;filter:drop-shadow(0 8px 16px rgba(0,0,0,.22))}
 @keyframes popHeart{to{transform:translateX(-50%) scale(1)}}
 .celebrate .box{text-align:center;color:#fff;opacity:0;animation:fadein .5s ease 1.1s forwards}
 .celebrate h2{font-family:'Baloo 2';font-size:30px;margin:6px 0 4px;font-weight:800}
@@ -508,26 +515,27 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
       <button class="bell" onclick="openHomeSettings()" aria-label="Settings" style="margin-right:6px">⚙️</button>
       <button class="bell" onclick="openNotifications()" aria-label="Notifications">🔔<span class="bell-badge" id="bellBadge">0</span></button>
     </div>
-    <div class="home-search" onclick="openGlobalSearch()"><span>🔎</span> Search people, moments, anything…</div>
-    <div id="homeBody"><div class="muted" style="text-align:center;padding:40px">Coming home…</div></div>
+    <div class="home-search" onclick="openGlobalSearch()"><span>🔎</span> Search your family, moments or journey…</div>
+    <div id="homeBody"><div class="sk sk-hero"></div><div class="sk sk-card"></div><div class="sk sk-card"></div></div>
   </section>
 
   <!-- FAMILY -->
   <section class="screen has-nav" id="screen-family">
-    <div class="h1" style="margin-bottom:4px">❤️ Build Your Family</div>
-    <p class="muted" style="font-size:13px;margin:0 2px 12px">Add the people you love, one relationship at a time.</p>
+    <div class="h1" style="margin-bottom:4px">❤️ Relationships</div>
+    <p class="muted" style="font-size:13px;margin:0 2px 14px">The people you love, one relationship at a time.</p>
 
-    <!-- 1) Add family member -->
+    <!-- 1) Welcome someone -->
     <div class="pcard" style="margin-bottom:2px">
-      <div class="sec-head" style="margin:0 0 12px"><span class="si">➕</span><span class="st">Add a family member</span></div>
-      <input class="fi" id="frPhone" inputmode="numeric" maxlength="10" placeholder="Their phone number" style="margin-bottom:11px" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
+      <div class="sec-head" style="margin:0 0 12px"><span class="si">❤️</span><span class="st">Welcome someone</span></div>
+      <input class="fi" id="frPhone" inputmode="numeric" maxlength="10" placeholder="Their phone number" aria-label="Their phone number" style="margin-bottom:11px" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
       <div class="field-label">Who is this person to you?</div>
-      <select class="fi" id="frRel" style="margin-bottom:11px"><option value="">Choose relationship…</option></select>
+      <select class="fi" id="frRel" aria-label="Relationship" style="margin-bottom:11px"><option value="">Choose relationship…</option></select>
       <input class="fi" id="frMsg" value="Hi, I would love to connect with you on Jeeto Family." style="margin-bottom:12px">
-      <button class="btn" id="frBtn" onclick="sendRequest()">Send request ❤️</button>
+      <button class="btn" id="frBtn" onclick="sendRequest()">Welcome them ❤️</button>
     </div>
 
     <div id="famBody"></div>
+    <div style="margin-top:6px"><button class="btn btn-soft" onclick="navTo('graph')">🕸 See your Relationship Graph</button></div>
   </section>
 
   <section class="screen has-nav" id="screen-moments">
@@ -547,8 +555,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   </section>
 
   <section class="screen has-nav" id="screen-life">
-    <div class="h1" style="margin-bottom:4px">❤️ My Life</div>
-    <p class="muted" style="font-size:13px;margin:0 2px 16px">Not an app — your life's journey. Jeeto writes it for you, quietly, as you live it.</p>
+    <div class="gtop"><button class="gback" onclick="navTo('profile')" aria-label="Back to Passport">←</button><div class="h1" style="margin:0;font-size:24px">❤️ My Life</div></div>
+    <p class="muted" style="font-size:13px;margin:0 2px 16px">Your life's journey — Jeeto writes it for you, quietly, as you live it.</p>
     <div id="lifeOnThisDay" style="margin-bottom:14px"></div>
     <div id="lifeInsights"></div>
     <input class="fi" id="lifeSearch" placeholder="Search your life — a year, a name, a moment…" oninput="renderLifeFeed(true)" style="margin:2px 0 16px">
@@ -565,13 +573,13 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
   <!-- PROFILE -->
   <section class="screen has-nav" id="screen-profileTab">
-    <div id="passportBody"><div class="muted" style="text-align:center;padding:40px">Loading your Passport…</div></div>
+    <div id="passportBody"><div class="sk sk-hero" style="height:300px"></div><div class="sk sk-card"></div></div>
     <div style="height:14px"></div>
     <button class="btn btn-ghost" onclick="logout()">Log out</button>
   </section>
 
   <section class="screen" id="screen-graph">
-    <div class="gtop"><button class="gback" onclick="navTo('profile')">←</button><div class="h1" style="margin:0;font-size:24px">🕸 Relationship Graph</div></div>
+    <div class="gtop"><button class="gback" onclick="navTo('family')" aria-label="Back to Relationships">←</button><div class="h1" style="margin:0;font-size:24px">🕸 Relationship Graph</div></div>
     <p class="muted" style="font-size:12.5px;margin:0 2px 12px">You add only direct relationships. Jeeto understands the rest — uncles, aunts, grandparents — on its own. Tap anyone to see how.</p>
     <input class="fi" id="graphSearch" placeholder="Ask the graph — cousins, maternal, nieces…" oninput="searchGraph()" style="margin-bottom:8px">
     <div id="graphCanvas"></div>
@@ -588,12 +596,11 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   </section>
 
   <nav class="nav hide" id="bottomNav">
-    <button data-tab="home" onclick="navTo('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
-    <button data-tab="family" onclick="navTo('family')"><span class="ni">❤️</span><span class="nl">Family</span></button>
-    <button data-tab="moments" onclick="navTo('moments')"><span class="ni">💛</span><span class="nl">Moments</span></button>
-    <button data-tab="life" onclick="navTo('life')"><span class="ni">📖</span><span class="nl">Life</span></button>
-    <button data-tab="bridge" onclick="navTo('bridge')"><span class="ni">🌉</span><span class="nl">Bridge</span></button>
-    <button data-tab="profile" onclick="navTo('profile')"><span class="ni">👤</span><span class="nl">Passport</span></button>
+    <button data-tab="home" onclick="navTo('home')" aria-label="Home"><span class="ni">🏡</span><span class="nl">Home</span></button>
+    <button data-tab="family" onclick="navTo('family')" aria-label="Relationships"><span class="ni">❤️</span><span class="nl">Relationships</span></button>
+    <button data-tab="moments" onclick="navTo('moments')" aria-label="Moments"><span class="ni">💛</span><span class="nl">Moments</span></button>
+    <button data-tab="bridge" onclick="navTo('bridge')" aria-label="Bridges"><span class="ni">🌉</span><span class="nl">Bridges</span></button>
+    <button data-tab="profile" onclick="navTo('profile')" aria-label="Passport"><span class="ni">🆔</span><span class="nl">Passport</span></button>
   </nav>
 
   <div class="toast" id="toast"></div>
@@ -639,6 +646,7 @@ function flyHeart(srcEl){
   }catch(e){}
 }
 function celebrate(plus){
+  playChime('accepted');
   var delta=plus||10;
   var c=document.getElementById('celebrate');
   var conf=''; var ems=['🎉','💛','🌱','✨','❤️','🎊'];
@@ -746,6 +754,8 @@ function calculateFamilyStrength(rels){ var n=(rels||[]).length; if(n<=0) return
    HOME ENGINE — the family's digital living room.
    ============================================================ */
 function greetingEmoji(){ var h=new Date().getHours(); return h<12?'☀️':h<17?'❤️':'🌙'; }
+/* sound — architecture only (no audio yet). Soft chimes will play here later. */
+function playChime(type){ /* future: 'accepted' | 'bridge' | 'moment' -> soft chime */ }
 var SKYVOS_LINES=[
   'Today is a great day to capture a Family Moment.',
   'Your family is the story you write every day.',
@@ -814,7 +824,7 @@ async function buildHome(){
   /* Quick actions */
   html+='<div class="qa-row">'+
     qa('❤️','Capture','openCapture()')+
-    qa('👥','Add Family','goAddFamily()')+
+    qa('👋','Welcome','goAddFamily()')+
     qa('🏠','Household','goHousehold()')+
     qa('🌉','Bridges','navTo(\'bridge\')')+
     qa('📅','Calendar','navTo(\'calendar\')')+
@@ -837,10 +847,17 @@ async function buildHome(){
   if(tasks.length){ html+=tasks.map(function(t){ return taskHtml(t, profs); }).join(''); }
   else html+='<div class="today-empty" style="margin-bottom:22px">Your household has no pending tasks. ✨</div>';
 
-  /* Home wall */
-  html+='<div class="home-sec">🌿 Home Wall</div>';
+  /* Family Pulse */
+  var pulse=await buildFamilyPulse(ctx, famPhones);
+  if(pulse.length){
+    html+='<div class="home-sec">❤️ Family Pulse</div><div class="cele" style="padding:14px 16px;margin-bottom:22px;background:linear-gradient(135deg,#FFF6EC,#FFE9F1)">'+
+      pulse.map(function(p){ return '<div class="today-row" style="border-bottom-style:dashed"><span class="tr-ic">'+p.icon+'</span><span class="tr-t" style="font-weight:600">'+escapeHtml(p.text)+'</span></div>'; }).join('')+'</div>';
+  }
+
+  /* Family Activity */
+  html+='<div class="home-sec">🌿 Family Activity</div>';
   if(wall.length){ html+='<div class="cele" style="padding:4px 16px">'+wall.map(function(w){ return '<div class="wall-row"><div class="wall-ic">'+w.icon+'</div><div style="flex:1;min-width:0"><div class="wall-t">'+w.html+'</div><div class="wall-d">'+escapeHtml(w.when)+'</div></div></div>'; }).join('')+'</div>'; }
-  else html+='<div class="today-empty">When your family connects, captures and celebrates, it gently appears here.</div>';
+  else html+='<div class="today-empty">Your story is just beginning. As your family connects, captures and celebrates, it gently appears here. ❤️</div>';
 
   /* Weather (placeholder) */
   var city=(ctx.households[0]&&ctx.households[0].h.city)||(ME&&ME.city)||'';
@@ -854,7 +871,7 @@ function goHousehold(){ navTo('family'); }
 function tmCard(x, kind){
   var k={family:'❤️ FAMILY MOMENT',household:'🏠 HOUSEHOLD MOMENT',bridge:'🌉 BRIDGE MOMENT'}[kind];
   var im=x.media.filter(function(m){return m.media_type==='image';})[0];
-  return '<div class="tm-card" onclick="reliveMoment(\''+x.m.id+'\')"><div class="tm-media">'+(im?'<img src="'+escapeAttr(im.media_url)+'">':'💛')+'</div><div class="tm-b"><div class="tm-k">'+k+'</div><div class="tm-t">'+escapeHtml(x.m.title)+'</div></div></div>';
+  return '<div class="tm-card" onclick="reliveMoment(\''+x.m.id+'\')"><div class="tm-media">'+(im?'<img loading="lazy" decoding="async" src="'+escapeAttr(im.media_url)+'">':'💛')+'</div><div class="tm-b"><div class="tm-k">'+k+'</div><div class="tm-t">'+escapeHtml(x.m.title)+'</div></div></div>';
 }
 
 async function loadTodaysMoments(ctx){
@@ -915,6 +932,17 @@ async function loadHomeWall(famPhones, profs){
     });
   }catch(e){ return []; }
 }
+async function buildFamilyPulse(ctx, famPhones){
+  var out=[]; var weekAgo=new Date(); weekAgo.setDate(weekAgo.getDate()-7); var iso=weekAgo.toISOString();
+  try{
+    var mr=await sb.from('moments').select('id',{count:'exact',head:true}).in('created_by',famPhones).eq('status','active').gte('created_at',iso);
+    var mc=mr.count||0;
+    if(mc>0) out.push({icon:'💛', text:'Your family shared '+mc+' beautiful Moment'+(mc>1?'s':'')+' this week.'});
+  }catch(e){}
+  try{ var rels=await loadRelationships(); var fs=calculateFamilyStrength(rels)+await loadMomentStrength(); if(fs>0) out.push({icon:'❤️', text:'Your Family Strength is at '+fs+' and growing.'}); }catch(e){}
+  if(ctx.bridges.length) out.push({icon:'🌉', text:ctx.bridges.length+' trusted Bridge'+(ctx.bridges.length>1?'s are':' is')+' keeping your households close.'});
+  return out;
+}
 async function toggleTask(id, complete){
   if(!ensureSB()) return;
   await sb.from('household_tasks').update({ status:complete?'completed':'pending', completed_at:complete?new Date().toISOString():null }).eq('id',id);
@@ -951,7 +979,7 @@ async function submitTask(){
 async function renderCalendar(){
   var box=document.getElementById('calendarBody'); if(!box) return;
   if(!ME) ME=await fetchProfile(myPhone());
-  box.innerHTML='<div class="muted" style="text-align:center;padding:30px">Loading your calendar…</div>';
+  box.innerHTML='<div class="sk sk-card"></div><div class="sk sk-card"></div><div class="sk sk-card"></div>';
   var ctx=await myCircleContext();
   var fam={}; var me=myPhone(); fam[me]=1; ctx.conns.forEach(function(p){fam[p]=1;}); ctx.households.forEach(function(h){(h.members||[]).forEach(function(m){fam[m.phone]=1;});});
   var profs=await fetchProfiles(Object.keys(fam));
@@ -1161,7 +1189,7 @@ async function renderFamily(){
   /* 3) Pending Requests (for you) */
   html+='<div class="sec-head"><span class="si">📥</span><span class="st">Pending requests</span>'+(incoming.length?'<span class="sc">'+incoming.length+'</span>':'')+'</div>';
   if(!incoming.length){
-    html+='<div class="empty"><span class="big">📭</span><div class="e1">No requests right now</div><div class="e2">When someone adds you, their request will appear here.</div></div>';
+    html+='<div class="empty"><span class="big">📭</span><div class="e1">No one is waiting right now</div><div class="e2">When someone welcomes you into their family, you\u2019ll see them here.</div></div>';
   } else incoming.forEach(function(x){
     var pr=pronoun(profs[x.sender_phone] && profs[x.sender_phone].gender);
     html+='<div class="pcard"><div class="rq">'+avHtml(x.sender_phone)+
@@ -1176,7 +1204,7 @@ async function renderFamily(){
   /* 4) Requests Sent */
   html+='<div class="sec-head"><span class="si">📤</span><span class="st">Requests sent</span>'+(sent.length?'<span class="sc">'+sent.length+'</span>':'')+'</div>';
   if(!sent.length){
-    html+='<div class="empty"><span class="big">✉️</span><div class="e1">No requests sent yet</div><div class="e2">Add a family member above to send your first one.</div></div>';
+    html+='<div class="empty"><span class="big">✉️</span><div class="e1">Your story is just beginning</div><div class="e2">Welcome someone above to send your first invitation.</div></div>';
   } else sent.forEach(function(x){
     var st=x.status;
     var badge = st==='accepted' ? '<span class="badge b-accepted">🟢 Connected</span>' : st==='rejected' ? '<span class="badge b-rejected">🔴 Declined</span>' : '<span class="badge b-pending">🟡 Waiting</span>';
@@ -1310,7 +1338,7 @@ async function loadHouseholds(){
 }
 function householdHtml(households, bridgesByHH){
   if(!households.length){
-    return '<div class="empty"><span class="big">🏠</span><div class="e1">Create your first household</div><div class="e2">A household is the people who live together — built from your connected family.</div></div>'+
+    return '<div class="empty"><span class="big">🏠</span><div class="e1">Every home begins with one relationship.</div><div class="e2">A household is the people who live together — built from the family you love.</div></div>'+
       '<button class="btn" onclick="openHouseholdForm()" style="margin-top:4px">Create Household 🏠</button>';
   }
   bridgesByHH=bridgesByHH||{};
@@ -1444,9 +1472,9 @@ async function renderBridge(){
       '<div class="hh-two"><div class="hh-mini ghost"><div class="e">🏠</div><div class="nm">Your household</div></div>'+
       '<div class="hh-mid"><span class="ln"></span><span class="ic">🤝</span><span class="ln"></span></div>'+
       '<div class="hh-mini ghost"><div class="e">🏠</div><div class="nm">Another household</div></div></div>'+
-      '<div class="empty"><span class="big">🌉</span><div class="e1">A Bridge needs a household first</div>'+
-      '<div class="e2">Create your household in the Family tab, then you can build a Bridge to another household.</div></div>'+
-      '<button class="btn" onclick="navTo(\'family\')">Go to Family →</button>';
+      '<div class="empty"><span class="big">🌉</span><div class="e1">One trusted connection can unite generations.</div>'+
+      '<div class="e2">A Bridge joins two households. Create your household first, then build a Bridge to another family.</div></div>'+
+      '<button class="btn" onclick="navTo(\'family\')">Go to Relationships →</button>';
     return;
   }
   window.__myHH=households.map(function(x){ return { id:x.h.id, name:x.h.household_name }; });
@@ -1466,7 +1494,7 @@ async function renderBridge(){
   /* active bridges */
   html+='<div class="sec-head" style="margin-top:26px"><span class="si">🌉</span><span class="st">Active bridges</span>'+(bridges.length?'<span class="sc">'+bridges.length+'</span>':'')+'</div>';
   if(!bridges.length){
-    html+='<div class="empty"><span class="big">🌱</span><div class="e1">No bridges yet</div><div class="e2">Propose your first Bridge to a household you trust.</div></div>';
+    html+='<div class="empty"><span class="big">🌉</span><div class="e1">The strongest communities begin with one trusted Bridge.</div><div class="e2">One trusted connection can unite generations. Propose your first Bridge to a household you love.</div></div>';
   } else bridges.forEach(function(b){
     html+='<div class="pcard"><div class="fcard"><div class="hh-ic">🌉</div><div class="info">'+
       '<div class="nm">'+escapeHtml(b._otherName)+'</div>'+
@@ -1585,6 +1613,7 @@ async function castVote(reqId, vote){
   renderBridge(); loadDashboard();
 }
 function celebrateBridge(aName, bName){
+  playChime('bridge');
   var c=document.getElementById('celebrate'); if(!c) return;
   var conf=''; var ems=['🌉','🎉','✨','💛','🏠','🤝'];
   for(var i=0;i<14;i++){ conf+='<span class="confetti" style="left:'+(Math.random()*100)+'%;animation-duration:'+(2+Math.random()*2).toFixed(2)+'s;animation-delay:'+(Math.random()*0.8).toFixed(2)+'s">'+ems[i%ems.length]+'</span>'; }
@@ -1593,7 +1622,7 @@ function celebrateBridge(aName, bName){
       '<div class="hh-two bridge-build" style="width:300px;max-width:80vw;margin:0 auto 6px"><div class="hh-mini"><div class="e">🏠</div><div class="nm">'+escapeHtml(aName)+'</div></div>'+
       '<div class="hh-mid"><span class="ln"></span><span class="ic">🌉</span><span class="ln"></span></div>'+
       '<div class="hh-mini"><div class="e">🏠</div><div class="nm">'+escapeHtml(bName)+'</div></div></div>'+
-      '<div class="box"><h2>🌉 Bridge Built</h2><div class="plus">'+escapeHtml(aName)+' is now connected with '+escapeHtml(bName)+' · Strength 0</div>'+
+      '<div class="box"><h2>🌉 A New Bridge Was Built</h2><div class="plus">'+escapeHtml(aName)+' is now connected with '+escapeHtml(bName)+' · Strength 0</div>'+
       '<div style="margin-top:22px"><button class="btn" style="background:rgba(255,255,255,.22);width:auto;padding:13px 30px" onclick="closeCelebrate()">Continue</button></div></div>'+
     '</div>';
   c.classList.add('show');
@@ -1696,8 +1725,8 @@ function renderMomentFeed(){
   var q=((document.getElementById('momentSearch')||{}).value||'').trim().toLowerCase();
   if(q){ list=list.filter(function(x){ return (x.m.title||'').toLowerCase().indexOf(q)>=0 || (x.m.description||'').toLowerCase().indexOf(q)>=0 || x.people.join(' ').toLowerCase().indexOf(q)>=0; }); }
   if(!list.length){
-    var msg={ private:'No personal Moments yet.', household:'No household Moments yet.', family:'No family Moments yet.', bridge:'No bridge Moments yet.' }[MCIRCLE];
-    box.innerHTML='<div class="empty"><span class="big">💛</span><div class="e1">'+msg+'</div><div class="e2">Tap “Capture a Moment” to begin this circle’s story.</div></div>';
+    var msg={ private:'Every family has a story.', household:'Your household\u2019s story starts here.', family:'Your family\u2019s story starts here.', bridge:'A Bridge\u2019s story starts here.' }[MCIRCLE];
+    box.innerHTML='<div class="empty"><span class="big">💛</span><div class="e1">'+msg+'</div><div class="e2">The best day to preserve a memory is today. Capture today\u2019s first Moment ❤️</div></div>';
     return;
   }
   var order=['Today','This Week','This Month','This Year','Past Years'], groups={};
@@ -1710,7 +1739,7 @@ function momentCard(x){
   var img=x.media.filter(function(md){return md.media_type==='image';})[0];
   var other=x.media.filter(function(md){return md.media_type!=='image';});
   var mediaHtml='';
-  if(img){ mediaHtml='<div class="media"><img src="'+escapeAttr(img.media_url)+'" alt=""></div>'; }
+  if(img){ mediaHtml='<div class="media"><img loading="lazy" decoding="async" src="'+escapeAttr(img.media_url)+'" alt=""></div>'; }
   else if(other.length){ mediaHtml='<div class="media">'+other.map(function(md){ var ic=md.media_type==='video'?'🎬':md.media_type==='voice'?'🎙️':'📄'; return '<a class="filechip" href="'+escapeAttr(md.media_url)+'" target="_blank" rel="noopener">'+ic+' '+escapeHtml(md.media_type)+'</a>'; }).join('')+'</div>'; }
   var meta='';
   if(x.people.length) meta+='<span class="pill">👥 '+escapeHtml(x.people.slice(0,3).join(', '))+(x.people.length>3?' +'+(x.people.length-3):'')+'</span>';
@@ -1849,6 +1878,7 @@ async function submitMoment(){
   MCACHE={}; setCircle(CAP.type); loadDashboard();
 }
 function celebrateMoment(type){
+  playChime('moment');
   var plus=MOMENT_W[type]||1;
   var label={private:'My Moment',household:'Household Moment',family:'Family Moment',bridge:'Bridge Moment'}[type]||'Moment';
   var c=document.getElementById('celebrate'); if(!c){ toast('Moment captured ❤️ +'+plus); return; }
@@ -2004,7 +2034,7 @@ async function journeyEvents(pass){
   ev.sort(function(a,b){ return b.ts-a.ts; });
   return ev;
 }
-function viewJourney(){ toast('🧭 Your complete journey timeline arrives in Sprint 8.'); }
+function viewJourney(){ navTo('life'); }
 
 async function sharePassport(){
   var p=PASSPORT||{}; var url=p.qr_code||('https://jeeto-families.pages.dev/p/'+(p.passport_handle||''));
@@ -2285,7 +2315,7 @@ async function deleteRelationship(id){ if(!ensureSB()) return; await sb.from('re
 /* ---------- graph view ---------- */
 async function renderGraph(){
   if(!ME) ME=await fetchProfile(myPhone());
-  var canvas=document.getElementById('graphCanvas'); if(canvas) canvas.innerHTML='<div class="muted" style="text-align:center;padding:40px">Building your graph…</div>';
+  var canvas=document.getElementById('graphCanvas'); if(canvas) canvas.innerHTML='<div class="sk" style="height:260px;border-radius:24px"></div>';
   await deriveRelationships();
   GRAPH_CACHE=await loadGraph();
   var sr=document.getElementById('graphResults'); if(sr) sr.innerHTML='';
