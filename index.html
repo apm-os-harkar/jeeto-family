@@ -1247,7 +1247,7 @@ body{
     <section class="view" id="v-tree">
       <div class="skyvos" style="margin-top:8px">
         <div class="face">✦</div>
-        <div><div class="who">Skyvos AI · Family Tree</div><div class="msg">Tap anyone to set how they're related 👵🧒. Use <b>🔗 Connect</b> for people already here, <b>＋ Add family</b> for new ones. Map it once — your whole khandaan, alive. 🌳</div></div>
+        <div><div class="who">Skyvos AI · Family Tree</div><div class="msg">Tap <b>＋ Add family</b> to <b>invite a real relative by phone</b> (they tap Accept) — or just map names. Tap anyone to set how they're related 👵🧒. Map it once — your whole khandaan, alive. 🌳</div></div>
       </div>
       <div class="sectit" style="margin-top:6px">Family Tree 🌳</div>
       <div class="tr-tabs">
@@ -1303,7 +1303,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 106</div>
+      <div class="psub">Powered by Skyvos AI · build 109</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -2256,7 +2256,7 @@ async function refreshAll(){
   if(FAM){try{var _h=await sb.rpc('recalc_happiness',{p_house:FAM.id});if(!_h.error&&typeof _h.data==='number')FAM.happiness=_h.data;}catch(e){}}
   setHappy(FAM?(FAM.happiness||50):50);
   setHappyHint(FAM?(FAM.happiness||50):50);
-  document.getElementById('addMemberBtn').style.display = (ME.role==='captain'&&FAM) ? 'block':'none';
+  document.getElementById('addMemberBtn').style.display = FAM ? 'block':'none';
   document.getElementById('skyHome').innerHTML = (FAM?'':'You are not in a family yet. ')+'Tap <b>📸 Submit steps</b> to log today and climb the board 🪙';
   renderMorningQuote(); loadStreakNudge(); loadSchedule(); loadHouseholdChallenges(); if(FAM){try{sb.rpc('mint_family_hearts',{p_house:FAM.id});}catch(e){}}
   await loadMembers();
@@ -2501,7 +2501,27 @@ function openAddMember(){
   '<div id="inviteRows">'+rows+'</div>'+
   '<div class="authhint" style="text-align:left;margin:2px 0 12px"><a onclick="addInviteRow()">➕ Add another person</a></div>'+
   '<button class="btn btn-primary" onclick="inviteBulk()">Add to my family</button>'+
-  '<p class="s" style="font-size:11.5px;color:var(--ink2);margin-top:10px">Adding little ones or elders? As their parent or guardian, you\'re adding them with love. 💛</p>');
+  '<p class="s" style="font-size:11.5px;color:var(--ink2);margin-top:10px">Adding little ones or elders? As their parent or guardian, you\'re adding them with love. 💛</p>'+
+  '<div id="sentInvBox" style="margin-top:8px"></div>');
+  loadSentInvites();
+}
+async function loadSentInvites(){
+  var box=document.getElementById('sentInvBox'); if(!box) return;
+  var list=[];
+  try{ var r=await sb.rpc('my_sent_family_invites'); list=(r&&r.data)||[]; if(typeof list==='string'){ try{list=JSON.parse(list);}catch(e){list=[];} } }catch(e){}
+  if(!list.length){ box.innerHTML=''; return; }
+  var rows=list.map(function(it){
+    return '<div style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:7px">'+
+      '<div style="flex:1"><b style="font-size:13.5px">'+esc(it.name||'Someone')+'</b><div style="font-size:11.5px;color:#B4791F;font-weight:600">⏳ Waiting for them to accept</div></div>'+
+      '<button class="btn btn-ghost" style="width:auto;padding:6px 12px;margin:0" onclick="cancelSentInvite(\''+it.family_id+'\')">Cancel</button></div>';
+  }).join('');
+  box.innerHTML='<div style="font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1px;margin:14px 0 8px">📤 INVITES YOU\'VE SENT</div>'+rows+
+    '<p class="s" style="font-size:11px;color:var(--ink2)">Once they Accept, they show up in your family members list.</p>';
+}
+async function cancelSentInvite(fid){
+  var r=await sb.rpc('cancel_family_invite',{p_family:fid});
+  if(r.error){ toast(r.error.message||'Could not cancel'); return; }
+  toast('Invite cancelled'); loadSentInvites();
 }
 function _inviteRowHtml(i){
   return '<div style="display:flex;gap:6px;margin-bottom:6px"><input id="amName'+i+'" placeholder="Name" style="flex:1;margin:0"><input id="amPhone'+i+'" inputmode="numeric" placeholder="Phone number" style="flex:1.25;margin:0"></div>';
@@ -2529,7 +2549,10 @@ async function inviteBulk(){
   if(invited.length) msg.push(invited.join(', ')+' — request sent, ask them to tap Accept 🔔');
   if(pending.length) msg.push(pending.join(', ')+' — they\'ll join when they sign up');
   if(already.length) msg.push(already.join(', ')+' — already in your family');
-  closeSheet(); toast(msg.join(' · ')); await refreshAll();
+  toast(msg.join(' · '));
+  // clear the input rows, keep sheet open, show the new pending status
+  try{ for(var k=0;k<(window.__inviteRows||0);k++){ var en=document.getElementById('amName'+k), ep=document.getElementById('amPhone'+k); if(en)en.value=''; if(ep)ep.value=''; } }catch(e){}
+  loadSentInvites(); await refreshAll();
 }
 function _showInviteShare(ok,fail){
   var url=location.origin;
@@ -2987,7 +3010,7 @@ function openMyGrids(){
   function card(x){
     var active=(x.id===window.__activeGridId);
     return '<div class="mergecard" style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="switchGrid(\''+x.id+'\')">'+
-      '<div style="flex:1"><b>'+esc(x.name)+'</b><div style="font-size:11px;color:var(--ink2)">code '+esc(x.code||'')+(active?' \u00b7 open now':'')+'</div></div>'+
+      '<div style="flex:1"><b>'+esc(x.name)+'</b><div style="font-size:11px;color:var(--ink2)">'+(active?'Open now':'Tap to open')+'</div></div>'+
       (active?'<span style="color:#12A14B;font-weight:800">\u2713</span>':'<span style="color:var(--ink2);font-size:20px">\u203a</span>')+'</div>';
   }
   var html='<div style="text-align:center"><div style="font-size:40px">\ud83d\uddc2\ufe0f</div><h3>My grids</h3></div>'+
@@ -4435,7 +4458,11 @@ async function TR_persistEdge(kind,a,b){ if(!TR_TREE||!sb)return; if(!TR_P(a)||!
 function TR_setGender(id,g){if(TR_P(id))TR_P(id).gender=g; if(TR_P(id)&&TR_P(id).__db)TR_saveGender(id,g); TR_tap(id); TR_switch(TR_view);}
 function TR_addBtn(rel,anchor,icon,title,sub){return '<div class="tr-addbtn" onclick="TR_openForm(\''+rel+'\',\''+anchor+'\')"><span>'+icon+'</span><b>'+title+'</b><small>'+sub+'</small></div>';}
 function TR_openAdd(){ if(!Object.keys(TR_people).length||!TR_ME){TR_openForm('self',null);return;}
-  openSheet('<h3>Add to the tree</h3><p style="font-size:12.5px;color:var(--ink2);margin:-6px 0 12px">Add a relative — or tap anyone in the tree to add <i>their</i> relatives.</p><div class="tr-addgrid">'+TR_addBtn('spouse',TR_ME,'❤','My spouse','husband / wife')+TR_addBtn('child',TR_ME,'🧒','My child','son / daughter')+TR_addBtn('parent',TR_ME,'👴','My parent','father / mother')+TR_addBtn('sibling',TR_ME,'🧑‍🤝‍🧑','My sibling','brother / sister')+'</div>');}
+  openSheet('<h3>Add family</h3>'+
+  '<button class="tr-cta" style="margin:2px 0 4px;background:linear-gradient(135deg,#FF7A00,#E03A7A)" onclick="closeSheet();openAddMember()">📲 Invite a real person by phone</button>'+
+  '<p style="font-size:11.5px;color:var(--ink2);margin:0 0 14px;text-align:center">They get a request on their phone and tap <b>Accept</b> to join your family.</p>'+
+  '<div style="font-size:11px;color:var(--ink2);font-weight:700;text-align:center;letter-spacing:1px;margin-bottom:8px">OR JUST ADD A NAME TO THE TREE</div>'+
+  '<div class="tr-addgrid">'+TR_addBtn('spouse',TR_ME,'❤','My spouse','husband / wife')+TR_addBtn('child',TR_ME,'🧒','My child','son / daughter')+TR_addBtn('parent',TR_ME,'👴','My parent','father / mother')+TR_addBtn('sibling',TR_ME,'🧑‍🤝‍🧑','My sibling','brother / sister')+'</div>');}
 var TR_pg='o';
 function TR_openForm(rel,anchor){var who=rel==='self'?'you':({spouse:'spouse',child:'a child',parent:'a parent',sibling:'a sibling'}[rel]||'family');
   var ctx=rel==='self'?'Let’s start with you 🌱':('Adding '+who+(anchor?' of '+TR_P(anchor).name:''));TR_pg='o';
