@@ -68,6 +68,10 @@ body{
 .tr-tab{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--ink2);padding:9px 4px;border-radius:10px;cursor:pointer}
 .tr-tab.on{background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff}
 .tr-hide{display:none}
+.tr-mat{display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,#F59E0B,#FBBF24);color:#fff;border-radius:16px;padding:11px 14px;margin-bottom:12px;box-shadow:0 8px 20px rgba(245,158,11,.32)}
+.tr-mat .crown{font-size:24px}
+.tr-mat b{font-size:15px;font-family:'Baloo 2'}
+.tr-mat small{display:block;font-size:11px;opacity:.96;margin-top:1px}
 .tr-av{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:19px;border:2.5px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.12);overflow:hidden;flex:0 0 auto}
 .tr-av img{width:100%;height:100%;object-fit:cover}
 .tr-av.m{background:linear-gradient(135deg,#60A5FA,#3B82F6)}
@@ -1294,7 +1298,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 98</div>
+      <div class="psub">Powered by Skyvos AI · build 99</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -4288,11 +4292,24 @@ function TR_switch(v){TR_view=v;
 
 function TR_isPlaceholder(p){return !!(p&&(p.placeholder||p.name==='(Parent)'));}
 function TR_realIds(){return Object.keys(TR_people).filter(function(k){return !TR_isPlaceholder(TR_P(k));});}
+function TR_matriarch(){
+  var gen=TR_computeGen();
+  var women=TR_realIds().filter(function(k){return TR_P(k).gender==='f';});
+  if(!women.length)return null;
+  women.sort(function(a,b){
+    var ga=(gen[a]===undefined?0:gen[a]), gb=(gen[b]===undefined?0:gen[b]);
+    if(ga!==gb)return ga-gb;            // older generation first
+    var da=TR_P(a).dob, db=TR_P(b).dob;
+    if(da&&db)return da<db?-1:1;        // older birthday first
+    if(da&&!db)return -1; if(db&&!da)return 1; return 0;
+  });
+  return women[0];
+}
 function TR_renderTree(){
   var el=document.getElementById('tr-tree');if(!el)return;var ids=TR_realIds();
   if(!ids.length){el.innerHTML='<div class="tr-empty">🌱 Your tree is empty.<br>Tap <b>＋ Add family</b> to add yourself, your parents, spouse and children.</div>';return;}
   var gen=TR_computeGen(),byGen={};ids.forEach(function(id){(byGen[gen[id]]=byGen[gen[id]]||[]).push(id);});
-  var gnums=Object.keys(byGen).map(Number).sort(function(a,b){return a-b;});var meG=gen[TR_ME]||0;var html='';
+  var matId=TR_matriarch();var gnums=Object.keys(byGen).map(Number).sort(function(a,b){return a-b;});var meG=gen[TR_ME]||0;var html=matId?('<div class="tr-mat"><span class="crown">👑</span><div><b>'+TR_P(matId).name+'</b><small>Matriarch — honoured head of the family 💛</small></div></div>'):'';
   gnums.forEach(function(gn){var diff=gn-meG;
     var lbl=diff===0?'Your generation':(diff===-1?'Parents & their siblings':(diff===-2?'Grandparents':(diff===1?'Children, nieces & nephews':(diff===2?'Grandchildren':(diff<0?'Elders':'Younger')))));
     var row=byGen[gn].slice(),done={},cards='';
@@ -4300,7 +4317,7 @@ function TR_renderTree(){
       var partners=[id].concat(sp.filter(function(s){return !done[s];}));partners.forEach(function(s){done[s]=1;});
       var hasme=partners.indexOf(TR_ME)>=0,inner='';
       partners.forEach(function(pid,ix){var r=TR_relation(TR_ME,pid);
-        inner+='<div class="tr-pc" onclick="TR_tap(\''+pid+'\')">'+TR_avatar(pid)+'<div class="tr-nm">'+TR_P(pid).name+'</div>'+(pid===TR_ME?'<div class="tr-rl">You</div>':(r.hi&&r.hi!=='You'?'<div class="tr-rl">'+r.hi+'</div>':''))+'</div>';
+        inner+='<div class="tr-pc" onclick="TR_tap(\''+pid+'\')">'+TR_avatar(pid)+'<div class="tr-nm">'+TR_P(pid).name+(pid===matId?' 👑':'')+'</div>'+(pid===TR_ME?'<div class="tr-rl">You</div>':(r.hi&&r.hi!=='You'?'<div class="tr-rl">'+r.hi+'</div>':''))+'</div>';
         if(ix<partners.length-1)inner+='<div class="tr-heart">❤</div>';});
       cards+='<div class="tr-couple'+(hasme?' hasme':'')+'">'+inner+'</div>';});
     html+='<div class="tr-gen"><div class="tr-genlab">'+lbl+'</div><div class="tr-genrow">'+cards+'</div></div>';});
