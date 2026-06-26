@@ -10,158 +10,239 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  --paper:#FFF8EE; --paper2:#FFEFD9;
-  --ink:#2A1E2E; --ink2:#6B5A66;
-  --saffron:#FF8A1E; --saffron-d:#F2700A;
-  --rani:#E03A7A; --rani-d:#C42466;
-  --gold:#F4B740; --leaf:#2BA84A; --sky:#3AA0E0; --violet:#7C3AED;
-  --card:#FFFFFF; --line:#F1E2CF;
-  --shadow:0 10px 30px rgba(122,68,20,.12);
-  --shadow-sm:0 4px 14px rgba(122,68,20,.10);
+  --paper:#FFF9F1; --paper2:#FFEFDD;
+  --ink:#241826; --ink2:#7A6A76; --ink3:#A99BA4;
+  --saffron:#FF8A1E; --saffron-l:#FFB05A; --rani:#E03A7A; --rani-d:#C42466; --violet:#7C3AED;
+  --leaf:#2BA84A; --card:#FFFFFF; --line:#F0E4D6;
+  --grad:linear-gradient(135deg,#FF9A36,#E03A7A 62%,#B5379D);
+  --grad-soft:linear-gradient(135deg,#FFF0E2,#FFE7F0);
+  --sh-1:0 1px 2px rgba(122,68,20,.05), 0 8px 22px rgba(122,68,20,.07);
+  --sh-2:0 2px 6px rgba(122,68,20,.06), 0 18px 40px rgba(122,68,20,.12);
+  --sh-pop:0 10px 26px rgba(224,58,122,.30);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#EAD9C2;color:var(--ink);min-height:100vh}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#E9D8C1;color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
 .display{font-family:'Baloo 2',cursive}
-#app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--paper);position:relative;box-shadow:0 0 50px rgba(0,0,0,.08);display:flex;flex-direction:column;overflow:hidden}
-.screen{display:none;flex:1;flex-direction:column;padding:26px 22px}
-.screen.active{display:flex;animation:fade .3s ease}
-.screen.has-nav{padding-bottom:92px}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.logo{width:74px;height:74px;border-radius:22px;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:var(--shadow);margin:0 auto}
-.wordmark{font-family:'Baloo 2';font-weight:800;font-size:34px;text-align:center;margin:16px 0 2px;letter-spacing:.5px}
-.tagline{text-align:center;color:var(--rani-d);font-weight:700;font-size:14px;letter-spacing:.3px}
+#app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--paper);position:relative;box-shadow:0 0 60px rgba(0,0,0,.10);display:flex;flex-direction:column;overflow:hidden}
+.screen{display:none;flex:1;flex-direction:column;padding:24px 20px}
+.screen.active{display:flex;animation:scin .45s cubic-bezier(.2,.8,.2,1)}
+.screen.has-nav{padding-bottom:104px}
+@keyframes scin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* generic */
 .muted{color:var(--ink2)}
-.field-label{font-size:12.5px;font-weight:700;color:var(--ink2);margin:0 0 6px 2px;letter-spacing:.2px}
-input.fi,select.fi{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);outline:none;transition:border-color .15s}
-input.fi:focus,select.fi:focus{border-color:var(--rani)}
-.btn{width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--saffron),var(--rani));box-shadow:var(--shadow-sm);transition:transform .08s,opacity .15s}
-.btn:active{transform:scale(.98)}
-.btn[disabled]{opacity:.5;cursor:not-allowed}
-.btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
-.btn-sm{width:auto;padding:10px 16px;font-size:13.5px;border-radius:12px}
-.link{color:var(--rani-d);font-weight:700;cursor:pointer;font-size:13.5px}
-.err{color:var(--rani-d);font-size:13px;font-weight:600;min-height:18px;margin:8px 2px 0}
 .spacer{flex:1}
-.chips{display:flex;gap:8px}
-.chip{flex:1;text-align:center;padding:13px 6px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink2)}
-.chip.on{background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border-color:transparent}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--ink3);text-transform:uppercase}
+.h1{font-family:'Baloo 2';font-weight:800;font-size:27px;letter-spacing:.2px}
+.field-label{font-size:12px;font-weight:700;color:var(--ink2);margin:0 0 7px 3px;letter-spacing:.2px}
+input.fi,select.fi{width:100%;border:1.5px solid var(--line);border-radius:16px;padding:15px 16px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}
+input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgba(224,58,122,.10)}
+.btn{width:100%;border:none;border-radius:18px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;color:#fff;background:var(--grad);box-shadow:var(--sh-pop);transition:transform .1s,filter .2s,opacity .2s}
+.btn:active{transform:scale(.975)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:var(--sh-1)}
+.btn-soft{background:var(--grad-soft);color:var(--rani-d);box-shadow:none}
+.btn-sm{width:auto;padding:11px 18px;font-size:14px;border-radius:14px}
+.link{color:var(--rani-d);font-weight:700;cursor:pointer;font-size:13.5px}
+.err{color:var(--rani-d);font-size:13px;font-weight:600;min-height:18px;margin:8px 3px 0}
+
+/* auth */
+.logo{width:80px;height:80px;border-radius:26px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:var(--sh-2);margin:0 auto;animation:floaty 4s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.wordmark{font-family:'Baloo 2';font-weight:800;font-size:36px;text-align:center;margin:18px 0 2px;letter-spacing:.5px}
+.tagline{text-align:center;color:var(--rani-d);font-weight:700;font-size:14px;letter-spacing:.3px}
+.chips{display:flex;gap:9px}
+.chip{flex:1;text-align:center;padding:13px 6px;border-radius:15px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink2);transition:.18s}
+.chip.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--sh-pop)}
 .photo-pick{display:flex;align-items:center;gap:14px}
-.photo-ring{width:72px;height:72px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink2);background:#fff;overflow:hidden;flex:0 0 auto}
+.photo-ring{width:76px;height:76px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--ink2);background:#fff;overflow:hidden;flex:0 0 auto}
 .photo-ring img{width:100%;height:100%;object-fit:cover}
 .otp-row{display:flex;gap:9px;justify-content:space-between}
-.otp-box{width:48px;height:56px;border:1.5px solid var(--line);border-radius:13px;text-align:center;font-size:24px;font-weight:800;font-family:'Baloo 2';background:#fff;color:var(--ink);outline:none}
-.otp-box:focus{border-color:var(--rani)}
-.greeting{font-size:14px;color:var(--ink2);font-weight:600}
-.greeting b{display:block;font-family:'Baloo 2';font-size:26px;color:var(--ink);font-weight:800;margin-top:2px}
-.home-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.avatar{width:50px;height:50px;border-radius:50%;flex:0 0 auto;overflow:hidden;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;font-family:'Baloo 2'}
+.otp-box{width:48px;height:58px;border:1.5px solid var(--line);border-radius:15px;text-align:center;font-size:24px;font-weight:800;font-family:'Baloo 2';background:#fff;color:var(--ink);outline:none;transition:.18s}
+.otp-box:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgba(224,58,122,.10)}
+
+/* home */
+.topbar{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+.avatar{width:50px;height:50px;border-radius:50%;flex:0 0 auto;overflow:hidden;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;font-family:'Baloo 2';box-shadow:var(--sh-1)}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.strength{position:relative;overflow:hidden;background:linear-gradient(135deg,#FF7A00 0%,#E03A7A 52%,#7C3AED 100%);color:#fff;border-radius:22px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
-.strength .lbl{font-size:13px;font-weight:700;opacity:.92}
-.strength .tier{font-family:'Baloo 2';font-weight:700;font-size:20px;margin-top:3px}
-.strength .num{font-family:'Baloo 2';font-size:46px;font-weight:800;line-height:1}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow-sm);transition:transform .12s}
-.card:active{transform:scale(.97)}
-.card .ic{font-size:26px}
-.card .ct{font-family:'Baloo 2';font-weight:700;font-size:15px;margin-top:8px}
-.card .cv{font-size:12.5px;color:var(--rani-d);font-weight:700;margin-top:3px;line-height:1.3}
-.section-title{font-family:'Baloo 2';font-weight:800;font-size:20px;margin:4px 0 14px}
-.sub-title{font-size:12px;font-weight:800;color:var(--ink2);letter-spacing:.6px;margin:20px 2px 10px}
-.empty{background:var(--card);border:1px dashed var(--line);border-radius:20px;padding:26px 22px;text-align:center;color:var(--ink2);font-weight:600;line-height:1.5}
-.empty .big{font-size:36px;display:block;margin-bottom:10px}
-.reqcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px 16px;margin-bottom:11px;box-shadow:var(--shadow-sm);animation:fade .3s ease}
-.reqcard .nm{font-weight:800;font-size:15.5px}
-.reqcard .rl{font-size:13px;color:var(--rani-d);font-weight:700;margin-top:1px}
-.reqcard .ms{font-size:13px;color:var(--ink2);margin-top:6px;background:var(--paper2);padding:8px 11px;border-radius:12px}
-.row-actions{display:flex;gap:8px;margin-top:12px}
-.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;padding:6px 12px;border-radius:20px;white-space:nowrap}
-.b-pending{background:#FEF3D6;color:#B4791F}
-.b-accepted{background:#E4F7EA;color:#177A3B}
-.b-rejected{background:#FBE3E3;color:#B23A3A}
-/* progress card (sent request) */
-.prog{background:linear-gradient(135deg,#FFF3E9,#FFE9F1);border:1px solid #F6D9C9;border-radius:18px;padding:15px 16px;margin-bottom:11px;box-shadow:var(--shadow-sm);animation:fade .3s ease}
-.prog .ttl{font-family:'Baloo 2';font-weight:700;font-size:15px}
-.prog .step{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink2);margin-top:8px}
-.prog .step .ok{color:var(--leaf);font-weight:800}
-/* connection card */
-.conn{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 15px;margin-bottom:11px;box-shadow:var(--shadow-sm);animation:fade .3s ease}
-.conn .ph{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:18px}
-.conn .ph img{width:100%;height:100%;object-fit:cover}
-.conn .nm{font-weight:800;font-size:15px}
-.conn .rl{font-size:12.5px;color:var(--rani-d);font-weight:700}
-.conn .pn{font-size:12px;color:var(--ink2);margin-top:1px}
-/* family tree */
-.tree-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.tree-back{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex:0 0 auto}
-.strength-pill{margin-left:auto;background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;font-weight:800;font-family:'Baloo 2';padding:7px 15px;border-radius:20px;font-size:14px}
-.tree-wrap{position:relative;padding:14px 0 10px}
+.topbar .hi{font-size:13px;color:var(--ink2);font-weight:600}
+.topbar .nm{font-family:'Baloo 2';font-size:20px;font-weight:800;margin-top:-1px}
+
+/* HERO — family strength */
+.hero{position:relative;overflow:hidden;border-radius:30px;padding:34px 24px 30px;text-align:center;color:#fff;background:linear-gradient(160deg,#FF8A1E 0%,#E03A7A 56%,#7C3AED 116%);box-shadow:0 18px 44px rgba(224,58,122,.34);margin-bottom:24px}
+.hero::before{content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(255,255,255,.30),transparent 62%);pointer-events:none}
+.hero .he{font-size:11px;font-weight:800;letter-spacing:2px;opacity:.92;text-transform:uppercase}
+.hero .seed{font-size:46px;margin:14px 0 2px;display:inline-block;animation:breathe 3.2s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))}
+@keyframes breathe{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.12) rotate(2deg)}}
+.hero .tier{font-family:'Baloo 2';font-size:25px;font-weight:800;margin-top:2px}
+.hero .sub{font-size:13.5px;opacity:.94;font-weight:500;margin-top:6px;max-width:230px;margin-left:auto;margin-right:auto;line-height:1.4}
+.hero .num{font-family:'Baloo 2';font-size:64px;font-weight:800;line-height:1;margin-top:14px;text-shadow:0 4px 14px rgba(0,0,0,.18)}
+
+/* journey banner */
+.journey{display:flex;align-items:center;gap:14px;background:var(--grad-soft);border:1px solid #FAE0D2;border-radius:24px;padding:18px;box-shadow:var(--sh-1);margin-bottom:20px;cursor:pointer;transition:transform .12s}
+.journey:active{transform:scale(.98)}
+.journey .jic{width:50px;height:50px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto;box-shadow:var(--sh-1)}
+.journey .jt{font-family:'Baloo 2';font-weight:800;font-size:17px}
+.journey .js{font-size:12.5px;color:var(--ink2);font-weight:600;margin-top:1px}
+.journey .jar{margin-left:auto;color:var(--rani);font-size:20px;font-weight:800}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-1);cursor:pointer;transition:transform .12s,box-shadow .2s}
+.tile:active{transform:scale(.97)}
+.tile .tic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--grad-soft)}
+.tile .tt{font-family:'Baloo 2';font-weight:700;font-size:16px;margin-top:12px}
+.tile .ts{font-size:12px;color:var(--rani-d);font-weight:700;margin-top:3px;line-height:1.35}
+
+/* section heads */
+.sec-head{display:flex;align-items:center;gap:10px;margin:26px 2px 13px}
+.sec-head .si{font-size:18px}
+.sec-head .st{font-family:'Baloo 2';font-weight:800;font-size:19px}
+.sec-head .sc{margin-left:auto;background:var(--grad-soft);color:var(--rani-d);font-weight:800;font-size:12px;padding:3px 11px;border-radius:20px}
+
+/* premium cards */
+.pcard{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-1);margin-bottom:14px;animation:rise .5s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.av-lg{width:58px;height:58px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:22px;box-shadow:var(--sh-1)}
+.av-lg img{width:100%;height:100%;object-fit:cover}
+.rl-pill{display:inline-block;background:var(--grad-soft);color:var(--rani-d);font-weight:800;font-size:12px;padding:4px 11px;border-radius:20px}
+
+/* incoming request card */
+.rq{display:flex;gap:14px;align-items:flex-start}
+.rq .nm{font-weight:800;font-size:16px}
+.rq .ph{font-size:12.5px;color:var(--ink2);font-weight:600;margin-top:2px}
+.rq .row{display:flex;gap:9px;margin-top:14px}
+
+/* sent / progress card */
+.sent .top{display:flex;align-items:center;gap:10px}
+.sent .nm{font-family:'Baloo 2';font-weight:700;font-size:16px;flex:1}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;padding:6px 12px;border-radius:20px;white-space:nowrap}
+.b-pending{background:#FEF1D7;color:#B07A1B}
+.b-accepted{background:#E2F6E9;color:#1A7A3D}
+.b-rejected{background:#FBE4E4;color:#B23A3A}
+.sent .steps{margin-top:12px}
+.sent .step{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--ink2);margin-top:7px}
+.sent .step .dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;background:var(--leaf);flex:0 0 auto}
+.sent .step.wait .dot{background:#E7B85C}
+
+/* family card (your family) */
+.fcard{display:flex;gap:14px;align-items:center}
+.fcard .info{flex:1;min-width:0}
+.fcard .nm{font-weight:800;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fcard .meta{font-size:11.5px;color:var(--ink2);font-weight:600;margin-top:7px;display:flex;flex-wrap:wrap;gap:5px 10px}
+.fcard .meta b{color:var(--leaf)}
+
+/* empty states */
+.empty{background:#fff;border:1px solid var(--line);border-radius:24px;padding:34px 24px;text-align:center;box-shadow:var(--sh-1)}
+.empty .big{font-size:42px;display:block;margin-bottom:12px;animation:breathe 3.4s ease-in-out infinite}
+.empty .e1{font-family:'Baloo 2';font-weight:700;font-size:17px;color:var(--ink)}
+.empty .e2{font-size:13.5px;color:var(--ink2);font-weight:600;margin-top:8px;line-height:1.5}
+.empty .e3{color:var(--rani-d);font-weight:800;margin-top:6px}
+
+/* FAMILY TREE — vine of cards */
+.tree-strength{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--grad);color:#fff;font-family:'Baloo 2';font-weight:800;font-size:15px;padding:11px;border-radius:18px;box-shadow:var(--sh-pop);margin-bottom:4px}
+.tree-wrap{position:relative;padding:20px 0 8px}
 #treeLines{position:absolute;left:0;top:0;pointer-events:none;z-index:0}
-.tree-me{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-bottom:38px}
-.tree-me .ph{width:88px;height:88px;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:34px;border:3px solid #fff;box-shadow:var(--shadow)}
-.tree-me .ph img{width:100%;height:100%;object-fit:cover}
-.tree-me .nm{font-family:'Baloo 2';font-weight:800;font-size:18px;margin-top:9px}
-.tree-me .meta{font-size:12.5px;color:var(--rani-d);font-weight:700;margin-top:1px}
-.tree-members{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.tnode{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 10px;text-align:center;box-shadow:var(--shadow-sm);animation:fade .35s ease}
-.tnode .ph{width:56px;height:56px;border-radius:50%;overflow:hidden;margin:0 auto;background:linear-gradient(135deg,var(--saffron),var(--rani));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:20px}
+.tree-col{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:30px}
+.tnode{width:80%;max-width:300px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:13px 15px;box-shadow:var(--sh-2);display:flex;align-items:center;gap:13px;animation:rise .55s ease both}
+.tnode.you{background:var(--grad);color:#fff;border:none}
+.tnode .ph{width:50px;height:50px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:19px}
+.tnode.you .ph{background:rgba(255,255,255,.25)}
 .tnode .ph img{width:100%;height:100%;object-fit:cover}
-.tnode .nm{font-weight:800;font-size:14px;margin-top:8px}
-.tnode .rl{font-size:12px;color:var(--rani-d);font-weight:700;margin-top:1px}
-.tnode .pn{font-size:11px;color:var(--ink2);margin-top:2px}
-.tree-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 14px 14px;box-shadow:var(--shadow-sm)}
-.tree-strength{text-align:center;font-family:'Baloo 2';font-weight:800;color:var(--rani-d);font-size:15px;margin-bottom:2px}
+.tnode .tn{font-weight:800;font-size:15px}
+.tnode .tr{font-size:12px;font-weight:700;margin-top:1px;color:var(--rani-d)}
+.tnode.you .tr{color:rgba(255,255,255,.9)}
+
+/* bridge */
+.bridge-art{position:relative;height:170px;margin:8px 0 22px}
+.bridge-art svg{width:100%;height:100%;overflow:visible}
+.bridge-path{stroke-dasharray:240;stroke-dashoffset:240;animation:draw 2s ease .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.bridge-glow{animation:glow 2.4s ease-in-out 2s infinite}
+@keyframes glow{0%,100%{opacity:.35}50%{opacity:.9}}
+.house{animation:rise .6s ease both}
+
 /* bottom nav */
-.nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:#fff;border-top:1px solid var(--line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(122,68,20,.06)}
-.nav button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-size:11px;font-weight:700;padding:6px 0}
-.nav button .ni{font-size:21px}
+.nav{position:fixed;left:0;right:0;bottom:0;max-width:440px;margin:0 auto;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:9px 6px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(122,68,20,.07)}
+.nav button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink3);font-size:11px;font-weight:700;padding:5px 0;transition:color .2s}
+.nav button .ni{font-size:21px;transition:transform .2s}
 .nav button.on{color:var(--rani-d)}
+.nav button.on .ni{transform:translateY(-2px) scale(1.12)}
 .nav.hide{display:none}
-.prow{display:flex;justify-content:space-between;padding:14px 2px;border-bottom:1px solid var(--line);font-size:14px}
+
+/* profile */
+.prow{display:flex;justify-content:space-between;padding:16px 4px;border-bottom:1px solid var(--line);font-size:14px}
 .prow .k{color:var(--ink2);font-weight:600}
 .prow .v{font-weight:700}
-.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:30px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60;max-width:88%;text-align:center}
-.toast.show{opacity:1}
-/* celebration overlay */
-.celebrate{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,rgba(124,58,237,.92),rgba(224,58,122,.95) 60%,rgba(255,122,0,.95));overflow:hidden}
-.celebrate.show{display:flex;animation:fade .35s ease}
-.celebrate .box{text-align:center;color:#fff;padding:24px;transform:scale(.6);opacity:0;animation:pop .5s cubic-bezier(.2,1.3,.4,1) .1s forwards}
-@keyframes pop{to{transform:scale(1);opacity:1}}
-.celebrate .em{font-size:72px;animation:bounce 1.2s ease infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-.celebrate h2{font-family:'Baloo 2';font-size:30px;margin:8px 0 4px;font-weight:800}
-.celebrate .plus{font-family:'Baloo 2';font-size:22px;font-weight:700;background:rgba(255,255,255,.2);display:inline-block;padding:8px 18px;border-radius:30px;margin-top:10px}
-.confetti{position:absolute;top:-30px;font-size:22px;animation:fall linear forwards}
-@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.2}}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:118px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:30px;font-size:13.5px;font-weight:600;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;z-index:90;max-width:86%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* flying heart */
+.fly-heart{position:fixed;z-index:95;font-size:30px;pointer-events:none;animation:fly 1.1s ease-out forwards}
+@keyframes fly{0%{opacity:1;transform:translateY(0) scale(.6)}30%{opacity:1;transform:translateY(-30px) scale(1.2)}100%{opacity:0;transform:translateY(-180px) scale(.7)}}
+
+/* review modal */
+.modal{position:fixed;inset:0;z-index:100;display:none;background:rgba(36,24,38,.5);backdrop-filter:blur(4px)}
+.modal.show{display:flex;align-items:flex-end;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.modal-card{width:100%;max-width:440px;margin:0 auto;background:var(--paper);border-radius:30px 30px 0 0;padding:26px 24px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -20px 50px rgba(0,0,0,.25);animation:sheetup .35s cubic-bezier(.2,.9,.2,1);text-align:center;max-height:92vh;overflow-y:auto}
+@keyframes sheetup{from{transform:translateY(100%)}to{transform:none}}
+.modal-grab{width:42px;height:5px;border-radius:5px;background:var(--line);margin:0 auto 18px}
+.modal-photo{width:104px;height:104px;border-radius:50%;margin:0 auto;overflow:hidden;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Baloo 2';font-size:42px;box-shadow:var(--sh-2);border:4px solid #fff}
+.modal-photo img{width:100%;height:100%;object-fit:cover}
+.modal-name{font-family:'Baloo 2';font-weight:800;font-size:24px;margin-top:14px}
+.modal-phone{font-size:13px;color:var(--ink2);font-weight:600;margin-top:1px}
+.modal-says{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;font-size:15px;font-weight:600;color:var(--ink);margin:18px 0;box-shadow:var(--sh-1)}
+.modal-says b{color:var(--rani-d)}
+.modal-q{font-family:'Baloo 2';font-weight:700;font-size:17px;margin-bottom:10px;text-align:left}
+
+/* celebration (two hearts merge) */
+.celebrate{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 38%,rgba(124,58,237,.94),rgba(224,58,122,.96) 55%,rgba(255,122,0,.96))}
+.celebrate.show{display:flex;animation:fadein .3s ease}
+.celebrate .hearts{position:relative;height:96px;width:200px;margin:0 auto 6px}
+.celebrate .hl,.celebrate .hr{position:absolute;top:18px;font-size:56px;filter:drop-shadow(0 6px 12px rgba(0,0,0,.2))}
+.celebrate .hl{left:20px;animation:mergeL .9s cubic-bezier(.4,0,.2,1) forwards}
+.celebrate .hr{right:20px;animation:mergeR .9s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes mergeL{0%{left:0;transform:scale(.8)}70%{left:72px;transform:scale(1.05)}100%{left:72px;transform:scale(0)}}
+@keyframes mergeR{0%{right:0;transform:scale(.8)}70%{right:72px;transform:scale(1.05)}100%{right:72px;transform:scale(0)}}
+.celebrate .big-heart{position:absolute;top:8px;left:50%;transform:translateX(-50%) scale(0);font-size:76px;animation:popHeart .5s cubic-bezier(.2,1.4,.4,1) .8s forwards;filter:drop-shadow(0 8px 16px rgba(0,0,0,.22))}
+@keyframes popHeart{to{transform:translateX(-50%) scale(1)}}
+.celebrate .box{text-align:center;color:#fff;opacity:0;animation:fadein .5s ease 1.1s forwards}
+.celebrate h2{font-family:'Baloo 2';font-size:30px;margin:6px 0 4px;font-weight:800}
+.celebrate .plus{font-family:'Baloo 2';font-size:21px;font-weight:700;background:rgba(255,255,255,.22);display:inline-block;padding:8px 20px;border-radius:30px;margin-top:8px}
+.confetti{position:absolute;top:-30px;font-size:20px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(360deg);opacity:.15}}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- SCREEN 1 — PHONE LOGIN -->
+  <!-- LOGIN -->
   <section class="screen active" id="screen-login">
     <div class="spacer"></div>
     <div class="logo">🌳</div>
     <div class="wordmark">Jeeto</div>
     <div class="tagline">Connecting Generations</div>
-    <div style="height:36px"></div>
+    <div style="height:38px"></div>
     <div class="field-label">PHONE NUMBER</div>
     <input class="fi" id="loginPhone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" oninput="onPhoneInput()" onkeydown="if(event.key==='Enter')submitPhone()">
     <div class="err" id="loginErr"></div>
     <button class="btn" id="loginBtn" onclick="submitPhone()" disabled>Continue</button>
-    <p class="muted" style="text-align:center;font-size:12px;margin-top:14px">We'll send a one-time code to verify it's you.</p>
+    <p class="muted" style="text-align:center;font-size:12px;margin-top:16px">We'll send a one-time code to verify it's you.</p>
     <div class="spacer"></div>
   </section>
 
-  <!-- SCREEN 2 — OTP -->
+  <!-- OTP -->
   <section class="screen" id="screen-otp">
     <div class="spacer"></div>
     <div class="logo">🔐</div>
-    <div class="wordmark" style="font-size:26px">Enter the code</div>
+    <div class="wordmark" style="font-size:27px">Enter the code</div>
     <p class="muted" style="text-align:center;font-size:13.5px">Sent to <b id="otpPhoneEcho"></b> &nbsp;<span class="link" onclick="showScreen('screen-login')">change</span></p>
-    <div style="height:24px"></div>
-    <div class="otp-row" id="otpRow">
+    <div style="height:26px"></div>
+    <div class="otp-row">
       <input class="otp-box" inputmode="numeric" maxlength="1" data-i="0" oninput="otpType(this)" onkeydown="otpKey(this,event)">
       <input class="otp-box" inputmode="numeric" maxlength="1" data-i="1" oninput="otpType(this)" onkeydown="otpKey(this,event)">
       <input class="otp-box" inputmode="numeric" maxlength="1" data-i="2" oninput="otpType(this)" onkeydown="otpKey(this,event)">
@@ -171,17 +252,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani)}
     </div>
     <div class="err" id="otpErr"></div>
     <button class="btn" id="otpBtn" onclick="submitOtp()">Verify</button>
-    <p class="muted" style="text-align:center;font-size:12px;margin-top:14px">For testing, the code is <b>123456</b>.</p>
+    <p class="muted" style="text-align:center;font-size:12px;margin-top:16px">For testing, the code is <b>123456</b>.</p>
     <div class="spacer"></div>
   </section>
 
-  <!-- SCREEN 3 — PROFILE SETUP -->
+  <!-- PROFILE SETUP -->
   <section class="screen" id="screen-profile">
-    <div style="height:6px"></div>
+    <div style="height:8px"></div>
     <div class="logo">👋</div>
-    <div class="wordmark" style="font-size:26px">Welcome to Jeeto</div>
+    <div class="wordmark" style="font-size:27px">Welcome home</div>
     <p class="muted" style="text-align:center;font-size:13.5px;margin-top:2px">A few details to set up your profile.</p>
-    <div style="height:22px"></div>
+    <div style="height:24px"></div>
     <div class="field-label">YOUR NAME</div>
     <input class="fi" id="pfName" placeholder="Full name">
     <div style="height:14px"></div>
@@ -206,64 +287,101 @@ input.fi:focus,select.fi:focus{border-color:var(--rani)}
     <div style="height:10px"></div>
   </section>
 
-  <!-- SCREEN 4 — HOME -->
+  <!-- HOME -->
   <section class="screen has-nav" id="screen-home">
-    <div class="home-head">
+    <div class="topbar">
       <div class="avatar" id="homeAvatar" style="cursor:pointer" onclick="navTo('profile')">J</div>
-      <div class="greeting" id="homeGreeting">Good Morning,<b>—</b></div>
+      <div><div class="hi" id="homeHi">Good morning,</div><div class="nm" id="homeName">—</div></div>
     </div>
-    <div class="strength">
-      <div>
-        <div class="lbl">⭐ Family Strength</div>
-        <div class="tier" id="statTier">🌱 Seed</div>
-      </div>
+
+    <div class="hero">
+      <div class="he">⭐ Family Strength</div>
+      <div class="seed" id="heroSeed">🌱</div>
+      <div class="tier" id="statTier">Seed</div>
+      <div class="sub">Every relationship makes us stronger.</div>
       <div class="num" id="statStrength">0</div>
     </div>
-    <div class="cards">
-      <div class="card" onclick="navTo('family')" style="cursor:pointer"><div class="ic">❤️</div><div class="ct">Family</div><div class="cv" id="statFamily">Start Building Your Family →</div></div>
-      <div class="card" onclick="navTo('bridge')" style="cursor:pointer"><div class="ic">🌉</div><div class="ct">Bridge</div><div class="cv" id="statBridge">Build Your First Bridge →</div></div>
-      <div class="card" style="cursor:pointer"><div class="ic">📸</div><div class="ct">Memories</div><div class="cv" id="statMemories">Create your first memory ❤️</div></div>
-      <div class="card" onclick="navTo('family')" style="cursor:pointer"><div class="ic">🌳</div><div class="ct">Family Tree</div><div class="cv" id="statTree">Grows with your family →</div></div>
+
+    <div class="journey" onclick="navTo('family')">
+      <div class="jic">❤️</div>
+      <div><div class="jt">Your Journey</div><div class="js">Every family starts with one relationship.</div></div>
+      <div class="jar">→</div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile" onclick="navTo('family')"><div class="tic">❤️</div><div class="tt">Family</div><div class="ts" id="statFamily">Start building →</div></div>
+      <div class="tile" onclick="navTo('family')"><div class="tic">🌳</div><div class="tt">Family Tree</div><div class="ts" id="statTree">See your tree →</div></div>
+      <div class="tile" onclick="navTo('bridge')"><div class="tic">🌉</div><div class="tt">Bridge</div><div class="ts">Connect families →</div></div>
+      <div class="tile"><div class="tic">📸</div><div class="tt">Memories</div><div class="ts">Coming with love →</div></div>
     </div>
   </section>
 
-  <!-- SCREEN 5 — FAMILY -->
+  <!-- FAMILY -->
   <section class="screen has-nav" id="screen-family">
-    <div class="section-title">❤️ Build Your Family</div>
-    <div class="card" style="margin-bottom:6px">
-      <input class="fi" id="frPhone" inputmode="numeric" maxlength="10" placeholder="Their phone number" style="margin-bottom:10px" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
+    <div class="h1" style="margin-bottom:4px">❤️ Build Your Family</div>
+    <p class="muted" style="font-size:13px;margin:0 2px 12px">Add the people you love, one relationship at a time.</p>
+
+    <!-- 1) Add family member -->
+    <div class="pcard" style="margin-bottom:2px">
+      <div class="sec-head" style="margin:0 0 12px"><span class="si">➕</span><span class="st">Add a family member</span></div>
+      <input class="fi" id="frPhone" inputmode="numeric" maxlength="10" placeholder="Their phone number" style="margin-bottom:11px" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
       <div class="field-label">Who is this person to you?</div>
-      <select class="fi" id="frRel" style="margin-bottom:10px">
-        <option value="">Choose relationship…</option>
-      </select>
-      <input class="fi" id="frMsg" placeholder="Message" value="Hi, I would love to connect with you on Jeeto Family." style="margin-bottom:10px">
-      <button class="btn" id="frBtn" onclick="sendRequest()">Send request</button>
+      <select class="fi" id="frRel" style="margin-bottom:11px"><option value="">Choose relationship…</option></select>
+      <input class="fi" id="frMsg" value="Hi, I would love to connect with you on Jeeto Family." style="margin-bottom:12px">
+      <button class="btn" id="frBtn" onclick="sendRequest()">Send request ❤️</button>
     </div>
-    <div id="famBody"><div class="empty" style="margin-top:14px">Loading…</div></div>
+
+    <div id="famBody"></div>
   </section>
 
-  <!-- SCREEN 6 — BRIDGE -->
+  <!-- BRIDGE -->
   <section class="screen has-nav" id="screen-bridge">
-    <div class="section-title">🌉 Build Bridges</div>
-    <div class="empty">
-      <span class="big">🌉</span>
-      <b style="color:var(--ink);font-size:16px;display:block;margin-bottom:6px">A Bridge connects two complete families.</b>
-      Coming after your first family is created.
+    <div class="h1" style="margin-bottom:4px">🌉 Bridges</div>
+    <p class="muted" style="font-size:13px;margin:0 2px 8px">Bridges connect complete families, not individuals.</p>
+    <div class="bridge-art">
+      <svg viewBox="0 0 320 170" fill="none">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF8A1E"/><stop offset="1" stop-color="#E03A7A"/></linearGradient>
+          <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E03A7A"/><stop offset="1" stop-color="#C42466"/></linearGradient>
+        </defs>
+        <!-- left house -->
+        <g class="house" style="animation-delay:.1s">
+          <rect x="14" y="92" width="74" height="58" rx="10" fill="#fff" stroke="#F0E4D6"/>
+          <path d="M8 96 L51 60 L94 96 Z" fill="url(#roof)"/>
+          <rect x="42" y="116" width="20" height="34" rx="4" fill="#FFE7F0"/>
+        </g>
+        <!-- right house -->
+        <g class="house" style="animation-delay:.3s">
+          <rect x="232" y="92" width="74" height="58" rx="10" fill="#fff" stroke="#F0E4D6"/>
+          <path d="M226 96 L269 60 L312 96 Z" fill="url(#roof)"/>
+          <rect x="260" y="116" width="20" height="34" rx="4" fill="#FFE7F0"/>
+        </g>
+        <!-- glowing bridge -->
+        <path class="bridge-glow" d="M88 120 Q160 76 232 120" stroke="url(#bg)" stroke-width="13" stroke-linecap="round" opacity=".4"/>
+        <path class="bridge-path" d="M88 120 Q160 76 232 120" stroke="url(#bg)" stroke-width="5" stroke-linecap="round"/>
+        <circle class="bridge-glow" cx="160" cy="98" r="7" fill="#fff"/>
+      </svg>
     </div>
+    <div class="empty" style="border:none;box-shadow:none;background:transparent;padding:0 8px">
+      <div class="e1">A bridge between two homes</div>
+      <div class="e2">When two families are complete, a bridge can join them into something bigger.</div>
+    </div>
+    <div style="height:18px"></div>
+    <button class="btn" onclick="bridgeCta()">Build Your First Bridge 🌉</button>
   </section>
 
-  <!-- SCREEN 7 — PROFILE -->
+  <!-- PROFILE -->
   <section class="screen has-nav" id="screen-profileTab">
-    <div class="section-title">👤 Profile</div>
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
-      <div class="avatar" id="profAvatar" style="width:64px;height:64px;font-size:26px">J</div>
-      <div><div class="display" id="profName" style="font-size:22px;font-weight:800">—</div><div class="muted" id="profPhone" style="font-size:13px;font-weight:600">—</div></div>
+    <div class="h1" style="margin-bottom:18px">👤 Profile</div>
+    <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px">
+      <div class="avatar" id="profAvatar" style="width:70px;height:70px;font-size:28px">J</div>
+      <div><div class="display" id="profName" style="font-size:23px;font-weight:800">—</div><div class="muted" id="profPhone" style="font-size:13px;font-weight:600">—</div></div>
     </div>
     <div class="prow"><span class="k">Name</span><span class="v" id="profNameRow">—</span></div>
     <div class="prow"><span class="k">Phone</span><span class="v" id="profPhoneRow">—</span></div>
     <div class="prow"><span class="k">Date of birth</span><span class="v" id="profDobRow">—</span></div>
     <div class="prow"><span class="k">Gender</span><span class="v" id="profGenderRow">—</span></div>
-    <div style="height:24px"></div>
+    <div style="height:26px"></div>
     <button class="btn btn-ghost" onclick="logout()">Log out</button>
   </section>
 
@@ -275,22 +393,18 @@ input.fi:focus,select.fi:focus{border-color:var(--rani)}
   </nav>
 
   <div class="toast" id="toast"></div>
+  <div class="modal" id="reviewModal"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
 <script>
 /* ============================================================
-   JEETO — phone login + family requests (mock OTP 123456).
-   Data: Supabase tables profiles, family_requests, family_connections.
-   Identity = phone (LocalStorage session). Read it via myPhone().
-
-   CORE ARCHITECTURE (auto, no manual tree):
-   Relationships -> Families -> Households -> Bridges.
-   Every accepted relationship builds the family automatically.
+   JEETO — production UX. Same features, polished.
+   Mock OTP 123456 (no real auth yet) -> identity = phone.
+   Supabase tables: profiles, family_requests, family_connections.
    ============================================================ */
-
-var SB_URL = "https://ebimsihjzwpmdtzqopmz.supabase.co";
-var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaW1zaWhqendwbWR0enFvcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjQ2NzIsImV4cCI6MjA5NjYwMDY3Mn0.QgXTRYH384R0EY-rkCBhW5gmuCizKHY_akLcembBEMA";
+var SB_URL="https://ebimsihjzwpmdtzqopmz.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaW1zaWhqendwbWR0enFvcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjQ2NzIsImV4cCI6MjA5NjYwMDY3Mn0.QgXTRYH384R0EY-rkCBhW5gmuCizKHY_akLcembBEMA";
 var sb=null;
 function ensureSB(){ if(sb) return true; if(window.supabase && window.supabase.createClient){ sb=window.supabase.createClient(SB_URL,SB_KEY); return true; } return false; }
 
@@ -298,23 +412,32 @@ var SESSION_KEY='jeeto_phone';
 function myPhone(){ return localStorage.getItem(SESSION_KEY)||''; }
 function setMyPhone(p){ localStorage.setItem(SESSION_KEY,p); }
 function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 
-var ME=null, TMP_PHONE='', MOCK_OTP='123456';
-
-/* relationship options */
 var RELS=['Father','Mother','Husband','Wife','Son','Daughter','Brother','Sister','Grandfather','Grandmother','Grandson','Granddaughter','Uncle','Aunt','Cousin','Friend','Other'];
 function relOptions(sel){ var s='<option value="">Choose relationship…</option>'; RELS.forEach(function(r){ s+='<option'+(r===sel?' selected':'')+'>'+r+'</option>'; }); return s; }
 
-/* ---------- toast + celebration ---------- */
-function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(function(){t.classList.remove('show');},2600); }
+/* ---------- toast / animations ---------- */
+function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(function(){t.classList.remove('show');},2600); }
+function flyHeart(srcEl){
+  try{ var r=(srcEl||document.getElementById('frBtn')).getBoundingClientRect();
+    var h=document.createElement('div'); h.className='fly-heart'; h.textContent='❤️';
+    h.style.left=(r.left+r.width/2-15)+'px'; h.style.top=(r.top-10)+'px';
+    document.body.appendChild(h); setTimeout(function(){ h.remove(); },1100);
+  }catch(e){}
+}
 function celebrate(){
   var c=document.getElementById('celebrate');
   var conf=''; var ems=['🎉','💛','🌱','✨','❤️','🎊'];
-  for(var i=0;i<14;i++){ var l=Math.random()*100, d=(2+Math.random()*2).toFixed(2), del=(Math.random()*0.8).toFixed(2);
-    conf+='<span class="confetti" style="left:'+l+'%;animation-duration:'+d+'s;animation-delay:'+del+'s">'+ems[i%ems.length]+'</span>'; }
-  c.innerHTML=conf+'<div class="box"><div class="em">🎉</div><h2>Welcome to the Family</h2><div class="plus">🌱 Family Strength +10</div><div style="margin-top:20px"><button class="btn" style="background:rgba(255,255,255,.22);width:auto;padding:12px 26px" onclick="closeCelebrate()">Continue</button></div></div>';
+  for(var i=0;i<14;i++){ conf+='<span class="confetti" style="left:'+(Math.random()*100)+'%;animation-duration:'+(2+Math.random()*2).toFixed(2)+'s;animation-delay:'+(Math.random()*0.8).toFixed(2)+'s">'+ems[i%ems.length]+'</span>'; }
+  c.innerHTML=conf+
+    '<div style="text-align:center">'+
+      '<div class="hearts"><span class="hl">❤️</span><span class="hr">💛</span><span class="big-heart">❤️</span></div>'+
+      '<div class="box"><h2>Welcome to the Family</h2><div class="plus">🌱 Family Strength +10</div>'+
+      '<div style="margin-top:22px"><button class="btn" style="background:rgba(255,255,255,.22);width:auto;padding:13px 30px" onclick="closeCelebrate()">Continue</button></div></div>'+
+    '</div>';
   c.classList.add('show');
-  clearTimeout(window.__ct); window.__ct=setTimeout(closeCelebrate, 3800);
+  clearTimeout(window.__ct); window.__ct=setTimeout(closeCelebrate, 4200);
 }
 function closeCelebrate(){ document.getElementById('celebrate').classList.remove('show'); }
 
@@ -326,10 +449,8 @@ function showScreen(id){
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ window.scrollTo(0,0); }catch(e){}
 }
-
 async function init(){
   ensureSB();
-  // fill relationship dropdown
   var fr=document.getElementById('frRel'); if(fr) fr.innerHTML=relOptions('');
   var phone=myPhone();
   if(phone){ TMP_PHONE=phone; ME=await fetchProfile(phone);
@@ -339,21 +460,14 @@ async function init(){
 }
 async function fetchProfile(phone){ if(!ensureSB()) return null; try{ var r=await sb.from('profiles').select('*').eq('phone',phone).maybeSingle(); return r.data||null; }catch(e){ return null; } }
 
-/* ---------- phone ---------- */
+/* ---------- phone / OTP ---------- */
 function onPhoneInput(){ var el=document.getElementById('loginPhone'); el.value=el.value.replace(/\D/g,'').slice(0,10); document.getElementById('loginBtn').disabled=el.value.length!==10; document.getElementById('loginErr').textContent=''; }
-function submitPhone(){
-  var phone=(document.getElementById('loginPhone').value||'').replace(/\D/g,'');
-  if(phone.length!==10){ document.getElementById('loginErr').textContent='Enter a valid 10-digit number.'; return; }
-  TMP_PHONE=phone; document.getElementById('otpPhoneEcho').textContent='+91 '+phone;
-  clearOtp(); showScreen('screen-otp'); setTimeout(function(){ var f=document.querySelector('.otp-box'); if(f) f.focus(); },120);
-}
-
-/* ---------- OTP ---------- */
+function submitPhone(){ var p=(document.getElementById('loginPhone').value||'').replace(/\D/g,''); if(p.length!==10){ document.getElementById('loginErr').textContent='Enter a valid 10-digit number.'; return; } TMP_PHONE=p; document.getElementById('otpPhoneEcho').textContent='+91 '+p; clearOtp(); showScreen('screen-otp'); setTimeout(function(){ var f=document.querySelector('.otp-box'); if(f) f.focus(); },120); }
 function otpBoxes(){ return document.querySelectorAll('.otp-box'); }
 function clearOtp(){ var b=otpBoxes(); for(var i=0;i<b.length;i++) b[i].value=''; document.getElementById('otpErr').textContent=''; }
 function readOtp(){ var b=otpBoxes(),s=''; for(var i=0;i<b.length;i++) s+=(b[i].value||''); return s; }
-function otpType(box){ box.value=box.value.replace(/\D/g,'').slice(0,1); var i=parseInt(box.getAttribute('data-i'),10),boxes=otpBoxes(); if(box.value && i<boxes.length-1) boxes[i+1].focus(); if(readOtp().length===6) submitOtp(); }
-function otpKey(box,e){ var i=parseInt(box.getAttribute('data-i'),10),boxes=otpBoxes(); if(e.key==='Backspace' && !box.value && i>0) boxes[i-1].focus(); }
+function otpType(box){ box.value=box.value.replace(/\D/g,'').slice(0,1); var i=parseInt(box.getAttribute('data-i'),10),b=otpBoxes(); if(box.value && i<b.length-1) b[i+1].focus(); if(readOtp().length===6) submitOtp(); }
+function otpKey(box,e){ var i=parseInt(box.getAttribute('data-i'),10),b=otpBoxes(); if(e.key==='Backspace' && !box.value && i>0) b[i-1].focus(); }
 async function submitOtp(){
   var code=readOtp();
   if(code.length!==6){ document.getElementById('otpErr').textContent='Enter the 6-digit code.'; return; }
@@ -365,7 +479,7 @@ async function submitOtp(){
 /* ---------- profile setup ---------- */
 var _gender='', _photo='';
 function pickGender(g){ _gender=g; var c=document.querySelectorAll('#pfGender .chip'); for(var i=0;i<c.length;i++) c[i].classList.toggle('on', c[i].getAttribute('data-g')===g); }
-function onPhotoPick(e){ var file=e.target.files && e.target.files[0]; if(!file) return; var rd=new FileReader(); rd.onload=function(ev){ _photo=ev.target.result; document.getElementById('photoRing').innerHTML='<img src="'+_photo+'" alt="">'; }; rd.readAsDataURL(file); }
+function onPhotoPick(e){ var f=e.target.files && e.target.files[0]; if(!f) return; var rd=new FileReader(); rd.onload=function(ev){ _photo=ev.target.result; document.getElementById('photoRing').innerHTML='<img src="'+_photo+'" alt="">'; }; rd.readAsDataURL(f); }
 async function saveProfile(){
   var name=(document.getElementById('pfName').value||'').trim(); var dob=document.getElementById('pfDob').value||null;
   if(!name){ document.getElementById('pfErr').textContent='Please enter your name.'; return; }
@@ -380,31 +494,40 @@ async function saveProfile(){
 }
 
 /* ---------- HOME ---------- */
-function greetingWord(){ var h=new Date().getHours(); if(h<12) return 'Good Morning'; if(h<17) return 'Good Afternoon'; return 'Good Evening'; }
+function greetingWord(){ var h=new Date().getHours(); if(h<12) return 'Good morning,'; if(h<17) return 'Good afternoon,'; return 'Good evening,'; }
 function strengthTier(n){
-  if(n<=0) return '🌱 Seed';
-  if(n<30) return '🌿 Sprout';
-  if(n<60) return '🌳 Sapling';
-  if(n<100) return '🌳 Growing Tree';
-  return '🌳 Mighty Tree';
+  if(n<=0) return {e:'🌱',name:'Seed'};
+  if(n<30) return {e:'🌿',name:'Sprout'};
+  if(n<60) return {e:'🌳',name:'Sapling'};
+  if(n<100) return {e:'🌳',name:'Growing Tree'};
+  return {e:'🌳',name:'Mighty Tree'};
+}
+function countUp(el, to){
+  if(!el) return; var from=parseInt(el.textContent,10)||0; if(from===to){ el.textContent=to; return; }
+  var t0=null, dur=700; function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1); el.textContent=Math.round(from+(to-from)*p); if(p<1) requestAnimationFrame(step); }
+  requestAnimationFrame(step);
 }
 async function renderHome(){
   if(!ME) ME=await fetchProfile(myPhone());
   var u=ME||{}; var first=((u.name||'').split(' ')[0])||'there';
-  document.getElementById('homeGreeting').innerHTML=greetingWord()+',<b>'+escapeHtml(first)+' 👋</b>';
+  document.getElementById('homeHi').textContent=greetingWord();
+  document.getElementById('homeName').textContent=first+' 👋';
   setAvatar('homeAvatar',u);
-  var conns=await fetchConnections(myPhone()); var n=conns.length;
-  document.getElementById('statStrength').textContent=String(n*10);
-  document.getElementById('statTier').textContent=strengthTier(n*10);
-  document.getElementById('statFamily').textContent= n>0 ? (n+(n===1?' member ❤️':' members ❤️')) : 'Start Building Your Family →';
-  var st=document.getElementById('statTree'); if(st) st.textContent = n>0 ? (n+(n===1?' relative →':' relatives →')) : 'Grows with your family →';
+  var conns=await fetchConnections(myPhone()); var n=conns.length; var strength=n*10;
+  var t=strengthTier(strength);
+  document.getElementById('heroSeed').textContent=t.e;
+  document.getElementById('statTier').textContent=t.e+' '+t.name;
+  countUp(document.getElementById('statStrength'), strength);
+  document.getElementById('statFamily').textContent= n>0 ? (n+(n===1?' member ❤️':' members ❤️')) : 'Start building →';
+  document.getElementById('statTree').textContent= n>0 ? (n+(n===1?' relative →':' relatives →')) : 'See your tree →';
 }
 function setAvatar(elId,u){ var el=document.getElementById(elId); if(!el) return; if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; } else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); } }
 
-/* ---------- FAMILY ---------- */
+/* ---------- data ---------- */
 async function fetchConnections(phone){ if(!ensureSB() || !phone) return []; try{ var r=await sb.from('family_connections').select('*').or('user_a_phone.eq.'+phone+',user_b_phone.eq.'+phone); return r.data||[]; }catch(e){ return []; } }
-async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
+async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
 
+/* ---------- send request ---------- */
 async function sendRequest(){
   var rec=(document.getElementById('frPhone').value||'').replace(/\D/g,'');
   var rel=document.getElementById('frRel').value||'';
@@ -417,18 +540,23 @@ async function sendRequest(){
   try{ var dup=await sb.from('family_requests').select('id').eq('sender_phone',me).eq('receiver_phone',rec).eq('status','pending'); if(dup.data && dup.data.length){ toast('Request already pending for that number.'); return; } }catch(e){}
   var btn=document.getElementById('frBtn'); btn.disabled=true; btn.textContent='Sending…';
   var r=await sb.from('family_requests').insert({ sender_phone:me, receiver_phone:rec, relationship:rel, message:msg, status:'pending' });
-  btn.disabled=false; btn.textContent='Send request';
+  btn.disabled=false; btn.textContent='Send request ❤️';
   if(r.error){ toast(r.error.message||'Could not send.'); return; }
+  flyHeart(btn);
   document.getElementById('frPhone').value=''; document.getElementById('frRel').value='';
   document.getElementById('frMsg').value='Hi, I would love to connect with you on Jeeto Family.';
-  toast('Request sent 💛');
+  toast('Request sent ❤️');
   renderFamily();
 }
+
+/* ---------- FAMILY ---------- */
+function fmtJoined(d){ try{ var dt=new Date(d); return 'Joined '+dt.toLocaleString('en-US',{month:'short',year:'numeric'}); }catch(e){ return ''; } }
+function pronoun(g){ g=(g||'').toLowerCase(); if(g==='male') return {p:'He',pos:'his',v:'says'}; if(g==='female') return {p:'She',pos:'her',v:'says'}; return {p:'They',pos:'their',v:'say'}; }
 
 async function renderFamily(){
   var box=document.getElementById('famBody'); if(!box) return;
   var me=myPhone();
-  if(!ensureSB() || !me){ box.innerHTML='<div class="empty">Connection problem.</div>'; return; }
+  if(!ensureSB() || !me){ box.innerHTML='<div class="empty"><div class="e1">Connection problem</div></div>'; return; }
   var incoming=[], sent=[], conns=[];
   try{ var ri=await sb.from('family_requests').select('*').eq('receiver_phone',me).eq('status','pending').order('created_at',{ascending:false}); incoming=ri.data||[]; }catch(e){}
   try{ var rs=await sb.from('family_requests').select('*').eq('sender_phone',me).order('created_at',{ascending:false}); sent=rs.data||[]; }catch(e){}
@@ -437,92 +565,100 @@ async function renderFamily(){
   var phones=[]; incoming.forEach(function(x){ phones.push(x.sender_phone); }); sent.forEach(function(x){ phones.push(x.receiver_phone); });
   conns.forEach(function(c){ phones.push(c.user_a_phone===me?c.user_b_phone:c.user_a_phone); });
   var profs=await fetchProfiles(phones);
+  window.__profs=profs;
   function nm(p){ return (profs[p] && profs[p].name) || p; }
   function av(p){ return profs[p] && profs[p].avatar_url; }
+  function avHtml(p,cls){ return '<div class="'+(cls||'av-lg')+'">'+(av(p)?'<img src="'+av(p)+'">':escapeHtml((nm(p)[0]||'?').toUpperCase()))+'</div>'; }
 
   var html='';
 
-  // REQUESTS FOR YOU — two-step (choose your relationship, then accept)
-  html+='<div class="sub-title">📥 REQUESTS FOR YOU</div>';
-  if(!incoming.length){ html+='<div class="empty">No pending requests.</div>'; }
-  else incoming.forEach(function(x){
-    var sName=nm(x.sender_phone);
-    html+='<div class="reqcard">'+
-      '<div class="nm">'+escapeHtml(sName)+' wants to connect with you.</div>'+
-      '<div class="rl">They say you are their '+escapeHtml(x.relationship||'family')+'.</div>'+
-      (x.message?'<div class="ms">"'+escapeHtml(x.message)+'"</div>':'')+
-      '<div class="field-label" style="margin-top:12px">Who is '+escapeHtml(sName)+' to you?</div>'+
-      '<select class="fi" id="rcv_'+x.id+'" style="margin-bottom:4px">'+relOptions(reciprocal(x.relationship))+'</select>'+
-      '<div class="row-actions">'+
-      '<button class="btn btn-sm" onclick="acceptRequest(\''+x.id+'\',\''+x.sender_phone+'\',\''+escapeAttr(x.relationship||'')+'\')">Accept &amp; Connect</button>'+
-      '<button class="btn btn-sm btn-ghost" onclick="rejectRequest(\''+x.id+'\')">Decline</button>'+
+  /* 2) Requests for you */
+  html+='<div class="sec-head"><span class="si">📥</span><span class="st">Requests for you</span>'+(incoming.length?'<span class="sc">'+incoming.length+'</span>':'')+'</div>';
+  if(!incoming.length){
+    html+='<div class="empty"><span class="big">📭</span><div class="e1">No requests right now</div><div class="e2">When someone adds you, their request will appear here.</div></div>';
+  } else incoming.forEach(function(x){
+    var pr=pronoun(profs[x.sender_phone] && profs[x.sender_phone].gender);
+    html+='<div class="pcard"><div class="rq">'+avHtml(x.sender_phone)+
+      '<div style="flex:1;min-width:0"><div class="nm">'+escapeHtml(nm(x.sender_phone))+'</div>'+
+      '<div class="ph">+91 '+escapeHtml(x.sender_phone)+'</div>'+
+      '<div style="margin-top:8px"><span class="rl-pill">'+pr.p+' '+pr.v+' you are '+pr.pos+' '+escapeHtml(x.relationship||'family')+'</span></div>'+
+      '<div class="row"><button class="btn btn-sm" onclick="openReview(\''+x.id+'\',\''+x.sender_phone+'\',\''+escapeAttr(x.relationship||'')+'\')">Review</button>'+
+      '<button class="btn btn-sm btn-ghost" onclick="rejectRequest(\''+x.id+'\')">Decline</button></div>'+
+      '</div></div></div>';
+  });
+
+  /* 3) Family Requests (sent) */
+  html+='<div class="sec-head"><span class="si">❤️</span><span class="st">Family requests</span>'+(sent.length?'<span class="sc">'+sent.length+'</span>':'')+'</div>';
+  if(!sent.length){
+    html+='<div class="empty"><span class="big">✉️</span><div class="e1">No requests sent yet</div><div class="e2">Add a family member above to send your first one.</div></div>';
+  } else sent.forEach(function(x){
+    var st=x.status;
+    var badge = st==='accepted' ? '<span class="badge b-accepted">🟢 Connected</span>' : st==='rejected' ? '<span class="badge b-rejected">🔴 Declined</span>' : '<span class="badge b-pending">🟡 Waiting</span>';
+    html+='<div class="pcard sent"><div class="top">'+avHtml(x.receiver_phone,'av-lg')+
+      '<div style="flex:1;min-width:0"><div class="nm">'+escapeHtml(nm(x.receiver_phone))+'</div><div style="margin-top:3px"><span class="rl-pill">'+escapeHtml(x.relationship||'family')+'</span></div></div>'+badge+'</div>'+
+      '<div class="steps"><div class="step"><span class="dot">✓</span> Request sent</div>'+
+      (st==='pending'?'<div class="step wait"><span class="dot">⏳</span> Waiting for acceptance — relationship is created once they accept.</div>':'')+
+      (st==='accepted'?'<div class="step"><span class="dot">✓</span> Connected — they are now part of your family.</div>':'')+
       '</div></div>';
   });
 
-  // FAMILY REQUESTS (sent) — progress cards
-  html+='<div class="sub-title">❤️ FAMILY REQUESTS</div>';
-  if(!sent.length){ html+='<div class="empty">No requests sent yet.</div>'; }
-  else sent.forEach(function(x){
-    var st=x.status;
-    var badge = st==='accepted' ? '<span class="badge b-accepted">🟢 Connected</span>'
-              : st==='rejected' ? '<span class="badge b-rejected">🔴 Declined</span>'
-              : '<span class="badge b-pending">🟡 Waiting for Acceptance</span>';
-    html+='<div class="prog">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">'+
-        '<div class="ttl">❤️ '+escapeHtml(nm(x.receiver_phone))+'</div>'+badge+'</div>'+
-      '<div class="rl" style="color:var(--rani-d);font-weight:700;font-size:12.5px;margin-top:2px">'+escapeHtml(x.relationship||'family')+'</div>'+
-      '<div class="step"><span class="ok">✓</span> Request Sent</div>'+
-      (st==='pending' ? '<div class="step">⏳ Waiting for acceptance — relationship will be created after acceptance.</div>' : '')+
-      '</div>';
+  /* 4) Your Family */
+  html+='<div class="sec-head"><span class="si">💛</span><span class="st">Your family</span>'+(conns.length?'<span class="sc">'+conns.length+'</span>':'')+'</div>';
+  if(!conns.length){
+    html+='<div class="empty"><span class="big">🌱</span><div class="e1">No family members yet</div><div class="e2">Every family starts with one relationship.</div><div class="e3">Add someone you love ❤️</div></div>';
+  } else conns.forEach(function(c){
+    var other=c.user_a_phone===me?c.user_b_phone:c.user_a_phone;
+    var myRel=c.user_a_phone===me?c.user_a_relation:c.user_b_relation;
+    html+='<div class="pcard"><div class="fcard">'+avHtml(other)+
+      '<div class="info"><div class="nm">'+escapeHtml(nm(other))+'</div>'+
+      '<div style="margin-top:5px"><span class="rl-pill">'+escapeHtml(myRel||'family')+'</span></div>'+
+      '<div class="meta"><span><b>+10</b> to Family Strength</span><span>📞 +91 '+escapeHtml(other)+'</span><span>🗓️ '+escapeHtml(fmtJoined(c.created_at))+'</span></div>'+
+      '</div></div></div>';
   });
 
-  // YOUR FAMILY — premium connection cards
-  html+='<div class="sub-title">❤️ YOUR FAMILY</div>';
-  if(!conns.length){ html+='<div class="empty"><span class="big">🌱</span>No family members yet.<br>Every family starts with one relationship.</div>'; }
-  else conns.forEach(function(c){
-    var other = c.user_a_phone===me ? c.user_b_phone : c.user_a_phone;
-    var myRel = c.user_a_phone===me ? c.user_a_relation : c.user_b_relation;   // how I labelled them
-    var photo = av(other);
-    html+='<div class="conn">'+
-      '<div class="ph">'+(photo?'<img src="'+photo+'" alt="">':escapeHtml((nm(other)[0]||'?').toUpperCase()))+'</div>'+
-      '<div style="flex:1"><div class="nm">'+escapeHtml(nm(other))+'</div><div class="rl">'+escapeHtml(myRel||'family')+'</div><div class="pn">+91 '+escapeHtml(other)+'</div></div>'+
-      '</div>';
-  });
-
-  // FAMILY TREE — auto-built, shown inline right after Your Family
-  html+='<div class="sub-title">🌳 FAMILY TREE</div>';
+  /* 5) Family Tree */
+  html+='<div class="sec-head"><span class="si">🌳</span><span class="st">Family tree</span></div>';
   html+=buildTreeHtml(me, conns, profs);
 
   box.innerHTML=html;
-  // draw the connector lines once layout settles
   requestAnimationFrame(function(){ requestAnimationFrame(drawTreeLines); });
 }
 
-/* sensible default for the receiver's reciprocal relationship */
-function reciprocal(rel){
-  var m={Husband:'Wife',Wife:'Husband',Father:'',Mother:'',Son:'',Daughter:'',Brother:'',Sister:'',
-         Grandfather:'',Grandmother:'',Grandson:'',Granddaughter:'',Uncle:'',Aunt:'',Cousin:'Cousin',Friend:'Friend',Other:'Other'};
-  return m[rel]!==undefined ? m[rel] : '';
+/* ---------- review modal ---------- */
+function openReview(id, senderPhone, senderRel){
+  REVIEW={ id:id, sender:senderPhone, rel:senderRel };
+  var profs=window.__profs||{}; var p=profs[senderPhone]||{};
+  var nm=(p.name||senderPhone); var pr=pronoun(p.gender);
+  var photo = p.avatar_url ? '<img src="'+p.avatar_url+'">' : escapeHtml((nm[0]||'?').toUpperCase());
+  var m=document.getElementById('reviewModal');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div>'+
+    '<div class="modal-photo">'+photo+'</div>'+
+    '<div class="modal-name">'+escapeHtml(nm)+'</div>'+
+    '<div class="modal-phone">+91 '+escapeHtml(senderPhone)+'</div>'+
+    '<div class="modal-says">'+pr.p+' '+pr.v+' you are '+pr.pos+' <b>'+escapeHtml(senderRel||'family')+'</b>.</div>'+
+    '<div class="modal-q">Who is '+escapeHtml(nm)+' to you?</div>'+
+    '<select class="fi" id="modalRel" style="margin-bottom:16px">'+relOptions(reciprocal(senderRel))+'</select>'+
+    '<button class="btn" onclick="acceptFromModal()">Accept ❤️</button>'+
+    '<div style="height:10px"></div>'+
+    '<button class="btn btn-ghost" onclick="rejectFromModal()">Reject</button>'+
+    '<div style="height:8px"></div>'+
+    '<button class="btn btn-soft" onclick="closeReview()">Not now</button>'+
+    '</div>';
+  m.classList.add('show');
 }
+function closeReview(){ document.getElementById('reviewModal').classList.remove('show'); }
+function reciprocal(rel){ var m={Husband:'Wife',Wife:'Husband',Cousin:'Cousin',Friend:'Friend',Other:'Other'}; return m[rel]||''; }
 
-async function acceptRequest(id, senderPhone, senderRelation){
-  if(!ensureSB()) return;
-  var me=myPhone();
-  var recvSel=document.getElementById('rcv_'+id);
-  var recvRel=recvSel ? (recvSel.value||'') : '';
+async function acceptFromModal(){
+  if(!REVIEW || !ensureSB()) return;
+  var me=myPhone(); var recvRel=(document.getElementById('modalRel')||{}).value||'';
   if(!recvRel){ toast('Please choose who they are to you.'); return; }
-  // 1) mark accepted
-  var up=await sb.from('family_requests').update({ status:'accepted', responded_at:new Date().toISOString() }).eq('id',id);
+  var up=await sb.from('family_requests').update({ status:'accepted', responded_at:new Date().toISOString() }).eq('id',REVIEW.id);
   if(up.error){ toast(up.error.message||'Could not accept.'); return; }
-  // 2) create the connection with BOTH relationships
-  await sb.from('family_connections').insert({
-    user_a_phone:senderPhone, user_a_relation:senderRelation||null,
-    user_b_phone:me,          user_b_relation:recvRel
-  });
-  // 3) celebrate + refresh
-  celebrate();
-  renderFamily(); renderHome();
+  await sb.from('family_connections').insert({ user_a_phone:REVIEW.sender, user_a_relation:REVIEW.rel||null, user_b_phone:me, user_b_relation:recvRel });
+  closeReview(); celebrate(); renderFamily(); renderHome();
 }
+async function rejectFromModal(){ if(!REVIEW) return; await rejectRequest(REVIEW.id); closeReview(); }
 async function rejectRequest(id){
   if(!ensureSB()) return;
   var up=await sb.from('family_requests').update({ status:'rejected', responded_at:new Date().toISOString() }).eq('id',id);
@@ -531,75 +667,51 @@ async function rejectRequest(id){
 }
 
 /* ============================================================
-   FAMILY TREE ENGINE — auto-built from family_connections.
-   Never created manually. Me = root; each accepted relationship
-   becomes a branch. Rendered INLINE in the Family tab, after
-   "Your Family". Connector lines are drawn live with SVG.
-   Relationship label is shown from THIS user's side, so both
-   people see the correct word (Sunil sees "Wife", Anu sees "Husband").
+   FAMILY TREE — signature. Auto-built from family_connections.
+   Not a technical diagram: You at the top, then relationship
+   cards flowing down, joined by elegant curved "vine" lines.
    ============================================================ */
 function buildTreeHtml(me, conns, profs){
   function nm(p){ return (profs[p] && profs[p].name) || p; }
   function av(p){ return profs[p] && profs[p].avatar_url; }
   var n=conns.length;
-  if(!n){
-    return '<div class="empty"><span class="big">🌳</span>Your Family Tree will grow after your first accepted relationship.</div>';
-  }
-  var members=conns.map(function(c){
+  if(!n){ return '<div class="empty"><span class="big">🌳</span><div class="e1">Your tree is just a seed</div><div class="e2">Your Family Tree will grow after your first accepted relationship.</div></div>'; }
+  var meName=(ME&&ME.name) || nm(me) || 'You'; var meAv=(ME&&ME.avatar_url) || av(me);
+  var youCard='<div class="tnode you" style="animation-delay:0s">'+
+    '<div class="ph">'+(meAv?'<img src="'+meAv+'">':escapeHtml((meName[0]||'J').toUpperCase()))+'</div>'+
+    '<div><div class="tn">'+escapeHtml(meName)+'</div><div class="tr">You · ⭐ '+(n*10)+'</div></div></div>';
+  var nodes=conns.map(function(c,i){
     var other=c.user_a_phone===me?c.user_b_phone:c.user_a_phone;
-    var rel  =c.user_a_phone===me?c.user_a_relation:c.user_b_relation;   // how I label them
-    return { phone:other, rel:rel };
-  });
-  var meName=(ME&&ME.name) || nm(me) || 'You';
-  var meAv  =(ME&&ME.avatar_url) || av(me);
-
-  var nodes=members.map(function(m){
-    return '<div class="tnode">'+
-      '<div class="ph">'+(av(m.phone)?'<img src="'+av(m.phone)+'">':escapeHtml((nm(m.phone)[0]||'?').toUpperCase()))+'</div>'+
-      '<div class="nm">'+escapeHtml(nm(m.phone))+'</div>'+
-      '<div class="rl">'+escapeHtml(m.rel||'family')+'</div>'+
-      '<div class="pn">+91 '+escapeHtml(m.phone)+'</div>'+
-    '</div>';
+    var rel=c.user_a_phone===me?c.user_a_relation:c.user_b_relation;
+    return '<div class="tnode" style="animation-delay:'+(0.08*(i+1)).toFixed(2)+'s">'+
+      '<div class="ph">'+(av(other)?'<img src="'+av(other)+'">':escapeHtml((nm(other)[0]||'?').toUpperCase()))+'</div>'+
+      '<div><div class="tn">'+escapeHtml(nm(other))+'</div><div class="tr">'+escapeHtml(rel||'family')+'</div></div></div>';
   }).join('');
-
-  return '<div class="tree-card">'+
-    '<div class="tree-strength">⭐ Family Strength '+(n*10)+'</div>'+
-    '<div class="tree-wrap" id="treeWrap">'+
-      '<svg id="treeLines"></svg>'+
-      '<div class="tree-me">'+
-        '<div class="ph">'+(meAv?'<img src="'+meAv+'">':escapeHtml((meName[0]||'J').toUpperCase()))+'</div>'+
-        '<div class="nm">'+escapeHtml(meName)+' (You)</div>'+
-        '<div class="meta">You are here</div>'+
-      '</div>'+
-      '<div class="tree-members" id="treeMembers"'+(members.length===1?' style="display:flex;justify-content:center"':'')+'>'+nodes+'</div>'+
-    '</div></div>';
+  return '<div class="tree-strength">⭐ Family Strength · '+(n*10)+'</div>'+
+    '<div class="tree-wrap" id="treeWrap"><svg id="treeLines"></svg>'+
+    '<div class="tree-col" id="treeCol">'+youCard+nodes+'</div></div>';
 }
-
 function drawTreeLines(){
   var wrap=document.getElementById('treeWrap'); if(!wrap) return;
   var svg=document.getElementById('treeLines'); if(!svg) return;
-  var meEl=wrap.querySelector('.tree-me .ph'); if(!meEl) return;
-  var nodes=wrap.querySelectorAll('.tnode');
+  var nodes=wrap.querySelectorAll('.tnode'); if(nodes.length<2){ svg.innerHTML=''; return; }
   var wr=wrap.getBoundingClientRect();
   svg.setAttribute('width', wr.width); svg.setAttribute('height', wr.height);
-  var mr=meEl.getBoundingClientRect();
-  var x1=mr.left+mr.width/2-wr.left, y1=mr.bottom-wr.top;
   var paths='';
-  nodes.forEach(function(node){
-    var r=node.getBoundingClientRect();
-    var x2=r.left+r.width/2-wr.left, y2=r.top-wr.top;
-    var midY=(y1+y2)/2;
-    paths+='<path d="M'+x1+' '+y1+' C '+x1+' '+midY+' '+x2+' '+midY+' '+x2+' '+y2+'" stroke="url(#tg)" stroke-width="2.5" fill="none" opacity="0.55"/>'+
+  for(var i=0;i<nodes.length-1;i++){
+    var a=nodes[i].getBoundingClientRect(), b=nodes[i+1].getBoundingClientRect();
+    var x1=a.left+a.width/2-wr.left, y1=a.bottom-wr.top;
+    var x2=b.left+b.width/2-wr.left, y2=b.top-wr.top;
+    var bulge=(i%2===0?42:-42);
+    paths+='<path d="M'+x1+' '+y1+' C '+(x1+bulge)+' '+(y1+(y2-y1)*0.45)+', '+(x2-bulge)+' '+(y2-(y2-y1)*0.45)+', '+x2+' '+y2+'" stroke="url(#tg)" stroke-width="2.5" fill="none" opacity="0.5" stroke-linecap="round"/>'+
            '<circle cx="'+x2+'" cy="'+y2+'" r="3.5" fill="#E03A7A"/>';
-  });
+  }
   svg.innerHTML='<defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A1E"/><stop offset="1" stop-color="#E03A7A"/></linearGradient></defs>'+paths;
 }
+window.addEventListener('resize', function(){ var f=document.getElementById('screen-family'); if(f && f.classList.contains('active')) drawTreeLines(); });
 
-/* redraw lines if the window resizes while the Family tab is open */
-window.addEventListener('resize', function(){
-  var f=document.getElementById('screen-family');
-  if(f && f.classList.contains('active')) drawTreeLines();
-});
+/* ---------- bridge ---------- */
+function bridgeCta(){ toast('Build your family first — bridges connect complete families 🌉'); }
 
 /* ---------- profile tab ---------- */
 function renderProfileTab(){
@@ -622,7 +734,6 @@ function navTo(tab){
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
-
 function logout(){ clearSession(); ME=null; _gender=''; _photo=''; var lp=document.getElementById('loginPhone'); if(lp) lp.value=''; document.getElementById('loginBtn').disabled=true; clearOtp(); showScreen('screen-login'); }
 
 function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
