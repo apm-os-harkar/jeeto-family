@@ -1197,7 +1197,7 @@ body{
 
       <!-- INVITE (prominent — grow the grid the easy way) -->
       <div id="gridInviteTop" class="invitecta" style="display:none" onclick="openGridHouseholdInvite()">
-        <div class="ictop"><div class="icplus">＋</div><div><b>Invite a relative's household</b><div class="icsub">Sends a personal link \u2014 they tap it, set a PIN, and they're straight in this grid. No code to type.</div></div></div>
+        <div class="ictop"><div class="icplus">＋</div><div><b>Invite a relative's household</b><div class="icsub">Enter their phone number — they tap Accept and they're in. No codes.</div></div></div>
       </div>
 
       <!-- PLAY -->
@@ -1216,7 +1216,7 @@ body{
       </button>
       <div id="gridManage" class="managebody" style="display:none">
         <button class="btn btn-ghost" id="myGridsBtn" style="display:none;margin-bottom:10px" onclick="openMyGrids()">🗂️ My grids</button>
-        <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openJoinGrid()">＋ Join a grid</button><button class="btn btn-ghost" style="flex:1;margin:0" onclick="openCreateGrid()">🔗 Create a grid</button></div>
+        <button class="btn btn-ghost" style="margin-bottom:10px" onclick="openCreateGrid()">🔗 Create our family grid</button>
         <button class="btn btn-ghost" style="margin-bottom:10px" onclick="openRequests()">🔔 Grid requests</button>
         <button class="btn btn-ghost" id="gridSentBtn" style="display:none;margin-bottom:10px" onclick="openSentInvites()">📋 Sent invites &amp; status</button>
         <button class="btn btn-ghost" style="margin-bottom:10px" onclick="openConnections()">🤝 Connected households</button>
@@ -1303,7 +1303,7 @@ body{
     <div class="authcard">
       <div class="authlogo">ज</div>
       <h2>Jeeto Family</h2>
-      <div class="psub">Powered by Skyvos AI · build 104</div>
+      <div class="psub">Powered by Skyvos AI · build 106</div>
       <div class="authmsg" id="authMsg"></div>
       <div id="welcomePanel">
         <div id="gridInviteBanner" style="display:none"></div>
@@ -2347,7 +2347,7 @@ async function loadConnections(){
   var r=await sb.rpc('my_connections');
   if(r.error){box.innerHTML=emptyMsg(r.error.message);return;}
   var rows=(r.data||[]);
-  if(!rows.length){box.innerHTML=emptyMsg('No connected households yet. Share your family or grid code so relatives can join.');return;}
+  if(!rows.length){box.innerHTML=emptyMsg('No connected households yet. Add a household by phone number.');return;}
   box.innerHTML=rows.map(function(h){
     var nm=(h.surname||'Household')+(h.city?' · '+h.city:'');
     return '<div class="hhrow"><div class="hhav" style="background:linear-gradient(135deg,'+avFor(h.surname||'H')+')">'+esc((h.surname||'H')[0].toUpperCase())+'</div><div class="hhinfo"><b>'+esc(nm)+'</b><div>'+Number(h.household_score||0).toLocaleString('en-IN')+' pts</div></div><span class="rel" style="color:#12A14B">Connected ✓</span></div>';
@@ -2619,7 +2619,7 @@ async function loadGrid(){
   try{var _grb=document.getElementById('gridReqBanner'); if(_grb)_grb.innerHTML='';}catch(e){}
   if(!GRID){ document.getElementById('ghName').textContent='No grid yet';
     document.getElementById('ghSub').textContent='Join one with a code, or create your own';
-    document.getElementById('gridLb').innerHTML=emptyMsg('Your household is not in a grid yet. Create a grid to connect relatives\u2019 households, or join one with a code.');
+    document.getElementById('gridLb').innerHTML=emptyMsg('Your household is not in a grid yet. Create a grid, then add relatives by their phone number.');
     try{var _gib=document.getElementById('gridInviteTop'); if(_gib)_gib.style.display='none';}catch(e){}
     document.getElementById('gridFeed').innerHTML=''; return; }
   document.getElementById('ghName').textContent=GRID.name;
@@ -2956,37 +2956,29 @@ async function _joinInvited(){
 function _createAnyway(){ _doCreateHousehold(); }
 function openCreateGrid(){
   if(!FAM){ toast('Set up your family first.'); return; }
-  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udd17</div><h3>Create a grid</h3></div>'+
-  '<p class="s">A grid links your relatives\' households \u2014 shared leaderboard, chat, Tambola. Name it, share the code with people you know, and <b>approve each household</b> before they join.</p>'+
+  openSheet('<div style="text-align:center"><div style="font-size:40px">🔗</div><h3>Create your family grid</h3></div>'+
+  '<p class="s">A grid links your relatives\' households together — shared leaderboard, chat, Tambola. Create it, then add relatives by their phone number. No codes.</p>'+
   '<input id="grNameIn" placeholder="Grid name (e.g. Harkar Khandaan)">'+
   '<input id="grAboutIn" placeholder="About (optional, e.g. Our extended family)">'+
-  '<label style="display:flex;gap:8px;align-items:flex-start;margin:2px 0 12px;font-size:12px;color:var(--ink2);text-align:left"><input type="checkbox" id="grOpenIn" style="margin-top:2px"> Let anyone with the code join instantly (leave off \u2014 safer: you approve each household)</label>'+
   '<button class="btn btn-primary" onclick="createGrid()">Create grid</button>'+
   '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
 }
 async function createGrid(){
   var name=(_v('grNameIn')||'').trim(), about=(_v('grAboutIn')||'').trim();
   if(!name){ toast('Give your grid a name.'); return; }
-  var open=!!(document.getElementById('grOpenIn')&&document.getElementById('grOpenIn').checked);
-  var r=await sb.rpc('create_grid',{p_name:name,p_about:about,p_open:open});
-  if(r.error){ toast(r.error.message||'Could not create grid. Run the create-grid SQL first.'); return; }
-  var code=(r.data&&r.data.code)||'';
+  var r=await sb.rpc('create_grid',{p_name:name,p_about:about,p_open:false});
+  if(r.error){ toast(r.error.message||'Could not create grid.'); return; }
   await loadHousehold(); await loadGrid();
-  _showGridShare(name, code, (r.data&&r.data.open));
+  _showGridShare(name);
 }
-function _showGridShare(name, code, open){
-  var url=location.origin;
-  window.__gridShareMsg='Join our family grid "'+name+'" on Jeeto! \ud83d\udd17\n\nTap \ud83d\udc49 '+url+'/?grid='+code+'\nSet up your family and you\'ll be connected to the grid automatically. \ud83d\udc9b\n\n(Grid code if needed: '+code+')';
-  openSheet('<div style="text-align:center"><div style="font-size:46px">\ud83c\udf89</div><h3>"'+esc(name)+'" is live!</h3></div>'+
-  '<p class="s">'+(open?'\u26a0\ufe0f <b>Anyone with this code can join instantly.</b> Share it only with people you know.':'Share this <b>only with people you know</b> \u2014 each household you invite asks to join, and <b>you approve them</b> in \ud83d\udd14 Requests.')+'</p>'+
-  '<div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:var(--ink2);font-weight:700;letter-spacing:1.5px">GRID CODE</div><div style="font-family:\'Baloo 2\';font-size:34px;letter-spacing:5px;color:var(--rani)">'+esc(code)+'</div></div>'+
-  '<div style="height:14px"></div>'+
-  '<button class="btn btn-primary" onclick="shareGridInvite()">Invite households on WhatsApp \ud83d\udcac</button>'+
-  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="copyGridInvite()">Copy invite message</button>'+
+function _showGridShare(name){
+  openSheet('<div style="text-align:center"><div style="font-size:46px">🎉</div><h3>"'+esc(name)+'" is live!</h3></div>'+
+  '<p class="s">Now add your relatives by their <b>phone number</b> — they tap Accept and they\'re connected. No codes to share.</p>'+
+  '<button class="btn btn-primary" onclick="closeSheet();openGridHouseholdInvite()">👪 Add a relative\'s household</button>'+
   '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Done</button>');
 }
-function shareGridInvite(){ var m=window.__gridShareMsg||''; if(navigator.share){navigator.share({text:m}).catch(function(){});} else {window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');} }
-function copyGridInvite(){ var m=window.__gridShareMsg||''; if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(m).then(function(){toast('Copied \u2014 paste in WhatsApp \ud83d\udd17');}).catch(function(){toast('Could not copy');});} else {toast('Long-press to copy.');} }
+function shareGridInvite(){ openGridHouseholdInvite(); }
+function copyGridInvite(){ openGridHouseholdInvite(); }
 function openMyGrids(){
   var all=window.ALLGRIDS||[];
   if(!all.length){ toast('You are not in any grid yet.'); return; }
@@ -3037,40 +3029,33 @@ function _resendInvite(idx){
   shareInvite();
 }
 function openGridHouseholdInvite(){
-  if(!GRID){ toast('Join a grid first.'); return; }
-  openSheet('<div style="text-align:center"><div style="font-size:40px">\ud83d\udc6a</div><h3>Add a household to '+esc(GRID.name)+'</h3></div>'+
-  '<p class="s">Invite a relative who isn\'t on Jeeto yet. We\'ll set up their household on their number \u2014 they just open the link and set a PIN. New households join once the grid admin approves.</p>'+
+  if(!GRID){ toast('Create your family grid first.'); return; }
+  openSheet('<div style="text-align:center"><div style="font-size:40px">👪</div><h3>Add a household to '+esc(GRID.name)+'</h3></div>'+
+  '<p class="s">Enter your relative\'s <b>phone number</b>. If they\'re on Jeeto, they get a request to <b>Accept</b>. If not, they join your grid when they sign up with that number. No codes.</p>'+
   '<input id="ghiName" placeholder="Their name (e.g. Rohit)">'+
   '<input id="ghiPhone" inputmode="numeric" placeholder="Their phone number">'+
-  '<button class="btn btn-primary" onclick="gridInviteHousehold()">Create household & invite</button>'+
+  '<button class="btn btn-primary" onclick="gridInviteHousehold()">Add to our grid</button>'+
   '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>');
 }
 async function gridInviteHousehold(){
   var name=(_v('ghiName')||'').trim(), phone=(_v('ghiPhone')||'').replace(/\D/g,'');
   if(!name||phone.length<6){ toast('Enter their name and phone.'); return; }
+  // existing Jeeto household? -> send a connect request they Accept (no codes, no link)
+  var c=await sb.rpc('grid_connect_by_phone',{p_phone:phone});
+  if(!c.error){
+    var st=(c.data&&c.data.status)||'';
+    if(st==='invited'){ closeSheet(); toast('Request sent — ask '+name+' to tap Accept 🔔'); await loadGrid(); return; }
+    if(st==='already'){ closeSheet(); toast(name+' is already in this grid ✓'); return; }
+    if(st==='self'){ toast('That\'s your own household.'); return; }
+    // st==='notfound' -> fall through to invite a brand-new household
+  }
+  // not on Jeeto yet -> set up their household so they join on signup
   var r=await sb.rpc('grid_invite_household',{p_name:name,p_phone:phone,p_grid:GRID.id});
-  if(r.error){ toast(r.error.message||'Could not invite. Run the grid-invite SQL first.'); return; }
-  var pending=!!(r.data&&r.data.pending);
-  var url=location.origin;
-  window.__inviteMsg = pending ? ('Hi '+name+'! \ud83d\udc9b I\'ve added you to our family grid "'+GRID.name+'" on Jeeto.\n\nOpen \ud83d\udc49 '+url+'/?claim='+phone+'\nSet a PIN to set up your family \u2014 you\'ll join the grid once our admin approves it. \ud83d\ude4f') : ('Hi '+name+'! \ud83d\udc9b I\'ve set up your family on Jeeto and added you to our grid "'+GRID.name+'".\n\nOpen \ud83d\udc49 '+url+'/?claim='+phone+'\nJust set a PIN \u2014 and you\'re in!');
-  openSheet('<div style="text-align:center"><div style="font-size:46px">\u2705</div><h3>'+esc(name)+' is ready!</h3></div>'+
-  '<p class="s">'+(pending?'Their household will be created when they set a PIN. They join '+esc(GRID.name)+' once the grid admin approves them in \ud83d\udd14 Requests.':'Their household is created and tagged to join '+esc(GRID.name)+'. Send them this \u2014 they only set a PIN:')+'</p>'+
-  '<button class="btn btn-primary" onclick="shareInvite()">Send on WhatsApp \ud83d\udcac</button>'+
-  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="copyInvite()">Copy message</button>'+
-  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="closeSheet();openGridHouseholdInvite()">Invite another</button>');
+  if(r.error){ toast(r.error.message||'Could not add them.'); return; }
+  closeSheet(); toast(name+' will join '+GRID.name+' when they sign up with that number 💛'); await loadGrid();
 }
-function openJoinGrid(){
-  openSheet('<h3>Join a grid 🔗</h3><p class="s">Enter the grid code your grid admin shared (e.g. AOUGRID). This connects your whole household to the grid.</p>'+
-  '<input id="gridCodeIn" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;font-family:inherit;text-transform:uppercase;margin-bottom:14px" oninput="this.value=this.value.toUpperCase()" placeholder="Grid code">'+
-  '<button class="btn btn-primary" onclick="doJoinGrid()">Join grid</button>');
-}
-async function doJoinGrid(){
-  var code=(_v('gridCodeIn')||'').toUpperCase().trim();
-  if(!code){toast('Enter a grid code.');return;}
-  window.__gridCode=code;
-  if(!(FAM&&FAM.surname)){ openNameFamily(); return; }
-  await _doJoinGridNow(code);
-}
+function openJoinGrid(){ toast('Ask a relative already in the grid to add you by your phone number 💛'); }
+function doJoinGrid(){ openJoinGrid(); }
 async function _doJoinGridNow(code){
   var r=await sb.rpc('join_grid',{p_code:code});
   if(r.error){toast(r.error.message||'Could not join that grid.');return;}
@@ -3102,7 +3087,7 @@ var _searchT=null;
    only by an exact family/grid code that someone shares with people they know, and a
    family member approves it in Requests 🔔. These stubs stay only so any stale caller
    fails gracefully instead of throwing. */
-function openSearch(){ toast('Connect using a family or grid code in Requests 🔔'); }
+function openSearch(){ toast('Add relatives by their phone number 💛'); }
 function doSearch(){}
 async function requestLink(id){ toast('Connecting by search is no longer available — use a family code.'); }
 /* GRID requests only (lives in the grid Manage area). Family-join requests are
@@ -3130,14 +3115,44 @@ async function loadRequests(){
    appears without needing a full app reload. */
 function _setHtml(id,html){ var el=document.getElementById(id); if(el) el.innerHTML=html; }
 async function loadReqBanners(){
-  var inv=null, grid=0;
+  var inv=null, grid=0, pendName='', ginv=[];
   try{ var iq=await sb.rpc('my_family_invite'); inv=(iq&&iq.data)||null; if(typeof inv==='string'){ try{inv=JSON.parse(inv);}catch(e){inv=null;} } }catch(e){}
   try{ var gq=await sb.rpc('my_incoming_requests'); grid=((gq&&gq.data)||[]).length; }catch(e){}
+  try{ var giq=await sb.rpc('my_grid_invites'); ginv=(giq&&giq.data)||[]; if(typeof ginv==='string'){ try{ginv=JSON.parse(ginv);}catch(e){ginv=[];} } }catch(e){}
+  try{
+    if(FAM&&FAM.id){
+      var pg=await sb.from('grid_households').select('status, grids(name)').eq('household_id',FAM.id).eq('status','pending');
+      var prow=((pg&&pg.data)||[])[0];
+      if(prow&&prow.grids) pendName=prow.grids.name;
+    }
+  }catch(e){}
   var famCard = (inv&&inv.from_id) ? '<div class="mergecard" onclick="openFamilyInvite()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+esc(inv.from_name||'A family')+'</b> invited you to join their family. <a>Review →</a></div>' : '';
+  var ginvCard = (ginv&&ginv.length) ? '<div class="mergecard" onclick="openGridInvite()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+esc(ginv[0].grid_name||'A family')+'</b> invited your household to their grid. <a>Review →</a></div>' : '';
   var gridCard = grid>0 ? '<div class="mergecard" onclick="openRequests()" style="cursor:pointer;margin:10px 0 0">🔔 <b>'+grid+'</b> '+(grid==1?'household wants':'households want')+' to join your grid. <a>Review →</a></div>' : '';
-  _setHtml('homeReqBanner', famCard+gridCard);
+  var pendCard = pendName ? '<div class="mergecard" style="margin:10px 0 0">⏳ Your request to join <b>'+esc(pendName)+'</b> is waiting for them to approve it.</div>' : '';
+  _setHtml('homeReqBanner', famCard+ginvCard+gridCard+pendCard);
   _setHtml('famReqBanner', famCard);
-  _setHtml('gridReqBanner', gridCard);
+  _setHtml('gridReqBanner', ginvCard+gridCard+pendCard);
+}
+async function openGridInvite(){
+  var ginv=[];
+  try{ var giq=await sb.rpc('my_grid_invites'); ginv=(giq&&giq.data)||[]; if(typeof ginv==='string'){ try{ginv=JSON.parse(ginv);}catch(e){ginv=[];} } }catch(e){}
+  if(!ginv||!ginv.length){ toast('No grid invite right now.'); loadReqBanners(); return; }
+  var g=ginv[0];
+  openSheet('<div style="text-align:center"><div style="font-size:42px">🔗</div><h3>Join the '+esc(g.grid_name||'family')+' grid?</h3></div>'+
+  '<p class="s">Your household has been invited to join <b>'+esc(g.grid_name||'this')+'</b>\'s grid — a shared space to chat, walk and play together. Your family stays your own. 💛</p>'+
+  '<button class="btn btn-primary" onclick="acceptGridInvite(\''+g.grid_id+'\')">Accept &amp; connect 🔗</button>'+
+  '<div style="height:8px"></div><button class="btn btn-ghost" onclick="declineGridInvite(\''+g.grid_id+'\')">Decline</button>');
+}
+async function acceptGridInvite(gid){
+  var r=await sb.rpc('accept_grid_invite',{p_grid:gid});
+  if(r.error){ toast(r.error.message||'Could not join'); return; }
+  closeSheet(); confetti&&confetti(); toast('Connected to the grid 🔗'); await refreshAll(); try{loadGrid();}catch(e){}
+}
+async function declineGridInvite(gid){
+  var r=await sb.rpc('decline_grid_invite',{p_grid:gid});
+  if(r.error){ toast(r.error.message||'Could not decline'); return; }
+  closeSheet(); toast('Declined'); await loadReqBanners();
 }
 function loadGridReqBanner(){ return loadReqBanners(); } /* legacy alias */
 /* Family INVITE — someone added you by phone; you Accept to join them. */
@@ -4184,7 +4199,7 @@ window.addEventListener('load', boot);
       <div class="tourcard"><div class="te">📸</div><div><b>2 · Walk &amp; earn together</b><p>On Home, tap <b>📸 Submit steps</b> and snap your step count from any step app (Pacer, Health, Fit). Everyone's steps lift the family up the board — you climb as a team, never alone.</p></div></div>
       <div class="tourcard"><div class="te">🧭</div><div><b>3 · Find your way</b><p>The tabs at the bottom: <b>🏠 Home</b> · <b>🏆 Ranks</b> · <b>🎮 Play</b> · <b>💛 Family</b> (chat, songs, album) · <b>🪙 Coins</b> · <b>😊 Me</b>. Tap around — you can't break anything!</p></div></div>
       <div class="tourcard"><div class="te">🔗</div><div><b>4 · Inside vs Outside</b><p>The toggle at the very top. <b>🏠 Inside the Home</b> is your own household. <b>🔗 Outside · Grid</b> connects you with relatives' households — to chat, walk &amp; play across the whole khandaan.</p></div></div>
-      <div class="tourcard"><div class="te">🔑</div><div><b>5 · What's a "grid code"?</b><p>A short code (like <b>AOUGRID</b>) a family member shares to link your household into the family grid. <b>You don't need it to begin</b> — explore your home first, and join a grid whenever you're ready.</p></div></div>
+      <div class="tourcard"><div class="te">🔗</div><div><b>5 · What's a "grid"?</b><p>A grid links your relatives' households together — shared leaderboard, chat and Tambola. A family member <b>adds you by your phone number</b> and you tap Accept. <b>No codes, ever.</b></p></div></div>
       <div class="tournote">Stuck later? Open this guide anytime from the <b>😊 Me</b> tab → <b>How to use Jeeto</b>.</div>
       <button class="btn btn-primary" style="margin-top:6px" onclick="closeGuide()">Got it — let's go! 💛</button>
     </div>
