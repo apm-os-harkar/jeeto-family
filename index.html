@@ -524,7 +524,20 @@ async function renderHome(){
 function setAvatar(elId,u){ var el=document.getElementById(elId); if(!el) return; if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; } else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); } }
 
 /* ---------- data ---------- */
-async function fetchConnections(phone){ if(!ensureSB() || !phone) return []; try{ var r=await sb.from('family_connections').select('*').or('user_a_phone.eq.'+phone+',user_b_phone.eq.'+phone); return r.data||[]; }catch(e){ return []; } }
+async function fetchConnections(phone){
+  if(!ensureSB() || !phone) return [];
+  try{
+    var r=await sb.from('family_connections').select('*').or('user_a_phone.eq.'+phone+',user_b_phone.eq.'+phone);
+    var rows=r.data||[];
+    // one relationship per person: keep a single row per "other" phone
+    var seen={}, out=[];
+    rows.forEach(function(c){
+      var other=c.user_a_phone===phone?c.user_b_phone:c.user_a_phone;
+      if(other && !seen[other]){ seen[other]=true; out.push(c); }
+    });
+    return out;
+  }catch(e){ return []; }
+}
 async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
 
 /* ---------- send request ---------- */
@@ -655,7 +668,16 @@ async function acceptFromModal(){
   if(!recvRel){ toast('Please choose who they are to you.'); return; }
   var up=await sb.from('family_requests').update({ status:'accepted', responded_at:new Date().toISOString() }).eq('id',REVIEW.id);
   if(up.error){ toast(up.error.message||'Could not accept.'); return; }
-  await sb.from('family_connections').insert({ user_a_phone:REVIEW.sender, user_a_relation:REVIEW.rel||null, user_b_phone:me, user_b_relation:recvRel });
+  // only create the connection if these two aren't already connected (either direction)
+  var dupe=false;
+  try{
+    var ex=await sb.from('family_connections').select('id')
+      .or('and(user_a_phone.eq.'+REVIEW.sender+',user_b_phone.eq.'+me+'),and(user_a_phone.eq.'+me+',user_b_phone.eq.'+REVIEW.sender+')');
+    dupe=!!(ex.data && ex.data.length);
+  }catch(e){}
+  if(!dupe){
+    await sb.from('family_connections').insert({ user_a_phone:REVIEW.sender, user_a_relation:REVIEW.rel||null, user_b_phone:me, user_b_relation:recvRel });
+  }
   closeReview(); celebrate(); renderFamily(); renderHome();
 }
 async function rejectFromModal(){ if(!REVIEW) return; await rejectRequest(REVIEW.id); closeReview(); }
