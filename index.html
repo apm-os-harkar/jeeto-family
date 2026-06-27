@@ -878,6 +878,10 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-today-title{font-family:var(--jh-serif);font-size:18px;line-height:1.25;color:var(--jh-fg)}
 .jh-today-sub{font-size:12.5px;color:var(--jh-muted-fg)}
 .jh-today-chev{color:var(--jh-muted-fg);flex-shrink:0}
+.hh-cover{display:block;margin-bottom:14px;cursor:pointer}
+.hh-cover-prev{height:120px;border-radius:16px;border:1.5px dashed var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--ink3);font-size:13px;font-weight:600;text-align:center;padding:6px}
+.hh-cover-prev.has{border-style:solid;border-color:var(--line)}
+.hh-cover-prev img{width:100%;height:100%;object-fit:cover}
 /* ===== My Family World ===== */
 .jw-wrap{gap:36px}
 .jw-header{position:relative;padding:8px 0 0}
@@ -949,6 +953,18 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jw-foot{padding:6px 0 2px;text-align:center}
 .jw-foot p{font-family:var(--jh-serif);font-size:16px;font-style:italic;color:var(--jh-muted-fg);margin:0}
 .jw-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.jw-stats-4{grid-template-columns:1fr 1fr;gap:12px}
+.jw-stats-4 .jw-stat{text-align:left;padding:18px 16px}
+.jw-stats-4 .jw-stat-n{font-size:30px}
+.jw-stats-4 .jw-stat-l{text-transform:none;letter-spacing:0;font-size:12.5px;margin-top:6px;line-height:1.3}
+.jh-aw-teaser{width:100%;display:flex;align-items:center;gap:14px;border:1px solid var(--jh-border);background:var(--jh-card);border-radius:22px;padding:18px;cursor:pointer;font-family:inherit;box-shadow:0 1px 3px rgba(120,72,30,.08)}
+.jh-aw-teaser-ic{width:42px;height:42px;flex-shrink:0;border-radius:12px;background:color-mix(in oklch,var(--jh-accent) 30%,transparent);color:var(--jh-primary);display:flex;align-items:center;justify-content:center}
+.jh-aw-teaser-ic svg{width:20px;height:20px}
+.jh-aw-teaser-t{flex:1;min-width:0;text-align:left;display:flex;flex-direction:column;gap:2px}
+.jh-aw-teaser-t b{font-family:var(--jh-serif);font-size:17px;font-weight:600;color:var(--jh-fg)}
+.jh-aw-teaser-t span{font-size:13px;color:var(--jh-muted-fg)}
+.jh-aw-teaser-go{color:var(--jh-muted-fg);flex-shrink:0}
+.jh-aw-teaser-go svg{width:18px;height:18px}
 .jw-stat{border-radius:18px;border:1px solid var(--jh-border);background:var(--jh-card);padding:16px 8px;text-align:center;box-shadow:0 1px 3px rgba(120,72,30,.08)}
 .jw-stat-n{display:block;font-family:var(--jh-serif);font-size:26px;font-weight:500;color:var(--jh-primary);line-height:1}
 .jw-stat-l{display:block;margin-top:5px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--jh-muted-fg)}
@@ -1283,7 +1299,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='2.0.0-world';
+var JEETO_VERSION='2.2.0-world';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3045,7 +3061,7 @@ async function saveDesign(){
 
 /* ===== My Family World — ported from v0 (components/world/*), wired to real data ===== */
 function jwNodeImg(node, big){
-  var photo = (node.mine && /harkar/i.test(node.name||'') && typeof JH_HOME_COVER!=='undefined' && JH_HOME_COVER) ? JH_HOME_COVER : (node.cover||'');
+  var photo = (node.cover||'') || ((node.mine && /harkar/i.test(node.name||'') && typeof JH_HOME_COVER!=='undefined' && JH_HOME_COVER) ? JH_HOME_COVER : '');
   if(photo) return '<img src="'+escapeAttr(photo)+'" alt="'+escapeAttr(node.name)+'">';
   return homeArchitecture(node.style||'apartment', big?0.85:0.7);
 }
@@ -3066,7 +3082,7 @@ async function renderWorldView(elId, scope){
 
   var central=null, sats=[];
   (ctx.households||[]).forEach(function(x,i){
-    var node={ id:x.h.id, name:x.h.household_name||'Home', city:x.h.city||'', members:(x.members||[]).length, style:x.h.home_style||'apartment', mine:true };
+    var node={ id:x.h.id, name:x.h.household_name||'Home', city:x.h.city||'', members:(x.members||[]).length, style:x.h.home_style||'apartment', cover:x.h.cover_url||'', mine:true };
     if(i===0) central=node; else sats.push(node);
   });
   // connected family homes (bridges) — only in 'Across My World'
@@ -3078,7 +3094,7 @@ async function renderWorldView(elId, scope){
       var hh=hr.data||[];
       var mr=await sb.from('household_members').select('household_id').in('household_id',otherIds).eq('status','active');
       var counts={}; (mr.data||[]).forEach(function(r){ counts[r.household_id]=(counts[r.household_id]||0)+1; });
-      hh.forEach(function(h){ sats.push({ id:h.id, name:h.household_name||'A home', city:h.city||'', members:counts[h.id]||0, style:h.home_style||'apartment', mine:false }); });
+      hh.forEach(function(h){ sats.push({ id:h.id, name:h.household_name||'A home', city:h.city||'', members:counts[h.id]||0, style:h.home_style||'apartment', cover:h.cover_url||'', mine:false }); });
     }catch(e){}
   }
 
@@ -3090,8 +3106,8 @@ async function renderWorldView(elId, scope){
     '<div class="jw-divider">'+jic('heartfill')+'</div>'+
     '<p class="jw-tag">'+tag+'</p></div></header>';
   var statsH='';
-  if(across){ var totMembers=(central?central.members:0)+sats.reduce(function(a,b){return a+(b.members||0);},0); var homesN=(central?1:0)+sats.length;
-    statsH='<section class="jw-stats"><div class="jw-stat"><span class="jw-stat-n">'+homesN+'</span><span class="jw-stat-l">Homes</span></div><div class="jw-stat"><span class="jw-stat-n">'+bridgeCount+'</span><span class="jw-stat-l">Bridges</span></div><div class="jw-stat"><span class="jw-stat-n">'+totMembers+'</span><span class="jw-stat-l">Loved ones</span></div></section>'; }
+  if(across){ var _fam=[ctx.me].concat(ctx.conns||[]).filter(Boolean); var _aw=[]; try{ _aw=await JHService.acrossMyWorld(ctx,_fam); }catch(e){}
+    if(_aw.length){ statsH='<section class="jw-stats jw-stats-4">'+_aw.map(function(st){ return '<div class="jw-stat"><span class="jw-stat-n">'+escapeHtml(st.value)+'</span><span class="jw-stat-l">'+escapeHtml(st.label)+'</span></div>'; }).join('')+'</section>'; } }
 
   // constellation
   var constel='<section class="jw-constel">';
@@ -3139,6 +3155,10 @@ async function renderWorldView(elId, scope){
   el.innerHTML='<div class="jh-wrap jw-wrap">'+header+statsH+constel+today+wisdom+crossLink+footer+'</div>';
 }
 
+function _jhReadImg(file){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){ var img=new Image(); img.onload=function(){res(img);}; img.onerror=rej; img.src=fr.result; }; fr.onerror=rej; fr.readAsDataURL(file); }); }
+async function compressHomeCover(file){ try{ var img=await _jhReadImg(file); var max=1280,w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } } var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); var blob=await new Promise(function(r){ c.toBlob(r,'image/jpeg',0.82); }); return blob||file; }catch(e){ return file; } }
+async function uploadHomeCover(id, file){ var f=await compressHomeCover(file); var path='home-covers/'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:false, contentType:'image/jpeg'}); if(up.error) throw up.error; return sb.storage.from('moments').getPublicUrl(path).data.publicUrl; }
+function previewHomeCover(input, prevId){ var fl=input.files&&input.files[0]; if(!fl) return; var pr=document.getElementById(prevId); if(!pr) return; var url=URL.createObjectURL(fl); pr.innerHTML='<img src="'+url+'" alt="">'; pr.classList.add('has'); }
 async function buildHome(){
   var body=document.getElementById('homeBody'); if(!body) return;
   var me=myPhone();
@@ -3159,7 +3179,6 @@ async function buildHome(){
   var skyvos=JHService.skyvos(presence, mwk);
   var reflection=await JHService.reflection(famPhones, welcome.homeName);
   var world=await JHService.myWorld(ctx);
-  var across=await JHService.acrossMyWorld(ctx, famPhones);
 
   function st(title, opts){ opts=opts||{}; var right = opts.action ? '<button class="act" onclick="'+(opts.fn||'')+'">'+escapeHtml(opts.action)+jic2('arrow','')+'</button>' : (opts.hint?'<span class="hint">'+escapeHtml(opts.hint)+'</span>':''); return '<div class="jh-st"><h2>'+escapeHtml(title)+'</h2>'+right+'</div>'; }
 
@@ -3214,8 +3233,7 @@ async function buildHome(){
   }
 
   /* 9) ACROSS MY WORLD */
-  var awGrid=across.map(function(s){ return '<div><span class="jh-aw-v">'+escapeHtml(s.value)+'</span><p class="jh-aw-l">'+escapeHtml(s.label)+'</p></div>'; }).join('');
-  var awH='<section class="jh-rise" aria-label="Across my world"><div class="jh-aw" onclick="navTo(\'across\')" style="cursor:pointer"><p class="jh-aw-k">'+jic('sparkles')+'Across My World</p><dl class="jh-aw-grid">'+awGrid+'</dl></div></section>';
+  var awH='<section class="jh-rise" aria-label="Across my world"><button class="jh-aw-teaser" onclick="navTo(\'across\')"><span class="jh-aw-teaser-ic">'+jic('sparkles')+'</span><span class="jh-aw-teaser-t"><b>Across My World</b><span>Your whole family, across every home</span></span><span class="jh-aw-teaser-go">'+jic('chev')+'</span></button></section>';
 
   window.__jhSky=skyvos; window.__jhToday=today;
   var tiles=[ {ic:'palette',label:'Design',fn:"navTo('design')"}, {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
@@ -3936,6 +3954,8 @@ async function editHome(id){
     '<div class="modal-q" style="text-align:center;font-size:20px">🎨 Your Home’s style</div>'+
     '<input class="fi" id="ehName" value="'+escapeAttr(h.household_name||'')+'" placeholder="Home name" style="margin:12px 0">'+
     '<input class="fi" id="ehCity" value="'+escapeAttr(h.city||'')+'" placeholder="City" style="margin-bottom:12px">'+
+    '<div class="field-label">Entry gate photo</div>'+
+    '<label class="hh-cover"><input type="file" accept="image/*" id="ehCover" onchange="previewHomeCover(this,\'ehCoverPrev\')" hidden><div id="ehCoverPrev" class="hh-cover-prev'+(h.cover_url?' has':'')+'">'+(h.cover_url?'<img src="'+escapeAttr(h.cover_url)+'">':'<span>+ Add your home\u2019s entry gate</span>')+'</div></label>'+
     '<div class="field-label">Choose a style — this is emotional, not technical</div>'+homeStylePickerHTML(_homeStyleSel)+
     '<div style="height:12px"></div><button class="btn" onclick="saveHome(\''+id+'\')">Save Home</button>'+
     '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
@@ -3952,7 +3972,9 @@ async function saveHome(id){
   var name=(document.getElementById('ehName').value||'').trim();
   var city=(document.getElementById('ehCity').value||'').trim();
   if(!name){ toast('Give your Home a name.'); return; }
-  try{ await sb.from('households').update({household_name:name, city:city||null, home_style:_homeStyleSel}).eq('id',id); }
+  var _patch={household_name:name, city:city||null, home_style:_homeStyleSel};
+  try{ var _cf=document.getElementById('ehCover'); var _f=_cf&&_cf.files&&_cf.files[0]; if(_f){ _patch.cover_url=await uploadHomeCover(id,_f); } }catch(e){}
+  try{ await sb.from('households').update(_patch).eq('id',id); }
   catch(e){ toast(humanError(e,'Could not save the Home.')); return; }
   closeHomeModal(); toast('Home updated 🏡'); renderHomeDetail(id); try{ renderHomes(); }catch(e){} try{ renderFamily(); }catch(e){}
 }
@@ -4148,6 +4170,8 @@ function openHouseholdForm(){
     '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">🏡 Start a New Home</div>'+
     '<input class="fi" id="hhName" placeholder="Home name (e.g. Harkar Home)" style="margin-bottom:11px">'+
     '<input class="fi" id="hhCity" placeholder="City" style="margin-bottom:14px">'+
+    '<div class="field-label">Entry gate photo (optional)</div>'+
+    '<label class="hh-cover"><input type="file" accept="image/*" id="hhCover" onchange="previewHomeCover(this,\'hhCoverPrev\')" hidden><div id="hhCoverPrev" class="hh-cover-prev"><span>+ Add your home\u2019s entry gate</span></div></label>'+
     '<div class="field-label">Choose your Home style</div>'+homeStylePickerHTML(_homeStyleSel)+'<div class="field-label" style="margin-top:14px">Who lives here?</div>'+
     '<div id="hhPicks" style="margin-bottom:14px">'+checks+'</div>'+
     '<button class="btn" onclick="submitHousehold()">Create Household 🏠</button>'+
@@ -4163,6 +4187,7 @@ async function submitHousehold(){
   var r=await createHousehold(name, city, picks);
   if(r && r.error){ toast(humanError(r.error,'Could not create the Home — nothing was changed.')); return; }
   if(r && r.data && _homeStyleSel){ try{ await sb.from('households').update({home_style:_homeStyleSel}).eq('id',r.data); }catch(e){} }
+  if(r && r.data){ try{ var _cf=document.getElementById('hhCover'); var _f=_cf&&_cf.files&&_cf.files[0]; if(_f){ var _u=await uploadHomeCover(r.data,_f); await sb.from('households').update({cover_url:_u}).eq('id',r.data); } }catch(e){} }
   closeHouseholdForm(); toast('Home created 🏡'); try{ renderHomes(); }catch(e){} renderFamily(); loadDashboard();
 }
 
