@@ -6,7 +6,7 @@
 <title>Jeeto — Connecting Generations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
@@ -179,6 +179,53 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .pp-handle{text-align:center;font-size:14px;opacity:.92;font-weight:700;margin-top:2px}
 .pp-numwrap{text-align:center;margin-top:11px}
 .pp-num{font-family:'Baloo 2';letter-spacing:1.5px;font-size:15px;background:rgba(255,255,255,.15);border-radius:13px;padding:8px 16px;display:inline-block}
+/* ---------- HOMES — cinematic, premium (light + type, no illustration) ---------- */
+#screen-homes,#screen-homedetail{padding:24px 18px 100px}
+.homes-head{margin:8px 2px 24px}
+.homes-over{font-size:11px;font-weight:800;letter-spacing:4px;color:var(--ink3)}
+.homes-greet{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:40px;line-height:1.03;margin-top:12px;color:var(--ink);letter-spacing:-.6px}
+.homes-sub{color:var(--ink2);font-size:14px;font-weight:600;margin-top:12px}
+.homecard{border-radius:30px;overflow:hidden;margin-bottom:24px;cursor:pointer;box-shadow:0 34px 64px -26px rgba(40,24,16,.62),0 12px 28px -16px rgba(40,24,16,.45);transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.homecard:active{transform:scale(.987)}
+.hc-scene,.hd-hero{position:relative;isolation:isolate}
+.hc-scene{height:340px;display:flex;align-items:flex-end}
+.hc-bloom{position:absolute;left:50%;top:34%;width:135%;height:135%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,var(--bloom),transparent 72%);filter:blur(4px);mix-blend-mode:screen;z-index:0;animation:hbreathe 9s ease-in-out infinite}
+.hc-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px;opacity:.05;mix-blend-mode:overlay;z-index:1;pointer-events:none}
+.hc-vig{position:absolute;inset:0;background:radial-gradient(135% 100% at 50% -12%,transparent 36%,rgba(0,0,0,.64) 100%);z-index:1;pointer-events:none}
+.hc-overlay{position:relative;z-index:2;padding:30px;color:#fff;width:100%}
+.hc-mood{font-size:11px;font-weight:800;letter-spacing:3.5px;opacity:.82}
+.hc-name{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:36px;line-height:1.04;margin-top:9px;letter-spacing:-.4px;text-shadow:0 2px 26px rgba(0,0,0,.45)}
+.hc-meta{font-size:13px;font-weight:600;opacity:.85;margin-top:10px;letter-spacing:.3px}
+@keyframes hbreathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.05)}}
+.hd-hero{height:420px;display:flex;align-items:flex-end;border-radius:30px;overflow:hidden;box-shadow:0 34px 74px -28px rgba(40,24,16,.66)}
+.hd-hero-in{position:relative;z-index:2;padding:32px;color:#fff;width:100%}
+.hd-name{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:44px;line-height:1.0;letter-spacing:-.6px;margin-top:9px;text-shadow:0 2px 30px rgba(0,0,0,.5)}
+.hd-city{font-size:13px;font-weight:700;opacity:.85;margin-top:11px;letter-spacing:.4px}
+.hd-lives{display:flex;align-items:center;margin:24px 2px 4px}
+.hd-av{width:44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;overflow:hidden;border:3px solid var(--paper);margin-right:-12px;box-shadow:0 4px 12px rgba(0,0,0,.16)}
+.hd-av img{width:100%;height:100%;object-fit:cover}
+.hd-livestxt{margin-left:26px;font-size:13.5px;font-weight:700;color:var(--ink2)}
+.hd-sec{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:20px;margin:28px 2px 13px;color:var(--ink)}
+.home-actions{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--sh-1)}
+.ha-row{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;border-bottom:1px solid var(--line);padding:18px 20px;font-family:inherit;cursor:pointer;text-align:left}
+.ha-row:last-child{border-bottom:none}
+.ha-row:active{background:var(--paper2)}
+.ha-l{font-size:15px;font-weight:600;color:var(--ink)}
+.ha-x{color:var(--ink3);font-size:18px}
+.hd-story{background:#fff;border:1px solid var(--line);border-radius:22px;padding:4px 20px;box-shadow:var(--sh-1)}
+.hstory{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
+.hstory:last-child{border-bottom:none}
+.hst-i{font-size:18px;flex:0 0 auto;opacity:.9}
+.hst-t{font-weight:600;font-size:14px;color:var(--ink)}
+.hst-x{color:var(--ink3);font-size:12px;font-weight:600;margin-top:2px}
+.homespromo{margin-bottom:18px}.homespromo .hc-scene{height:210px}
+.style-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
+.style-opt{background:none;border:none;padding:0;cursor:pointer;font-family:inherit;text-align:left}
+.so-sw{display:block;position:relative;height:88px;border-radius:18px;overflow:hidden;box-shadow:0 12px 24px -14px rgba(40,24,16,.6);outline:2px solid transparent;transition:.25s;isolation:isolate}
+.style-opt.on .so-sw{outline:2px solid var(--rani);box-shadow:0 16px 28px -12px rgba(224,58,122,.5)}
+.so-bloom{position:absolute;left:50%;top:40%;width:120%;height:120%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,var(--bloom),transparent 72%);opacity:.55;mix-blend-mode:screen}
+.so-l{display:block;padding:9px 4px 2px;font-size:12.5px;font-weight:700;color:var(--ink)}
+@media (prefers-reduced-motion: reduce){ .hc-bloom{animation:none} }
 /* manifesto — present, subtle, unforgettable */
 #splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#241826 0%,#3E2747 52%,#7C3AED 130%);transition:opacity .7s ease}
 #splash.gone{opacity:0;pointer-events:none}
@@ -777,6 +824,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   </section>
 
   <!-- FAMILY -->
+  <section class="screen has-nav" id="screen-homes"><div id="homesBody"></div></section>
+  <section class="screen" id="screen-homedetail"><div class="gtop"><button class="gback" onclick="navTo('homes')" aria-label="Back to Homes">←</button><div class="h1" style="margin:0;font-size:22px">🏡 Home</div></div><div id="homeDetailBody"></div></section>
   <section class="screen has-nav" id="screen-family">
     <div class="h1" style="margin-bottom:4px">❤️ Relationships</div>
     <p class="muted" style="font-size:13px;margin:0 2px 14px">The people you love, one relationship at a time.</p>
@@ -934,7 +983,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.10.2';
+var JEETO_VERSION='0.12.0';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2866,7 +2915,7 @@ async function buildHome(){
   '</div>';
 
   /* My Family World widget */
-  html+='<div class="worldwidget" onclick="navTo(\'world\')">'+worldWidgetSVG()+'<span class="ww-label">Your Family World<span class="ww-sub">Every Life · Every Relationship · Every Generation</span></span><span class="ww-go">Enter ✨</span></div>';
+  html+='<div class="homecard homespromo" onclick="navTo(\'homes\')"><div class="hc-scene" style="'+homeAmbient("luxury")+'"><div class="hc-bloom" style="opacity:.5"></div><div class="hc-grain"></div><div class="hc-vig"></div><div class="hc-overlay"><div class="hc-mood">YOUR HOMES</div><div class="hc-name">Welcome home</div><div class="hc-meta">Every Home has a story</div></div></div></div>';
 
   /* Family Quests */
   html+='<div class="home-sec">🧭 Family Quests'+(streak&&streak.active&&streak.count>1?'<span class="qchip-streak">🔥 '+streak.count+'-day streak</span>':'<a onclick="navTo(\'quests\')">All →</a>')+'</div>';
@@ -2895,7 +2944,7 @@ async function buildHome(){
   else html+='<div class="cele"><div class="cele-row"><div class="cele-ic">🎈</div><div class="cele-t" style="font-weight:600;color:var(--ink2)">No celebrations coming up — add birthdays in the Calendar.</div></div></div>';
 
   /* Household tasks */
-  html+='<div class="home-sec">🏠 Household Tasks<a onclick="openTaskForm()">＋ Add</a></div>';
+  html+='<div class="home-sec">🏡 Home Tasks<a onclick="openTaskForm()">＋ Add</a></div>';
   if(tasks.length){ html+=tasks.map(function(t){ return taskHtml(t, profs); }).join(''); }
   else html+='<div class="today-empty" style="margin-bottom:22px">Your household has no pending tasks. ✨</div>';
 
@@ -3087,7 +3136,7 @@ async function doGlobalSearch(){
     var pass=await sb.from('jeeto_passports').select('passport_handle,jeeto_number,person_phone').or('passport_handle.ilike.%'+q+'%,jeeto_number.ilike.%'+q+'%').limit(5);
     if((pass.data||[]).length) groups.push({ t:'🆔 Passports', items:(pass.data).map(function(p){ return { label:'@'+p.passport_handle, sub:p.jeeto_number, go:"navTo('profile')" }; }) });
     var hh=await sb.from('households').select('household_name,city,id').ilike('household_name','%'+q+'%').limit(5);
-    if((hh.data||[]).length) groups.push({ t:'🏠 Households', items:(hh.data).map(function(h){ return { label:h.household_name, sub:h.city||'', go:"navTo('family')" }; }) });
+    if((hh.data||[]).length) groups.push({ t:'🏡 Homes', items:(hh.data).map(function(h){ return { label:h.household_name, sub:h.city||'', go:"navTo('family')" }; }) });
     var mo=await sb.from('moments').select('title,id,moment_type').eq('status','active').ilike('title','%'+q+'%').limit(6);
     if((mo.data||[]).length) groups.push({ t:'💛 Moments', items:(mo.data).map(function(x){ return { label:x.title, sub:x.moment_type+' moment', go:"reliveMoment('"+x.id+"')" }; }) });
     var le=await sb.from('life_events').select('event_title,event_date').eq('person_phone',me).eq('status','active').ilike('event_title','%'+q+'%').limit(6);
@@ -3277,7 +3326,7 @@ async function renderFamily(){
   html+=generateFamilyTree(me, rels, profs);
 
   /* 6) Household */
-  html+='<div class="sec-head"><span class="si">🏠</span><span class="st">Household</span>'+(households.length?'<span class="sc">'+households.length+'</span>':'')+'</div>';
+  html+='<div class="sec-head"><span class="si">🏡</span><span class="st">My Homes</span>'+(households.length?'<span class="sc">'+households.length+'</span>':'')+'</div>';
   html+=householdHtml(households, bridgesByHH);
 
   box.innerHTML=html;
@@ -3411,10 +3460,180 @@ async function loadHouseholds(){
     });
   }catch(e){ return []; }
 }
+/* ============================================================
+   JEETO HOMES — every home has a story.
+   Premium reframe of households. Uses EXISTING data (households,
+   household_members, moments, rituals, arena, bridges). No DB renames.
+   ============================================================ */
+var HOME_STYLES=[
+  {id:'apartment',label:'Apartment',emoji:'🏢'},
+  {id:'villa',label:'Modern Villa',emoji:'🏝️'},
+  {id:'haveli',label:'Heritage Haveli',emoji:'🕌'},
+  {id:'farmhouse',label:'Farmhouse',emoji:'🌾'},
+  {id:'mountain',label:'Mountain Home',emoji:'⛰️'},
+  {id:'beach',label:'Beach Home',emoji:'🏖️'},
+  {id:'scandi',label:'Scandinavian',emoji:'🌲'},
+  {id:'minimal',label:'Minimal Home',emoji:'◽'},
+  {id:'luxury',label:'Luxury Home',emoji:'💎'},
+  {id:'ancestral',label:'Ancestral Home',emoji:'🌳'}
+];
+function homeStyleLabel(id){ for(var i=0;i<HOME_STYLES.length;i++){ if(HOME_STYLES[i].id===id) return HOME_STYLES[i].label; } return 'Home'; }
+function _homeTodayISO(){ var d=new Date(); d.setHours(0,0,0,0); return d.toISOString(); }
+function _homeWeekISO(){ var d=new Date(); d.setDate(d.getDate()-7); return d.toISOString(); }
+var _homeStyleSel='apartment';
+
+/* premium illustration per style; warm glow scales with mood (0..1) */
+function homeAmbient(style){
+  var P={apartment:['#2b2622','#100d0b','#FFB871'],villa:['#3a3128','#16110c','#FFD9A0'],haveli:['#3a1f18','#160a07','#FF9E5E'],farmhouse:['#352a1f','#140f0a','#FFC983'],mountain:['#24262e','#0c0d11','#FFAE7A'],beach:['#3a2c24','#150f0c','#FFC58C'],scandi:['#322d27','#14110d','#FFE0B5'],minimal:['#2c2925','#100e0c','#FFD6A0'],luxury:['#2a211a','#0d0a07','#F4D08A'],ancestral:['#2e231a','#100b07','#E8B978']};
+  var c=P[style]||P.apartment;
+  return 'background:radial-gradient(125% 95% at 50% 6%, '+c[0]+' 0%, '+c[1]+' 72%);--bloom:'+c[2]+';';
+}
+
+/* Home Heart — emotional state, never a harsh score */
+function homeMood(s, ancestral){
+  if(ancestral) return {state:'Legacy',emoji:'🌳',glow:0.45,line:'Holding our memories',cls:'mood-legacy'};
+  s=s||{}; var score=Math.min(3,(s.momentsWeek||0))+((s.rituals>0)?1:0)+((s.arenaTonight>0)?2:0)+((s.bridges>0)?1:0);
+  if(score>=6) return {state:'Celebrating',emoji:'🎉',glow:1,line:'Celebrating together',cls:'mood-celeb'};
+  if(score>=4) return {state:'Joyful',emoji:'😊',glow:0.8,line:'Full of life',cls:'mood-joy'};
+  if(score>=2) return {state:'Warm',emoji:'❤️',glow:0.55,line:'Warm today',cls:'mood-warm'};
+  return {state:'Quiet',emoji:'🌙',glow:0.3,line:'Quiet today',cls:'mood-quiet'};
+}
+
+async function homeStatsFor(id){
+  var wk=_homeWeekISO(), today=_homeTodayISO(), o={momentsTotal:0,momentsWeek:0,rituals:0,arenaTonight:0,bridges:0};
+  try{ var mh=await sb.from('moment_households').select('moment_id').eq('household_id',id); var mids=(mh.data||[]).map(function(x){return x.moment_id;}); o.momentsTotal=mids.length;
+    if(mids.length){ var mw=await sb.from('moments').select('id').in('id',mids).gte('created_at',wk); o.momentsWeek=(mw.data||[]).length; } }catch(e){}
+  try{ var rt=await sb.from('rituals').select('id').eq('household_id',id); o.rituals=(rt.data||[]).length; }catch(e){}
+  try{ var ar=await sb.from('arena_events').select('status,created_at').eq('household_id',id); o.arenaTonight=(ar.data||[]).filter(function(a){ return a.status==='live'||a.status==='starting'||a.status==='scheduled'||((a.created_at||'')>=today); }).length; }catch(e){}
+  try{ var br=await sb.from('bridge_connections').select('id').or('household_a_id.eq.'+id+',household_b_id.eq.'+id).eq('status','active'); o.bridges=(br.data||[]).length; }catch(e){}
+  return o;
+}
+
+async function renderHomes(){
+  var el=document.getElementById('homesBody'); if(!el) return;
+  el.innerHTML='<div class="sk sk-card"></div><div class="sk sk-card"></div>';
+  var homes=await loadHouseholds();
+  var meName=(ME&&ME.name)?String(ME.name).split(' ')[0]:'';
+  var head='<div class="homes-head"><div class="homes-over">MY HOMES</div><div class="homes-greet">Welcome home'+(meName?',<br>'+escapeHtml(meName):'')+'.</div><div class="homes-sub">Every Home has a story.</div></div>';
+  if(!homes.length){
+    el.innerHTML=head+'<div class="empty"><span class="big">🏡</span><div class="e1">Every Home has a story. Yours is about to begin.</div><div class="e2">Start your first Home and gather the Lives you love under one roof.</div></div>'+
+      '<button class="btn" onclick="openHouseholdForm()">Start New Home 🏡</button>';
+    return;
+  }
+  var stats=await Promise.all(homes.map(function(x){ return homeStatsFor(x.h.id); }));
+  var warm=null, warmMood=null;
+  homes.forEach(function(x,i){ var md=homeMood(stats[i],x.members.length===0); if(!warmMood||md.glow>warmMood.glow){ warmMood=md; warm=x; } });
+  var cards=homes.map(function(x,i){ return homeCardHTML(x, stats[i]); }).join('');
+  el.innerHTML=head+cards+'<button class="btn btn-ghost" onclick="openHouseholdForm()" style="margin-top:6px">＋ Start New Home</button>';
+}
+
+function homeCardHTML(x, s){
+  var anc=(x.members.length===0); var md=homeMood(s,anc);
+  var style=anc?'ancestral':(x.h.home_style||'apartment');
+  var lives=x.members.length;
+  var meta=(x.h.city?escapeHtml(x.h.city):homeStyleLabel(style))+(lives?('  \u00b7  '+lives+(lives===1?' life at home':' lives at home')):'  \u00b7  Ancestral home');
+  return '<div class="homecard" onclick="enterHome(\''+x.h.id+'\')">'+
+    '<div class="hc-scene" style="'+homeAmbient(style)+'">'+
+      '<div class="hc-bloom" style="opacity:'+(0.32+0.6*md.glow).toFixed(2)+'"></div>'+
+      '<div class="hc-grain"></div><div class="hc-vig"></div>'+
+      '<div class="hc-overlay"><div class="hc-mood">'+md.state.toUpperCase()+(anc?' \u00b7 ANCESTRAL':'')+'</div>'+
+      '<div class="hc-name">'+escapeHtml(x.h.household_name)+'</div>'+
+      '<div class="hc-meta">'+meta+'</div></div>'+
+    '</div></div>';
+}
+
+var CUR_HOME=null;
+function enterHome(id){ CUR_HOME=id; showScreen('screen-homedetail'); renderHomeDetail(id); }
+async function renderHomeDetail(id){
+  var el=document.getElementById('homeDetailBody'); if(!el) return;
+  el.innerHTML='<div class="sk sk-card"></div>';
+  var me=myPhone();
+  var hr=await sb.from('households').select('*').eq('id',id).limit(1); var h=hr.data&&hr.data[0];
+  if(!h){ el.innerHTML='<p class="muted" style="text-align:center">Home not found.</p>'; return; }
+  var mr=await sb.from('household_members').select('*').eq('household_id',id).eq('status','active'); var members=mr.data||[];
+  var profs=await fetchProfiles(members.map(function(x){return x.member_phone;}));
+  var s=await homeStatsFor(id);
+  var anc=(members.length===0); var md=homeMood(s,anc);
+  var style=anc?'ancestral':(h.home_style||'apartment');
+  var iAmHead=(h.created_by_phone===me);
+  var iLiveHere=members.some(function(x){return x.member_phone===me;});
+  var livesAvatars=members.length
+    ? '<div class="hd-lives">'+members.slice(0,6).map(function(x){ var u=profs[x.member_phone]||{}; return '<span class="hd-av">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span>'; }).join('')+'<span class="hd-livestxt">'+members.length+(members.length===1?' life at home':' lives at home')+'</span></div>'
+    : '<div class="hd-lives"><span class="hd-livestxt">An Ancestral Home \u00b7 every memory remains</span></div>';
+  function act(fn,label){ return '<button class="ha-row" onclick="'+fn+'"><span class="ha-l">'+label+'</span><span class="ha-x">\u2192</span></button>'; }
+  var acts='<div class="home-actions">'+
+    act("homeCaptureMoment('"+id+"')",'Capture a moment')+
+    act("homeStartArena('"+id+"')",'Begin an Arena night')+
+    act("homeCreateRitual('"+id+"')",'Create a ritual')+
+    act("homeBuildBridge('"+id+"')",'Build a bridge')+
+    (iAmHead?act("openHouseholdManage('"+id+"')",'Add a life to this home'):'')+
+    (iAmHead?act("editHome('"+id+"')",'Change this home\u2019s character'):'')+
+    (iLiveHere?act("leaveHousehold('"+id+"')",'Move out'):'')+
+    '</div>';
+  var story=await homeStory(id, h, members, profs, s);
+  el.innerHTML='<div class="hd-hero" style="'+homeAmbient(style)+'"><div class="hc-bloom" style="opacity:'+(0.35+0.6*md.glow).toFixed(2)+'"></div><div class="hc-grain"></div><div class="hc-vig"></div>'+
+    '<div class="hd-hero-in"><div class="hc-mood">'+md.state.toUpperCase()+(anc?' \u00b7 ANCESTRAL':'')+'</div>'+
+    '<div class="hd-name">'+escapeHtml(h.household_name)+'</div>'+
+    '<div class="hd-city">'+(h.city?escapeHtml(h.city)+'  \u00b7  ':'')+homeStyleLabel(style)+'</div></div></div>'+
+    livesAvatars+
+    '<div class="hd-sec">Inside this home</div>'+acts+
+    '<div class="hd-sec">The story of this home</div><div class="hd-story">'+story+'</div>'+
+    '<div style="height:18px"></div><button class="btn btn-soft" onclick="navTo(\'homes\')">All my homes</button>';
+}
+
+async function homeStory(id, h, members, profs, s){
+  var ev=[];
+  ev.push({d:h.created_at, i:'🏡', t:'Home created', x:(h.city?'In '+h.city:'A new beginning')});
+  members.forEach(function(m){ var u=profs[m.member_phone]||{}; if(u.life_status!=='legacy') ev.push({i:'❤️', t:(u.name||m.member_phone)+' lives here'}); });
+  if(s.momentsTotal>0) ev.push({i:'💛', t:s.momentsTotal+' Moment'+(s.momentsTotal===1?'':'s')+' captured here'});
+  if(s.rituals>0) ev.push({i:'🔄', t:s.rituals+' Ritual'+(s.rituals===1?'':'s')+' kept alive'});
+  if(s.bridges>0) ev.push({i:'🌉', t:s.bridges+' Bridge'+(s.bridges===1?'':'s')+' connected'});
+  members.forEach(function(m){ var u=profs[m.member_phone]||{}; if(u.life_status==='legacy') ev.push({i:'🕊️', t:(u.name||'A loved one')+' remembered forever'}); });
+  if(ev.length<=1) ev.push({i:'✨', t:'Every Home has a story. This one is just beginning.'});
+  return ev.map(function(e){
+    var sub=e.x?('<div class="hst-x">'+escapeHtml(e.x)+'</div>'):(e.d?('<div class="hst-x">'+escapeHtml(fmtJoined(e.d))+'</div>'):'');
+    return '<div class="hstory"><span class="hst-i">'+e.i+'</span><div><div class="hst-t">'+escapeHtml(e.t)+'</div>'+sub+'</div></div>';
+  }).join('');
+}
+
+/* Home Actions — reuse existing engines so nothing breaks */
+function homeCaptureMoment(id){ navTo('moments'); toast('Capture a Home Moment 💛'); }
+function homeStartArena(id){ navTo('live'); toast('Start an Arena night 🎪'); }
+function homeCreateRitual(id){ navTo('rituals'); toast('Create a Home ritual 🔄'); }
+function homeBuildBridge(id){ try{ openProposeModal(); }catch(e){ navTo('bridge'); } }
+
+/* Home style picker (create + edit) */
+function homeStylePickerHTML(sel){
+  return '<div class="style-grid">'+HOME_STYLES.map(function(o){ return '<button type="button" class="style-opt'+(o.id===sel?' on':'')+'" onclick="selHomeStyle(this,\''+o.id+'\')"><span class="so-sw" style="'+homeAmbient(o.id)+'"><span class="so-bloom"></span></span><span class="so-l">'+o.label+'</span></button>'; }).join('')+'</div>';
+}
+function selHomeStyle(btn, id){ _homeStyleSel=id; var p=btn.parentNode; var bs=p.querySelectorAll('.style-opt'); for(var i=0;i<bs.length;i++) bs[i].classList.remove('on'); btn.classList.add('on'); }
+
+async function editHome(id){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  var hr=await sb.from('households').select('*').eq('id',id).limit(1); var h=hr.data&&hr.data[0]; if(!h) return;
+  _homeStyleSel=h.home_style||'apartment';
+  m.innerHTML='<div class="modal-card" style="max-height:92vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px">🎨 Your Home’s style</div>'+
+    '<input class="fi" id="ehName" value="'+escapeAttr(h.household_name||'')+'" placeholder="Home name" style="margin:12px 0">'+
+    '<input class="fi" id="ehCity" value="'+escapeAttr(h.city||'')+'" placeholder="City" style="margin-bottom:12px">'+
+    '<div class="field-label">Choose a style — this is emotional, not technical</div>'+homeStylePickerHTML(_homeStyleSel)+
+    '<div style="height:12px"></div><button class="btn" onclick="saveHome(\''+id+'\')">Save Home</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+async function saveHome(id){
+  var name=(document.getElementById('ehName').value||'').trim();
+  var city=(document.getElementById('ehCity').value||'').trim();
+  if(!name){ toast('Give your Home a name.'); return; }
+  try{ await sb.from('households').update({household_name:name, city:city||null, home_style:_homeStyleSel}).eq('id',id); }
+  catch(e){ toast(humanError(e,'Could not save the Home.')); return; }
+  closeHomeModal(); toast('Home updated 🏡'); renderHomeDetail(id); try{ renderHomes(); }catch(e){} try{ renderFamily(); }catch(e){}
+}
+
 function householdHtml(households, bridgesByHH){
   if(!households.length){
-    return '<div class="empty"><span class="big">🏠</span><div class="e1">Every home begins with one relationship.</div><div class="e2">A household is the people who live together — built from the family you love.</div></div>'+
-      '<button class="btn" onclick="openHouseholdForm()" style="margin-top:4px">Create Household 🏠</button>';
+    return '<div class="empty"><span class="big">🏠</span><div class="e1">Every Home has a story. Yours starts here.</div><div class="e2">A Home is the people who live together — the family you love.</div></div>'+
+      '<button class="btn" onclick="openHouseholdForm()" style="margin-top:4px">Start New Home 🏡</button>';
   }
   bridgesByHH=bridgesByHH||{};
   var cards=households.map(function(x){
@@ -3433,10 +3652,10 @@ function householdHtml(households, bridgesByHH){
       (x.h.city?'<div style="margin-top:5px"><span class="rl-pill">City: '+escapeHtml(x.h.city)+'</span></div>':'')+
       '<div class="meta"><span>👥 '+names+'</span></div></div></div>'+
       bridgeBlock+
-      '<button class="btn btn-ghost" style="margin-top:12px" onclick="openHouseholdManage(\''+x.h.id+'\')">👥 Manage members</button>'+
+      '<button class="btn btn-ghost" style="margin-top:12px" onclick="enterHome(\''+x.h.id+'\')">Enter Home →</button>'+
       '</div>';
   }).join('');
-  return cards+'<button class="btn btn-ghost" onclick="openHouseholdForm()" style="margin-top:4px">＋ New household</button>';
+  return cards+'<button class="btn btn-ghost" onclick="openHouseholdForm()" style="margin-top:4px">＋ Start New Home</button>';
 }
 async function createHousehold(name, city, memberPhones){
   if(!ensureSB()) return { error:{ message:'Connection problem.' } };
@@ -3460,21 +3679,24 @@ async function buildHouseholdManage(id){
   var ctx=await myCircleContext();
   var profs=await fetchProfiles(memberPhones.concat(ctx.conns||[]));
   var addable=(ctx.conns||[]).filter(function(p){ return memberPhones.indexOf(p)<0; });
+  var iAmOwner=(h.created_by_phone===me); var ownerName=(profs[h.created_by_phone]&&profs[h.created_by_phone].name)||'the home head';
   var memberHtml=members.map(function(x){ var u=profs[x.member_phone]||{}; var isMe=(x.member_phone===me);
     return '<div class="qmem"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span>'+
       '<span style="flex:1;min-width:0">'+escapeHtml(u.name||x.member_phone)+(isMe?' · you':'')+'</span>'+
-      (isMe?'<span class="qmemst">you</span>':'<span style="display:flex;gap:6px"><button class="rmbtn" onclick="transferMemberPrompt(\''+id+'\',\''+x.member_phone+'\')">Transfer</button><button class="rmbtn" onclick="removeHouseholdMember(\''+id+'\',\''+x.member_phone+'\')">Remove</button></span>')+'</div>'; }).join('');
+      (isMe?'<span class="qmemst">you</span>':(iAmOwner?'<button class="rmbtn" onclick="removeHouseholdMember(\''+id+'\',\''+x.member_phone+'\')">Remove</button>':''))+'</div>'; }).join('');
   var addHtml = addable.length
     ? addable.map(function(p){ var u=profs[p]||{}; return '<div class="qmem" onclick="addHouseholdMember(\''+id+'\',\''+p+'\')" style="cursor:pointer"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span><span style="flex:1;min-width:0">'+escapeHtml(u.name||p)+'</span><span class="qstart">Add →</span></div>'; }).join('')
     : '<p class="muted" style="font-size:13px;margin:6px 2px">Everyone you\u2019re connected with is already here. Connect more family first, then add them.</p>';
   box.innerHTML='<div class="modal-q" style="text-align:center;font-size:20px">🏠 '+escapeHtml(h.household_name)+'</div>'+
     (h.city?'<p class="muted" style="text-align:center;font-size:12.5px;margin:4px 0 0">📍 '+escapeHtml(h.city)+'</p>':'')+
     '<div class="field-label" style="margin-top:16px">Members · '+members.length+'</div>'+memberHtml+
-    '<div class="field-label" style="margin-top:18px">Add family</div>'+addHtml+
-    '<div style="height:16px"></div><button class="btn btn-ghost" onclick="leaveHousehold(\''+id+'\')">Leave this household</button>'+
+    (iAmOwner?('<div class="field-label" style="margin-top:18px">Add family</div>'+addHtml):('<p class="muted" style="font-size:12.5px;margin:14px 2px 0">Only '+escapeHtml(ownerName)+' (the home head) can add or remove members. You can leave anytime.</p>'))+
+    '<div style="height:16px"></div><button class="btn btn-ghost" onclick="leaveHousehold(\''+id+'\')">Move out of this Home</button>'+
     '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Done</button>';
 }
+async function amHouseholdOwner(id){ try{ var r=await sb.from('households').select('created_by_phone').eq('id',id).limit(1); return !!(r.data&&r.data[0]&&r.data[0].created_by_phone===myPhone()); }catch(e){ return false; } }
 async function addHouseholdMember(id, phone){
+  if(!(await amHouseholdOwner(id))){ toast('Only the household head can add members.'); return; }
   try{
     var ex=await sb.from('household_members').select('id').eq('household_id',id).eq('member_phone',phone).limit(1);
     if(ex.data && ex.data[0]) await sb.from('household_members').update({status:'active', role:'member'}).eq('id',ex.data[0].id);
@@ -3484,6 +3706,7 @@ async function addHouseholdMember(id, phone){
   toast('Added to the household ❤️'); buildHouseholdManage(id); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
 }
 async function removeHouseholdMember(id, phone){
+  if(!(await amHouseholdOwner(id))){ toast('Only the household head can remove members.'); return; }
   if(!confirm('Remove this member from the household?')) return;
   try{ await sb.from('household_members').update({status:'removed'}).eq('household_id',id).eq('member_phone',phone); }
   catch(e){ toast(humanError(e,'Could not remove right now.')); return; }
@@ -3585,41 +3808,20 @@ async function viewLifeHistory(phone, name){
     '<div style="height:12px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button>';
 }
 
-/* ---------- Household: transfer (move a Life between homes) + history ---------- */
+/* ---------- Household name helper (for history logging) ---------- */
 async function hhName(id){ try{ var r=await sb.from('households').select('household_name').eq('id',id).limit(1); return (r.data&&r.data[0]&&r.data[0].household_name)||'a household'; }catch(e){ return 'a household'; } }
-async function transferMemberPrompt(fromId, phone){
-  var box=document.getElementById('hhManage'); if(!box) return;
-  var hs=await loadHouseholds(); var targets=hs.filter(function(x){ return x.h.id!==fromId; });
-  if(!targets.length){ toast('Create another household first to transfer into.'); return; }
-  var prof=await sb.from('profiles').select('name').eq('phone',phone).limit(1); var nm=(prof.data&&prof.data[0]&&prof.data[0].name)||phone;
-  box.innerHTML='<div class="modal-q" style="text-align:center;font-size:19px">Transfer '+escapeHtml(nm)+'</div>'+
-    '<p class="muted" style="text-align:center;font-size:12.5px;margin:6px 2px 14px">Move them to another of your households. Their old home is kept in history.</p>'+
-    targets.map(function(t){ return '<div class="qmem" onclick="transferMember(\''+fromId+'\',\''+t.h.id+'\',\''+escapeAttr(phone)+'\')" style="cursor:pointer"><span class="qav">🏠</span><span style="flex:1;min-width:0">'+escapeHtml(t.h.household_name)+'</span><span class="qstart">Move here →</span></div>'; }).join('')+
-    '<div style="height:12px"></div><button class="btn btn-soft" onclick="openHouseholdManage(\''+fromId+'\')">Back</button>';
-}
-async function transferMember(fromId, toId, phone){
-  try{
-    await sb.from('household_members').update({status:'removed', left_at:new Date().toISOString()}).eq('household_id',fromId).eq('member_phone',phone);
-    var ex=await sb.from('household_members').select('id').eq('household_id',toId).eq('member_phone',phone).limit(1);
-    if(ex.data&&ex.data[0]) await sb.from('household_members').update({status:'active', role:'member', left_at:null}).eq('id',ex.data[0].id);
-    else await sb.from('household_members').insert({household_id:toId, member_phone:phone, role:'member', status:'active'});
-    await maybeArchiveHousehold(fromId);
-    var fn=await hhName(fromId), tn=await hhName(toId);
-    logLife(phone,'household_transfer','Moved households','Transferred from '+fn+' to '+tn+'.','🏠');
-  }catch(e){ toast(humanError(e,'Could not transfer right now.')); return; }
-  toast('Member transferred 🏠'); openHouseholdManage(toId); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
-}
 function openHouseholdForm(){
+  _homeStyleSel='apartment';
   var connected=window.__connected||[];
   var checks = connected.length
     ? connected.map(function(m){ return '<label class="hh-pick"><input type="checkbox" value="'+escapeAttr(m.phone)+'"> '+escapeHtml(m.name)+'</label>'; }).join('')
     : '<div class="muted" style="font-size:13px;padding:4px 2px 8px">Add family members first to include them — you can still create a household with just yourself.</div>';
   var m=document.getElementById('householdModal');
   m.innerHTML='<div class="modal-card"><div class="modal-grab"></div>'+
-    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">🏠 Create Household</div>'+
-    '<input class="fi" id="hhName" placeholder="Household name (e.g. Dwarka Household)" style="margin-bottom:11px">'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">🏡 Start a New Home</div>'+
+    '<input class="fi" id="hhName" placeholder="Home name (e.g. Harkar Home)" style="margin-bottom:11px">'+
     '<input class="fi" id="hhCity" placeholder="City" style="margin-bottom:14px">'+
-    '<div class="field-label">Who lives here?</div>'+
+    '<div class="field-label">Choose your Home style</div>'+homeStylePickerHTML(_homeStyleSel)+'<div class="field-label" style="margin-top:14px">Who lives here?</div>'+
     '<div id="hhPicks" style="margin-bottom:14px">'+checks+'</div>'+
     '<button class="btn" onclick="submitHousehold()">Create Household 🏠</button>'+
     '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHouseholdForm()">Cancel</button></div>';
@@ -3629,11 +3831,12 @@ function closeHouseholdForm(){ document.getElementById('householdModal').classLi
 async function submitHousehold(){
   var name=(document.getElementById('hhName').value||'').trim();
   var city=(document.getElementById('hhCity').value||'').trim();
-  if(!name){ toast('Enter a household name.'); return; }
+  if(!name){ toast('Give your Home a name.'); return; }
   var picks=[].slice.call(document.querySelectorAll('#hhPicks input:checked')).map(function(c){ return c.value; });
   var r=await createHousehold(name, city, picks);
-  if(r && r.error){ toast(humanError(r.error,'Could not create the household — nothing was changed.')); return; }
-  closeHouseholdForm(); toast('Household created 🏠'); renderFamily(); loadDashboard();
+  if(r && r.error){ toast(humanError(r.error,'Could not create the Home — nothing was changed.')); return; }
+  if(r && r.data && _homeStyleSel){ try{ await sb.from('households').update({home_style:_homeStyleSel}).eq('id',r.data); }catch(e){} }
+  closeHouseholdForm(); toast('Home created 🏡'); try{ renderHomes(); }catch(e){} renderFamily(); loadDashboard();
 }
 
 /* ============================================================
@@ -4239,7 +4442,7 @@ async function renderPassport(){
     '<div class="pp-act" onclick="openEditProfile()">✏️ Edit My Life</div>'+
     '<div class="pp-act" onclick="sharePassport()">🔗 Share Passport</div>'+
     '<div class="pp-act" onclick="navTo(\'family\')">❤️ My Relationships</div>'+
-    '<div class="pp-act" onclick="navTo(\'family\')">🏠 My Households</div>'+
+    '<div class="pp-act" onclick="navTo(\'family\')">🏡 My Homes</div>'+
     '<div class="pp-act" onclick="navTo(\'bridge\')">🌉 My Bridges</div>'+
     '<div class="pp-act" onclick="viewJourney()">🧭 My Life Journey</div>'+
   '</div>';
@@ -4631,7 +4834,7 @@ function searchGraph(){
 /* ---------- nav ---------- */
 function navTo(tab){
   try{ if(typeof leaveWorld==='function') leaveWorld(); }catch(e){}
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-world' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-world', homes:'screen-homes', homedetail:'screen-homedetail' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -4646,6 +4849,7 @@ function navTo(tab){
   if(tab==='live') renderArena();
   if(tab==='timemachine') renderTimeMachine();
   if(tab==='world') renderWorld();
+  if(tab==='homes') renderHomes();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
