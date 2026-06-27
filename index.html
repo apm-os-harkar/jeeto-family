@@ -179,6 +179,23 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .pp-handle{text-align:center;font-size:14px;opacity:.92;font-weight:700;margin-top:2px}
 .pp-numwrap{text-align:center;margin-top:11px}
 .pp-num{font-family:'Baloo 2';letter-spacing:1.5px;font-size:15px;background:rgba(255,255,255,.15);border-radius:13px;padding:8px 16px;display:inline-block}
+/* manifesto — present, subtle, unforgettable */
+#splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#241826 0%,#3E2747 52%,#7C3AED 130%);transition:opacity .7s ease}
+#splash.gone{opacity:0;pointer-events:none}
+.splash-inner{text-align:center;color:#fff;padding:24px}
+.splash-logo{font-size:56px;animation:splashpop .7s ease both}
+.splash-word{font-family:var(--font-display);font-weight:800;font-size:48px;letter-spacing:4px;margin-top:4px;animation:splashpop .7s .1s ease both}
+.splash-lines{margin-top:24px;display:flex;flex-direction:column;gap:8px}
+.splash-lines span{font-family:var(--font-body);font-weight:600;font-size:16.5px;letter-spacing:.4px;opacity:0;animation:splashline .6s ease forwards}
+@keyframes splashpop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes splashline{from{opacity:0;transform:translateY(8px)}to{opacity:.95;transform:none}}
+.pillars{display:flex;justify-content:center;gap:9px;margin:18px 0 2px}
+.pillar{flex:1;max-width:106px;text-align:center;background:var(--grad-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 6px}
+.pillar .pi{font-size:23px;display:block;line-height:1}
+.pillar .pl{display:block;margin-top:6px;font-family:var(--font-display);font-weight:800;font-size:12.5px;color:var(--ink)}
+.pp-motto{text-align:center;font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.66);margin-top:13px}
+.ww-sub{display:block;font-family:var(--font-body);font-weight:600;font-size:9.5px;letter-spacing:.7px;text-transform:uppercase;opacity:.92;margin-top:3px;text-shadow:0 1px 5px rgba(0,0,0,.5)}
+@media (prefers-reduced-motion: reduce){ .splash-logo,.splash-word,.splash-lines span{animation:none!important;opacity:1!important} }
 .pp-badges{display:flex;justify-content:center;gap:8px;margin-top:13px;flex-wrap:wrap}
 .pp-badge{background:rgba(255,255,255,.17);border-radius:20px;padding:6px 13px;font-size:12px;font-weight:800}
 .pp-since{text-align:center;font-size:11.5px;opacity:.82;margin-top:13px;font-weight:700}
@@ -661,6 +678,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 </style>
 </head>
 <body>
+<div id="splash" aria-hidden="true">
+  <div class="splash-inner">
+    <div class="splash-logo">🌳</div>
+    <div class="splash-word">JEETO</div>
+    <div class="splash-lines">
+      <span style="animation-delay:.55s">Every Life.</span>
+      <span style="animation-delay:.9s">Every Relationship.</span>
+      <span style="animation-delay:1.25s">Every Generation.</span>
+    </div>
+  </div>
+</div>
 <div id="app">
 
   <!-- LOGIN -->
@@ -668,7 +696,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div class="spacer"></div>
     <div class="logo">🌳</div>
     <div class="wordmark">Jeeto</div>
-    <div class="tagline">Connecting Generations</div>
+    <div class="tagline">Every Life. Every Relationship. Every Generation.</div>
     <div style="height:38px"></div>
     <div class="field-label">PHONE NUMBER</div>
     <input class="fi" id="loginPhone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" oninput="onPhoneInput()" onkeydown="if(event.key==='Enter')submitPhone()">
@@ -704,7 +732,13 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div style="height:8px"></div>
     <div class="logo">👋</div>
     <div class="wordmark" style="font-size:27px">Welcome home</div>
-    <p class="muted" style="text-align:center;font-size:13.5px;margin-top:2px">A few details to set up your profile.</p>
+    <p class="muted" style="text-align:center;font-size:13.5px;margin-top:2px">A few details to set up your Life.</p>
+    <div class="pillars">
+      <div class="pillar"><span class="pi">🌱</span><span class="pl">Life</span></div>
+      <div class="pillar"><span class="pi">❤️</span><span class="pl">Relationships</span></div>
+      <div class="pillar"><span class="pi">🌳</span><span class="pl">Generations</span></div>
+    </div>
+    <p class="muted" style="text-align:center;font-size:12px;margin:10px 2px 0;letter-spacing:.3px">Jeeto keeps all three — forever.</p>
     <div style="height:24px"></div>
     <div class="field-label">YOUR NAME</div>
     <input class="fi" id="pfName" placeholder="Full name">
@@ -719,7 +753,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
       <div class="chip" data-g="other" onclick="pickGender('other')">Other</div>
     </div>
     <div style="height:18px"></div>
-    <div class="field-label">PROFILE PHOTO <span class="muted" style="font-weight:600">(optional)</span></div>
+    <div class="field-label">YOUR PHOTO <span class="muted" style="font-weight:600">(optional)</span></div>
     <div class="photo-pick">
       <label class="photo-ring" id="photoRing" for="pfPhoto"><span>📷</span></label>
       <div><div style="font-weight:700;font-size:14px">Add a photo</div><div class="muted" style="font-size:12px">Tap the circle to choose</div></div>
@@ -782,7 +816,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
   <section class="screen has-nav" id="screen-life">
     <div class="gtop"><button class="gback" onclick="navTo('profile')" aria-label="Back to Passport">←</button><div class="h1" style="margin:0;font-size:24px">❤️ My Life</div></div>
-    <p class="muted" style="font-size:13px;margin:0 2px 16px">Your life's journey — Jeeto writes it for you, quietly, as you live it.</p>
+    <p class="muted" style="font-size:13px;margin:0 2px 16px">Your Life Journey — Jeeto writes it for you, quietly, as you live it.</p>
     <div id="lifeOnThisDay" style="margin-bottom:14px"></div>
     <div id="lifeInsights"></div>
     <input class="fi" id="lifeSearch" placeholder="Search your life — a year, a name, a moment…" oninput="renderLifeFeed(true)" style="margin:2px 0 16px">
@@ -824,7 +858,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
   <section class="screen has-nav" id="screen-quests">
     <div class="gtop"><button class="gback" onclick="navTo('home')">←</button><div class="h1" style="margin:0;font-size:24px">🧭 Family Quests</div></div>
-    <p class="muted" style="font-size:12.5px;margin:0 2px 14px">Real activities that bring your family closer. Not games — shared memories. Never required.</p>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 14px">Real experiences that bring your family closer. Not games — shared memories. Never required.</p>
     <div id="questsBody"></div>
     <div style="height:24px"></div>
   </section>
@@ -900,7 +934,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.10.0';
+var JEETO_VERSION='0.10.2';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1066,8 +1100,10 @@ function showScreen(id){
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ window.scrollTo(0,0); }catch(e){}
 }
+function dismissSplash(){ var s=document.getElementById('splash'); if(!s) return; s.classList.add('gone'); setTimeout(function(){ try{ s.style.display='none'; }catch(e){} }, 700); }
 async function init(){
   ensureSB();
+  try{ setTimeout(dismissSplash, 1950); }catch(e){}
   var fr=document.getElementById('frRel'); if(fr) fr.innerHTML=relOptions('');
   var phone=myPhone();
   if(phone){ TMP_PHONE=phone; ME=await fetchProfile(phone);
@@ -1109,7 +1145,7 @@ async function saveProfile(){
   var row={ phone:myPhone()||TMP_PHONE, name:name, dob:dob, gender:_gender, avatar_url:_photo||null };
   var r=await sb.from('profiles').upsert(row,{onConflict:'phone'}).select().maybeSingle();
   btn.disabled=false; btn.textContent='Save & continue';
-  if(r.error){ document.getElementById('pfErr').textContent=humanError(r.error,'Could not save your profile.'); return; }
+  if(r.error){ document.getElementById('pfErr').textContent=humanError(r.error,'Could not save your details.'); return; }
   ME=r.data||row; await renderHome(); navTo('home');
 }
 
@@ -1328,7 +1364,7 @@ async function renderQuests(){
     body+='<button class="btn" onclick="openQuestCreate()" style="margin-top:8px">＋ Start a new Quest</button>';
   } else if(QTAB==='completed'){
     body = done.length ? done.map(function(q){ return questCard(q,profs); }).join('')
-      : '<div class="empty"><span class="big">🏅</span><div class="e1">Your first badge is waiting</div><div class="e2">Completed Quests live here forever — and in your Journey.</div></div>';
+      : '<div class="empty"><span class="big">🏅</span><div class="e1">Your first badge is waiting</div><div class="e2">Completed Quests live here forever — and in your Life Journey.</div></div>';
   } else {
     var picks=questPicks(window.__questCtx||{});
     body='<div class="skyvos-mini" style="margin:2px 2px 16px"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span>Skyvos picked these for your family. Never required — only if they feel right.</span></div>';
@@ -2024,7 +2060,7 @@ async function renderTimeMachine(){
   box.innerHTML='<div class="sk sk-hero"></div><div class="sk sk-card"></div>';
   if(!ME) ME=await fetchProfile(myPhone());
   var mems=await loadTimeMemories(); TM_MEMS=mems;
-  if(!mems.length){ box.innerHTML='<div class="empty"><span class="big">🕰️</span><div class="e1">Your Time Machine is warming up</div><div class="e2">As your family captures Moments, this becomes a place to feel them again — years from now.</div></div>'; return; }
+  if(!mems.length){ box.innerHTML='<div class="empty"><span class="big">🕰️</span><div class="e1">Every Life deserves to be remembered</div><div class="e2">As your family captures Moments, this becomes a place to feel them again — years from now.</div></div>'; return; }
   var today=tmToday(mems);
   var caps=buildCapsules(mems);
   var years=Object.keys(mems.reduce(function(a,x){a[x.year]=1;return a;},{})).sort(function(a,b){return b-a;});
@@ -2830,7 +2866,7 @@ async function buildHome(){
   '</div>';
 
   /* My Family World widget */
-  html+='<div class="worldwidget" onclick="navTo(\'world\')">'+worldWidgetSVG()+'<span class="ww-label">Your Family World</span><span class="ww-go">Enter ✨</span></div>';
+  html+='<div class="worldwidget" onclick="navTo(\'world\')">'+worldWidgetSVG()+'<span class="ww-label">Your Family World<span class="ww-sub">Every Life · Every Relationship · Every Generation</span></span><span class="ww-go">Enter ✨</span></div>';
 
   /* Family Quests */
   html+='<div class="home-sec">🧭 Family Quests'+(streak&&streak.active&&streak.count>1?'<span class="qchip-streak">🔥 '+streak.count+'-day streak</span>':'<a onclick="navTo(\'quests\')">All →</a>')+'</div>';
@@ -2871,7 +2907,7 @@ async function buildHome(){
   }
 
   /* Family Activity */
-  html+='<div class="home-sec">🌿 Family Activity</div>';
+  html+='<div class="home-sec">🌿 Family Life</div>';
   if(wall.length){ html+='<div class="cele" style="padding:4px 16px">'+wall.map(function(w){ return '<div class="wall-row"><div class="wall-ic">'+w.icon+'</div><div style="flex:1;min-width:0"><div class="wall-t">'+w.html+'</div><div class="wall-d">'+escapeHtml(w.when)+'</div></div></div>'; }).join('')+'</div>'; }
   else html+='<div class="today-empty">Your story is just beginning. As your family connects, captures and celebrates, it gently appears here. ❤️</div>';
 
@@ -3195,7 +3231,7 @@ async function renderFamily(){
   /* 2) Connected Members */
   html+='<div class="sec-head"><span class="si">👥</span><span class="st">Connected members</span>'+(n?'<span class="sc">'+n+'</span>':'')+'</div>';
   if(!n){
-    html+='<div class="empty"><span class="big">🌱</span><div class="e1">Every family begins with one relationship.</div><div class="e3" style="margin-top:10px">Add someone you love ❤️</div></div>';
+    html+='<div class="empty"><span class="big">🌱</span><div class="e1">Every Relationship begins with one hello.</div><div class="e3" style="margin-top:10px">Add someone you love ❤️</div></div>';
   } else rels.forEach(function(c){
     var v=relView(c,me);
     html+='<div class="pcard"><div class="fcard">'+avHtml(v.other)+
@@ -3545,7 +3581,7 @@ async function viewLifeHistory(phone, name){
   var rows=r.data||[];
   var list = rows.length ? rows.map(function(x){ return '<div class="task"><div style="font-size:20px">'+(x.icon||'✨')+'</div><div style="flex:1;min-width:0"><div class="tk-t">'+escapeHtml(x.event_title||x.event_type)+'</div><div class="tk-m">'+escapeHtml(fmtJoined(x.event_date||x.created_at))+(x.description?' · '+escapeHtml(x.description):'')+'</div></div></div>'; }).join('')
     : '<div class="empty"><span class="big">📖</span><div class="e1">Their story is just beginning</div><div class="e2">As life unfolds, every milestone will be kept here forever.</div></div>';
-  box.innerHTML='<div class="modal-q" style="text-align:center;font-size:19px">📖 '+escapeHtml(name||phone)+'’s journey</div><div style="margin-top:14px">'+list+'</div>'+
+  box.innerHTML='<div class="modal-q" style="text-align:center;font-size:19px">📖 '+escapeHtml(name||phone)+'’s Life Journey</div><div style="margin-top:14px">'+list+'</div>'+
     '<div style="height:12px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button>';
 }
 
@@ -4186,6 +4222,7 @@ async function renderPassport(){
     '<div class="pp-numwrap"><span class="pp-num">'+escapeHtml(pass?pass.jeeto_number:'JEETO')+'</span></div>'+
     '<div class="pp-badges"><span class="pp-badge">✅ Verified Member</span><span class="pp-badge">'+tier.e+' '+tier.name+'</span></div>'+
     '<div class="pp-since">Member since '+sinceTxt+' · '+years+(years===1?' year':' years')+' in Jeeto</div>'+
+    '<div class="pp-motto">Every Life · Every Relationship · Every Generation</div>'+
     '<div class="pp-qr" id="ppQR"></div>'+
   '</div>';
 
@@ -4199,20 +4236,20 @@ async function renderPassport(){
   '</div>';
 
   html+='<div class="pp-actions">'+
-    '<div class="pp-act" onclick="openEditProfile()">✏️ Edit Profile</div>'+
+    '<div class="pp-act" onclick="openEditProfile()">✏️ Edit My Life</div>'+
     '<div class="pp-act" onclick="sharePassport()">🔗 Share Passport</div>'+
     '<div class="pp-act" onclick="navTo(\'family\')">❤️ My Relationships</div>'+
     '<div class="pp-act" onclick="navTo(\'family\')">🏠 My Households</div>'+
     '<div class="pp-act" onclick="navTo(\'bridge\')">🌉 My Bridges</div>'+
-    '<div class="pp-act" onclick="viewJourney()">🧭 My Journey</div>'+
+    '<div class="pp-act" onclick="viewJourney()">🧭 My Life Journey</div>'+
   '</div>';
   html+='<button class="btn glow" style="margin-top:13px" onclick="navTo(\'graph\')">🕸 Open Relationship Graph</button>';
 
   var events=await journeyEvents(pass);
-  html+='<div class="pp-journey"><div class="sec-head"><span class="si">🧭</span><span class="st">My Journey</span></div>';
+  html+='<div class="pp-journey"><div class="sec-head"><span class="si">🧭</span><span class="st">My Life Journey</span></div>';
   if(events.length){ events.slice(0,5).forEach(function(ev){ html+='<div class="jrow"><div class="jdot">'+ev.icon+'</div><div style="flex:1;min-width:0"><div class="jt">'+escapeHtml(ev.title)+'</div><div class="jd">'+escapeHtml(ev.when)+'</div></div></div>'; }); }
-  else html+='<div class="muted" style="font-size:13px;padding:4px 2px">Your journey will unfold as you connect, build and capture.</div>';
-  html+='<div style="height:14px"></div><button class="btn btn-soft" onclick="viewJourney()">View Complete Journey →</button>'+
+  else html+='<div class="muted" style="font-size:13px;padding:4px 2px">Your Life Journey will unfold as you connect, build and capture.</div>';
+  html+='<div style="height:14px"></div><button class="btn btn-soft" onclick="viewJourney()">View Complete Life Journey →</button>'+
     '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'timemachine\')">🕰️ Open the Family Time Machine</button>'+
     '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'world\')">🏡 Enter your Family World</button></div>';
   html+=skyvosMini('Your Passport is your legacy — it will outlive the phone in your hand.');
@@ -4344,7 +4381,7 @@ function renderLifeFeed(reset){
   var list=lifeFiltered();
   if(reset){ LIFE_N=0; box.innerHTML=''; }
   if(!list.length){
-    box.innerHTML='<div class="empty"><span class="big">📖</span><div class="e1">Your life story begins now</div><div class="e2">As you connect, build and capture, your journey writes itself here.</div></div>';
+    box.innerHTML='<div class="empty"><span class="big">📖</span><div class="e1">Every Generation has a story waiting to be told</div><div class="e2">As you connect, build and capture, your Life Journey writes itself here.</div></div>';
     setupLifeObserver(false); return;
   }
   var prev = LIFE_N>0 ? new Date(list[LIFE_N-1].event_date).getFullYear() : null;
@@ -4660,6 +4697,8 @@ function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(
 function escapeAttr(s){ return String(s==null?'':s).replace(/'/g,'').replace(/"/g,''); }
 
 init();
+/* safety: never let the splash trap the user, even if boot stalls */
+setTimeout(dismissSplash, 2600);
 </script>
 </body>
 </html>
