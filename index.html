@@ -306,6 +306,13 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .qmem:last-child{border-bottom:0}
 .qmem .qav{margin:0;width:32px;height:32px}
 .qmemst{font-size:11px;font-weight:800;color:var(--ink3)}
+.rmbtn{background:#fff;border:1.5px solid var(--line);color:var(--ink2);border-radius:var(--r-pill);padding:6px 12px;font-size:11.5px;font-weight:800;font-family:inherit;cursor:pointer;transition:.2s}
+.rmbtn:active{border-color:var(--rani);color:var(--rani-d)}
+.schips{display:flex;flex-wrap:wrap;gap:8px}
+.schip{background:#fff;border:1.5px solid var(--line);color:var(--ink2);border-radius:var(--r-pill);padding:9px 14px;font-size:12.5px;font-weight:800;font-family:inherit;cursor:pointer;transition:.2s}
+.schip.on{background:var(--grad-soft);border-color:var(--rani);color:var(--rani-d)}
+.lifebadge{font-size:13px;margin-left:5px}
+.relbadge{display:inline-block;margin-left:7px;font-size:10.5px;font-weight:800;color:var(--ink2);background:var(--paper2);border:1px solid var(--line);padding:3px 9px;border-radius:var(--r-pill);vertical-align:middle}
 .reward-line{font-size:12px;font-weight:800;color:#fff;margin-top:8px;opacity:.95}
 .qchip-streak{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:#C2410C;background:linear-gradient(135deg,#FFE9CC,#FFD9B0);padding:6px 12px;border-radius:var(--r-pill)}
 /* rituals — calendar-inspired */
@@ -893,7 +900,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.8.4';
+var JEETO_VERSION='0.10.0';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3086,9 +3093,9 @@ async function loadRelationships(){
 /* relView — my view of a relationship: the other person + how I label them + since */
 function relView(c, me){
   var aIsMe=c.person_a_phone===me;
-  return { other: aIsMe?c.person_b_phone:c.person_a_phone, rel: aIsMe?c.relation_a_to_b:c.relation_b_to_a, since: c.created_at };
+  return { id:c.id, aIsMe:aIsMe, other: aIsMe?c.person_b_phone:c.person_a_phone, rel: aIsMe?c.relation_a_to_b:c.relation_b_to_a, relStatus:(c.rel_status||'active'), since: c.created_at };
 }
-async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
+async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender,life_status').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
 
 /* ============================================================
    RELATIONSHIP ENGINE — public API
@@ -3192,9 +3199,10 @@ async function renderFamily(){
   } else rels.forEach(function(c){
     var v=relView(c,me);
     html+='<div class="pcard"><div class="fcard">'+avHtml(v.other)+
-      '<div class="info"><div class="nm">'+escapeHtml(nm(v.other))+'</div>'+
-      '<div style="margin-top:5px"><span class="rl-pill">'+escapeHtml(v.rel||'family')+'</span></div>'+
+      '<div class="info"><div class="nm">'+escapeHtml(nm(v.other))+lifeBadge(profs[v.other])+'</div>'+
+      '<div style="margin-top:5px"><span class="rl-pill">'+escapeHtml(v.rel||'family')+'</span>'+relStatusBadge(v.relStatus)+'</div>'+
       '<div class="meta"><span>🗓️ '+escapeHtml(fmtJoined(v.since))+'</span><span>📞 +91 '+escapeHtml(v.other)+'</span></div>'+
+      '<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="openRelManage(\''+v.id+'\')">⚙️ Manage</button>'+
       '</div></div></div>';
   });
 
@@ -3321,7 +3329,7 @@ function generateFamilyTree(me, rels, profs){
     var v=relView(c,me);
     return '<div class="tnode" style="animation-delay:'+(0.08*(i+1)).toFixed(2)+'s">'+
       '<div class="ph">'+(av(v.other)?'<img src="'+av(v.other)+'">':escapeHtml((nm(v.other)[0]||'?').toUpperCase()))+'</div>'+
-      '<div><div class="tn">'+escapeHtml(nm(v.other))+'</div><div class="tr">'+escapeHtml(v.rel||'family')+'</div></div></div>';
+      '<div><div class="tn">'+escapeHtml(nm(v.other))+lifeBadge(profs[v.other])+'</div><div class="tr">'+escapeHtml(v.rel||'family')+relStatusBadge(v.relStatus)+'</div></div></div>';
   }).join('');
   return '<div class="tree-strength">⭐ Family Strength · '+strength+'</div>'+
     '<div class="tree-wrap" id="treeWrap"><svg id="treeLines"></svg>'+
@@ -3388,13 +3396,182 @@ function householdHtml(households, bridgesByHH){
       '<div class="info"><div class="nm">'+escapeHtml(x.h.household_name)+'</div>'+
       (x.h.city?'<div style="margin-top:5px"><span class="rl-pill">City: '+escapeHtml(x.h.city)+'</span></div>':'')+
       '<div class="meta"><span>👥 '+names+'</span></div></div></div>'+
-      bridgeBlock+'</div>';
+      bridgeBlock+
+      '<button class="btn btn-ghost" style="margin-top:12px" onclick="openHouseholdManage(\''+x.h.id+'\')">👥 Manage members</button>'+
+      '</div>';
   }).join('');
   return cards+'<button class="btn btn-ghost" onclick="openHouseholdForm()" style="margin-top:4px">＋ New household</button>';
 }
 async function createHousehold(name, city, memberPhones){
   if(!ensureSB()) return { error:{ message:'Connection problem.' } };
   return await sb.rpc('create_household', { p_name:name, p_city:city, p_creator:myPhone(), p_members:memberPhones });
+}
+
+/* ---------- household member management (add / remove / leave) ---------- */
+function openHouseholdManage(id){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div><div id="hhManage"><div class="sk sk-card"></div></div></div>';
+  m.classList.add('show');
+  buildHouseholdManage(id);
+}
+async function buildHouseholdManage(id){
+  var box=document.getElementById('hhManage'); if(!box) return;
+  var me=myPhone();
+  var hr=await sb.from('households').select('*').eq('id',id).limit(1);
+  var h=(hr.data&&hr.data[0]); if(!h){ box.innerHTML='<p class="muted" style="text-align:center">Household not found.</p><button class="btn btn-soft" onclick="closeHomeModal()">Close</button>'; return; }
+  var mr=await sb.from('household_members').select('*').eq('household_id',id).eq('status','active');
+  var members=mr.data||[]; var memberPhones=members.map(function(x){return x.member_phone;});
+  var ctx=await myCircleContext();
+  var profs=await fetchProfiles(memberPhones.concat(ctx.conns||[]));
+  var addable=(ctx.conns||[]).filter(function(p){ return memberPhones.indexOf(p)<0; });
+  var memberHtml=members.map(function(x){ var u=profs[x.member_phone]||{}; var isMe=(x.member_phone===me);
+    return '<div class="qmem"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span>'+
+      '<span style="flex:1;min-width:0">'+escapeHtml(u.name||x.member_phone)+(isMe?' · you':'')+'</span>'+
+      (isMe?'<span class="qmemst">you</span>':'<span style="display:flex;gap:6px"><button class="rmbtn" onclick="transferMemberPrompt(\''+id+'\',\''+x.member_phone+'\')">Transfer</button><button class="rmbtn" onclick="removeHouseholdMember(\''+id+'\',\''+x.member_phone+'\')">Remove</button></span>')+'</div>'; }).join('');
+  var addHtml = addable.length
+    ? addable.map(function(p){ var u=profs[p]||{}; return '<div class="qmem" onclick="addHouseholdMember(\''+id+'\',\''+p+'\')" style="cursor:pointer"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span><span style="flex:1;min-width:0">'+escapeHtml(u.name||p)+'</span><span class="qstart">Add →</span></div>'; }).join('')
+    : '<p class="muted" style="font-size:13px;margin:6px 2px">Everyone you\u2019re connected with is already here. Connect more family first, then add them.</p>';
+  box.innerHTML='<div class="modal-q" style="text-align:center;font-size:20px">🏠 '+escapeHtml(h.household_name)+'</div>'+
+    (h.city?'<p class="muted" style="text-align:center;font-size:12.5px;margin:4px 0 0">📍 '+escapeHtml(h.city)+'</p>':'')+
+    '<div class="field-label" style="margin-top:16px">Members · '+members.length+'</div>'+memberHtml+
+    '<div class="field-label" style="margin-top:18px">Add family</div>'+addHtml+
+    '<div style="height:16px"></div><button class="btn btn-ghost" onclick="leaveHousehold(\''+id+'\')">Leave this household</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Done</button>';
+}
+async function addHouseholdMember(id, phone){
+  try{
+    var ex=await sb.from('household_members').select('id').eq('household_id',id).eq('member_phone',phone).limit(1);
+    if(ex.data && ex.data[0]) await sb.from('household_members').update({status:'active', role:'member'}).eq('id',ex.data[0].id);
+    else await sb.from('household_members').insert({household_id:id, member_phone:phone, role:'member', status:'active'});
+  }catch(e){ toast(humanError(e,'Could not add right now.')); return; }
+  try{ var nm=await hhName(id); logLife(phone,'household_join','Joined a household','Joined '+nm+'.','🏠'); }catch(e){}
+  toast('Added to the household ❤️'); buildHouseholdManage(id); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
+}
+async function removeHouseholdMember(id, phone){
+  if(!confirm('Remove this member from the household?')) return;
+  try{ await sb.from('household_members').update({status:'removed'}).eq('household_id',id).eq('member_phone',phone); }
+  catch(e){ toast(humanError(e,'Could not remove right now.')); return; }
+  await maybeArchiveHousehold(id);
+  try{ var nm=await hhName(id); logLife(phone,'household_leave','Left a household','Left '+nm+'.','🏠'); }catch(e){}
+  toast('Member removed.'); buildHouseholdManage(id); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
+}
+async function leaveHousehold(id){
+  if(!confirm('Leave this household? You can be added back anytime.')) return;
+  try{ await sb.from('household_members').update({status:'removed'}).eq('household_id',id).eq('member_phone',myPhone()); }
+  catch(e){ toast(humanError(e,'Could not leave right now.')); return; }
+  await maybeArchiveHousehold(id);
+  try{ var nm=await hhName(id); logLife(myPhone(),'household_leave','Left a household','Left '+nm+'.','🏠'); }catch(e){}
+  closeHomeModal(); toast('You\u2019ve left the household.'); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
+}
+async function maybeArchiveHousehold(id){
+  try{ var c=await sb.from('household_members').select('id',{count:'exact',head:true}).eq('household_id',id).eq('status','active');
+    if((c.count||0)===0) await sb.from('households').update({status:'archived'}).eq('id',id);
+  }catch(e){}
+}
+
+/* ============================================================
+   LIVES · HOUSEHOLDS · RELATIONSHIPS  (permanent history)
+   Core rule: nothing is ever deleted — only re-statused, and every
+   major change is written to the Life Journey (Time Machine + Journey).
+   ============================================================ */
+function uuidv4(){ try{ if(crypto&&crypto.randomUUID) return crypto.randomUUID(); }catch(e){}
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){ var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8); return v.toString(16); }); }
+async function logLife(phone, etype, title, desc, icon){
+  if(!phone) return;
+  try{ await sb.from('life_events').insert({ person_phone:phone, event_type:etype, event_title:title, description:desc||null,
+    event_date:new Date().toISOString().slice(0,10), icon:icon||'✨', source:'manual', ref_kind:'change', ref_id:uuidv4() }); }catch(e){}
+}
+var LIFE_STATUSES=[['active','🟢 Active'],['child','🧒 Child'],['inactive','💤 Inactive'],['legacy','🕊️ Legacy']];
+var REL_STATUSES=[['active','Active'],['former','Former'],['paused','Paused'],['legacy','🕊️ Legacy']];
+function lifeBadge(p){ var s=p&&p.life_status; if(!s||s==='active') return '';
+  var m={legacy:'🕊️',child:'🧒',inactive:'💤',invited:'✉️'}; return m[s]?(' <span class="lifebadge">'+m[s]+'</span>'):''; }
+function relStatusBadge(s){ if(!s||s==='active') return '';
+  var m={former:'Former',paused:'Paused',legacy:'🕊️ Legacy'}; return m[s]?('<span class="relbadge">'+m[s]+'</span>'):''; }
+
+/* ---------- Relationship + Life management ---------- */
+function openRelManage(relId){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:92vh;overflow:auto"><div class="modal-grab"></div><div id="relManage"><div class="sk sk-card"></div></div></div>';
+  m.classList.add('show'); buildRelManage(relId);
+}
+async function buildRelManage(relId){
+  var box=document.getElementById('relManage'); if(!box) return;
+  var me=myPhone();
+  var rr=await sb.from('relationships').select('*').eq('id',relId).limit(1); var c=rr.data&&rr.data[0];
+  if(!c){ box.innerHTML='<p class="muted" style="text-align:center">Relationship not found.</p><button class="btn btn-soft" onclick="closeHomeModal()">Close</button>'; return; }
+  var v=relView(c,me);
+  var pr=await sb.from('profiles').select('*').eq('phone',v.other).limit(1); var u=(pr.data&&pr.data[0])||{};
+  window.__relEdit={ id:c.id, aIsMe:v.aIsMe, other:v.other };
+  var relSel='<select class="fi" id="rmRel" style="margin-bottom:12px">'+relOptions(v.rel||'')+'</select>';
+  var relStatusChips=REL_STATUSES.map(function(o){ return '<button class="schip'+(v.relStatus===o[0]?' on':'')+'" onclick="setRelStatus(\''+c.id+'\',\''+o[0]+'\',\''+escapeAttr(v.other)+'\')">'+o[1]+'</button>'; }).join('');
+  var lifeChips=LIFE_STATUSES.map(function(o){ return '<button class="schip'+((u.life_status||'active')===o[0]?' on':'')+'" onclick="setLifeStatus(\''+escapeAttr(v.other)+'\',\''+o[0]+'\')">'+o[1]+'</button>'; }).join('');
+  box.innerHTML='<div class="modal-q" style="text-align:center;font-size:20px">'+escapeHtml(u.name||v.other)+lifeBadge(u)+'</div>'+
+    '<p class="muted" style="text-align:center;font-size:12.5px;margin:4px 0 2px">+91 '+escapeHtml(v.other)+' · since '+escapeHtml(fmtJoined(v.since))+'</p>'+
+    '<div class="field-label" style="margin-top:16px">How you’re related</div>'+relSel+
+    '<button class="btn btn-soft" onclick="changeRelation()">Update relationship</button>'+
+    '<div class="field-label" style="margin-top:18px">Relationship status</div><div class="schips">'+relStatusChips+'</div>'+
+    '<div class="field-label" style="margin-top:18px">This person’s life status</div><div class="schips">'+lifeChips+'</div>'+
+    '<p class="muted" style="font-size:12px;margin:8px 2px 0">Marking someone 🕊️ Legacy keeps them forever in your tree, relationships and Time Machine — never removed.</p>'+
+    '<div style="height:16px"></div><button class="btn btn-ghost" onclick="viewLifeHistory(\''+escapeAttr(v.other)+'\',\''+escapeAttr(u.name||v.other)+'\')">📖 View life history</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Done</button>';
+}
+async function setRelStatus(relId, status, otherPhone){
+  try{ await sb.from('relationships').update({rel_status:status}).eq('id',relId); }catch(e){ toast(humanError(e,'Could not update.')); return; }
+  var label=({active:'active again',former:'a former relationship',paused:'paused',legacy:'a cherished memory'})[status]||status;
+  logLife(otherPhone,'relationship_status','Relationship became '+label, null, status==='legacy'?'🕊️':'❤️');
+  toast('Relationship updated.'); buildRelManage(relId); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
+}
+async function setLifeStatus(phone, status){
+  var patch={ life_status:status };
+  if(status==='legacy'){ var y=prompt('Year they passed (optional, e.g. 2024):',''); if(y&&/^\d{4}$/.test(y.trim())) patch.legacy_year=parseInt(y.trim(),10); }
+  try{ await sb.from('profiles').update(patch).eq('phone',phone); }catch(e){ toast(humanError(e,'Could not update.')); return; }
+  var msg=({active:'is active',child:'is a child member',inactive:'is inactive',legacy:'became a cherished memory 🕊️'})[status]||status;
+  logLife(phone,'life_status', (status==='legacy'?'A cherished memory 🕊️':'Life status updated'), 'This Life '+msg+'.', status==='legacy'?'🕊️':'🟢');
+  toast(status==='legacy'?'Honored in your family forever 🕊️':'Life status updated.');
+  if(window.__relEdit) buildRelManage(window.__relEdit.id); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
+}
+async function changeRelation(){
+  var e=window.__relEdit; if(!e) return;
+  var newRel=(document.getElementById('rmRel')||{}).value||''; if(!newRel){ toast('Choose a relationship.'); return; }
+  var patch=e.aIsMe?{relation_a_to_b:newRel}:{relation_b_to_a:newRel};
+  try{ await sb.from('relationships').update(patch).eq('id',e.id); }catch(err){ toast(humanError(err,'Could not update.')); return; }
+  logLife(e.other,'relationship_status','Relationship updated to '+newRel, null, '❤️');
+  toast('Relationship updated.'); buildRelManage(e.id); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
+}
+async function viewLifeHistory(phone, name){
+  var box=document.getElementById('relManage')||document.getElementById('hhManage'); if(!box) return;
+  box.innerHTML='<div class="sk sk-card"></div>';
+  var r=await sb.from('life_events').select('*').eq('person_phone',phone).order('event_date',{ascending:false}).order('created_at',{ascending:false}).limit(60);
+  var rows=r.data||[];
+  var list = rows.length ? rows.map(function(x){ return '<div class="task"><div style="font-size:20px">'+(x.icon||'✨')+'</div><div style="flex:1;min-width:0"><div class="tk-t">'+escapeHtml(x.event_title||x.event_type)+'</div><div class="tk-m">'+escapeHtml(fmtJoined(x.event_date||x.created_at))+(x.description?' · '+escapeHtml(x.description):'')+'</div></div></div>'; }).join('')
+    : '<div class="empty"><span class="big">📖</span><div class="e1">Their story is just beginning</div><div class="e2">As life unfolds, every milestone will be kept here forever.</div></div>';
+  box.innerHTML='<div class="modal-q" style="text-align:center;font-size:19px">📖 '+escapeHtml(name||phone)+'’s journey</div><div style="margin-top:14px">'+list+'</div>'+
+    '<div style="height:12px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button>';
+}
+
+/* ---------- Household: transfer (move a Life between homes) + history ---------- */
+async function hhName(id){ try{ var r=await sb.from('households').select('household_name').eq('id',id).limit(1); return (r.data&&r.data[0]&&r.data[0].household_name)||'a household'; }catch(e){ return 'a household'; } }
+async function transferMemberPrompt(fromId, phone){
+  var box=document.getElementById('hhManage'); if(!box) return;
+  var hs=await loadHouseholds(); var targets=hs.filter(function(x){ return x.h.id!==fromId; });
+  if(!targets.length){ toast('Create another household first to transfer into.'); return; }
+  var prof=await sb.from('profiles').select('name').eq('phone',phone).limit(1); var nm=(prof.data&&prof.data[0]&&prof.data[0].name)||phone;
+  box.innerHTML='<div class="modal-q" style="text-align:center;font-size:19px">Transfer '+escapeHtml(nm)+'</div>'+
+    '<p class="muted" style="text-align:center;font-size:12.5px;margin:6px 2px 14px">Move them to another of your households. Their old home is kept in history.</p>'+
+    targets.map(function(t){ return '<div class="qmem" onclick="transferMember(\''+fromId+'\',\''+t.h.id+'\',\''+escapeAttr(phone)+'\')" style="cursor:pointer"><span class="qav">🏠</span><span style="flex:1;min-width:0">'+escapeHtml(t.h.household_name)+'</span><span class="qstart">Move here →</span></div>'; }).join('')+
+    '<div style="height:12px"></div><button class="btn btn-soft" onclick="openHouseholdManage(\''+fromId+'\')">Back</button>';
+}
+async function transferMember(fromId, toId, phone){
+  try{
+    await sb.from('household_members').update({status:'removed', left_at:new Date().toISOString()}).eq('household_id',fromId).eq('member_phone',phone);
+    var ex=await sb.from('household_members').select('id').eq('household_id',toId).eq('member_phone',phone).limit(1);
+    if(ex.data&&ex.data[0]) await sb.from('household_members').update({status:'active', role:'member', left_at:null}).eq('id',ex.data[0].id);
+    else await sb.from('household_members').insert({household_id:toId, member_phone:phone, role:'member', status:'active'});
+    await maybeArchiveHousehold(fromId);
+    var fn=await hhName(fromId), tn=await hhName(toId);
+    logLife(phone,'household_transfer','Moved households','Transferred from '+fn+' to '+tn+'.','🏠');
+  }catch(e){ toast(humanError(e,'Could not transfer right now.')); return; }
+  toast('Member transferred 🏠'); openHouseholdManage(toId); try{ renderFamily(); }catch(e){} try{ loadDashboard(); }catch(e){}
 }
 function openHouseholdForm(){
   var connected=window.__connected||[];
@@ -4327,7 +4504,10 @@ async function createRelationship(otherPhone, otherIsMyRel, iAmTheirRel){
   var me=myPhone();
   return await sb.from('relationships').insert({ person_a_phone:me, person_b_phone:otherPhone, relation_a_to_b:otherIsMyRel, relation_b_to_a:iAmTheirRel, status:'active', created_by:me });
 }
-async function deleteRelationship(id){ if(!ensureSB()) return; await sb.from('relationships').delete().eq('id',id); }
+async function deleteRelationship(id){ if(!ensureSB()) return;
+  /* Relationships are NEVER hard-deleted (permanent history). Soft-evolve to 'former' instead. */
+  try{ await sb.from('relationships').update({ rel_status:'former' }).eq('id',id); }catch(e){}
+}
 
 /* ---------- graph view ---------- */
 async function renderGraph(){
