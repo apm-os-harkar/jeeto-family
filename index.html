@@ -743,7 +743,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh{position:relative;font-family:var(--jh-sans);color:var(--jh-fg);background:var(--jh-bg);min-height:100%;overflow:hidden}
 .jh *{box-sizing:border-box}
 .jh-mood{position:fixed;left:0;right:0;top:0;height:288px;filter:blur(48px);pointer-events:none;z-index:0;opacity:.42;animation:jh-breathe 9s ease-in-out infinite}
-.jh-wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:36px;padding:32px 24px 128px}
+.jh-wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:22px;padding:18px 20px 120px}
 .jh-serif{font-family:var(--jh-serif)}
 .jh-rise{animation:jh-rise .8s cubic-bezier(.22,1,.36,1) both}
 @keyframes jh-breathe{0%,100%{opacity:.5}50%{opacity:.82}}
@@ -761,7 +761,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-hd-nm{margin:2px 0 0;font-family:var(--jh-serif);font-size:30px;line-height:1;letter-spacing:-.02em;color:var(--jh-fg)}
 .jh-pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:var(--jh-card);padding:8px 14px;font-size:14px;font-weight:500;color:var(--jh-fg);box-shadow:0 1px 3px rgba(120,72,30,.08);border:1px solid var(--jh-border)}
 .jh-pill svg{width:16px;height:16px;color:var(--jh-primary)}
-.jh-hd-id{margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--jh-border);padding-top:16px}
+.jh-hd-id{margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--jh-border);padding-top:16px}
 .jh-hd-home{display:flex;align-items:center;gap:10px}
 .jh-hd-ic{width:36px;height:36px;border-radius:12px;background:oklch(0.64 0.14 45/0.12);color:var(--jh-primary);display:flex;align-items:center;justify-content:center;border:1px solid oklch(0.64 0.14 45/0.18)}
 .jh-hd-ic svg{width:16px;height:16px}
@@ -859,6 +859,30 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-aw-grid{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px 16px}
 .jh-aw-v{font-family:var(--jh-serif);font-size:30px;line-height:1;color:var(--jh-fg)}
 .jh-aw-l{margin:6px 0 0;font-size:14px;line-height:1.35;color:var(--jh-muted-fg)}
+/* ---- app-native compact layout ---- */
+.jh-hero2{display:flex;align-items:center;gap:14px;background:var(--jh-card);border:1px solid var(--jh-border);border-radius:22px;padding:13px;box-shadow:0 1px 3px rgba(120,72,30,.10)}
+.jh-hero2-thumb{width:80px;height:80px;flex-shrink:0;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,oklch(0.62 0.12 55),oklch(0.4 0.08 42))}
+.jh-hero2-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.jh-hero2-body{min-width:0}
+.jh-hero2-eye{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.16em;color:var(--jh-primary)}
+.jh-hero2-eye svg{width:13px;height:13px;fill:var(--jh-primary);color:var(--jh-primary)}
+.jh-hero2-msg{margin:5px 0 0;font-family:var(--jh-serif);font-size:21px;line-height:1.15;color:var(--jh-fg)}
+.jh-mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.jh-mg-cell{text-align:left;background:none;border:none;padding:0;cursor:pointer;font-family:inherit}
+.jh-mg-img{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1/1;background:var(--jh-card2)}
+.jh-mg-img img{width:100%;height:100%;object-fit:cover;display:block}
+.jh-mg-t{margin:7px 2px 0;font-family:var(--jh-serif);font-size:14px;line-height:1.25;color:var(--jh-fg)}
+.jh-mg-cell.full{grid-column:1 / -1}
+.jh-mg-cell.full .jh-mg-img{aspect-ratio:5/2}
+.jh-wl{display:flex;flex-direction:column;gap:10px}
+.jh-wl-row{display:flex;align-items:center;gap:13px;background:var(--jh-card);border:1px solid var(--jh-border);border-radius:18px;padding:11px;cursor:pointer;font-family:inherit;text-align:left;box-shadow:0 1px 3px rgba(120,72,30,.08)}
+.jh-wl-thumb{width:52px;height:52px;flex-shrink:0;border-radius:13px;overflow:hidden;background:var(--jh-card2)}
+.jh-wl-thumb img,.jh-wl-thumb svg{width:100%;height:100%;object-fit:cover;display:block}
+.jh-wl-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.jh-wl-nm{font-family:var(--jh-serif);font-size:16px;color:var(--jh-fg);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jh-wl-sub{font-size:13px;color:var(--jh-muted-fg)}
+.jh-wl-chev{color:var(--jh-muted-fg);flex-shrink:0;display:flex}
+.jh-wl-chev svg{width:18px;height:18px}
 /* BOTTOM NAV — v0 dark */
 #bottomNav.navv0{border-top:1px solid var(--jh-border);background:oklch(0.99 0.008 84/0.86);backdrop-filter:blur(18px);z-index:60;padding:8px 12px calc(env(safe-area-inset-bottom,0px) + 8px)}
 #bottomNav.navv0 button{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--jh-muted-fg)}
@@ -1122,7 +1146,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='1.1.0-home';
+var JEETO_VERSION='1.2.0-home';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1373,6 +1397,7 @@ var JH_ICONS={
   arrow:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
   cake:'<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/>',
   snowflake:'<path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/>',
+  chev:'<path d="m9 18 6-6-6-6"/>',
   users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'
 };
 function jhTimeAgo(iso){ try{ var d=new Date(iso), s=(Date.now()-d.getTime())/1000; if(s<60) return 'just now'; if(s<3600) return Math.max(1,Math.floor(s/60))+'m ago'; if(s<86400) return Math.floor(s/3600)+'h ago'; var dd=Math.floor(s/86400); if(dd===1) return 'Yesterday'; if(dd<7) return dd+'d ago'; return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }catch(e){ return ''; } }
@@ -1401,7 +1426,8 @@ var JHService = {
     var now=Date.now(); var me=myPhone();
     var order=[me].concat(famPhones.filter(function(p){return p!==me;}));
     return order.map(function(p){ var x=pres[p]||profs[p]||{}; var home=!!(pres[p]&&pres[p].last_seen&&(now-new Date(pres[p].last_seen).getTime())<5*60*1000);
-      return { phone:p, name:(p===me?'You':((x.name||'').split(' ')[0]||'Family')), avatar:x.avatar_url||'', home:home }; });
+      var nm=(p===me?'You':((x.name||'').split(' ')[0]||'Family')); nm=nm.charAt(0).toUpperCase()+nm.slice(1);
+      return { phone:p, name:nm, avatar:x.avatar_url||'', home:home }; });
   },
   /** @returns {Promise<Array<{id,title,caption,image,kind,by,time}>>} real moments */
   async moments(ctx){
@@ -3131,9 +3157,8 @@ async function buildHome(){
 
   /* 2) HERO */
   var heroImg=JH_HOME_COVER || ((moments[0]&&moments[0].image)?moments[0].image:'');
-  var heroBg=heroImg ? '<img class="jh-hero-img" src="'+escapeAttr(heroImg)+'" alt="" loading="lazy" decoding="async">' : '<div class="jh-hero-bg"></div>';
-  var heroH='<section class="jh-hero jh-rise" aria-label="Tonight at home">'+heroBg+'<div class="jh-hero-veil"></div>'+
-    '<div class="jh-hero-c"><div class="jh-hero-eye">'+jic('heartfill')+escapeHtml(hero.eyebrow)+'</div><p class="jh-hero-msg">'+escapeHtml(hero.message)+'</p></div></section>';
+  var heroThumb=heroImg ? '<img src="'+escapeAttr(heroImg)+'" alt="" loading="lazy" decoding="async">' : '';
+  var heroH='<section class="jh-hero2 jh-rise" aria-label="Tonight at home"><div class="jh-hero2-thumb">'+heroThumb+'</div><div class="jh-hero2-body"><div class="jh-hero2-eye">'+jic('heartfill')+escapeHtml(hero.eyebrow)+'</div><p class="jh-hero2-msg">'+escapeHtml(hero.message)+'</p></div></section>';
 
   /* 3) PRESENCE */
   var homeCount=presence.filter(function(p){return p.home;}).length;
@@ -3142,12 +3167,12 @@ async function buildHome(){
 
   /* 4) TODAY'S MOMENTS */
   var momentsH;
+  var kicon={photo:'camera',video:'video',voice:'mic',story:'feather'}, klabel={photo:'Photo',video:'Video',voice:'Voice',story:'Story'};
   if(moments.length){
-    var kicon={photo:'camera',video:'video',voice:'mic',story:'feather'}, klabel={photo:'Photo',video:'Video',voice:'Voice',story:'Story'};
-    var mc=moments.slice(0,6).map(function(m){ return '<article class="jh-mcard" onclick="reliveMoment(\''+m.id+'\')"><div class="mi"><img src="'+escapeAttr(m.image)+'" alt="'+escapeAttr(m.title)+'" loading="lazy" decoding="async"><span class="jh-mkind">'+jic(kicon[m.kind]||'camera')+(klabel[m.kind]||'Photo')+'</span></div><div class="mb"><h3 class="mt">'+escapeHtml(m.title)+'</h3>'+(m.caption?'<p class="mc">'+escapeHtml(m.caption)+'</p>':'')+(m.by?'<p class="mby">'+escapeHtml(m.by)+(m.time?' \u00b7 '+escapeHtml(m.time):'')+'</p>':'')+'</div></article>'; }).join('');
-    momentsH='<section class="jh-rise" aria-label="Today\u2019s moments">'+st('Today\u2019s Moments',{action:'View All',fn:"navTo('moments')"})+'<div class="jh-mscroll">'+mc+'</div></section>';
+    var mc=moments.slice(0,4).map(function(m){ return '<button class="jh-mg-cell" onclick="reliveMoment(\''+m.id+'\')"><div class="jh-mg-img"><img src="'+escapeAttr(m.image)+'" alt="'+escapeAttr(m.title)+'" loading="lazy" decoding="async"><span class="jh-mkind">'+jic(kicon[m.kind]||'camera')+(klabel[m.kind]||'Photo')+'</span></div><p class="jh-mg-t">'+escapeHtml(m.title)+'</p></button>'; }).join('');
+    momentsH='<section class="jh-rise" aria-label="Today\u2019s moments">'+st('Today\u2019s Moments',{action:'View All',fn:"navTo('moments')"})+'<div class="jh-mgrid">'+mc+'</div></section>';
   } else {
-    momentsH='<section class="jh-rise" aria-label="Today\u2019s moments">'+st('Today\u2019s Moments',{action:'View All',fn:"navTo('moments')"})+'<div class="jh-mscroll"><article class="jh-mcard" onclick="openCapture()" style="width:100%"><div class="mi"><div class="ph"></div><span class="jh-mkind">'+jic('camera')+'Photo</span></div><div class="mb"><h3 class="mt">Capture today\u2019s first moment</h3><p class="mc">A photo or a few words, kept safe for everyone you love.</p></div></article></div></section>';
+    momentsH='<section class="jh-rise" aria-label="Today\u2019s moments">'+st('Today\u2019s Moments',{action:'View All',fn:"navTo('moments')"})+'<div class="jh-mgrid"><button class="jh-mg-cell full" onclick="openCapture()"><div class="jh-mg-img"><span class="jh-mkind">'+jic('camera')+'Capture</span></div><p class="jh-mg-t">Capture today\u2019s first moment</p></button></div></section>';
   }
 
   /* 5) NOTE ON THE DOOR */
@@ -3164,13 +3189,12 @@ async function buildHome(){
   var wrH='<section class="jh-rise" aria-label="Weekly reflection"><div class="jh-wr"><div class="jh-wr-top"><p class="jh-wr-k">'+jic('sparkles')+'Weekly Reflection</p><button class="act" onclick="navTo(\'timemachine\')">History'+jic2('arrow','')+'</button></div><p class="jh-wr-b">'+escapeHtml(reflection.line)+'</p><div class="jh-wr-grid">'+wrStats+'</div><p class="jh-wr-foot">Gathered quietly by Skyvos</p></div></section>';
 
   /* 8) MY WORLD */
-  var mwIcon={love:'heartfill',birthday:'cake',weather:'snowflake',memories:'camera',gathering:'users'};
   var worldH;
   if(world.length){
-    var wc=world.slice(0,6).map(function(h){ var _cover=(h.name&&/harkar/i.test(h.name)&&JH_HOME_COVER)?'<img src="'+JH_HOME_COVER+'" alt="" loading="lazy" decoding="async">':homeArchitecture(h.style,0.8); return '<article class="jh-mw-card" onclick="enterHome(\''+h.id+'\')"><div class="jh-mw-img">'+_cover+'<div class="jh-mw-veil"></div><span class="jh-mw-status">'+jic(mwIcon[h.statusKind]||'camera')+escapeHtml(h.status)+'</span><div class="jh-mw-nm"><h3>'+escapeHtml(h.name)+'</h3>'+(h.city?'<p>'+escapeHtml(h.city)+'</p>':'')+'</div></div><div class="jh-mw-foot"><span class="jh-mw-m">'+jic('users')+escapeHtml(String(h.membersHome))+' home</span><span class="jh-mw-enter">Enter'+jic2('arrow','')+'</span></div></article>'; }).join('');
-    worldH='<section class="jh-rise" aria-label="My World">'+st('My World',{action:'Enter World',fn:"navTo('world')"})+'<p class="jh-mw-sub">The homes you love, with their lights on.</p><div class="jh-mw-scroll">'+wc+'</div></section>';
+    var wc=world.slice(0,6).map(function(h){ var _cover=(h.name&&/harkar/i.test(h.name)&&JH_HOME_COVER)?'<img src="'+JH_HOME_COVER+'" alt="" loading="lazy" decoding="async">':homeArchitecture(h.style,0.8); return '<button class="jh-wl-row" onclick="enterHome(\''+h.id+'\')"><span class="jh-wl-thumb">'+_cover+'</span><span class="jh-wl-meta"><span class="jh-wl-nm">'+escapeHtml(h.name)+'</span><span class="jh-wl-sub">'+(h.city?escapeHtml(h.city)+' \u00b7 ':'')+escapeHtml(String(h.membersHome))+' home</span></span><span class="jh-wl-chev">'+jic('chev')+'</span></button>'; }).join('');
+    worldH='<section class="jh-rise" aria-label="My World">'+st('My World',{action:'Enter World',fn:"navTo('world')"})+'<div class="jh-wl">'+wc+'</div></section>';
   } else {
-    worldH='<section class="jh-rise" aria-label="My World">'+st('My World',{action:'Enter World',fn:"navTo('world')"})+'<p class="jh-mw-sub">Create your first Home to begin your world.</p><div class="jh-mw-scroll"><article class="jh-mw-card" onclick="navTo(\'world\')" style="width:100%"><div class="jh-mw-img">'+homeArchitecture('luxury',0.85)+'<div class="jh-mw-veil"></div><div class="jh-mw-nm"><h3>Your first Home</h3><p>Tap to begin</p></div></div><div class="jh-mw-foot"><span class="jh-mw-m">'+jic('home')+'New</span><span class="jh-mw-enter">Create'+jic2('arrow','')+'</span></div></article></div></section>';
+    worldH='<section class="jh-rise" aria-label="My World">'+st('My World',{action:'Enter World',fn:"navTo('world')"})+'<div class="jh-wl"><button class="jh-wl-row" onclick="navTo(\'world\')"><span class="jh-wl-thumb">'+homeArchitecture('luxury',0.85)+'</span><span class="jh-wl-meta"><span class="jh-wl-nm">Create your first Home</span><span class="jh-wl-sub">Tap to begin your world</span></span><span class="jh-wl-chev">'+jic('chev')+'</span></button></div></section>';
   }
 
   /* 9) ACROSS MY WORLD */
