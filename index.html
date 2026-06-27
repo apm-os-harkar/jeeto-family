@@ -825,7 +825,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
   <!-- FAMILY -->
   <section class="screen has-nav" id="screen-homes"><div id="homesBody"></div></section>
-  <section class="screen" id="screen-homedetail"><div class="gtop"><button class="gback" onclick="navTo('homes')" aria-label="Back to Homes">←</button><div class="h1" style="margin:0;font-size:22px">🏡 Home</div></div><div id="homeDetailBody"></div></section>
+  <section class="screen has-nav" id="screen-homedetail"><div class="gtop"><button class="gback" onclick="navTo('homes')" aria-label="Back to Homes">←</button><div class="h1" style="margin:0;font-size:22px">🏡 Home</div></div><div id="homeDetailBody"></div></section>
   <section class="screen has-nav" id="screen-family">
     <div class="h1" style="margin-bottom:4px">❤️ Relationships</div>
     <p class="muted" style="font-size:13px;margin:0 2px 14px">The people you love, one relationship at a time.</p>
@@ -983,7 +983,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.12.0';
+var JEETO_VERSION='0.12.1';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1145,7 +1145,7 @@ function closeCelebrate(){ document.getElementById('celebrate').classList.remove
 function showScreen(id){
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
-  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab'];
+  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ window.scrollTo(0,0); }catch(e){}
 }
@@ -2904,12 +2904,11 @@ async function buildHome(){
   html+='<div class="qa-row">'+
     qa('❤️','Capture','openCapture()')+
     qa('🕰️','Memories','navTo(\'timemachine\')')+
-    qa('🏡','World','navTo(\'world\')')+
     qa('🎪','Arena','navTo(\'live\')')+
     qa('🧭','Quests','navTo(\'quests\')')+
     qa('🕯️','Rituals','navTo(\'rituals\')')+
     qa('👋','Welcome','goAddFamily()')+
-    qa('🏠','Household','goHousehold()')+
+    qa('🏡','Homes','navTo(\'homes\')')+
     qa('🌉','Bridges','navTo(\'bridge\')')+
     qa('📅','Calendar','navTo(\'calendar\')')+
   '</div>';
@@ -4454,7 +4453,7 @@ async function renderPassport(){
   else html+='<div class="muted" style="font-size:13px;padding:4px 2px">Your Life Journey will unfold as you connect, build and capture.</div>';
   html+='<div style="height:14px"></div><button class="btn btn-soft" onclick="viewJourney()">View Complete Life Journey →</button>'+
     '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'timemachine\')">🕰️ Open the Family Time Machine</button>'+
-    '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'world\')">🏡 Enter your Family World</button></div>';
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'homes\')">🏡 My Homes</button></div>';
   html+=skyvosMini('Your Passport is your legacy — it will outlive the phone in your hand.');
 
   body.innerHTML=html;
@@ -4834,7 +4833,7 @@ function searchGraph(){
 /* ---------- nav ---------- */
 function navTo(tab){
   try{ if(typeof leaveWorld==='function') leaveWorld(); }catch(e){}
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-world', homes:'screen-homes', homedetail:'screen-homedetail' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-homes', homes:'screen-homes', homedetail:'screen-homedetail' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -4848,7 +4847,7 @@ function navTo(tab){
   if(tab==='rituals') renderRituals();
   if(tab==='live') renderArena();
   if(tab==='timemachine') renderTimeMachine();
-  if(tab==='world') renderWorld();
+  if(tab==='world') renderHomes();
   if(tab==='homes') renderHomes();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
