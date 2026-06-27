@@ -1060,11 +1060,11 @@ function openHomeSettings(){
   var cur=homeAccent()||'rani'; var g=homeGreetingCustom();
   function opt(v,label,sw){ return '<div class="circle-opt'+(cur===v?' on':'')+'" onclick="setAccent(\''+v+'\')"><span class="ce" style="width:22px;height:22px;border-radius:50%;background:'+sw+'"></span><span style="flex:1">'+label+'</span><span class="cradio">'+(cur===v?'●':'○')+'</span></div>'; }
   var m=document.getElementById('homeModal');
-  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">⚙️ Home Settings</div>'+
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:2px">⚙️ Home Settings</div>'+
+    '<div style="text-align:center;font-size:11px;color:var(--ink3);font-weight:700;margin-bottom:16px">Jeeto OS v'+JEETO_VERSION+' · build '+JEETO_BUILD+'</div>'+
     '<div class="field-label">Greeting line (optional)</div><input class="fi" id="hsGreet" value="'+escapeAttr(g)+'" placeholder="Welcome home ❤️" style="margin-bottom:14px">'+
     '<div class="field-label">Accent</div><div class="circle-opts">'+opt('rani','Rani Pink','#E03A7A')+opt('violet','Violet','#7C3AED')+opt('leaf','Leaf Green','#2BA84A')+'</div>'+
-    '<button class="btn" onclick="saveHomeSettings()">Save</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button>'+
-    '<div style="text-align:center;font-size:11px;color:var(--ink3);font-weight:700;margin-top:14px">Jeeto OS v'+JEETO_VERSION+' · build '+JEETO_BUILD+'</div></div>';
+    '<button class="btn" onclick="saveHomeSettings()">Save</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   m.classList.add('show');
 }
 function setAccent(v){ try{ localStorage.setItem('jeeto_accent',v); }catch(e){} applyAccent(); openHomeSettings(); }
