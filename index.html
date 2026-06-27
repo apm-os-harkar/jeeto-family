@@ -227,10 +227,23 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gnode .gname{font-size:10px;font-weight:700;color:var(--ink2);line-height:1.1;max-width:78px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* home engine */
 .home-search{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 16px;font-size:14px;color:var(--ink3);font-weight:600;margin-bottom:18px;cursor:pointer;box-shadow:var(--sh-1)}
-.skyvos{background:linear-gradient(135deg,#241826,#43295c 70%,#7C3AED);color:#fff;border-radius:24px;padding:18px 20px;box-shadow:var(--sh-pop);margin-bottom:18px;position:relative;overflow:hidden}
-.skyvos::after{content:"";position:absolute;right:-20%;top:-50%;width:60%;height:140%;background:radial-gradient(circle,rgba(255,138,30,.3),transparent 60%)}
-.skyvos .sk-l{font-size:11px;font-weight:800;letter-spacing:.6px;opacity:.9;position:relative}
-.skyvos .sk-t{font-size:15px;font-weight:700;line-height:1.45;margin-top:7px;position:relative}
+/* Skyvos — the glowing family companion */
+.skyvos{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#2A1B3D,#3D2A5C 58%,#5B3A8C);color:#fff;border-radius:24px;padding:15px 17px;box-shadow:var(--sh-pop);margin-bottom:18px;position:relative;overflow:hidden;cursor:pointer}
+.skyvos::after{content:"";position:absolute;right:-12%;top:-45%;width:55%;height:160%;background:radial-gradient(circle,rgba(201,168,255,.32),transparent 60%);pointer-events:none}
+.sky-body{position:relative;flex:1;min-width:0}
+.skyvos .sk-l{font-size:10px;font-weight:800;letter-spacing:1.4px;opacity:.85}
+.sky-title{font-family:var(--font-display);font-weight:800;font-size:15.5px;line-height:1.25;margin:2px 0}
+.skyvos .sk-t{font-size:12.5px;line-height:1.5;opacity:.92;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sky-chev{position:relative;font-size:18px;opacity:.7;flex:0 0 auto}
+.sky-orb{width:46px;height:46px;border-radius:50%;flex:0 0 auto;position:relative;background:radial-gradient(circle at 35% 30%,#ffffff,#C9A8FF 38%,#7C3AED 74%,#4C1D95);box-shadow:0 6px 18px rgba(124,58,237,.5);animation:skyBreathe 3.6s ease-in-out infinite}
+.sky-orb .sky-core{position:absolute;top:50%;left:50%;width:13px;height:13px;margin:-6px 0 0 -6px;border-radius:50%;background:rgba(255,255,255,.92);filter:blur(2px);animation:skyCore 3.6s ease-in-out infinite}
+@keyframes skyBreathe{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(124,58,237,.45),0 6px 18px rgba(124,58,237,.45)}50%{transform:scale(1.05);box-shadow:0 0 0 9px rgba(124,58,237,0),0 8px 22px rgba(124,58,237,.55)}}
+@keyframes skyCore{0%,100%{opacity:.7;transform:translate(-2px,-2px) scale(1)}50%{opacity:1;transform:translate(2px,2px) scale(1.18)}}
+.sky-orb-lg{width:88px;height:88px}
+.sky-orb-lg .sky-core{width:24px;height:24px;margin:-12px 0 0 -12px}
+.sky-orb-sm{width:26px;height:26px}
+.sky-orb-sm .sky-core{width:8px;height:8px;margin:-4px 0 0 -4px}
+.skyvos-mini{display:flex;align-items:center;gap:11px;background:var(--grad-soft);border:1px solid var(--line);border-radius:16px;padding:11px 14px;margin:16px 2px 4px;font-size:12.5px;font-weight:700;color:var(--ink2);line-height:1.45}
 .home-sec{font-family:'Baloo 2';font-weight:800;font-size:17px;margin:0 2px 11px;display:flex;align-items:center;justify-content:space-between}
 .home-sec a{font-size:12.5px;color:var(--rani-d);font-weight:800;cursor:pointer}
 .today-card{background:linear-gradient(150deg,#FFFFFF,#FFF6EC);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);margin-bottom:20px}
@@ -508,12 +521,14 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     </div>
 
     <div id="famBody"></div>
+    <div class="skyvos-mini"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">Add only the people you know directly. I quietly understand the rest of your family from there.</span></div>
     <div style="margin-top:6px"><button class="btn btn-soft" onclick="navTo('graph')">🕸 See your Relationship Graph</button></div>
   </section>
 
   <section class="screen has-nav" id="screen-moments">
     <div class="h1" style="margin-bottom:4px">❤️ Moments</div>
     <p class="muted" style="font-size:13px;margin:0 2px 16px">Not photos — Moments. Each one belongs to a circle and becomes family heritage.</p>
+    <div class="skyvos-mini"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">The best memories are the ones you almost didn’t capture.</span></div>
     <button class="btn glow" onclick="openCapture()">＋ Capture a Moment</button>
     <div id="onThisDay" style="margin-top:18px"></div>
     <div class="mtabs" id="mtabs">
@@ -541,6 +556,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <section class="screen has-nav" id="screen-bridge">
     <div class="h1" style="margin-bottom:4px">🌉 Bridges</div>
     <p class="muted" style="font-size:13px;margin:0 2px 20px">We don't add contacts. We build trusted Bridges between households.</p>
+    <div class="skyvos-mini"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">One trusted Bridge can quietly hold a whole community together.</span></div>
     <div id="bridgeBody"></div>
   </section>
 
@@ -609,27 +625,102 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.1.0';
+var JEETO_VERSION='0.2.0';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
-   SKYVOS — Intelligence Layer (architecture only; NO AI yet).
-   A provider-agnostic adapter. Jeeto must never couple to one
-   vendor. A future provider implements this interface; until then
-   every method is a safe no-op returning neutral values, so the
-   app behaves identically with or without an intelligence provider.
-   To plug in later: Skyvos.use({ suggestMoment, summarizeFamily, ... }).
+   SKYVOS — Jeeto's Intelligence Layer (Sprint 12)
+   Jeeto's quiet family companion. NOT a chatbot, NOT an LLM.
+   A provider-agnostic engine that reasons over the family's own
+   data to offer ONE warm, relevant insight at a time.
+
+   Architecture (logical sub-modules, single-file):
+     interfaces      — the shape of an insight (the contract)
+     context()       — normalizes the family signals to reason over
+     recommend()     — the rule engine -> ranked insights
+     insight()       — the single most relevant thing to say now
+     providers       — use(impl) plugs a future AI to ENHANCE, not replace
+     future          — voice/vision/local/search/predict (declared, no-op)
+
+   Privacy: Skyvos only ever receives data the current person can
+   already see (their own circles). It never reads, infers, or
+   surfaces restricted Moments, hidden relationships, or other
+   people's private context.
+   Never lock Jeeto to one LLM: the rules engine always works with
+   no provider; a provider may override recommend()/phrasing later.
    ============================================================ */
 var Skyvos=(function(){
-  var provider=null;                       // set via Skyvos.use(impl)
+  var provider=null;                          // set via Skyvos.use(impl)
   function enabled(){ return !!provider; }
   function use(impl){ provider=impl||null; }
-  // each capability falls back to a deterministic, non-AI default
-  async function suggestMoment(ctx){ return provider&&provider.suggestMoment ? provider.suggestMoment(ctx) : null; }
-  async function summarizeFamily(ctx){ return provider&&provider.summarizeFamily ? provider.summarizeFamily(ctx) : null; }
-  async function describeRelationship(path){ return provider&&provider.describeRelationship ? provider.describeRelationship(path) : null; }
-  async function dailyPrompt(ctx){ return provider&&provider.dailyPrompt ? provider.dailyPrompt(ctx) : null; }
-  return { version:'0.1.0', enabled:enabled, use:use, suggestMoment:suggestMoment, summarizeFamily:summarizeFamily, describeRelationship:describeRelationship, dailyPrompt:dailyPrompt };
+
+  // interfaces: insight = { kind, icon, title, body, cta?:{label,fn}, weight }
+  function context(input){
+    input=input||{};
+    var h=new Date().getHours();
+    return {
+      name:input.name||'', hour:h, partOfDay:(h<12?'morning':h<17?'afternoon':'evening'),
+      celebrations:input.celebrations||[], onThisDay:input.onThisDay||[],
+      pending:input.pending||0, todaysMoments:input.todaysMoments||{any:false},
+      momentsThisWeek:input.momentsThisWeek||0, familyCount:input.familyCount||0,
+      bridges:input.bridges||0
+    };
+  }
+
+  // the rule engine — deterministic, privacy-safe, never judgmental
+  function recommend(c){
+    if(provider && provider.recommend){ try{ return provider.recommend(c); }catch(e){} }
+    var out=[];
+    var today=(c.celebrations||[]).filter(function(x){ return fmtUpcoming(x.date)==='Today'; });
+    if(today.length) out.push({ kind:'celebration', icon:today[0].icon, weight:100,
+      title:today[0].title+' is today',
+      body:'A beautiful day to celebrate together. Capture a Moment so this day is never forgotten.',
+      cta:{label:'Capture this day', fn:'closeSkyvos();openCapture()'} });
+    if((c.onThisDay||[]).length){ var m=c.onThisDay[0]; var yrs=new Date().getFullYear()-new Date(m.m.moment_date).getFullYear();
+      out.push({ kind:'memory', icon:'🕰️', weight:90,
+        title:(yrs>0?(yrs+' year'+(yrs>1?'s':'')+' ago today'):'On this day'),
+        body:'You captured \u201c'+m.m.title+'\u201d. Some memories are worth revisiting.',
+        cta:{label:'Relive this Moment', fn:"closeSkyvos();reliveMoment('"+m.m.id+"')"} }); }
+    var soon=(c.celebrations||[]).filter(function(x){ var u=fmtUpcoming(x.date); return u==='Tomorrow' || u.indexOf('in ')===0; })[0];
+    if(soon) out.push({ kind:'celebration', icon:soon.icon, weight:80,
+      title:soon.title+' is coming',
+      body:soon.title+' is '+fmtUpcoming(soon.date)+'. Would you like to prepare something special?',
+      cta:{label:'Open Calendar', fn:"closeSkyvos();navTo('calendar')"} });
+    if(c.pending>0) out.push({ kind:'relationship', icon:'📥', weight:70,
+      title:'Someone wants to connect',
+      body:c.pending+' '+(c.pending>1?'people are':'person is')+' waiting to join your family. A small yes can mean a lot.',
+      cta:{label:'See requests', fn:"closeSkyvos();navTo('family')"} });
+    if(!c.todaysMoments.any && c.familyCount>0) out.push({ kind:'moment', icon:'💛', weight:55,
+      title:'Today is unwritten',
+      body:(c.name?'Good '+c.partOfDay+', '+c.name+'. ':'')+'A lunch, a smile, a small win — today could become a beautiful memory.',
+      cta:{label:'Capture a Moment', fn:'closeSkyvos();openCapture()'} });
+    if(c.momentsThisWeek>=3) out.push({ kind:'pulse', icon:'❤️', weight:40,
+      title:'Your family is glowing',
+      body:'You\u2019ve shared '+c.momentsThisWeek+' Moments this week. Your family is growing beautifully.' });
+    if(c.momentsThisWeek===0) out.push({ kind:'pulse', icon:'🌸', weight:35,
+      title:'A quiet week',
+      body:'A peaceful week so far. Maybe it\u2019s time to create a Moment together.',
+      cta:{label:'Capture a Moment', fn:'closeSkyvos();openCapture()'} });
+    out.push({ kind:'greeting', icon:'🌟', weight:10,
+      title:(c.name?'Welcome home, '+c.name:'Welcome home'),
+      body:'Your people are right here. Every Moment you keep becomes family heritage.' });
+    return out.sort(function(a,b){ return b.weight-a.weight; });
+  }
+  function insight(c){ var r=recommend(c); return r[0]||null; }
+
+  // legacy adapter methods (kept; provider may implement)
+  async function suggestMoment(c){ return provider&&provider.suggestMoment?provider.suggestMoment(c):null; }
+  async function summarizeFamily(c){ return provider&&provider.summarizeFamily?provider.summarizeFamily(c):null; }
+  async function describeRelationship(p){ return provider&&provider.describeRelationship?provider.describeRelationship(p):null; }
+  async function dailyPrompt(c){ return provider&&provider.dailyPrompt?provider.dailyPrompt(c):null; }
+
+  // future-ready capabilities — declared, never implemented here
+  var future={ voice:null, vision:null, local:null, memorySearch:null, prediction:null };
+
+  return { version:'0.2.0', enabled:enabled, use:use,
+    context:context, recommend:recommend, insight:insight,
+    suggestMoment:suggestMoment, summarizeFamily:summarizeFamily,
+    describeRelationship:describeRelationship, dailyPrompt:dailyPrompt, future:future };
 })();
 
 /* ============================================================
@@ -766,15 +857,23 @@ function calculateFamilyStrength(rels){ var n=(rels||[]).length; if(n<=0) return
 function greetingEmoji(){ var h=new Date().getHours(); return h<12?'☀️':h<17?'❤️':'🌙'; }
 /* sound — architecture only (no audio yet). Soft chimes will play here later. */
 function playChime(type){ /* future: 'accepted' | 'bridge' | 'moment' -> soft chime */ }
-var SKYVOS_LINES=[
-  'Today is a great day to capture a Family Moment.',
-  'Your family is the story you write every day.',
-  'A small hello can strengthen a Bridge today.',
-  'Someone in your family would love to hear from you.',
-  'Every Moment you keep becomes family heritage.',
-  'Welcome home. Your people are right here.'
-];
-function skyvosLine(){ var d=new Date(); var i=(d.getFullYear()+d.getMonth()*31+d.getDate())%SKYVOS_LINES.length; return SKYVOS_LINES[i]; }
+/* Skyvos — "Today's Insight" sheet (tap the companion). Never a chat. */
+function openSkyvos(){
+  var s=window.__skyvos; if(!s) return;
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="text-align:center"><div class="modal-grab"></div>'+
+    '<div class="sky-orb sky-orb-lg" style="margin:6px auto 16px"><span class="sky-core"></span></div>'+
+    '<div class="sk-l" style="color:var(--violet);letter-spacing:1.4px;font-weight:800;font-size:11px">SKYVOS · TODAY\u2019S INSIGHT</div>'+
+    '<div class="sky-title" style="font-size:21px;margin:9px 0 11px">'+escapeHtml(s.title)+'</div>'+
+    '<div style="font-size:14.5px;color:var(--ink2);line-height:1.6;font-weight:600;margin-bottom:20px">'+escapeHtml(s.body)+'</div>'+
+    (s.cta?'<button class="btn" onclick="'+s.cta.fn+'">'+escapeHtml(s.cta.label)+'</button><div style="height:8px"></div>':'')+
+    '<button class="btn btn-soft" onclick="closeSkyvos()">Close</button>'+
+    '<div style="font-size:11px;color:var(--ink3);font-weight:700;margin-top:16px;line-height:1.5">Skyvos is your family companion, not a chatbot.<br>It only ever sees what you see.</div></div>';
+  m.classList.add('show');
+}
+function closeSkyvos(){ var m=document.getElementById('homeModal'); if(m) m.classList.remove('show'); }
+/* a small companion line that appears gently on other screens */
+function skyvosMini(text){ return '<div class="skyvos-mini"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">'+escapeHtml(text)+'</span></div>'; }
 function homeAccent(){ try{ return localStorage.getItem('jeeto_accent')||''; }catch(e){ return ''; } }
 function applyAccent(){ var a=homeAccent(); var root=document.documentElement;
   if(a==='violet'){ root.style.setProperty('--rani','#7C3AED'); root.style.setProperty('--rani-d','#5b21b6'); }
@@ -819,11 +918,19 @@ async function buildHome(){
   var tasks=await loadTasks(ctx.hhIds);
   var wall=await loadHomeWall(famPhones, profs);
   var todayEvents=buildTodayEvents(cele, todayMoments, pending, ctx);
+  // Skyvos — one warm insight from the family's own data
+  var otd=[]; try{ otd=await loadOnThisDay(); }catch(e){}
+  var mwk=0; try{ var wk=new Date(); wk.setDate(wk.getDate()-7); var mr=await sb.from('moments').select('id',{count:'exact',head:true}).in('created_by',famPhones).eq('status','active').gte('created_at',wk.toISOString()); mwk=mr.count||0; }catch(e){}
+  var skyName=((ME&&ME.name||'').split(' ')[0])||'';
+  window.__skyvos=Skyvos.insight(Skyvos.context({ name:skyName, celebrations:cele, onThisDay:otd, pending:pending, todaysMoments:todayMoments, momentsThisWeek:mwk, familyCount:ctx.conns.length, bridges:ctx.bridges.length }));
 
   var html='';
 
   /* Skyvos */
-  html+='<div class="skyvos"><div class="sk-l">🤖 SKYVOS</div><div class="sk-t">'+escapeHtml(skyvosLine())+'</div></div>';
+  var sky=window.__skyvos||{icon:'🌟',title:'Welcome home',body:'Your people are right here.'};
+  html+='<div class="skyvos" onclick="openSkyvos()"><div class="sky-orb"><span class="sky-core"></span></div>'+
+    '<div class="sky-body"><div class="sk-l">SKYVOS</div><div class="sky-title">'+escapeHtml(sky.title)+'</div><div class="sk-t">'+escapeHtml(sky.body)+'</div></div>'+
+    '<span class="sky-chev">›</span></div>';
 
   /* Today */
   html+='<div class="today-card"><div class="tc-head">❤️ Today</div>';
@@ -2015,6 +2122,7 @@ async function renderPassport(){
   if(events.length){ events.slice(0,5).forEach(function(ev){ html+='<div class="jrow"><div class="jdot">'+ev.icon+'</div><div style="flex:1;min-width:0"><div class="jt">'+escapeHtml(ev.title)+'</div><div class="jd">'+escapeHtml(ev.when)+'</div></div></div>'; }); }
   else html+='<div class="muted" style="font-size:13px;padding:4px 2px">Your journey will unfold as you connect, build and capture.</div>';
   html+='<div style="height:14px"></div><button class="btn btn-soft" onclick="viewJourney()">View Complete Journey →</button></div>';
+  html+=skyvosMini('Your Passport is your legacy — it will outlive the phone in your hand.');
 
   body.innerHTML=html;
   renderQR('ppQR', pass?pass.qr_code:'');
