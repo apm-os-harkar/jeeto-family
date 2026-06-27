@@ -235,14 +235,46 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .sky-title{font-family:var(--font-display);font-weight:800;font-size:15.5px;line-height:1.25;margin:2px 0}
 .skyvos .sk-t{font-size:12.5px;line-height:1.5;opacity:.92;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .sky-chev{position:relative;font-size:18px;opacity:.7;flex:0 0 auto}
-.sky-orb{width:46px;height:46px;border-radius:50%;flex:0 0 auto;position:relative;background:radial-gradient(circle at 35% 30%,#ffffff,#C9A8FF 38%,#7C3AED 74%,#4C1D95);box-shadow:0 6px 18px rgba(124,58,237,.5);animation:skyBreathe 3.6s ease-in-out infinite}
-.sky-orb .sky-core{position:absolute;top:50%;left:50%;width:13px;height:13px;margin:-6px 0 0 -6px;border-radius:50%;background:rgba(255,255,255,.92);filter:blur(2px);animation:skyCore 3.6s ease-in-out infinite}
-@keyframes skyBreathe{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(124,58,237,.45),0 6px 18px rgba(124,58,237,.45)}50%{transform:scale(1.05);box-shadow:0 0 0 9px rgba(124,58,237,0),0 8px 22px rgba(124,58,237,.55)}}
+/* Skyvos orb — a living light. Color = mood (CSS vars), size/halo = growth level. */
+.sky-orb{--orb-grad:radial-gradient(circle at 35% 30%,#fff,#C9A8FF 38%,#7C3AED 74%,#4C1D95);--orb-glow:rgba(124,58,237,.5);width:46px;height:46px;border-radius:50%;flex:0 0 auto;position:relative;background:var(--orb-grad);box-shadow:0 6px 18px var(--orb-glow);animation:skyBreathe 3.8s ease-in-out infinite}
+.sky-orb .sky-core{position:absolute;top:50%;left:50%;width:13px;height:13px;margin:-6px 0 0 -6px;border-radius:50%;background:rgba(255,255,255,.92);filter:blur(2px);animation:skyCore 3.8s ease-in-out infinite;z-index:2}
+@keyframes skyBreathe{0%,100%{transform:scale(1);box-shadow:0 0 0 0 var(--orb-glow),0 6px 18px var(--orb-glow)}50%{transform:scale(1.05);box-shadow:0 0 0 9px transparent,0 8px 22px var(--orb-glow)}}
 @keyframes skyCore{0%,100%{opacity:.7;transform:translate(-2px,-2px) scale(1)}50%{opacity:1;transform:translate(2px,2px) scale(1.18)}}
+/* moods */
+.mood-purple{--orb-grad:radial-gradient(circle at 35% 30%,#fff,#C9A8FF 38%,#7C3AED 74%,#4C1D95);--orb-glow:rgba(124,58,237,.5)}
+.mood-gold{--orb-grad:radial-gradient(circle at 35% 30%,#fff,#FFE9A8 38%,#FFC93C 72%,#E08A00);--orb-glow:rgba(240,170,0,.5)}
+.mood-blue{--orb-grad:radial-gradient(circle at 35% 30%,#fff,#AFD3FF 38%,#2563EB 74%,#1E3A8A);--orb-glow:rgba(37,99,235,.5)}
+.mood-green{--orb-grad:radial-gradient(circle at 35% 30%,#fff,#A8F0C0 38%,#2BA84A 74%,#136B2E);--orb-glow:rgba(43,168,74,.5)}
+.mood-rose{--orb-grad:radial-gradient(circle at 35% 30%,#fff,#FFC2DA 38%,#E03A7A 74%,#9D1B4E);--orb-glow:rgba(224,58,122,.5)}
+.mood-orange{--orb-grad:radial-gradient(circle at 35% 30%,#fff,#FFD0A8 38%,#FF8A1E 72%,#C2410C);--orb-glow:rgba(255,138,30,.55)}
+.mood-white{--orb-grad:radial-gradient(circle at 35% 30%,#fff,#F4EFFF 42%,#DDD2F0 74%,#BEAEDC);--orb-glow:rgba(214,204,242,.6)}
+/* growth levels: L2 brighter, L3 halo, L4 energy ring, L5 guardian */
+.sky-l2{filter:brightness(1.06) saturate(1.05)}
+.sky-l3,.sky-l4,.sky-l5{filter:brightness(1.08) saturate(1.08)}
+.sky-l3::before,.sky-l4::before,.sky-l5::before{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--orb-glow);opacity:.45;animation:skyHalo 4s ease-in-out infinite;z-index:0}
+.sky-l4::after,.sky-l5::after{content:"";position:absolute;inset:-11px;border-radius:50%;border:1.5px solid var(--orb-glow);opacity:.3;animation:skyHalo 5.2s ease-in-out infinite;z-index:0}
+.sky-l5{box-shadow:0 0 22px var(--orb-glow),0 6px 18px var(--orb-glow)}
+.sky-l5::before{inset:-7px;opacity:.55}
+.sky-l5::after{inset:-14px;opacity:.4}
+@keyframes skyHalo{0%,100%{transform:scale(1);opacity:.45}50%{transform:scale(1.1);opacity:.12}}
+/* tiny sparkles (only when needed — celebration/festival) */
+.sky-orb.sparkle .spk{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:0;filter:blur(.3px);animation:skySpk 2.8s ease-in-out infinite;z-index:3}
+.spk1{top:6px;right:9px;animation-delay:.2s}
+.spk2{bottom:9px;left:8px;animation-delay:1.1s}
+.spk3{top:48%;right:3px;animation-delay:1.9s}
+@keyframes skySpk{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.95;transform:scale(1)}}
 .sky-orb-lg{width:88px;height:88px}
 .sky-orb-lg .sky-core{width:24px;height:24px;margin:-12px 0 0 -12px}
 .sky-orb-sm{width:26px;height:26px}
 .sky-orb-sm .sky-core{width:8px;height:8px;margin:-4px 0 0 -4px}
+.sky-orb-sm.sky-l3::before,.sky-orb-sm.sky-l4::before,.sky-orb-sm.sky-l4::after,.sky-orb-sm.sky-l5::before,.sky-orb-sm.sky-l5::after{display:none}
+/* expandable Home companion */
+.sky-expand{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s ease,opacity .4s ease}
+.skyvos.expanded .sky-expand{max-height:180px;opacity:1;margin-top:6px}
+.skyvos .sky-chev{transition:transform .4s ease}
+.skyvos.expanded .sky-chev{transform:rotate(90deg)}
+.skyvos.expanded .sk-t{-webkit-line-clamp:unset;display:block}
+.sky-note{font-size:10.5px;opacity:.72;margin-top:10px;font-weight:600}
 .skyvos-mini{display:flex;align-items:center;gap:11px;background:var(--grad-soft);border:1px solid var(--line);border-radius:16px;padding:11px 14px;margin:16px 2px 4px;font-size:12.5px;font-weight:700;color:var(--ink2);line-height:1.45}
 /* quests */
 .qtabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto}
@@ -901,20 +933,37 @@ function greetingEmoji(){ var h=new Date().getHours(); return h<12?'☀️':h<17
 /* sound — architecture only (no audio yet). Soft chimes will play here later. */
 function playChime(type){ /* future: 'accepted' | 'bridge' | 'moment' -> soft chime */ }
 /* Skyvos — "Today's Insight" sheet (tap the companion). Never a chat. */
-function openSkyvos(){
-  var s=window.__skyvos; if(!s) return;
-  var m=document.getElementById('homeModal'); if(!m) return;
-  m.innerHTML='<div class="modal-card" style="text-align:center"><div class="modal-grab"></div>'+
-    '<div class="sky-orb sky-orb-lg" style="margin:6px auto 16px"><span class="sky-core"></span></div>'+
-    '<div class="sk-l" style="color:var(--violet);letter-spacing:1.4px;font-weight:800;font-size:11px">SKYVOS · TODAY\u2019S INSIGHT</div>'+
-    '<div class="sky-title" style="font-size:21px;margin:9px 0 11px">'+escapeHtml(s.title)+'</div>'+
-    '<div style="font-size:14.5px;color:var(--ink2);line-height:1.6;font-weight:600;margin-bottom:20px">'+escapeHtml(s.body)+'</div>'+
-    (s.cta?'<button class="btn" onclick="'+s.cta.fn+'">'+escapeHtml(s.cta.label)+'</button><div style="height:8px"></div>':'')+
-    '<button class="btn btn-soft" onclick="closeSkyvos()">Close</button>'+
-    '<div style="font-size:11px;color:var(--ink3);font-weight:700;margin-top:16px;line-height:1.5">Skyvos is your family companion, not a chatbot.<br>It only ever sees what you see.</div></div>';
-  m.classList.add('show');
+/* Skyvos — living light helpers (mood color + growth level + orb markup) */
+function skyOrb(opts){
+  opts=opts||{};
+  var cls='sky-orb mood-'+(opts.mood||'purple')+' sky-l'+(opts.level||1);
+  if(opts.size) cls+=' '+opts.size;
+  if(opts.sparkle) cls+=' sparkle';
+  return '<div class="'+cls+'"><span class="sky-core"></span>'+(opts.sparkle?'<i class="spk spk1"></i><i class="spk spk2"></i><i class="spk spk3"></i>':'')+'</div>';
 }
-function closeSkyvos(){ var m=document.getElementById('homeModal'); if(m) m.classList.remove('show'); }
+function strengthLevel(n){ n=n||0; if(n>=100) return 5; if(n>=60) return 4; if(n>=30) return 3; if(n>=10) return 2; return 1; }
+/* mood from the insight + time of day. Default purple. */
+function skyMood(insight){
+  var k=insight&&insight.kind;
+  var t=(((insight&&insight.title)||'')+' '+((insight&&insight.body)||'')).toLowerCase();
+  var hour=new Date().getHours(), night=(hour>=21||hour<6);
+  if(/festival|diwali|holi|eid|christmas|lohri|onam|pongal|baisakhi|navratri|raksha/.test(t)) return 'orange';
+  if(k==='memory') return 'white';                                   // legacy / on this day
+  if(k==='relationship') return 'green';                              // new connection / bridge
+  if(k==='celebration'||k==='quest'){ return /wedding|anniversary|\blove\b/.test(t) ? 'rose' : 'gold'; }
+  if(k==='pulse'){ if(/glow|grow/.test(t)) return 'green'; if(/quiet|peaceful/.test(t)) return 'blue'; return night?'blue':'purple'; }
+  if(k==='greeting'||k==='moment') return night?'blue':'purple';
+  return night?'blue':'purple';
+}
+/* tap → expand inline, auto-collapse after a few seconds (never a chat) */
+var SKY_T=null;
+function toggleSkyvos(){
+  var card=document.getElementById('skyCard'); if(!card) return;
+  var open=card.classList.toggle('expanded');
+  if(SKY_T){ clearTimeout(SKY_T); SKY_T=null; }
+  if(open){ SKY_T=setTimeout(function(){ if(card) card.classList.remove('expanded'); }, 6500); }
+}
+function closeSkyvos(){ var m=document.getElementById('homeModal'); if(m) m.classList.remove('show'); var c=document.getElementById('skyCard'); if(c) c.classList.remove('expanded'); }
 /* a small companion line that appears gently on other screens */
 function skyvosMini(text){ return '<div class="skyvos-mini"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">'+escapeHtml(text)+'</span></div>'; }
 
@@ -1248,6 +1297,7 @@ async function buildHome(){
   var otd=[]; try{ otd=await loadOnThisDay(); }catch(e){}
   var mwk=0; try{ var wk=new Date(); wk.setDate(wk.getDate()-7); var mr=await sb.from('moments').select('id',{count:'exact',head:true}).in('created_by',famPhones).eq('status','active').gte('created_at',wk.toISOString()); mwk=mr.count||0; }catch(e){}
   var skyName=((ME&&ME.name||'').split(' ')[0])||'';
+  var skyStrength=0; try{ skyStrength=calculateFamilyStrength(ctx.conns)+(await loadMomentStrength()); }catch(e){}
   var quests=await loadQuests();
   var activeQ=quests.filter(function(q){ return q.status==='active'||q.status==='upcoming'; });
   var streak=await loadStreak('family'); if(!streak||!streak.active){ var ms=await loadStreak('moments'); if(ms&&ms.active) streak=ms; }
@@ -1257,10 +1307,16 @@ async function buildHome(){
   var html='';
 
   /* Skyvos */
-  var sky=window.__skyvos||{icon:'🌟',title:'Welcome home',body:'Your people are right here.'};
-  html+='<div class="skyvos" onclick="openSkyvos()"><div class="sky-orb"><span class="sky-core"></span></div>'+
-    '<div class="sky-body"><div class="sk-l">SKYVOS</div><div class="sky-title">'+escapeHtml(sky.title)+'</div><div class="sk-t">'+escapeHtml(sky.body)+'</div></div>'+
-    '<span class="sky-chev">›</span></div>';
+  var sky=window.__skyvos||{icon:'🌟',title:'Welcome home',body:'Your people are right here.',kind:'greeting'};
+  var skyMoodC=skyMood(sky), skyLvl=strengthLevel(skyStrength);
+  var skySpark=(skyMoodC==='gold'||skyMoodC==='orange');
+  html+='<div class="skyvos mood-'+skyMoodC+'" id="skyCard" onclick="toggleSkyvos()">'+
+    skyOrb({mood:skyMoodC, level:skyLvl, sparkle:skySpark})+
+    '<div class="sky-body"><div class="sk-l">SKYVOS</div><div class="sky-title">'+escapeHtml(sky.title)+'</div>'+
+    '<div class="sk-t">'+escapeHtml(sky.body)+'</div>'+
+    '<div class="sky-expand">'+(sky.cta?'<button class="btn" style="margin-top:12px" onclick="event.stopPropagation();'+sky.cta.fn+'">'+escapeHtml(sky.cta.label)+'</button>':'')+
+      '<div class="sky-note">Skyvos is your family companion, not a chatbot. It only ever sees what you see.</div></div>'+
+    '</div><span class="sky-chev">›</span></div>';
 
   /* Today */
   html+='<div class="today-card"><div class="tc-head">❤️ Today</div>';
