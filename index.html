@@ -893,7 +893,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.8.3';
+var JEETO_VERSION='0.8.4';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1065,10 +1065,12 @@ async function init(){
   var phone=myPhone();
   if(phone){ TMP_PHONE=phone; ME=await fetchProfile(phone);
     if(ME && ME.name){ await renderHome(); navTo('home'); return; }
-    showScreen('screen-profile'); return; }
+    if(ME===null){ showScreen('screen-profile'); return; }   // confirmed: phone has no profile yet → onboard
+    clearSession(); TMP_PHONE=''; showScreen('screen-login'); return;  // couldn't load → don't strand on name screen
+  }
   showScreen('screen-login');
 }
-async function fetchProfile(phone){ if(!ensureSB()) return null; try{ var r=await sb.from('profiles').select('*').eq('phone',phone).maybeSingle(); return r.data||null; }catch(e){ return null; } }
+async function fetchProfile(phone){ if(!ensureSB()) return undefined; try{ var r=await sb.from('profiles').select('*').eq('phone',phone).limit(1); if(r.error) return undefined; return (r.data&&r.data[0])||null; }catch(e){ return undefined; } }
 
 /* ---------- phone / OTP ---------- */
 function onPhoneInput(){ var el=document.getElementById('loginPhone'); el.value=el.value.replace(/\D/g,'').slice(0,10); document.getElementById('loginBtn').disabled=el.value.length!==10; document.getElementById('loginErr').textContent=''; }
@@ -1083,6 +1085,7 @@ async function submitOtp(){
   if(code.length!==6){ document.getElementById('otpErr').textContent='Enter the 6-digit code.'; return; }
   if(code!==MOCK_OTP){ document.getElementById('otpErr').textContent='Incorrect code. Try 123456.'; clearOtp(); var f=document.querySelector('.otp-box'); if(f) f.focus(); return; }
   setMyPhone(TMP_PHONE); ME=await fetchProfile(TMP_PHONE);
+  if(ME===undefined){ ME=await fetchProfile(TMP_PHONE); }   // one retry on a transient load error
   if(ME && ME.name){ await renderHome(); navTo('home'); } else { showScreen('screen-profile'); }
 }
 
@@ -4429,7 +4432,15 @@ function navTo(tab){
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
-function logout(){ clearSession(); ME=null; _gender=''; _photo=''; var lp=document.getElementById('loginPhone'); if(lp) lp.value=''; document.getElementById('loginBtn').disabled=true; clearOtp(); showScreen('screen-login'); }
+function logout(){
+  try{ clearSession(); }catch(e){}
+  ME=null; TMP_PHONE=''; _gender=''; _photo=''; REVIEW=null;
+  try{ if(typeof leaveWorld==='function') leaveWorld(); }catch(e){}
+  try{ if(typeof unsubscribeLive==='function') unsubscribeLive(); }catch(e){}
+  try{ if(typeof unsubscribeArena==='function') unsubscribeArena(); }catch(e){}
+  try{ location.reload(); }   // fresh boot -> init() sees no phone -> login screen, deterministically
+  catch(e){ var lp=document.getElementById('loginPhone'); if(lp) lp.value=''; var lb=document.getElementById('loginBtn'); if(lb) lb.disabled=true; clearOtp(); showScreen('screen-login'); }
+}
 
 /* ---------- notifications ---------- */
 var NOTIFS=[];
