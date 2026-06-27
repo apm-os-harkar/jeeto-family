@@ -308,6 +308,26 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .qmemst{font-size:11px;font-weight:800;color:var(--ink3)}
 .reward-line{font-size:12px;font-weight:800;color:#fff;margin-top:8px;opacity:.95}
 .qchip-streak{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:#C2410C;background:linear-gradient(135deg,#FFE9CC,#FFD9B0);padding:6px 12px;border-radius:var(--r-pill)}
+/* rituals — calendar-inspired */
+.rlongest{background:linear-gradient(135deg,#FFF6EC,#FFE9F1);border:1px solid var(--line);border-radius:var(--r-lg);padding:11px 15px;font-size:12.5px;font-weight:700;color:var(--ink2);margin-bottom:14px}
+.rcard{display:flex;gap:13px;align-items:stretch;background:#fff;border:1px solid var(--line);border-radius:var(--r-xl);padding:13px;box-shadow:var(--sh-1);margin-bottom:13px;cursor:pointer;transition:transform .3s ease}
+.rcard:active{transform:scale(.99)}
+.rdate{flex:0 0 auto;width:54px;border-radius:var(--r-md);background:var(--grad-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--rani-d)}
+.rdate.rtpl{color:#fff}
+.rdm{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.rdd{font-family:var(--font-display);font-weight:800;font-size:22px;line-height:1}
+.rbody{flex:1;min-width:0}
+.rtitle{font-family:var(--font-display);font-weight:800;font-size:16px;line-height:1.2}
+.rdesc{font-size:12.5px;color:var(--ink2);font-weight:600;line-height:1.45;margin-top:4px}
+.rmeta{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);font-weight:700;margin-top:6px;text-transform:capitalize}
+.rdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.rfoot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px}
+.rlineage{text-align:center;font-size:11.5px;color:var(--ink3);font-weight:700;margin-bottom:12px}
+.rstreak{text-align:center;font-size:14px;font-weight:800;color:#C2410C;background:linear-gradient(135deg,#FFE9CC,#FFD9B0);border-radius:var(--r-lg);padding:11px;margin-bottom:10px}
+.rstreak.soft{color:var(--ink2);background:var(--paper2)}
+.rnext{text-align:center;font-size:12.5px;font-weight:800;color:var(--rani-d)}
+.rtog{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;color:var(--ink2);cursor:pointer}
+.rtog input{width:18px;height:18px;accent-color:var(--rani)}
 .home-sec{font-family:'Baloo 2';font-weight:800;font-size:17px;margin:0 2px 11px;display:flex;align-items:center;justify-content:space-between}
 .home-sec a{font-size:12.5px;color:var(--rani-d);font-weight:800;cursor:pointer}
 .today-card{background:linear-gradient(150deg,#FFFFFF,#FFF6EC);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);margin-bottom:20px}
@@ -586,7 +606,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
     <div id="famBody"></div>
     <div class="skyvos-mini"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">Add only the people you know directly. I quietly understand the rest of your family from there.</span></div>
-    <div style="margin-top:6px"><button class="btn btn-soft" onclick="navTo('graph')">🕸 See your Relationship Graph</button></div>
+    <div style="margin-top:6px"><button class="btn btn-soft" onclick="navTo('rituals')">🕯️ Our Family Rituals</button></div>
+    <div style="margin-top:8px"><button class="btn btn-soft" onclick="navTo('graph')">🕸 See your Relationship Graph</button></div>
   </section>
 
   <section class="screen has-nav" id="screen-moments">
@@ -655,6 +676,13 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div style="height:24px"></div>
   </section>
 
+  <section class="screen has-nav" id="screen-rituals">
+    <div class="gtop"><button class="gback" onclick="navTo('family')">←</button><div class="h1" style="margin:0;font-size:24px">🕯️ Our Family Rituals</div></div>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 14px">Traditions that never end — kept together, passed down the generations. The heartbeat of a family.</p>
+    <div id="ritualsBody"></div>
+    <div style="height:24px"></div>
+  </section>
+
   <nav class="nav hide" id="bottomNav">
     <button data-tab="home" onclick="navTo('home')" aria-label="Home"><span class="ni">🏡</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')" aria-label="Relationships"><span class="ni">❤️</span><span class="nl">Relationships</span></button>
@@ -696,7 +724,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.3.0';
+var JEETO_VERSION='0.4.0';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -734,7 +762,8 @@ var Skyvos=(function(){
       celebrations:input.celebrations||[], onThisDay:input.onThisDay||[],
       pending:input.pending||0, todaysMoments:input.todaysMoments||{any:false},
       momentsThisWeek:input.momentsThisWeek||0, familyCount:input.familyCount||0,
-      bridges:input.bridges||0, activeQuests:input.activeQuests||0
+      bridges:input.bridges||0, activeQuests:input.activeQuests||0,
+      activeRituals:input.activeRituals||0, ritualDueTitle:input.ritualDueTitle||'', ritualDueId:input.ritualDueId||''
     };
   }
 
@@ -752,6 +781,10 @@ var Skyvos=(function(){
         title:(yrs>0?(yrs+' year'+(yrs>1?'s':'')+' ago today'):'On this day'),
         body:'You captured \u201c'+m.m.title+'\u201d. Some memories are worth revisiting.',
         cta:{label:'Relive this Moment', fn:"closeSkyvos();reliveMoment('"+m.m.id+"')"} }); }
+    if(c.ritualDueTitle) out.push({ kind:'ritual', icon:'🕯️', weight:85,
+      title:'Today is perfect for '+c.ritualDueTitle,
+      body:'One of your family rituals falls today. Keeping it — even quietly — is how traditions live on.',
+      cta:{label:'Open the ritual', fn:"closeSkyvos();"+(c.ritualDueId?"openRitual('"+c.ritualDueId+"')":"navTo('rituals')")} });
     var soon=(c.celebrations||[]).filter(function(x){ var u=fmtUpcoming(x.date); return u==='Tomorrow' || u.indexOf('in ')===0; })[0];
     if(soon) out.push({ kind:'celebration', icon:soon.icon, weight:80,
       title:soon.title+' is coming',
@@ -776,6 +809,10 @@ var Skyvos=(function(){
       title:'Grow closer this week',
       body:'A Quest turns an ordinary week into a shared memory — a dinner, a call, a walk together. Only if it feels right.',
       cta:{label:'Explore Quests', fn:"closeSkyvos();navTo('quests')"} });
+    if(c.activeRituals===0 && c.familyCount>0) out.push({ kind:'ritual', icon:'🕯️', weight:28,
+      title:'Begin a family tradition',
+      body:'Families are remembered by their rituals. A Sunday breakfast, a story night — small, repeated, forever. Only if it feels right.',
+      cta:{label:'Explore Rituals', fn:"closeSkyvos();navTo('rituals')"} });
     out.push({ kind:'greeting', icon:'🌟', weight:10,
       title:(c.name?'Welcome home, '+c.name:'Welcome home'),
       body:'Your people are right here. Every Moment you keep becomes family heritage.' });
@@ -951,6 +988,7 @@ function skyMood(insight){
   if(k==='memory') return 'white';                                   // legacy / on this day
   if(k==='relationship') return 'green';                              // new connection / bridge
   if(k==='celebration'||k==='quest'){ return /wedding|anniversary|\blove\b/.test(t) ? 'rose' : 'gold'; }
+  if(k==='ritual') return 'gold';
   if(k==='pulse'){ if(/glow|grow/.test(t)) return 'green'; if(/quiet|peaceful/.test(t)) return 'blue'; return night?'blue':'purple'; }
   if(k==='greeting'||k==='moment') return night?'blue':'purple';
   return night?'blue':'purple';
@@ -1249,6 +1287,286 @@ function celebrateQuest(q){
   setTimeout(function(){ c.className='celebrate'; }, 2600);
 }
 
+/* ============================================================
+   RITUAL ENGINE (Sprint 14) — recurring traditions that never end.
+   Skyvos is Guardian of Rituals: it inspires, never forces.
+   Achievements are emotional only. Milestones enter the Journey.
+   ============================================================ */
+var RITUAL_CATS={
+  family:{g:'linear-gradient(135deg,#FF8A1E,#E03A7A)'},
+  household:{g:'linear-gradient(135deg,#FFB05A,#FF7A1E)'},
+  bridge:{g:'linear-gradient(135deg,#6BA8FF,#2563EB)'},
+  health:{g:'linear-gradient(135deg,#7BE495,#16A34A)'},
+  learning:{g:'linear-gradient(135deg,#6BA8FF,#4F46E5)'},
+  culture:{g:'linear-gradient(135deg,#FFC93C,#C2410C)'},
+  faith:{g:'linear-gradient(135deg,#C9A8FF,#7C3AED)'},
+  travel:{g:'linear-gradient(135deg,#5FE0DA,#0EA5A5)'},
+  celebration:{g:'linear-gradient(135deg,#FFC93C,#FF7A1E)'},
+  legacy:{g:'linear-gradient(135deg,#F2ECFF,#BEAEDC)'},
+  community:{g:'linear-gradient(135deg,#A99BFF,#6D28D9)'}
+};
+function ritualCatGrad(c){ return (RITUAL_CATS[c]||RITUAL_CATS.family).g; }
+
+var RITUAL_TEMPLATES=[
+  {key:'breakfast', title:'Sunday Family Breakfast', desc:'One table, every Sunday. The week begins together.', category:'family', frequency:'weekly', icon:'🥐'},
+  {key:'movie', title:'Friday Movie Night', desc:'Dim the lights, share the couch, every Friday.', category:'household', frequency:'weekly', icon:'🎬'},
+  {key:'tambola', title:'Monthly Tambola Night', desc:'The whole family around one board, once a month.', category:'celebration', frequency:'monthly', icon:'🎟️'},
+  {key:'meal', title:'One Family Meal Every Week', desc:'No phones — just food and faces, every week.', category:'family', frequency:'weekly', icon:'🍽️'},
+  {key:'story', title:'Grandparents Story Night', desc:'Elders tell, children listen. Stories outlive us all.', category:'legacy', frequency:'weekly', icon:'📖'},
+  {key:'walk', title:'One Family Walk', desc:'A slow walk, side by side. The best talks happen here.', category:'health', frequency:'weekly', icon:'🚶'},
+  {key:'prayer', title:'One Family Prayer', desc:'A quiet moment of faith, together.', category:'faith', frequency:'weekly', icon:'🙏'},
+  {key:'book', title:'Read One Book Together', desc:'One book, one family, one chapter at a time.', category:'learning', frequency:'monthly', icon:'📚'},
+  {key:'cook', title:'Cook Together', desc:'Hands in the same kitchen make the warmest memories.', category:'household', frequency:'weekly', icon:'🍳'},
+  {key:'tree', title:'Plant One Tree Every Year', desc:'Something that outlives us, planted together each year.', category:'community', frequency:'yearly', icon:'🌳'},
+  {key:'donate', title:'Donate Together', desc:'Kindness as a family habit.', category:'community', frequency:'monthly', icon:'🤲'},
+  {key:'visitparents', title:'Visit Parents Monthly', desc:'Show up. Presence is the gift no message replaces.', category:'family', frequency:'monthly', icon:'🏡'},
+  {key:'kashmirday', title:'Annual Kashmir Day', desc:'Honour your roots, every year.', category:'culture', frequency:'yearly', icon:'🏔️'},
+  {key:'blessing', title:'Birthday Blessing Circle', desc:'Gather and bless each birthday, every year.', category:'celebration', frequency:'birthday', icon:'🕯️'},
+  {key:'reunion', title:'Family Reunion', desc:'Once a year, the whole family in one place.', category:'family', frequency:'yearly', icon:'🎉'},
+  /* bridge rituals */
+  {key:'cousinscall', title:'Monthly Cousins Call', desc:'Two households, one video call, every month.', category:'bridge', frequency:'monthly', icon:'📹'},
+  {key:'festtogether', title:'Festival Together', desc:'Celebrate each festival across both households.', category:'bridge', frequency:'festival', icon:'🪔'},
+  {key:'recipeexch', title:'Recipe Exchange', desc:'Trade the dishes that taste like home.', category:'bridge', frequency:'monthly', icon:'🍲'},
+  {key:'shareddinner', title:'Shared Dinner', desc:'One dinner, two families, regularly.', category:'bridge', frequency:'monthly', icon:'🍽️'}
+];
+function ritualTpl(key){ return RITUAL_TEMPLATES.filter(function(t){return t.key===key;})[0]; }
+
+/* ---------- recurrence ---------- */
+function nextRitualDate(r){
+  var today=new Date(); today.setHours(0,0,0,0);
+  var start=r.start_date?new Date(r.start_date):today; start.setHours(0,0,0,0);
+  var f=r.frequency;
+  if(f==='daily') return today;
+  if(f==='weekly'){ var wd=(r.weekday!=null && r.weekday!=='')?r.weekday:start.getDay(); var d=new Date(today); var add=((wd - d.getDay())+7)%7; d.setDate(d.getDate()+add); return d; }
+  if(f==='monthly'){ var dom=r.day_of_month||start.getDate(); var d=new Date(today.getFullYear(),today.getMonth(),dom); if(d<today) d=new Date(today.getFullYear(),today.getMonth()+1,dom); return d; }
+  if(f==='yearly'||f==='anniversary'||f==='birthday'){ var d=new Date(today.getFullYear(),start.getMonth(),start.getDate()); if(d<today) d=new Date(today.getFullYear()+1,start.getMonth(),start.getDate()); return d; }
+  return start>=today?start:today;
+}
+function ritualDueToday(r){ var n=nextRitualDate(r); var t=new Date(); return n.getFullYear()===t.getFullYear()&&n.getMonth()===t.getMonth()&&n.getDate()===t.getDate(); }
+
+/* ---------- data ---------- */
+async function loadRituals(){
+  if(!ensureSB()) return [];
+  var me=myPhone();
+  try{
+    var mineR=await sb.from('rituals').select('*').eq('created_by',me);
+    var memR=await sb.from('ritual_members').select('ritual_id').eq('member_phone',me);
+    var ids=(memR.data||[]).map(function(x){return x.ritual_id;});
+    var memQ={data:[]}; if(ids.length){ memQ=await sb.from('rituals').select('*').in('id',ids); }
+    var map={}; (mineR.data||[]).concat(memQ.data||[]).forEach(function(r){ map[r.id]=r; });
+    var list=Object.keys(map).map(function(k){return map[k];});
+    var rids=list.map(function(r){return r.id;});
+    var mems={}, streaks={};
+    if(rids.length){
+      var mr=await sb.from('ritual_members').select('*').in('ritual_id',rids); (mr.data||[]).forEach(function(m){ (mems[m.ritual_id]=mems[m.ritual_id]||[]).push(m); });
+      var sr=await sb.from('ritual_streaks').select('*').in('ritual_id',rids); (sr.data||[]).forEach(function(s){ streaks[s.ritual_id]=s; });
+    }
+    list.forEach(function(r){ r._members=mems[r.id]||[]; r._streak=streaks[r.id]||null; r._next=nextRitualDate(r); });
+    list.sort(function(a,b){ return a._next-b._next; });
+    return list;
+  }catch(e){ return []; }
+}
+async function ritualCalendarEntries(){
+  // active rituals -> next occurrence as calendar items (for the Family Calendar)
+  try{
+    var list=await loadRituals(); var out=[];
+    list.filter(function(r){return r.status==='active';}).forEach(function(r){ out.push({icon:r.icon||'🕯️', title:r.title, sub:'Ritual · '+r.frequency, date:nextRitualDate(r)}); });
+    return out;
+  }catch(e){ return []; }
+}
+
+/* ---------- Skyvos ritual recommendations (Guardian of Rituals) ---------- */
+function ritualPicks(ctx){
+  ctx=ctx||{}; var picks=[];
+  if((ctx.momentsThisWeek||0)===0) picks.push(ritualTpl('breakfast'));
+  if((ctx.bridges||0)>0) picks.push(ritualTpl('cousinscall'));
+  picks.push(ritualTpl('story')); picks.push(ritualTpl('walk')); picks.push(ritualTpl('meal'));
+  var seen={}, out=[]; picks.forEach(function(t){ if(t&&!seen[t.key]){ seen[t.key]=1; out.push(t); } });
+  return out.slice(0,3);
+}
+
+/* ---------- dashboard ---------- */
+var RTAB='active';
+function ritualTab(t){ RTAB=t; renderRituals(); }
+async function renderRituals(){
+  var box=document.getElementById('ritualsBody'); if(!box) return;
+  box.innerHTML='<div class="sk sk-card"></div><div class="sk sk-card"></div>';
+  if(!ME) ME=await fetchProfile(myPhone());
+  var rituals=await loadRituals();
+  var active=rituals.filter(function(r){return r.status==='active';});
+  var phones={}; rituals.forEach(function(r){ (r._members||[]).forEach(function(m){ phones[m.member_phone]=1; }); });
+  var profs=await fetchProfiles(Object.keys(phones));
+  var longest=active.slice().sort(function(a,b){ return ((b._streak&&b._streak.best)||0)-((a._streak&&a._streak.best)||0); })[0];
+
+  var tabs='<div class="qtabs">'+rtabBtn('active','Active',active.length)+rtabBtn('upcoming','Upcoming','')+rtabBtn('recommended','For You','')+rtabBtn('history','History','')+'</div>';
+  var body='';
+  if(RTAB==='active'){
+    if(longest && longest._streak && longest._streak.count>1) body+='<div class="rlongest">🏆 Longest running · <b>'+escapeHtml(longest.title)+'</b> · '+longest._streak.count+' '+longest._streak.unit+'</div>';
+    body+= active.length ? active.map(function(r){ return ritualCard(r,profs); }).join('')
+      : '<div class="empty"><span class="big">🕯️</span><div class="e1">No family rituals yet</div><div class="e2">A ritual is a tradition that never ends. Begin one and let it pass down the generations.</div></div>';
+    body+='<button class="btn" onclick="openRitualCreate()" style="margin-top:8px">＋ Begin a Ritual</button>';
+  } else if(RTAB==='upcoming'){
+    var up=active.slice().sort(function(a,b){return a._next-b._next;});
+    body= up.length ? up.map(function(r){ return ritualCard(r,profs); }).join('') : '<div class="empty"><span class="big">📅</span><div class="e1">Nothing scheduled</div><div class="e2">Begin a ritual and it will appear here and on your Calendar.</div></div>';
+  } else if(RTAB==='history'){
+    body=await ritualHistoryHtml(rituals);
+  } else {
+    var picks=ritualPicks(window.__questCtx||{});
+    body='<div class="skyvos-mini" style="margin:2px 2px 16px"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span>Skyvos, Guardian of your rituals, suggests these. Never required — only if they feel right.</span></div>';
+    body+=picks.map(function(t){ return ritualTplCard(t); }).join('');
+    body+='<div class="home-sec" style="margin-top:18px">All Rituals</div>'+RITUAL_TEMPLATES.map(function(t){ return ritualTplCard(t); }).join('');
+  }
+  box.innerHTML=tabs+body;
+}
+function rtabBtn(id,label,count){ return '<button class="qtab'+(RTAB===id?' on':'')+'" onclick="ritualTab(\''+id+'\')">'+label+(count!==''&&count>0?' · '+count:'')+'</button>'; }
+
+function ritualDateChip(d){ return '<div class="rdate"><span class="rdm">'+d.toLocaleDateString('en-US',{month:'short'})+'</span><span class="rdd">'+d.getDate()+'</span></div>'; }
+function ritualCard(r, profs){
+  var nd=r._next||nextRitualDate(r); var due=ritualDueToday(r);
+  var st=r._streak; var streakTxt = (st&&st.count>0)?('🔥 '+st.count+' '+st.unit+' running'):'A new tradition';
+  var members=(r._members||[]).filter(function(m){return m.status!=='declined';});
+  var av=members.slice(0,4).map(function(m){ var u=profs[m.member_phone]||{}; return '<span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span>'; }).join('');
+  return '<div class="rcard" onclick="openRitual(\''+r.id+'\')">'+ritualDateChip(nd)+
+    '<div class="rbody"><div class="rtitle">'+escapeHtml(r.title)+'</div>'+
+    '<div class="rmeta"><span class="rdot" style="background:'+ritualCatGrad(r.category)+'"></span>'+escapeHtml(r.frequency)+' · '+escapeHtml(streakTxt)+'</div>'+
+    '<div class="rfoot"><div class="qavs">'+(av||'<span class="qav">+</span>')+'</div>'+(due?'<span class="qchip done">Today</span>':'<span class="qchip">'+escapeHtml(fmtUpcoming(nd))+'</span>')+'</div></div></div>';
+}
+function ritualTplCard(t){
+  if(!t) return '';
+  return '<div class="rcard" onclick="openRitualCreate(\''+t.key+'\')"><div class="rdate rtpl" style="background:'+ritualCatGrad(t.category)+'"><span style="font-size:24px">'+t.icon+'</span></div>'+
+    '<div class="rbody"><div class="rtitle">'+escapeHtml(t.title)+'</div><div class="rdesc">'+escapeHtml(t.desc)+'</div>'+
+    '<div class="rfoot"><span class="qchip soft">'+escapeHtml(t.category)+' · '+escapeHtml(t.frequency)+'</span><span class="qstart">Begin →</span></div></div></div>';
+}
+async function ritualHistoryHtml(rituals){
+  var rids=rituals.map(function(r){return r.id;}); if(!rids.length) return '<div class="empty"><span class="big">📜</span><div class="e1">No history yet</div><div class="e2">Each time you keep a ritual, it is preserved here forever.</div></div>';
+  try{
+    var hr=await sb.from('ritual_history').select('*').in('ritual_id',rids).order('occurrence_date',{ascending:false}).limit(40);
+    var rows=hr.data||[]; if(!rows.length) return '<div class="empty"><span class="big">📜</span><div class="e1">No history yet</div><div class="e2">Each time you keep a ritual, it is preserved here forever.</div></div>';
+    var byId={}; rituals.forEach(function(r){ byId[r.id]=r; });
+    return '<div class="cele" style="padding:4px 16px">'+rows.map(function(h){ var r=byId[h.ritual_id]||{}; return '<div class="wall-row"><div class="wall-ic">'+(r.icon||'🕯️')+'</div><div style="flex:1;min-width:0"><div class="wall-t"><b>'+escapeHtml(r.title||'Ritual')+'</b> kept</div><div class="wall-d">'+escapeHtml(fmtMomentDate(h.occurrence_date))+'</div></div></div>'; }).join('')+'</div>';
+  }catch(e){ return ''; }
+}
+
+/* ---------- create ---------- */
+async function openRitualCreate(tplKey){
+  var t=tplKey?ritualTpl(tplKey):null;
+  var ctx=await myCircleContext();
+  var hOpts=ctx.households.map(function(h){ return '<option value="'+escapeAttr(h.h.id)+'">'+escapeHtml(h.h.household_name)+'</option>'; }).join('');
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">'+(t?t.icon+' Begin this Ritual':'🕯️ Begin a Ritual')+'</div>'+
+    '<div class="field-label">Title</div><input class="fi" id="rtTitle" value="'+escapeAttr(t?t.title:'')+'" placeholder="e.g. Sunday Family Breakfast" style="margin-bottom:12px">'+
+    '<div class="field-label">What is it?</div><input class="fi" id="rtDesc" value="'+escapeAttr(t?t.desc:'')+'" placeholder="A short, warm description" style="margin-bottom:12px">'+
+    '<div class="qrow"><div style="flex:1"><div class="field-label">Category</div><select class="fi" id="rtCat">'+['family','household','bridge','health','learning','culture','faith','travel','celebration','legacy','community'].map(function(c){return '<option'+(t&&t.category===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
+    '<div style="flex:1"><div class="field-label">Frequency</div><select class="fi" id="rtFreq">'+['daily','weekly','monthly','yearly','festival','birthday','anniversary','custom','lifetime'].map(function(f){return '<option'+(t&&t.frequency===f?' selected':'')+'>'+f+'</option>';}).join('')+'</select></div></div>'+
+    '<div class="field-label" style="margin-top:12px">Start date</div><input class="fi" id="rtStart" type="date" style="margin-bottom:12px">'+
+    (hOpts?'<div class="field-label">Household (optional)</div><select class="fi" id="rtHH" style="margin-bottom:12px"><option value="">No specific household</option>'+hOpts+'</select>':'<input type="hidden" id="rtHH" value="">')+
+    '<label class="rtog"><input type="checkbox" id="rtRemind" checked> Remind our family on the day</label>'+
+    '<div style="height:14px"></div><button class="btn" onclick="submitRitual(\''+(t?t.icon:'🕯️')+'\')">Begin Ritual 🕯️</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+async function submitRitual(icon){
+  var title=(document.getElementById('rtTitle').value||'').trim(); if(!title){ toast('Give your ritual a name.'); return; }
+  var start=(document.getElementById('rtStart')||{}).value||null;
+  var rec={ title:title, description:(document.getElementById('rtDesc').value||'').trim(),
+    category:(document.getElementById('rtCat').value||'family'), frequency:(document.getElementById('rtFreq').value||'weekly'),
+    icon:icon||'🕯️', created_by:myPhone(), household_id:(document.getElementById('rtHH')||{}).value||null,
+    start_date:start, weekday:(start?new Date(start).getDay():new Date().getDay()),
+    reminder:!!(document.getElementById('rtRemind')||{}).checked, status:'active' };
+  var r=await sb.from('rituals').insert(rec).select().single();
+  if(r.error){ toast(humanError(r.error,'Could not begin the ritual.')); return; }
+  closeHomeModal(); toast('A new family tradition begins 🕯️'); RTAB='active'; navTo('rituals');
+}
+
+/* ---------- detail / keep / participate ---------- */
+async function openRitual(id){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="sk sk-card"></div></div>'; m.classList.add('show');
+  var rr=await sb.from('rituals').select('*').eq('id',id).single(); var r=rr.data; if(!r){ closeHomeModal(); return; }
+  var mr=await sb.from('ritual_members').select('*').eq('ritual_id',id); var members=mr.data||[];
+  var sr=await sb.from('ritual_streaks').select('*').eq('ritual_id',id).maybeSingle(); var st=sr.data;
+  var profs=await fetchProfiles(members.map(function(x){return x.member_phone;}).concat([r.created_by]));
+  var me=myPhone(); var mine=members.filter(function(x){return x.member_phone===me;})[0];
+  var due=ritualDueToday(r); var nd=nextRitualDate(r);
+  var keeper=(profs[r.created_by]||{}).name||r.created_by;
+  var since=r.start_date?new Date(r.start_date).getFullYear():new Date(r.created_at).getFullYear();
+  var streakHtml = st&&st.count>0
+    ? '<div class="rstreak">🔥 <b>'+st.count+' '+st.unit+'</b> running'+(st.best>st.count?(' · best '+st.best):'')+'</div>'
+    : '<div class="rstreak soft">A tradition is born. Keep it once to begin the streak.</div>';
+  var memberHtml=members.filter(function(p){return p.status!=='declined';}).map(function(p){ var u=profs[p.member_phone]||{}; return '<div class="qmem"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span><span style="flex:1;min-width:0">'+escapeHtml(u.name||p.member_phone)+'</span><span class="qmemst">'+(p.role==='keeper'?'🗝️ keeper':'member')+'</span></div>'; }).join('');
+
+  var actions='';
+  if(mine){
+    actions+= due ? '<button class="btn" onclick="completeRitual(\''+id+'\')">We kept it today ✓</button>'
+                  : '<button class="btn" onclick="completeRitual(\''+id+'\')">Mark as kept</button>';
+    if(mine.role!=='keeper') actions+='<div style="height:8px"></div><button class="btn btn-soft" onclick="becomeKeeper(\''+id+'\')">Become a keeper 🗝️</button>';
+  } else {
+    actions+='<button class="btn" onclick="joinRitual(\''+id+'\')">Join this Ritual ❤️</button>';
+  }
+  actions+='<div style="height:8px"></div><button class="btn btn-soft" onclick="inviteToRitual(\''+id+'\')">Invite family</button>';
+
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="qhead" style="background:'+ritualCatGrad(r.category)+';border-radius:20px;margin-bottom:14px"><span class="qicon" style="font-size:30px">'+(r.icon||'🕯️')+'</span><span class="qreward">'+escapeHtml(r.frequency)+'</span></div>'+
+    '<div class="modal-q" style="font-size:21px;text-align:center">'+escapeHtml(r.title)+'</div>'+
+    (r.description?'<p class="muted" style="text-align:center;font-size:13.5px;margin:6px 2px 10px">'+escapeHtml(r.description)+'</p>':'<div style="height:6px"></div>')+
+    '<div class="rlineage">A family tradition since '+since+' · kept by '+escapeHtml(keeper)+'</div>'+
+    streakHtml+
+    '<div class="rnext">Next · '+escapeHtml(fmtUpcoming(nd))+'</div>'+
+    '<div class="field-label" style="margin-top:14px">Who keeps this ritual</div><div style="margin-bottom:16px">'+(memberHtml||'<div class="muted" style="font-size:13px">Just you, for now.</div>')+'</div>'+
+    actions+'<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
+}
+async function completeRitual(id){
+  var r=await sb.rpc('complete_ritual',{p_ritual:id, p_phone:myPhone(), p_date:new Date().toISOString().slice(0,10), p_note:null});
+  if(r.error){ toast(humanError(r.error,'Could not mark this kept.')); return; }
+  var res=r.data||{};
+  closeHomeModal();
+  if(res.milestone){ celebrateRitual(res); }
+  else { toast('Kept 🕯️ · '+(res.streak||1)+' '+(res.unit||'weeks')+' running'); }
+  setTimeout(function(){ suggestRitualMoment(res); }, res.milestone?2700:400);
+  renderHome();
+}
+async function joinRitual(id){
+  var r=await sb.from('ritual_members').upsert({ritual_id:id, member_phone:myPhone(), status:'active', role:'member'},{onConflict:'ritual_id,member_phone'});
+  if(r.error){ toast(humanError(r.error,'Could not join.')); return; }
+  toast('You\u2019re part of this tradition ❤️'); openRitual(id); renderHome();
+}
+async function becomeKeeper(id){
+  await sb.from('ritual_members').upsert({ritual_id:id, member_phone:myPhone(), status:'active', role:'keeper'},{onConflict:'ritual_id,member_phone'});
+  toast('You are now a keeper of this ritual 🗝️'); openRitual(id);
+}
+async function leaveRitual(id){ await sb.from('ritual_members').update({status:'declined'}).eq('ritual_id',id).eq('member_phone',myPhone()); toast('You\u2019ve stepped back. Rejoin anytime.'); closeHomeModal(); }
+async function inviteToRitual(id){
+  var ctx=await myCircleContext(); var conns=ctx.conns||[];
+  if(!conns.length){ toast('Connect family first, then invite them.'); return; }
+  var profs=await fetchProfiles(conns);
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:88vh;overflow:auto"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:19px;margin-bottom:12px">Invite family</div>'+
+    conns.map(function(p){ var u=profs[p]||{}; return '<div class="qmem" onclick="sendRitualInvite(\''+id+'\',\''+p+'\')" style="cursor:pointer"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span><span style="flex:1">'+escapeHtml(u.name||p)+'</span><span class="qstart">Invite →</span></div>'; }).join('')+
+    '<div style="height:10px"></div><button class="btn btn-soft" onclick="openRitual(\''+id+'\')">Back</button></div>';
+}
+async function sendRitualInvite(id, phone){
+  await sb.from('ritual_members').upsert({ritual_id:id, member_phone:phone, status:'active', role:'member'},{onConflict:'ritual_id,member_phone'});
+  try{ var rr=await sb.from('rituals').select('title').eq('id',id).single(); await sb.from('notifications').insert({recipient_phone:phone, kind:'ritual', body:'You\u2019re part of the family ritual \u201c'+(rr.data?rr.data.title:'a ritual')+'\u201d', is_read:false}); }catch(e){}
+  toast('Added to the tradition ❤️'); openRitual(id);
+}
+function celebrateRitual(res){
+  var c=document.getElementById('celebrate'); if(!c){ toast('Ritual kept · '+(res.milestone||'')); return; }
+  c.className='celebrate show';
+  c.innerHTML='<div class="box"><h2>'+(res.icon||'🕯️')+' '+escapeHtml(res.milestone||'Ritual kept')+'</h2><div class="plus">'+escapeHtml(res.title||'')+'</div><div class="big-heart">🕯️</div><div class="reward-line">'+(res.streak||1)+' '+(res.unit||'weeks')+' running</div></div>';
+  setTimeout(function(){ c.className='celebrate'; }, 2600);
+}
+function suggestRitualMoment(res){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="text-align:center"><div class="modal-grab"></div>'+
+    '<div class="sky-orb sky-orb-lg mood-gold sparkle" style="margin:6px auto 14px"><span class="sky-core"></span><i class="spk spk1"></i><i class="spk spk2"></i><i class="spk spk3"></i></div>'+
+    '<div class="sky-title" style="font-size:20px">'+escapeHtml((res.title||'Ritual')+' kept')+'</div>'+
+    '<p class="muted" style="font-size:14px;margin:8px 2px 18px;line-height:1.55">Would you like to preserve today\u2019s memory? A photo now becomes a treasure later.</p>'+
+    '<button class="btn" onclick="closeHomeModal();openCapture()">Capture this Moment ❤️</button><div style="height:8px"></div>'+
+    '<button class="btn btn-soft" onclick="closeHomeModal()">Not now</button></div>';
+  m.classList.add('show');
+}
+
+
 function homeAccent(){ try{ return localStorage.getItem('jeeto_accent')||''; }catch(e){ return ''; } }
 function applyAccent(){ var a=homeAccent(); var root=document.documentElement;
   if(a==='violet'){ root.style.setProperty('--rani','#7C3AED'); root.style.setProperty('--rani-d','#5b21b6'); }
@@ -1300,9 +1618,12 @@ async function buildHome(){
   var skyStrength=0; try{ skyStrength=calculateFamilyStrength(ctx.conns)+(await loadMomentStrength()); }catch(e){}
   var quests=await loadQuests();
   var activeQ=quests.filter(function(q){ return q.status==='active'||q.status==='upcoming'; });
+  var rituals=await loadRituals();
+  var activeRit=rituals.filter(function(r){ return r.status==='active'; });
+  var dueRit=activeRit.filter(function(r){ return ritualDueToday(r); })[0];
   var streak=await loadStreak('family'); if(!streak||!streak.active){ var ms=await loadStreak('moments'); if(ms&&ms.active) streak=ms; }
   window.__questCtx={ celebrations:cele, momentsThisWeek:mwk, bridges:ctx.bridges.length };
-  window.__skyvos=Skyvos.insight(Skyvos.context({ name:skyName, celebrations:cele, onThisDay:otd, pending:pending, todaysMoments:todayMoments, momentsThisWeek:mwk, familyCount:ctx.conns.length, bridges:ctx.bridges.length, activeQuests:activeQ.length }));
+  window.__skyvos=Skyvos.insight(Skyvos.context({ name:skyName, celebrations:cele, onThisDay:otd, pending:pending, todaysMoments:todayMoments, momentsThisWeek:mwk, familyCount:ctx.conns.length, bridges:ctx.bridges.length, activeQuests:activeQ.length, activeRituals:activeRit.length, ritualDueTitle:(dueRit?dueRit.title:''), ritualDueId:(dueRit?dueRit.id:'') }));
 
   var html='';
 
@@ -1328,6 +1649,7 @@ async function buildHome(){
   html+='<div class="qa-row">'+
     qa('❤️','Capture','openCapture()')+
     qa('🧭','Quests','navTo(\'quests\')')+
+    qa('🕯️','Rituals','navTo(\'rituals\')')+
     qa('👋','Welcome','goAddFamily()')+
     qa('🏠','Household','goHousehold()')+
     qa('🌉','Bridges','navTo(\'bridge\')')+
@@ -1416,6 +1738,8 @@ async function buildCelebrations(ctx, profs){
   ctx.bridges.forEach(function(b){ var d=new Date(b.connected_at); var nx=nextOccurrence({m:d.getMonth(),d:d.getDate()}); list.push({icon:'🌉',title:'Bridge with '+b._otherName,sub:'Bridge anniversary',date:nx}); });
   // manual calendar events (upcoming)
   try{ var ev=await sb.from('calendar_events').select('*').eq('owner_phone',me).order('event_date',{ascending:true}); (ev.data||[]).forEach(function(e){ var d=new Date(e.event_date); var nx=(d>=new Date(new Date().toDateString()))?d:nextOccurrence({m:d.getMonth(),d:d.getDate()}); var ic={birthday:'🎂',anniversary:'💍',festival:'🪔',school:'🎒',travel:'✈️',medical:'🩺',meeting:'🗓️'}[e.event_type]||'📅'; list.push({icon:ic,title:e.title,sub:(e.event_type||'event'),date:nx}); }); }catch(e){}
+  // recurring rituals -> next occurrence on the calendar (Sprint 14)
+  try{ var re=await ritualCalendarEntries(); re.forEach(function(x){ list.push(x); }); }catch(e){}
   // sort by next date, keep within ~120 days
   var cutoff=new Date(); cutoff.setDate(cutoff.getDate()+120);
   list=list.filter(function(c){ return c.date<=cutoff; }).sort(function(a,b){ return a.date-b.date; });
@@ -2899,7 +3223,7 @@ function searchGraph(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -2910,6 +3234,7 @@ function navTo(tab){
   if(tab==='graph') renderGraph();
   if(tab==='calendar') renderCalendar();
   if(tab==='quests') renderQuests();
+  if(tab==='rituals') renderRituals();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
