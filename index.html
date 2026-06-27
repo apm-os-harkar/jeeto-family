@@ -878,6 +878,30 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-today-title{font-family:var(--jh-serif);font-size:18px;line-height:1.25;color:var(--jh-fg)}
 .jh-today-sub{font-size:12.5px;color:var(--jh-muted-fg)}
 .jh-today-chev{color:var(--jh-muted-fg);flex-shrink:0}
+/* ---- Home Design tab ---- */
+.jd-plate{position:relative;border-radius:20px;background:linear-gradient(135deg,oklch(0.96 0.02 80),oklch(0.92 0.03 78));border:1px solid var(--jh-border);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 8px rgba(120,72,30,.1);padding:22px;text-align:center}
+.jd-plate-name{font-family:var(--jh-serif);font-size:28px;letter-spacing:.01em;color:var(--jh-fg)}
+.jd-plate-city{margin-top:4px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--jh-muted-fg)}
+.jd-fields{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.jd-fi{width:100%;border:1px solid var(--jh-border);border-radius:14px;background:var(--jh-card);padding:13px 14px;font-family:inherit;font-size:15px;color:var(--jh-fg)}
+.jd-fi:focus{outline:none;border-color:var(--jh-primary)}
+.jd-hint{margin:10px 2px 0;font-size:12.5px;color:var(--jh-muted-fg)}
+.jd-models{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.jd-model{padding:0;border:2px solid transparent;border-radius:18px;overflow:hidden;background:var(--jh-card);cursor:pointer;font-family:inherit;box-shadow:0 1px 3px rgba(120,72,30,.08);transition:.15s}
+.jd-model.on{border-color:var(--jh-primary)}
+.jd-model-art{display:block;height:84px;overflow:hidden}
+.jd-model-art svg{width:100%;height:100%;object-fit:cover}
+.jd-model-l{display:block;padding:9px 6px;font-size:13px;font-weight:500;color:var(--jh-fg)}
+.jd-model.on .jd-model-l{color:var(--jh-primary)}
+.jd-fam-grp{margin-top:14px}
+.jd-fam-h{font-size:13px;font-weight:600;color:var(--jh-fg);margin-bottom:10px}
+.jd-fam-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.jd-person{display:flex;flex-direction:column;align-items:center;gap:6px}
+.jd-person-av{width:52px;height:52px;border-radius:50%;background:var(--jh-card2);border:1px solid var(--jh-border);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--jh-fg);overflow:hidden}
+.jd-person-av img{width:100%;height:100%;object-fit:cover}
+.jd-person-n{font-size:12px;color:var(--jh-muted-fg)}
+.jd-fam-empty{font-size:13px;color:var(--jh-muted-fg)}
+.jd-add{width:52px;height:52px;border-radius:50%;border:1.5px dashed var(--jh-border);background:none;color:var(--jh-primary);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .jh-zoom{position:fixed;inset:0;z-index:200;background:rgba(20,14,10,.93);display:flex;align-items:center;justify-content:center;padding:18px;animation:jh-rise .25s ease both}
 .jh-zoom img{max-width:100%;max-height:100%;border-radius:14px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .jh-zoom-x{position:fixed;top:16px;right:18px;color:#fff;font-size:22px;opacity:.8}
@@ -1022,6 +1046,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
   <!-- HOME -->
   <section class="screen has-nav" id="screen-home"><div class="jh" id="homeBody"></div></section>
+  <section class="screen has-nav" id="screen-design"><div class="jh" id="designBody"></div></section>
 
   <!-- FAMILY -->
   <section class="screen has-nav" id="screen-homes"><div id="homesBody"></div></section>
@@ -1179,7 +1204,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='1.7.0-home';
+var JEETO_VERSION='1.8.0-design';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1341,7 +1366,7 @@ function closeCelebrate(){ document.getElementById('celebrate').classList.remove
 function showScreen(id){
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
-  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail'];
+  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail','screen-design'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ paintNavIcons(); }catch(e){}
   try{ window.scrollTo(0,0); }catch(e){}
@@ -1431,6 +1456,7 @@ var JH_ICONS={
   cake:'<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/>',
   snowflake:'<path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/>',
   chev:'<path d="m9 18 6-6-6-6"/>',
+  palette:'<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z"/>',
   tree:'<path d="M8 19a4 4 0 0 1-2.24-7.32A3.5 3.5 0 0 1 9 6.03V6a3 3 0 1 1 6 0v.04a3.5 3.5 0 0 1 3.24 5.65A4 4 0 0 1 16 19Z"/><path d="M12 19v3"/>',
   waypoints:'<circle cx="12" cy="4.5" r="2.5"/><path d="m10.2 6.3-3.9 3.9"/><circle cx="4.5" cy="12" r="2.5"/><path d="M7 12h10"/><circle cx="19.5" cy="12" r="2.5"/><path d="m13.8 17.7 3.9-3.9"/><circle cx="12" cy="19.5" r="2.5"/>',
   trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
@@ -2874,6 +2900,70 @@ function openSkyvosBubble(){
   m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="skyb-head">'+skyOrb({mood:'purple',sparkle:true})+'<div><div class="skyb-name">Skyvos</div><div class="skyb-sub">watching over your home</div></div></div><p class="skyb-line">'+escapeHtml(sky.line)+'</p>'+cta+'<button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
   m.classList.add('show');
 }
+var _designStyle='apartment', _designHomeId=null;
+function selDesignStyle(id){ _designStyle=id; var els=document.querySelectorAll('.jd-model'); for(var i=0;i<els.length;i++){ els[i].classList.toggle('on', els[i].getAttribute('data-style')===id); } var lbl=document.getElementById('jdModelLabel'); if(lbl) lbl.textContent=homeStyleLabel(id); }
+async function renderDesign(){
+  var el=document.getElementById('designBody'); if(!el) return;
+  el.innerHTML='<div class="jh-wrap"><div class="sk sk-card"></div></div>';
+  if(!ME){ try{ ME=await fetchProfile(myPhone()); }catch(e){} }
+  var ctx=await myCircleContext();
+  var home=(ctx.households&&ctx.households[0]&&ctx.households[0].h)||null;
+  var members=(ctx.households&&ctx.households[0]&&ctx.households[0].members)||[];
+  _designHomeId = home?home.id:null;
+  _designStyle = (home&&home.home_style)||'apartment';
+  var nm=(home&&home.household_name)|| (((ME&&ME.name||'').split(' ')[0])||'Your')+'\u2019s';
+  var city=(home&&home.city)||'';
+
+  // profiles for family roster
+  var phones=members.map(function(m){ return m.member_phone||m.phone; }).filter(Boolean);
+  var profs={}; try{ profs=await fetchProfiles(phones); }catch(e){}
+
+  // header
+  var header='<header class="jh-rise"><div class="jh-hd-top"><div><p class="jh-hd-grt">Design your home</p><h1 class="jh-hd-nm">Make it yours</h1></div></div></header>';
+
+  // 1) NAME PLATE
+  var plate='<section class="jh-rise"><div class="jh-zlabel">Name Plate</div>'+
+    '<div class="jd-plate"><div class="jd-plate-name" id="jdPlateName">'+escapeHtml(nm)+'</div><div class="jd-plate-city" id="jdPlateCity">'+escapeHtml(city||'Add a place')+'</div></div>'+
+    '<div class="jd-fields"><input class="jd-fi" id="jdName" value="'+escapeAttr(nm)+'" placeholder="Family name (e.g. Harkar\u2019s)" oninput="document.getElementById(\'jdPlateName\').textContent=this.value||\'Your Home\'">'+
+    '<input class="jd-fi" id="jdCity" value="'+escapeAttr(city)+'" placeholder="Place (e.g. Dwarka)" oninput="document.getElementById(\'jdPlateCity\').textContent=this.value||\'Add a place\'"></div>'+
+    '<p class="jd-hint">Shows in your top bar.</p></section>';
+
+  // 2) HOME MODEL
+  var models='<div class="jd-models">'+HOME_STYLES.map(function(o){
+    return '<button type="button" class="jd-model'+(o.id===_designStyle?' on':'')+'" data-style="'+o.id+'" onclick="selDesignStyle(\''+o.id+'\')"><span class="jd-model-art">'+homeArchitecture(o.id,0.85)+'</span><span class="jd-model-l">'+o.label+'</span></button>';
+  }).join('')+'</div>';
+  var model='<section class="jh-rise"><div class="jh-zlabel">Home Model</div>'+models+'<p class="jd-hint">Shows in <b>My World</b>. Selected: <span id="jdModelLabel">'+homeStyleLabel(_designStyle)+'</span></p></section>';
+
+  // 3) FAMILY (adults & kids)
+  function isKid(m){ var r=((m.role||m.relation||'')+'').toLowerCase(); return /son|daughter|child|kid|grand/.test(r); }
+  function av(m){ var p=profs[m.member_phone||m.phone]||{}; var name=p.name||m.name||'?'; return '<div class="jd-person"><span class="jd-person-av">'+(p.avatar_url?'<img src="'+escapeAttr(p.avatar_url)+'">':escapeHtml((name[0]||'?').toUpperCase()))+'</span><span class="jd-person-n">'+escapeHtml((name||'').split(' ')[0])+'</span></div>'; }
+  var adults=members.filter(function(m){return !isKid(m);}), kids=members.filter(isKid);
+  var famHtml='<section class="jh-rise"><div class="jh-zlabel">Your Family</div>';
+  famHtml+='<div class="jd-fam-grp"><div class="jd-fam-h">Adults</div><div class="jd-fam-row">'+(adults.length?adults.map(av).join(''):'<span class="jd-fam-empty">No adults yet</span>')+'<button class="jd-add" onclick="goAddFamily()">+</button></div></div>';
+  famHtml+='<div class="jd-fam-grp"><div class="jd-fam-h">Kids</div><div class="jd-fam-row">'+(kids.length?kids.map(av).join(''):'<span class="jd-fam-empty">No kids added</span>')+'<button class="jd-add" onclick="goAddFamily()">+</button></div></div></section>';
+
+  // save
+  var save='<section class="jh-rise"><button class="btn" onclick="saveDesign()">Save my home</button></section>';
+  var footer='<footer class="jh-footer"><p>A house becomes a home in the details.</p></footer>';
+
+  el.innerHTML='<div class="jh-wrap">'+header+
+    '<div class="jh-zone">'+plate+'</div>'+
+    '<div class="jh-zone">'+model+'</div>'+
+    '<div class="jh-zone">'+famHtml+'</div>'+
+    save+footer+'</div>';
+}
+async function saveDesign(){
+  var name=(document.getElementById('jdName').value||'').trim();
+  var city=(document.getElementById('jdCity').value||'').trim();
+  if(!name){ toast('Give your home a name plate.'); return; }
+  if(!_designHomeId){ toast('Create a Home first, then design it.'); navTo('world'); return; }
+  try{ await sb.from('households').update({household_name:name, city:city||null, home_style:_designStyle}).eq('id',_designHomeId); }
+  catch(e){ toast(humanError(e,'Could not save your home.')); return; }
+  toast('Your home is set \u2728');
+  try{ renderHome(); }catch(e){}
+  navTo('home');
+}
+
 async function buildHome(){
   var body=document.getElementById('homeBody'); if(!body) return;
   var me=myPhone();
@@ -2953,7 +3043,7 @@ async function buildHome(){
   var awH='<section class="jh-rise" aria-label="Across my world"><div class="jh-aw"><p class="jh-aw-k">'+jic('sparkles')+'Across My World</p><dl class="jh-aw-grid">'+awGrid+'</dl></div></section>';
 
   window.__jhSky=skyvos; window.__jhToday=today;
-  var tiles=[ {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
+  var tiles=[ {ic:'palette',label:'Design',fn:"navTo('design')"}, {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
   var exploreH='<section class="jh-rise" aria-label="Explore">'+st('Explore')+'<div class="jh-grid4">'+tiles.map(function(t){ return '<button class="jh-tile" onclick="'+t.fn+'"><span class="jh-tile-ic">'+jic(t.ic)+'</span><span class="jh-tile-l">'+t.label+'</span></button>'; }).join('')+'</div></section>';
     var zTop='<div class="jh-zone"><div class="jh-zlabel">Right Now</div>'+heroH+exploreH+'</div>';
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
@@ -4895,7 +4985,7 @@ function searchGraph(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-homes', homes:'screen-homes', homedetail:'screen-homedetail' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-homes', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -4911,6 +5001,7 @@ function navTo(tab){
   if(tab==='timemachine') renderTimeMachine();
   if(tab==='world') renderHomes();
   if(tab==='homes') renderHomes();
+  if(tab==='design') renderDesign();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
