@@ -772,7 +772,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-hd-wx .sep{color:oklch(0.7 0.015 70/0.4)}
 /* HERO */
 .jh-hero{position:relative;overflow:hidden;border-radius:32px;box-shadow:0 20px 60px -20px rgba(80,50,20,.45)}
-.jh-hero-bg{height:416px;width:100%;background:radial-gradient(120% 80% at 70% 20%, oklch(0.55 0.12 55) 0%, oklch(0.32 0.08 40) 38%, oklch(0.18 0.04 35) 78%)}
+.jh-hero-bg{height:clamp(260px,46vh,360px);width:100%;background:radial-gradient(120% 80% at 70% 20%, oklch(0.55 0.12 55) 0%, oklch(0.32 0.08 40) 38%, oklch(0.18 0.04 35) 78%)}
 .jh-hero-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(42,26,15,.85),rgba(42,26,15,.2) 55%,transparent)}
 .jh-hero-c{position:absolute;left:0;right:0;bottom:0;padding:28px}
 .jh-hero-eye{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:rgba(246,231,207,.8)}
@@ -857,7 +857,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-aw-v{font-family:var(--jh-serif);font-size:30px;line-height:1;color:var(--jh-fg)}
 .jh-aw-l{margin:6px 0 0;font-size:14px;line-height:1.35;color:var(--jh-muted-fg)}
 /* BOTTOM NAV — v0 dark */
-#bottomNav.navv0{border-top:1px solid var(--jh-border);background:oklch(0.215 0.012 52/0.72);backdrop-filter:blur(18px);padding:8px 12px calc(env(safe-area-inset-bottom,0px) + 8px)}
+#bottomNav.navv0{border-top:1px solid var(--jh-border);background:oklch(0.165 0.012 52/0.97);backdrop-filter:blur(18px);z-index:60;padding:8px 12px calc(env(safe-area-inset-bottom,0px) + 8px)}
 #bottomNav.navv0 button{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--jh-muted-fg)}
 #bottomNav.navv0 .ni{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;transition:.2s}
 #bottomNav.navv0 .ni svg{width:18px;height:18px;stroke-width:1.75}
@@ -1383,7 +1383,7 @@ function jhTimeAgo(iso){ try{ var d=new Date(iso), s=(Date.now()-d.getTime())/10
 var JHService = {
   /** @returns {Promise<{greeting:string,name:string,homeName:string,city:string,time:string,mood:{label:string,wash:string}}>} */
   async welcome(ctx){
-    var u=ME||{}; var first=((u.name||'').split(' ')[0])||'there';
+    var u=ME||{}; var first=((u.name||'').split(' ')[0])||'there'; first=first.charAt(0).toUpperCase()+first.slice(1);
     var h=new Date().getHours();
     var greeting=h<5?'Still up':h<12?'Good Morning':h<17?'Good Afternoon':h<21?'Good Evening':'Good Night';
     var time=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
