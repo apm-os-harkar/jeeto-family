@@ -383,6 +383,39 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .reeldesc{font-size:14px;font-weight:600;line-height:1.5;opacity:.95;margin-bottom:8px}
 .reelppl{font-size:13px;font-weight:700;opacity:.95;margin-bottom:14px}
 .reelbtn{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);padding:12px 20px;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;backdrop-filter:blur(6px)}
+/* family arena — Netflix-Live */
+.arenahero{position:relative;border-radius:var(--r-2xl);overflow:hidden;padding:22px 20px 20px;color:#fff;box-shadow:var(--sh-2);margin-bottom:18px;cursor:pointer;min-height:210px;display:flex;flex-direction:column;justify-content:flex-end}
+.arenaheroglow{position:absolute;right:-15%;top:-30%;width:60%;height:130%;background:radial-gradient(circle,rgba(201,168,255,.4),transparent 60%);pointer-events:none}
+.arenaherotop{position:absolute;top:16px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center}
+.arenahost{font-size:11px;font-weight:800;opacity:.85}
+.arenachip{font-size:11px;font-weight:800;background:rgba(255,255,255,.2);padding:5px 11px;border-radius:var(--r-pill)}
+.arenaheroic{font-size:40px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));position:relative}
+.arenaherotitle{font-family:var(--font-display);font-weight:800;font-size:25px;line-height:1.1;margin:8px 0 4px;text-shadow:0 2px 10px rgba(0,0,0,.4);position:relative}
+.arenaherometa{font-size:13px;font-weight:700;opacity:.95;position:relative}
+.arenajoin{margin-top:14px;background:#fff;color:var(--ink);border:none;border-radius:var(--r-pill);padding:13px;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.25);position:relative}
+.arenaempty{cursor:default}
+.arenagcard{flex:0 0 auto;width:130px;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:15px 12px;text-align:center;box-shadow:var(--sh-1);cursor:pointer}
+.arenagic{font-size:28px}
+.arenagt{font-family:var(--font-display);font-weight:800;font-size:13.5px;margin-top:8px;line-height:1.15}
+.arenags{font-size:11px;color:var(--rani-d);font-weight:800;margin-top:4px}
+.arenaroomhead{display:flex;align-items:center;justify-content:space-between;border-radius:20px;padding:16px 18px;color:#fff}
+/* tambola */
+.tcurrent{font-family:var(--font-display);font-weight:800;font-size:54px;text-align:center;color:var(--rani-d);line-height:1;margin:10px 0}
+.tcurrent.dim{color:var(--ink3)}
+.tboard{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:6px}
+.tcell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border-radius:7px;background:var(--paper2);color:var(--ink3)}
+.tcell.on{background:var(--grad);color:#fff}
+.tcell.cur{outline:2px solid var(--rani-d);transform:scale(1.08)}
+.tticket{background:var(--grad-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:8px;margin-top:6px}
+.trow{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-bottom:4px}
+.trow:last-child{margin-bottom:0}
+.tt{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--ink)}
+.tt.empty{background:transparent;border-color:transparent}
+.tt.marked{background:var(--leaf);color:#fff;border-color:var(--leaf)}
+.claimrow{display:flex;flex-wrap:wrap;gap:8px}
+.claimbtn{background:#fff;border:1.5px solid var(--rani);color:var(--rani-d);border-radius:var(--r-pill);padding:9px 14px;font-weight:800;font-size:12.5px;font-family:inherit;cursor:pointer}
+.twinners{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.twin{font-size:11.5px;font-weight:800;color:var(--leaf);background:#E7F6EC;padding:6px 11px;border-radius:var(--r-pill)}
 .home-sec{font-family:'Baloo 2';font-weight:800;font-size:17px;margin:0 2px 11px;display:flex;align-items:center;justify-content:space-between}
 .home-sec a{font-size:12.5px;color:var(--rani-d);font-weight:800;cursor:pointer}
 .today-card{background:linear-gradient(150deg,#FFFFFF,#FFF6EC);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);margin-bottom:20px}
@@ -739,8 +772,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   </section>
 
   <section class="screen has-nav" id="screen-live">
-    <div class="gtop"><button class="gback" onclick="navTo('home')">←</button><div class="h1" style="margin:0;font-size:24px">🔴 Live Together</div></div>
-    <p class="muted" style="font-size:12.5px;margin:0 2px 14px">Real-time experiences your family joins together — and every one becomes a Moment you keep forever.</p>
+    <div class="gtop"><button class="gback" onclick="navTo('home')">←</button><div class="h1" style="margin:0;font-size:24px">🎪 Family Arena</div></div>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 14px">What\u2019s happening tonight? Play, laugh and gather live — every event becomes a family Moment.</p>
     <div id="liveBody2"></div>
     <div style="height:24px"></div>
   </section>
@@ -797,7 +830,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.6.0';
+var JEETO_VERSION='0.7.0';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -858,10 +891,10 @@ var Skyvos=(function(){
       title:'Today is perfect for '+c.ritualDueTitle,
       body:'One of your family rituals falls today. Keeping it — even quietly — is how traditions live on.',
       cta:{label:'Open the ritual', fn:"closeSkyvos();"+(c.ritualDueId?"openRitual('"+c.ritualDueId+"')":"navTo('rituals')")} });
-    if(c.online>=2) out.push({ kind:'live', icon:'🔴', weight:78,
+    if(c.online>=2) out.push({ kind:'live', icon:'🎪', weight:78,
       title:c.online+' of your family are online',
-      body:'A rare moment — you\u2019re here together. Would you like to start a Live Experience? It becomes a Moment you all keep.',
-      cta:{label:'Go Live together', fn:"closeSkyvos();navTo('live')"} });
+      body:'A rare moment — you\u2019re here together. The Arena is calling: host a Tambola or a show, and it becomes a Moment you all keep.',
+      cta:{label:'Open the Family Arena', fn:"closeSkyvos();navTo('live')"} });
     var soon=(c.celebrations||[]).filter(function(x){ var u=fmtUpcoming(x.date); return u==='Tomorrow' || u.indexOf('in ')===0; })[0];
     if(soon) out.push({ kind:'celebration', icon:soon.icon, weight:80,
       title:soon.title+' is coming',
@@ -2010,6 +2043,295 @@ async function openBridgeJourney(id, name){
   openReel(items,0,'Bridge · '+name);
 }
 
+/* ============================================================
+   FAMILY ARENA (Sprint 17) — a live family entertainment network.
+   Not a gaming page. Tambola is launch game #1. Reusable engine.
+   Skyvos hosts, never plays. Every event becomes a Moment.
+   ============================================================ */
+var ARENA_GAMES=[
+  {kind:'tambola', title:'Family Tambola', icon:'🎲', desc:'The classic housie — auto tickets, live board, winners, confetti.', game:true},
+  {kind:'quiz', title:'Quiz Night', icon:'🧠', desc:'Questions, laughter, bragging rights.', game:true},
+  {kind:'antakshari', title:'Antakshari', icon:'🎶', desc:'Sing it forward, family style.', game:true},
+  {kind:'pictionary', title:'Pictionary', icon:'🎨', desc:'Draw it, guess it, lose it laughing.', game:true},
+  {kind:'guess_photo', title:'Guess the Photo', icon:'🖼️', desc:'Whose memory is this?', game:true},
+  {kind:'story_night', title:'Story Night', icon:'📖', desc:'One family, many stories.', game:false},
+  {kind:'movie_night', title:'Movie Night', icon:'🎬', desc:'Same film, many homes, one couch.', game:false},
+  {kind:'recipe_night', title:'Recipe Night', icon:'🍲', desc:'Cook the family classics together.', game:false},
+  {kind:'festival_party', title:'Festival Party', icon:'🎉', desc:'Celebrate the festival live, together.', game:false},
+  {kind:'custom', title:'Custom Event', icon:'✨', desc:'Host anything your family loves.', game:false}
+];
+function arenaGame(kind){ return ARENA_GAMES.filter(function(g){return g.kind===kind;})[0]||ARENA_GAMES[ARENA_GAMES.length-1]; }
+function arenaGrad(kind){ var map={tambola:'#7C3AED',quiz:'#2563EB',antakshari:'#E03A7A',pictionary:'#DB2777',guess_photo:'#0EA5A5',story_night:'#C2410C',movie_night:'#4C1D95',recipe_night:'#FF7A1E',festival_party:'#FF8A1E'}; return 'linear-gradient(150deg,'+(map[kind]||'#7C3AED')+',#160F1C)'; }
+
+async function loadArena(){
+  if(!ensureSB()) return [];
+  var me=myPhone();
+  try{
+    var hostR=await sb.from('arena_events').select('*').order('created_at',{ascending:false}).limit(50);
+    var all=hostR.data||[];
+    // mine = hosted, joined, or in my circle (family-wide visibility for now)
+    var memR=await sb.from('arena_players').select('event_id').eq('member_phone',me);
+    var joined={}; (memR.data||[]).forEach(function(x){ joined[x.event_id]=1; });
+    all.forEach(function(e){ e._joined=!!joined[e.id]; });
+    return all;
+  }catch(e){ return []; }
+}
+function fmtCountdown(ts){ if(!ts) return ''; var d=new Date(ts)-Date.now(); if(d<=0) return 'now'; var mins=Math.round(d/60000); if(mins<60) return 'in '+mins+' min'; var h=Math.round(mins/60); return 'in '+h+'h'; }
+
+/* ---------- Arena home (Family TV) ---------- */
+async function renderArena(){
+  var box=document.getElementById('liveBody2'); if(!box) return;
+  box.innerHTML='<div class="sk sk-hero"></div><div class="sk sk-card"></div>';
+  if(!ME) ME=await fetchProfile(myPhone());
+  var events=await loadArena();
+  var live=events.filter(function(e){return e.status==='live'||e.status==='starting';});
+  var soon=events.filter(function(e){return e.status==='scheduled';}).sort(function(a,b){return new Date(a.scheduled_at||0)-new Date(b.scheduled_at||0);});
+  var doneToday=events.filter(function(e){ if(e.status!=='completed'||!e.ended_at) return false; var d=new Date(e.ended_at); var t=new Date(); return d.toDateString()===t.toDateString(); });
+  var hero=live[0]||soon[0];
+  var champs=await arenaChampions();
+
+  var html='';
+  // HERO
+  if(hero){
+    var pc=await arenaPlayerCount(hero.id);
+    var liveNow=(hero.status==='live'||hero.status==='starting');
+    html+='<div class="arenahero" style="background:'+arenaGrad(hero.kind)+'" onclick="openArenaEvent(\''+hero.id+'\')">'+
+      '<div class="arenaheroglow"></div>'+
+      '<div class="arenaherotop">'+(liveNow?'<span class="livedot">● LIVE NOW</span>':'<span class="arenachip">⏳ STARTING SOON</span>')+'<span class="arenahost">🤖 Hosted with Skyvos</span></div>'+
+      '<div class="arenaheroic">'+(arenaGame(hero.kind).icon)+'</div>'+
+      '<div class="arenaherotitle">'+escapeHtml(hero.title)+'</div>'+
+      '<div class="arenaherometa">'+pc+' '+(pc===1?'player':'players')+(hero.scheduled_at&&!liveNow?(' · starts '+fmtCountdown(hero.scheduled_at)):'')+'</div>'+
+      '<button class="arenajoin">'+(liveNow?'JOIN NOW':'REMIND ME')+'</button>'+
+    '</div>';
+  } else {
+    html+='<div class="arenahero arenaempty" style="background:linear-gradient(150deg,#3D2A5C,#160F1C)"><div class="arenaheroglow"></div><div class="arenaheroic">🎪</div><div class="arenaherotitle">Nothing live tonight… yet</div><div class="arenaherometa">Host a game and your family gathers in minutes.</div><button class="arenajoin" onclick="openArenaCreate()">HOST AN EVENT</button></div>';
+  }
+
+  // STARTING SOON
+  if(soon.length){ html+='<div class="home-sec" style="margin-top:22px">⏳ Starting Soon</div><div class="tm-row">'+soon.slice(0,6).map(function(e){ return arenaMini(e); }).join('')+'</div>'; }
+
+  // GAMES
+  html+='<div class="home-sec" style="margin-top:22px">🎮 Host a Game</div><div class="tm-row">'+ARENA_GAMES.filter(function(g){return g.game;}).map(function(g){ return arenaGameCard(g); }).join('')+'</div>';
+
+  // FAMILY SHOWS (reuse live experiences)
+  html+='<div class="home-sec" style="margin-top:22px">🎙 Family Shows</div><div class="tm-row">'+(typeof EXP_TEMPLATES!=='undefined'?EXP_TEMPLATES.slice(0,8).map(function(t){ return '<div class="arenagcard" onclick="launchExperience(\''+t.kind+'\')"><div class="arenagic">'+t.icon+'</div><div class="arenagt">'+escapeHtml(t.title)+'</div></div>'; }).join(''):'')+'</div>';
+
+  // COMPLETED TODAY
+  if(doneToday.length){ html+='<div class="home-sec" style="margin-top:22px">🏆 Completed Today</div>'+doneToday.map(function(e){ return arenaDoneRow(e); }).join(''); }
+
+  // CHAMPIONS (emotional recognition)
+  if(champs.length){ html+='<div class="home-sec" style="margin-top:22px">👑 Family Champions</div><div class="cele" style="padding:4px 16px">'+champs.map(function(c){ return '<div class="wall-row"><div class="wall-ic">'+c.icon+'</div><div style="flex:1;min-width:0"><div class="wall-t"><b>'+escapeHtml(c.name)+'</b> · '+escapeHtml(c.title)+'</div><div class="wall-d">'+c.count+' win'+(c.count>1?'s':'')+'</div></div></div>'; }).join('')+'</div>'; }
+
+  html+='<div style="height:10px"></div><button class="btn" onclick="openArenaCreate()">＋ Host an event</button>';
+  box.innerHTML=html;
+}
+async function arenaPlayerCount(id){ try{ var r=await sb.from('arena_players').select('id',{count:'exact',head:true}).eq('event_id',id); return r.count||0; }catch(e){ return 0; } }
+function arenaMini(e){ return '<div class="arenagcard" onclick="openArenaEvent(\''+e.id+'\')"><div class="arenagic">'+arenaGame(e.kind).icon+'</div><div class="arenagt">'+escapeHtml(e.title)+'</div><div class="arenags">'+(e.scheduled_at?fmtCountdown(e.scheduled_at):'soon')+'</div></div>'; }
+function arenaGameCard(g){ return '<div class="arenagcard" onclick="createArenaEvent(\''+g.kind+'\')"><div class="arenagic">'+g.icon+'</div><div class="arenagt">'+escapeHtml(g.title)+'</div><div class="arenags">Host live →</div></div>'; }
+function arenaDoneRow(e){ return '<div class="task"><div style="font-size:22px">'+arenaGame(e.kind).icon+'</div><div style="flex:1;min-width:0"><div class="tk-t">'+escapeHtml(e.title)+'</div><div class="tk-m">Completed'+(e.moment_id?' · became a Moment':'')+'</div></div>'+(e.moment_id?'<span class="qstart" onclick="reliveMoment(\''+e.moment_id+'\')">View →</span>':'')+'</div>'; }
+async function arenaChampions(){
+  try{
+    var r=await sb.from('arena_results').select('member_phone,pattern').eq('pattern','full_house').limit(200);
+    var rows=r.data||[]; if(!rows.length) return [];
+    var counts={}; rows.forEach(function(x){ counts[x.member_phone]=(counts[x.member_phone]||0)+1; });
+    var top=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a];}).slice(0,3);
+    var profs=await fetchProfiles(top);
+    return top.map(function(p){ return {name:(profs[p]&&profs[p].name)||p, title:'Tambola Champion', icon:'🎲', count:counts[p]}; });
+  }catch(e){ return []; }
+}
+
+/* ---------- create / schedule ---------- */
+function createArenaEvent(kind){ if(kind==='tambola'){ launchTambola(); } else { openArenaCreate(kind); } }
+async function openArenaCreate(kind){
+  var g=arenaGame(kind||'custom');
+  var ctx=await myCircleContext();
+  var hOpts=ctx.households.map(function(h){ return '<option value="'+escapeAttr(h.h.id)+'">'+escapeHtml(h.h.household_name)+'</option>'; }).join('');
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">'+g.icon+' Host '+escapeHtml(g.title)+'</div>'+
+    '<div class="field-label">Title</div><input class="fi" id="aeTitle" value="'+escapeAttr(g.title)+(kind?'':' ')+'" style="margin-bottom:12px">'+
+    '<div class="field-label">A warm line (optional)</div><input class="fi" id="aeDesc" value="'+escapeAttr(g.desc||'')+'" style="margin-bottom:12px">'+
+    (hOpts?'<div class="field-label">Household (optional)</div><select class="fi" id="aeHH" style="margin-bottom:12px"><option value="">No specific household</option>'+hOpts+'</select>':'<input type="hidden" id="aeHH" value="">')+
+    '<div class="field-label">Start</div><select class="fi" id="aeWhen" style="margin-bottom:14px"><option value="now">Right now (go live)</option><option value="schedule">Schedule for later</option></select>'+
+    '<input class="fi" id="aeAt" type="datetime-local" style="margin-bottom:14px;display:none" onchange="">'+
+    '<button class="btn" onclick="submitArena(\''+g.kind+'\')">Host '+escapeHtml(g.title)+'</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show');
+  var wsel=document.getElementById('aeWhen'); if(wsel) wsel.onchange=function(){ document.getElementById('aeAt').style.display=(this.value==='schedule')?'block':'none'; };
+}
+async function submitArena(kind){
+  var title=(document.getElementById('aeTitle').value||'').trim()||arenaGame(kind).title;
+  var when=(document.getElementById('aeWhen')||{}).value||'now';
+  var at=(document.getElementById('aeAt')||{}).value||null;
+  var rec={ kind:kind, title:title, description:(document.getElementById('aeDesc').value||'').trim(),
+    host_phone:myPhone(), household_id:(document.getElementById('aeHH')||{}).value||null,
+    status:(when==='schedule'?'scheduled':'live'), scheduled_at:(when==='schedule'&&at?new Date(at).toISOString():null), started_at:(when==='schedule'?null:new Date().toISOString()) };
+  var r=await sb.from('arena_events').insert(rec).select().single();
+  if(r.error){ toast(humanError(r.error,'Could not host the event.')); return; }
+  await sb.from('arena_players').insert({event_id:r.data.id, member_phone:myPhone(), role:'host'});
+  closeHomeModal();
+  if(when==='schedule'){ toast('Scheduled 🎪 — your family will see it in the Arena.'); renderArena(); }
+  else { openArenaEvent(r.data.id); }
+}
+function openArenaEvent(id){ sb.from('arena_events').select('kind').eq('id',id).single().then(function(r){ if(r.data&&r.data.kind==='tambola') openTambola(id); else openArena(id); }); }
+
+/* ---------- Tambola ---------- */
+function genTicket(){
+  var ranges=[[1,9],[10,19],[20,29],[30,39],[40,49],[50,59],[60,69],[70,79],[80,90]];
+  for(var attempt=0;attempt<300;attempt++){
+    var counts=[1,1,1,1,1,1,1,1,1]; var rem=6;
+    while(rem>0){ var c=Math.floor(Math.random()*9); if(counts[c]<3){ counts[c]++; rem--; } }
+    var cap=[5,5,5]; var grid=[[],[],[]]; for(var r=0;r<3;r++){ for(var k=0;k<9;k++) grid[r][k]=null; }
+    var ok=true; var order=[0,1,2,3,4,5,6,7,8].sort(function(){return Math.random()-0.5;}).sort(function(a,b){return counts[b]-counts[a];});
+    for(var oi=0;oi<order.length;oi++){ var col=order[oi]; var need=counts[col];
+      var rowsByCap=[0,1,2].filter(function(rr){return cap[rr]>0;}).sort(function(a,b){return cap[b]-cap[a]||(Math.random()-0.5);});
+      if(rowsByCap.length<need){ ok=false; break; }
+      var chosen=rowsByCap.slice(0,need);
+      var lo=ranges[col][0], hi=ranges[col][1]; var pool=[]; for(var n=lo;n<=hi;n++) pool.push(n); pool.sort(function(){return Math.random()-0.5;});
+      var nums=pool.slice(0,need).sort(function(a,b){return a-b;});
+      chosen.sort(function(a,b){return a-b;}).forEach(function(rr,i){ grid[rr][col]=nums[i]; cap[rr]--; });
+    }
+    if(ok && cap[0]===0 && cap[1]===0 && cap[2]===0) return grid;
+  }
+  return [[1,null,null,null,null,null,null,null,80],[null,11,null,33,null,55,null,77,null],[null,null,22,null,44,null,66,null,88]];
+}
+async function launchTambola(){
+  var ctx=await myCircleContext();
+  var rec={ kind:'tambola', title:'Family Tambola Night', description:'Auto tickets, live board, winners and confetti.', host_phone:myPhone(), status:'live', started_at:new Date().toISOString(), called_numbers:[] };
+  if(ctx.households.length) rec.household_id=ctx.households[0].h.id;
+  var r=await sb.from('arena_events').insert(rec).select().single();
+  if(r.error){ toast(humanError(r.error,'Could not start Tambola.')); return; }
+  await sb.from('arena_players').insert({event_id:r.data.id, member_phone:myPhone(), role:'host', ticket:genTicket()});
+  toast('Tambola is live 🎲'); openTambola(r.data.id);
+}
+var ARENA_CH=null, ARENA_POLL=null, ARENA_ID=null, AUTO_CALL=null;
+function subscribeArena(id){
+  unsubscribeArena(); ARENA_ID=id;
+  try{
+    ARENA_CH=sb.channel('arena-'+id)
+      .on('postgres_changes',{event:'*',schema:'public',table:'arena_events',filter:'id=eq.'+id}, function(){ if(ARENA_ID===id) buildTambola(id); })
+      .on('postgres_changes',{event:'*',schema:'public',table:'arena_players',filter:'event_id=eq.'+id}, function(){ if(ARENA_ID===id) buildTambola(id); })
+      .on('postgres_changes',{event:'*',schema:'public',table:'arena_results',filter:'event_id=eq.'+id}, function(){ if(ARENA_ID===id) buildTambola(id); })
+      .subscribe();
+  }catch(e){}
+  ARENA_POLL=setInterval(function(){ if(ARENA_ID===id) buildTambola(id); }, 4000);
+}
+function unsubscribeArena(){ try{ if(ARENA_CH) sb.removeChannel(ARENA_CH); }catch(e){} ARENA_CH=null; if(ARENA_POLL){ clearInterval(ARENA_POLL); ARENA_POLL=null; } if(AUTO_CALL){ clearInterval(AUTO_CALL); AUTO_CALL=null; } ARENA_ID=null; }
+function closeArena(){ unsubscribeArena(); closeHomeModal(); renderArena(); }
+async function openTambola(id){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:94vh;overflow:auto" id="tambShell"><div class="modal-grab"></div><div id="tambRoom"><div class="sk sk-card"></div></div></div>';
+  m.classList.add('show'); subscribeArena(id);
+  // ensure I'm a player with a ticket
+  try{ var mine=await sb.from('arena_players').select('id').eq('event_id',id).eq('member_phone',myPhone()).maybeSingle(); if(!mine.data){ await sb.from('arena_players').insert({event_id:id, member_phone:myPhone(), role:'player', ticket:genTicket()}); } }catch(e){}
+  buildTambola(id);
+}
+async function buildTambola(id){
+  var room=document.getElementById('tambRoom'); if(!room||ARENA_ID!==id) return;
+  var er=await sb.from('arena_events').select('*').eq('id',id).single(); var e=er.data; if(!e) return;
+  var pr=await sb.from('arena_players').select('*').eq('event_id',id); var players=pr.data||[];
+  var rr=await sb.from('arena_results').select('*').eq('event_id',id); var results=rr.data||[];
+  var me=myPhone(); var isHost=(e.host_phone===me); var done=e.status==='completed';
+  var profs=await fetchProfiles(players.map(function(p){return p.member_phone;}).concat([e.host_phone]));
+  var called=e.called_numbers||[]; var mine=players.filter(function(p){return p.member_phone===me;})[0];
+  var calledSet={}; called.forEach(function(n){ calledSet[n]=1; });
+
+  // board 1..90
+  var board='<div class="tboard">'; for(var n=1;n<=90;n++){ board+='<span class="tcell'+(calledSet[n]?' on':'')+(e.current_number===n?' cur':'')+'">'+n+'</span>'; } board+='</div>';
+  var current = e.current_number ? '<div class="tcurrent">'+e.current_number+'</div>' : '<div class="tcurrent dim">—</div>';
+
+  // my ticket
+  var ticket=''; if(mine&&mine.ticket){ ticket='<div class="tticket">'+mine.ticket.map(function(row){ return '<div class="trow">'+row.map(function(c){ return '<span class="tt'+(c==null?' empty':'')+(c!=null&&calledSet[c]?' marked':'')+'">'+(c==null?'':c)+'</span>'; }).join('')+'</div>'; }).join('')+'</div>'; }
+
+  // winners
+  var resHtml = results.length ? '<div class="twinners">'+results.map(function(x){ var u=profs[x.member_phone]||{}; return '<span class="twin">'+patternLabel(x.pattern)+' · '+escapeHtml((u.name||x.member_phone))+'</span>'; }).join('')+'</div>' : '';
+
+  // claims (if I have a ticket and not done)
+  var claims=''; if(mine&&mine.ticket&&!done){
+    var have={}; results.forEach(function(x){ have[x.pattern]=1; });
+    var btns=[['early_five','Early Five'],['top_line','Top Line'],['middle_line','Middle Line'],['bottom_line','Bottom Line'],['full_house','Full House']]
+      .filter(function(p){ return !have[p[0]]; })
+      .map(function(p){ return '<button class="claimbtn" onclick="claimTambola(\''+id+'\',\''+p[0]+'\')">'+p[1]+'</button>'; }).join('');
+    if(btns) claims='<div class="field-label" style="margin-top:12px">Claim when ready</div><div class="claimrow">'+btns+'</div>';
+  }
+
+  var hostCtrl=''; if(isHost && !done){
+    hostCtrl='<div class="thost"><button class="btn" onclick="callTambola(\''+id+'\')">📣 Call next number</button>'+
+      '<div style="height:8px"></div><button class="btn btn-soft" id="autoBtn" onclick="toggleAutoCall(\''+id+'\')">'+(AUTO_CALL?'⏸ Pause auto-call':'▶ Auto-call every 4s')+'</button>'+
+      '<div style="height:8px"></div><button class="btn btn-soft" onclick="completeArena(\''+id+'\')">End & keep as Moment ✓</button></div>';
+  }
+  var doneCtrl = done ? (e.moment_id?'<button class="btn" onclick="closeArena();reliveMoment(\''+e.moment_id+'\')">View the Moment ❤️</button>':'') : '';
+
+  room.innerHTML='<div class="arenaroomhead" style="background:'+arenaGrad('tambola')+'"><span class="arenaheroic" style="font-size:30px">🎲</span>'+(done?'<span class="qreward">✨ Moment</span>':'<span class="livedot">● LIVE</span>')+'</div>'+
+    '<div class="modal-q" style="font-size:21px;text-align:center;margin-top:10px">'+escapeHtml(e.title)+'</div>'+
+    current+
+    '<div class="field-label" style="margin-top:10px">In the room · '+players.length+'</div><div class="liveavs">'+players.map(function(p){ var u=profs[p.member_phone]||{}; return '<div class="liveav"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span>'+(p.member_phone===e.host_phone?'<span class="livereact">🤖</span>':'')+'</div>'; }).join('')+'</div>'+
+    resHtml+
+    '<div class="field-label" style="margin-top:8px">Numbers called · '+called.length+'/90</div>'+board+
+    (ticket?'<div class="field-label" style="margin-top:12px">Your ticket</div>'+ticket:'')+
+    claims+
+    '<div style="margin-top:14px">'+hostCtrl+doneCtrl+'<div style="height:8px"></div><button class="btn btn-soft" onclick="closeArena()">'+(done?'Close':'Leave room')+'</button></div>'+
+    '<div class="sky-note" style="text-align:center;color:var(--ink3);margin-top:10px">🤖 Skyvos hosts. Family chat & voice coming to the Arena.</div>';
+}
+function patternLabel(p){ return {early_five:'Early Five',top_line:'Top Line',middle_line:'Middle Line',bottom_line:'Bottom Line',full_house:'Full House',winner:'Winner'}[p]||p; }
+async function callTambola(id){ var r=await sb.rpc('call_tambola_number',{p_event:id}); if(r.error){ toast(humanError(r.error,'Could not call.')); return; } if(r.data==null){ toast('All 90 numbers are out!'); } buildTambola(id); }
+function toggleAutoCall(id){
+  if(AUTO_CALL){ clearInterval(AUTO_CALL); AUTO_CALL=null; }
+  else { AUTO_CALL=setInterval(async function(){ var r=await sb.rpc('call_tambola_number',{p_event:id}); if(r.data==null){ clearInterval(AUTO_CALL); AUTO_CALL=null; toast('All numbers called!'); } }, 4000); }
+  buildTambola(id);
+}
+async function claimTambola(id, pattern){
+  var er=await sb.from('arena_events').select('called_numbers').eq('id',id).single();
+  var called=(er.data&&er.data.called_numbers)||[]; var cs={}; called.forEach(function(n){cs[n]=1;});
+  var pr=await sb.from('arena_players').select('ticket').eq('event_id',id).eq('member_phone',myPhone()).maybeSingle();
+  var grid=pr.data&&pr.data.ticket; if(!grid){ toast('No ticket found.'); return; }
+  var nums=[]; grid.forEach(function(row){ row.forEach(function(c){ if(c!=null) nums.push(c); }); });
+  var ok=false;
+  if(pattern==='early_five'){ ok=nums.filter(function(n){return cs[n];}).length>=5; }
+  else if(pattern==='full_house'){ ok=nums.every(function(n){return cs[n];}); }
+  else { var ri={top_line:0,middle_line:1,bottom_line:2}[pattern]; var rowNums=grid[ri].filter(function(c){return c!=null;}); ok=rowNums.length>0 && rowNums.every(function(n){return cs[n];}); }
+  if(!ok){ toast('Not yet — keep marking! 🎲'); return; }
+  var ins=await sb.from('arena_results').insert({event_id:id, member_phone:myPhone(), pattern:pattern});
+  if(ins.error){ toast('Someone just claimed '+patternLabel(pattern)+'!'); buildTambola(id); return; }
+  await sb.from('arena_history').insert({event_id:id, member_phone:myPhone(), kind:'win', payload:{pattern:pattern}});
+  var c=document.getElementById('celebrate'); if(c){ c.className='celebrate show'; c.innerHTML='<div class="box"><h2>🎉 '+patternLabel(pattern)+'!</h2><div class="plus">'+escapeHtml(((ME&&ME.name)||'You').split(' ')[0])+' got it!</div><div class="big-heart">🏆</div><div class="reward-line">Tambola glory — no prize, just bragging rights</div></div>'; setTimeout(function(){ c.className='celebrate'; }, 2600); }
+  buildTambola(id);
+}
+async function completeArena(id){
+  if(AUTO_CALL){ clearInterval(AUTO_CALL); AUTO_CALL=null; }
+  var r=await sb.rpc('complete_arena',{p_event:id, p_phone:myPhone()});
+  if(r.error){ toast(humanError(r.error,'Could not finish.')); return; }
+  var res=r.data||{}; var c=document.getElementById('celebrate');
+  if(c){ c.className='celebrate show'; c.innerHTML='<div class="box"><h2>🎪 A night to remember</h2><div class="plus">'+escapeHtml(res.title||'Arena event')+'</div><div class="big-heart">❤️</div><div class="reward-line">Saved to your family forever</div></div>'; setTimeout(function(){ c.className='celebrate'; }, 2600); }
+  setTimeout(function(){ buildTambola(id); }, 200);
+}
+
+/* ---------- generic arena room (non-tambola games & shows) ---------- */
+async function openArena(id){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:92vh;overflow:auto"><div class="modal-grab"></div><div id="tambRoom"><div class="sk sk-card"></div></div></div>';
+  m.classList.add('show'); subscribeArena(id);
+  try{ var mine=await sb.from('arena_players').select('id').eq('event_id',id).eq('member_phone',myPhone()).maybeSingle(); if(!mine.data) await sb.from('arena_players').insert({event_id:id, member_phone:myPhone(), role:'player'}); }catch(e){}
+  buildArenaGeneric(id);
+}
+async function buildArenaGeneric(id){
+  var room=document.getElementById('tambRoom'); if(!room||ARENA_ID!==id) return;
+  var er=await sb.from('arena_events').select('*').eq('id',id).single(); var e=er.data; if(!e) return;
+  var pr=await sb.from('arena_players').select('*').eq('event_id',id); var players=pr.data||[];
+  var profs=await fetchProfiles(players.map(function(p){return p.member_phone;}).concat([e.host_phone]));
+  var me=myPhone(); var isHost=(e.host_phone===me); var done=e.status==='completed';
+  var avs=players.map(function(p){ var u=profs[p.member_phone]||{}; return '<div class="liveav"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span>'+(p.reaction?'<span class="livereact">'+p.reaction+'</span>':'')+'</div>'; }).join('');
+  var react = !done ? '<div class="reactbar">'+['❤️','😂','👏','🎉','🥹'].map(function(em){ return '<button class="reactbtn" onclick="arenaReact(\''+id+'\',\''+em+'\')">'+em+'</button>'; }).join('')+'</div>' : '';
+  var ctrl=''; if(!done){ if(isHost) ctrl+='<button class="btn" onclick="completeArena(\''+id+'\')">End & keep as Moment ✓</button><div style="height:8px"></div>'; ctrl+='<button class="btn btn-soft" onclick="closeArena()">Leave room</button>'; }
+  else ctrl=(e.moment_id?'<button class="btn" onclick="closeArena();reliveMoment(\''+e.moment_id+'\')">View the Moment ❤️</button><div style="height:8px"></div>':'')+'<button class="btn btn-soft" onclick="closeArena()">Close</button>';
+  room.innerHTML='<div class="arenaroomhead" style="background:'+arenaGrad(e.kind)+'"><span class="arenaheroic" style="font-size:30px">'+arenaGame(e.kind).icon+'</span>'+(done?'<span class="qreward">✨ Moment</span>':'<span class="livedot">● LIVE</span>')+'</div>'+
+    '<div class="modal-q" style="font-size:21px;text-align:center;margin-top:10px">'+escapeHtml(e.title)+'</div>'+
+    (e.description?'<p class="muted" style="text-align:center;font-size:13.5px;margin:6px 2px 12px">'+escapeHtml(e.description)+'</p>':'')+
+    '<div class="field-label">In the room · '+players.length+'</div><div class="liveavs">'+avs+'</div>'+react+
+    '<div style="margin-top:14px">'+ctrl+'</div><div class="sky-note" style="text-align:center;color:var(--ink3);margin-top:10px">🤖 Skyvos hosts this room.</div>';
+}
+async function arenaReact(id, em){ await sb.from('arena_players').upsert({event_id:id, member_phone:myPhone(), reaction:em},{onConflict:'event_id,member_phone'}); flyHeart&&flyHeart(); buildArenaGeneric(id); }
+
+
 
 
 
@@ -2098,7 +2420,7 @@ async function buildHome(){
   html+='<div class="qa-row">'+
     qa('❤️','Capture','openCapture()')+
     qa('🕰️','Memories','navTo(\'timemachine\')')+
-    qa('🔴','Live','navTo(\'live\')')+
+    qa('🎪','Arena','navTo(\'live\')')+
     qa('🧭','Quests','navTo(\'quests\')')+
     qa('🕯️','Rituals','navTo(\'rituals\')')+
     qa('👋','Welcome','goAddFamily()')+
@@ -2257,7 +2579,7 @@ async function openTaskForm(){
     '<button class="btn" onclick="submitTask()">Add task</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   m.classList.add('show');
 }
-function closeHomeModal(){ try{ if(typeof unsubscribeLive==='function') unsubscribeLive(); }catch(e){} document.getElementById('homeModal').classList.remove('show'); }
+function closeHomeModal(){ try{ if(typeof unsubscribeLive==='function') unsubscribeLive(); }catch(e){} try{ if(typeof unsubscribeArena==='function') unsubscribeArena(); }catch(e){} document.getElementById('homeModal').classList.remove('show'); }
 async function submitTask(){
   var title=(document.getElementById('tkTitle').value||'').trim(); if(!title){ toast('Enter a task.'); return; }
   var hh=(document.getElementById('tkHH')||{}).value||null;
@@ -3687,7 +4009,7 @@ function navTo(tab){
   if(tab==='calendar') renderCalendar();
   if(tab==='quests') renderQuests();
   if(tab==='rituals') renderRituals();
-  if(tab==='live') renderLive();
+  if(tab==='live') renderArena();
   if(tab==='timemachine') renderTimeMachine();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
