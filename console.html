@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jeeto · Founder Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#FBF7F2;--card:#fff;--ink:#241826;--ink2:#6E5F6A;--ink3:#A99BA4;--line:#EFE7DC;
+    --saffron:#FF8A1E;--rani:#E03A7A;--rani-d:#C42466;--violet:#7C3AED;--leaf:#2BA84A;--blue:#2563EB;
+    --r:18px;--sh:0 4px 16px rgba(36,24,38,.06);--fd:'Baloo 2',sans-serif;--fb:'Plus Jakarta Sans',sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--fb);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:0 auto;padding:22px 18px 60px}
+  /* gate */
+  #gate{position:fixed;inset:0;background:linear-gradient(160deg,#241826,#3E2747 55%,#7C3AED);display:flex;align-items:center;justify-content:center;z-index:50;padding:24px}
+  .gate-card{background:#fff;border-radius:24px;padding:30px 26px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .gate-card h1{font-family:var(--fd);font-size:24px;margin-bottom:4px}
+  .gate-card p{color:var(--ink2);font-size:13px;margin-bottom:18px}
+  .gate-card input{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:14px;font-size:16px;font-family:inherit;margin-bottom:12px;outline:none}
+  .gate-card input:focus{border-color:var(--rani)}
+  .gate-card button{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer}
+  .gate-err{color:var(--rani-d);font-size:13px;font-weight:700;min-height:18px;margin-top:8px}
+  .gate-note{font-size:11px;color:var(--ink3);margin-top:16px;line-height:1.5}
+  /* header */
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  header h1{font-family:var(--fd);font-size:26px}
+  header .sub{color:var(--ink2);font-size:13px;font-weight:600}
+  .btn{padding:10px 16px;border:none;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:13px;font-family:inherit;cursor:pointer}
+  .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .upd{font-size:12px;color:var(--ink3);font-weight:600}
+  /* north star */
+  .north{background:linear-gradient(150deg,#2A1B33,#4A2B52 55%,#7C3AED);color:#fff;border-radius:24px;padding:24px 26px;margin:18px 0 8px;position:relative;overflow:hidden}
+  .north::after{content:"";position:absolute;top:-40%;right:-20%;width:60%;height:160%;background:radial-gradient(circle,rgba(255,138,30,.3),transparent 60%)}
+  .north .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;opacity:.85;text-transform:uppercase;position:relative}
+  .north .big{font-family:var(--fd);font-weight:800;font-size:58px;line-height:1;margin:6px 0;position:relative}
+  .north .desc{font-size:13px;font-weight:600;opacity:.92;position:relative;max-width:560px}
+  .north .signals{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;position:relative}
+  .north .signals span{font-size:12.5px;font-weight:700;opacity:.95}
+  /* sections */
+  .sec{margin-top:26px}
+  .sec-h{font-family:var(--fd);font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+  .card .ct{font-size:12px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.4px}
+  .card .cv{font-family:var(--fd);font-weight:800;font-size:32px;line-height:1.1;margin-top:6px}
+  .card .cs{font-size:12px;font-weight:700;color:var(--leaf);margin-top:3px}
+  .card.muted .cv{color:var(--ink3);font-size:20px}
+  .card.muted .note{font-size:11px;color:var(--ink3);margin-top:6px;line-height:1.5}
+  .accent-g .cv{color:var(--leaf)} .accent-r .cv{color:var(--rani-d)} .accent-v .cv{color:var(--violet)} .accent-b .cv{color:var(--blue)} .accent-o .cv{color:var(--saffron)}
+  /* charts */
+  .charts{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:4px}
+  .chart-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 12px;box-shadow:var(--sh)}
+  .chart-card .ch-t{font-size:13px;font-weight:800;color:var(--ink2)}
+  .chart-card .ch-tot{font-family:var(--fd);font-weight:800;font-size:24px;margin:2px 0 8px}
+  .chart{width:100%;height:110px;display:block}
+  .chart-x{display:flex;justify-content:space-between;margin-top:5px;font-size:9px;color:var(--ink3);font-weight:700}
+  /* tables */
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  th,td{text-align:left;padding:11px 13px;font-size:13px;border-bottom:1px solid var(--line)}
+  th{background:#FAF4EC;font-weight:800;color:var(--ink2);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800}
+  .pill.r{background:#FCE7F0;color:var(--rani-d)} .pill.q{background:#F3ECFF;color:var(--violet)} .pill.g{background:#E7F6EC;color:var(--leaf)}
+  .disc{margin-top:30px;background:#FFF4E6;border:1px solid #FFE0B8;border-radius:14px;padding:14px 16px;font-size:12.5px;color:#9A5B00;line-height:1.6}
+  .loading{color:var(--ink3);font-size:14px;padding:20px;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div style="font-size:40px">🌳</div>
+    <h1>Founder Console</h1>
+    <p>Jeeto — admin only</p>
+    <input id="pass" type="password" placeholder="Console passcode" onkeydown="if(event.key==='Enter')unlock()">
+    <button onclick="unlock()">Unlock</button>
+    <div class="gate-err" id="gateErr"></div>
+    <div class="gate-note">This passcode keeps the console out of casual view. It is <b>not</b> full security — anyone with this file could read the anon key. Real admin protection needs Supabase RLS + an admin role (see security hardening).</div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <div>
+      <h1>🌳 Jeeto Founder Console</h1>
+      <div class="sub">Every Life. Every Relationship. Every Generation.</div>
+    </div>
+    <div style="text-align:right">
+      <button class="btn" onclick="loadAll()">↻ Refresh</button>
+      <div class="upd" id="updated"></div>
+    </div>
+  </header>
+
+  <div class="north" id="northCard">
+    <div class="lbl">★ North Star · Families That Felt Alive Today</div>
+    <div class="big" id="nsBig">…</div>
+    <div class="desc">Households that shared a Moment, gathered in the Arena, or lived an Experience today — a family that <i>felt</i> something together.</div>
+    <div class="signals" id="nsSignals"></div>
+  </div>
+
+  <div class="sec"><div class="sec-h">📈 Growth</div><div class="grid" id="growth"><div class="loading">Loading…</div></div></div>
+  <div class="sec"><div class="sec-h">📊 Trends (last 14 days)</div><div class="charts" id="trends"></div></div>
+  <div class="sec"><div class="sec-h">💞 Engagement</div><div class="grid" id="engagement"></div></div>
+  <div class="sec"><div class="sec-h">🩺 Relationship Health</div><div class="grid" id="relhealth"></div></div>
+  <div class="sec"><div class="sec-h">🛠️ Product Health</div><div class="grid" id="prodhealth"></div></div>
+  <div class="sec"><div class="sec-h">🛡️ Trust & Safety</div><div class="grid" id="trust"></div></div>
+
+  <div class="sec"><div class="sec-h">🌱 Recent Lives</div><div id="tblSignups"></div></div>
+  <div class="sec"><div class="sec-h">🤫 Quiet / changed relationships</div><div id="tblQuiet"></div></div>
+
+  <div class="disc" id="disc"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ===== CONFIG — founder edits these ===== */
+var SB_URL='https://ebimsihjzwpmdtzqopmz.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaW1zaWhqendwbWR0enFvcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjQ2NzIsImV4cCI6MjA5NjYwMDY3Mn0.QgXTRYH384R0EY-rkCBhW5gmuCizKHY_akLcembBEMA';
+var CONSOLE_PASSCODE='jeeto-founder-2026';   // 🔴 CHANGE THIS before deploying
+/* ======================================== */
+
+var sb=null;
+function unlock(){
+  var v=(document.getElementById('pass').value||'').trim();
+  if(v!==CONSOLE_PASSCODE){ document.getElementById('gateErr').textContent='Wrong passcode.'; return; }
+  try{ sessionStorage.setItem('jeeto_console_ok','1'); }catch(e){}
+  document.getElementById('gate').style.display='none';
+  document.getElementById('app').style.display='block';
+  boot();
+}
+(function(){ try{ if(sessionStorage.getItem('jeeto_console_ok')==='1'){ document.getElementById('gate').style.display='none'; document.getElementById('app').style.display='block'; boot(); } }catch(e){} })();
+
+function boot(){ if(!sb){ try{ sb=supabase.createClient(SB_URL,SB_KEY); }catch(e){} } loadAll(); }
+
+/* ---- helpers ---- */
+function startToday(){ var d=new Date(); d.setHours(0,0,0,0); return d.toISOString(); }
+function daysAgo(n){ var d=new Date(); d.setDate(d.getDate()-n); return d.toISOString(); }
+async function cnt(table, build){ try{ var q=sb.from(table).select('*',{count:'exact',head:true}); if(build) q=build(q); var r=await q; if(r.error) return null; return r.count||0; }catch(e){ return null; } }
+function fmt(n){ return n==null?'—':(''+n).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function esc(s){ return (''+(s==null?'':s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+function card(title,val,opts){ opts=opts||{}; var cls='card '+(opts.accent||'')+(opts.muted?' muted':'');
+  return '<div class="'+cls+'"><div class="ct">'+esc(title)+'</div><div class="cv">'+(opts.muted?esc(val):fmt(val))+'</div>'+
+    (opts.sub?'<div class="cs">'+esc(opts.sub)+'</div>':'')+(opts.note?'<div class="note">'+esc(opts.note)+'</div>':'')+'</div>'; }
+
+/* ---- per-day series chart (real data) ---- */
+async function series(table, dateCol, days){
+  try{
+    var r=await sb.from(table).select(dateCol).gte(dateCol, daysAgo(days-1)).limit(9000);
+    if(r.error) return null;
+    var buckets={}, order=[];
+    for(var i=days-1;i>=0;i--){ var d=new Date(); d.setDate(d.getDate()-i); var k=d.toISOString().slice(0,10); buckets[k]=0; order.push(k); }
+    (r.data||[]).forEach(function(x){ var k=(''+x[dateCol]).slice(0,10); if(k in buckets) buckets[k]++; });
+    return order.map(function(k){ return {label:k.slice(5), value:buckets[k]}; });
+  }catch(e){ return null; }
+}
+function barChart(title, data, color){
+  if(!data){ return '<div class="chart-card"><div class="ch-t">'+esc(title)+'</div><div class="loading">No data</div></div>'; }
+  var max=1; data.forEach(function(d){ if(d.value>max) max=d.value; });
+  var total=data.reduce(function(a,d){return a+d.value;},0);
+  var n=data.length, bw=100/n;
+  var bars=data.map(function(d,i){ var h=(d.value/max)*100; return '<rect x="'+(i*bw+bw*0.16).toFixed(2)+'" y="'+(100-h).toFixed(2)+'" width="'+(bw*0.68).toFixed(2)+'" height="'+h.toFixed(2)+'" rx="0.8" fill="'+color+'"></rect>'; }).join('');
+  var xs=data.map(function(d,i){ return (i===0||i===n-1||i===Math.floor(n/2))?'<span>'+d.label+'</span>':'<span></span>'; }).join('');
+  return '<div class="chart-card"><div class="ch-t">'+esc(title)+'</div><div class="ch-tot">'+fmt(total)+'</div>'+
+    '<svg class="chart" viewBox="0 0 100 100" preserveAspectRatio="none">'+bars+'</svg><div class="chart-x">'+xs+'</div></div>';
+}
+
+/* ---- North Star ---- */
+async function northStar(){
+  var today=startToday(), hh={};
+  try{
+    var mt=await sb.from('moments').select('id').gte('created_at',today).limit(3000);
+    var mids=(mt.data||[]).map(function(x){return x.id;});
+    if(mids.length){ var mh=await sb.from('moment_households').select('household_id').in('moment_id',mids); (mh.data||[]).forEach(function(x){ if(x.household_id) hh[x.household_id]=1; }); }
+    var ar=await sb.from('arena_events').select('household_id').gte('created_at',today).limit(3000); (ar.data||[]).forEach(function(x){ if(x.household_id) hh[x.household_id]=1; });
+    var ex=await sb.from('experiences').select('household_id').gte('created_at',today).limit(3000); (ex.data||[]).forEach(function(x){ if(x.household_id) hh[x.household_id]=1; });
+    return { families:Object.keys(hh).length, moments:(mt.data||[]).length, arenas:(ar.data||[]).length, experiences:(ex.data||[]).length };
+  }catch(e){ return null; }
+}
+
+/* ---- tables ---- */
+async function recentSignups(){
+  try{ var r=await sb.from('profiles').select('name,city,life_status,created_at').order('created_at',{ascending:false}).limit(10);
+    var rows=r.data||[]; if(!rows.length) return '<div class="card muted"><div class="note">No Lives yet.</div></div>';
+    return '<table><tr><th>Name</th><th>City</th><th>Status</th><th>Joined</th></tr>'+rows.map(function(p){ return '<tr><td>'+esc(p.name||'—')+'</td><td>'+esc(p.city||'—')+'</td><td><span class="pill g">'+esc(p.life_status||'active')+'</span></td><td>'+esc((p.created_at||'').slice(0,10))+'</td></tr>'; }).join('')+'</table>';
+  }catch(e){ return '<div class="card muted"><div class="note">Could not load.</div></div>'; }
+}
+async function quietRels(){
+  try{ var r=await sb.from('relationships').select('person_a_phone,person_b_phone,relation_a_to_b,rel_status,created_at').in('rel_status',['paused','former','legacy']).order('created_at',{ascending:false}).limit(12);
+    var rows=r.data||[]; if(!rows.length) return '<div class="card g accent-g"><div class="ct">Quiet / changed relationships</div><div class="cv" style="color:var(--leaf)">0</div><div class="cs">All relationships are active 🌿</div></div>';
+    return '<table><tr><th>Between</th><th>Relation</th><th>Status</th><th>Since</th></tr>'+rows.map(function(c){ return '<tr><td>+91 '+esc(c.person_a_phone)+' · +91 '+esc(c.person_b_phone)+'</td><td>'+esc(c.relation_a_to_b||'family')+'</td><td><span class="pill q">'+esc(c.rel_status)+'</span></td><td>'+esc((c.created_at||'').slice(0,10))+'</td></tr>'; }).join('')+'</table>';
+  }catch(e){ return '<div class="card muted"><div class="note">Could not load.</div></div>'; }
+}
+
+/* ---- main ---- */
+async function loadAll(){
+  if(!sb){ try{ sb=supabase.createClient(SB_URL,SB_KEY); }catch(e){ return; } }
+  document.getElementById('updated').textContent='Loading…';
+  var today=startToday(), wk=daysAgo(7);
+
+  // North Star
+  northStar().then(function(ns){
+    if(!ns){ document.getElementById('nsBig').textContent='—'; return; }
+    document.getElementById('nsBig').textContent=fmt(ns.families);
+    document.getElementById('nsSignals').innerHTML='<span>💛 '+fmt(ns.moments)+' Moments today</span><span>🎪 '+fmt(ns.arenas)+' Arena events</span><span>🔴 '+fmt(ns.experiences)+' Experiences</span>';
+  });
+
+  // 1) Growth
+  Promise.all([
+    cnt('profiles'),
+    cnt('profiles',function(q){return q.gte('created_at',today);}),
+    cnt('profiles',function(q){return q.gte('last_seen',wk);}),
+    cnt('households',function(q){return q.gte('created_at',today);}),
+    cnt('relationships',function(q){return q.gte('created_at',today);}),
+    cnt('bridge_connections',function(q){return q.gte('connected_at',today);})
+  ]).then(function(g){
+    document.getElementById('growth').innerHTML=
+      card('Total Lives',g[0],{accent:'accent-v'})+
+      card('New Lives today',g[1],{accent:'accent-g',sub:g[1]>0?'+'+g[1]+' today':''})+
+      card('Active Lives (7d)',g[2],{accent:'accent-b'})+
+      card('New Households today',g[3],{accent:'accent-o'})+
+      card('New Relationships today',g[4],{accent:'accent-r'})+
+      card('New Bridges today',g[5],{accent:'accent-v'});
+  });
+
+  // 2) Trends
+  Promise.all([ series('profiles','created_at',14), series('moments','created_at',14), series('relationships','created_at',14) ]).then(function(s){
+    document.getElementById('trends').innerHTML=
+      barChart('New Lives / day',s[0],'#7C3AED')+
+      barChart('Moments / day',s[1],'#E03A7A')+
+      barChart('New Relationships / day',s[2],'#2BA84A');
+  });
+
+  // 3) Engagement
+  Promise.all([
+    cnt('profiles',function(q){return q.gte('last_seen',today);}),
+    cnt('profiles',function(q){return q.gte('last_seen',wk);}),
+    cnt('moments'),
+    cnt('moments',function(q){return q.gte('created_at',today);}),
+    cnt('arena_events'),
+    cnt('quests',function(q){return q.eq('status','completed');}),
+    cnt('ritual_occurrences',function(q){return q.eq('status','completed');})
+  ]).then(function(e){
+    document.getElementById('engagement').innerHTML=
+      card('Daily Active Lives',e[0],{accent:'accent-g',sub:'active today'})+
+      card('Weekly Active Lives',e[1],{accent:'accent-b'})+
+      card('Moments created',e[2],{accent:'accent-r',sub:e[3]!=null?('+'+e[3]+' today'):''})+
+      card('Arena sessions',e[4],{accent:'accent-v'})+
+      card('Quests completed',e[5],{accent:'accent-o'})+
+      card('Rituals completed',e[6],{accent:'accent-g'});
+  });
+
+  // 4) Relationship Health
+  Promise.all([
+    cnt('relationships',function(q){return q.gte('created_at',wk);}),
+    cnt('relationships',function(q){return q.in('rel_status',['paused','former','legacy']);}),
+    cnt('bridge_connections',function(q){return q.eq('status','active').gt('bridge_strength',0);}),
+    cnt('bridge_connections',function(q){return q.eq('bridge_strength',0);})
+  ]).then(function(rh){
+    document.getElementById('relhealth').innerHTML=
+      card('New relationships (7d)',rh[0],{accent:'accent-g'})+
+      card('Quiet / changed',rh[1],{accent:'accent-v',sub:'paused · former · legacy'})+
+      card('Active Bridges',rh[2],{accent:'accent-b'})+
+      card('Bridges with no activity',rh[3],{accent:'accent-r',sub:'strength = 0'});
+  });
+
+  // 5) Product Health — only storage (file count) is measurable from the anon client
+  Promise.all([ cnt('moment_media'), cnt('experience_media'), cnt('arena_media') ]).then(function(m){
+    var files=(m[0]||0)+(m[1]||0)+(m[2]||0);
+    document.getElementById('prodhealth').innerHTML=
+      card('Files in storage',files,{accent:'accent-b',sub:'photos & media rows'})+
+      card('Errors','Not tracked',{muted:true,note:'Needs an app_errors table + client logging.'})+
+      card('Failed API calls','Not tracked',{muted:true,note:'Needs request logging / Supabase logs (dashboard).'})+
+      card('Slow pages','Not tracked',{muted:true,note:'Needs front-end performance instrumentation.'})+
+      card('Upload failures','Not tracked',{muted:true,note:'Needs upload error logging in the app.'})+
+      card('Storage bytes','Dashboard',{muted:true,note:'Byte totals need the Supabase dashboard / service role.'});
+  });
+
+  // 6) Trust & Safety — only rejected requests is measurable today
+  Promise.all([ cnt('family_requests',function(q){return q.eq('status','rejected');}) ]).then(function(t){
+    document.getElementById('trust').innerHTML=
+      card('Rejected requests',t[0],{accent:'accent-r'})+
+      card('Suspicious logins','Not tracked',{muted:true,note:'Needs real auth + login audit (currently mock OTP).'})+
+      card('Blocked users','Not tracked',{muted:true,note:'No block system yet — needs a blocks table.'})+
+      card('Reported content','Not tracked',{muted:true,note:'No reporting flow yet — needs a reports table.'});
+  });
+
+  // tables
+  recentSignups().then(function(h){ document.getElementById('tblSignups').innerHTML=h; });
+  quietRels().then(function(h){ document.getElementById('tblQuiet').innerHTML=h; });
+
+  document.getElementById('disc').innerHTML='<b>Honest data notes.</b> Every number above is queried live from Supabase — nothing is faked. Metrics marked “Not tracked” have <b>no data source yet</b>: Errors, failed/slow API calls, upload failures, suspicious logins, blocked users and reported content all require instrumentation that does not exist in the app today (an errors table, a login audit, block/report flows). Storage shows file <i>counts</i>; byte totals live in the Supabase dashboard. “Active Lives/Families” use <code>last_seen</code> presence. The North Star counts households with a Moment, Arena event or Experience dated today. This console is gated by a client-side passcode only — it is not full security; locking it properly needs Supabase RLS + an admin role.';
+  document.getElementById('updated').textContent='Updated '+new Date().toLocaleString();
+}
+</script>
+</body>
+</html>
