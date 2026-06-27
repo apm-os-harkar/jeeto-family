@@ -948,6 +948,13 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jw-wis-q{margin:12px 0 0;font-family:var(--jh-serif);font-size:20px;font-weight:500;font-style:italic;line-height:1.35;color:var(--jh-fg)}
 .jw-foot{padding:6px 0 2px;text-align:center}
 .jw-foot p{font-family:var(--jh-serif);font-size:16px;font-style:italic;color:var(--jh-muted-fg);margin:0}
+.jw-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.jw-stat{border-radius:18px;border:1px solid var(--jh-border);background:var(--jh-card);padding:16px 8px;text-align:center;box-shadow:0 1px 3px rgba(120,72,30,.08)}
+.jw-stat-n{display:block;font-family:var(--jh-serif);font-size:26px;font-weight:500;color:var(--jh-primary);line-height:1}
+.jw-stat-l{display:block;margin-top:5px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--jh-muted-fg)}
+.jw-crosslink{display:flex;justify-content:center}
+.jw-cross{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--jh-border);background:var(--jh-card);border-radius:999px;padding:11px 20px;font-size:14px;font-weight:600;color:var(--jh-primary);cursor:pointer;font-family:inherit;box-shadow:0 1px 3px rgba(120,72,30,.08)}
+.jw-cross svg{width:14px;height:14px}
 /* ---- Home Design tab ---- */
 .jd-plate{position:relative;border-radius:20px;background:linear-gradient(135deg,oklch(0.96 0.02 80),oklch(0.92 0.03 78));border:1px solid var(--jh-border);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 8px rgba(120,72,30,.1);padding:22px;text-align:center}
 .jd-plate-name{font-family:var(--jh-serif);font-size:28px;letter-spacing:.01em;color:var(--jh-fg)}
@@ -1118,6 +1125,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <section class="screen has-nav" id="screen-home"><div class="jh" id="homeBody"></div></section>
   <section class="screen has-nav" id="screen-design"><div class="jh" id="designBody"></div></section>
   <section class="screen has-nav" id="screen-myworld"><div class="jh" id="myWorldBody"></div></section>
+  <section class="screen has-nav" id="screen-across"><div class="jh" id="acrossBody"></div></section>
 
   <!-- FAMILY -->
   <section class="screen has-nav" id="screen-homes"><div id="homesBody"></div></section>
@@ -1275,7 +1283,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='1.9.0-world';
+var JEETO_VERSION='2.0.0-world';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1437,7 +1445,7 @@ function closeCelebrate(){ document.getElementById('celebrate').classList.remove
 function showScreen(id){
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
-  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail','screen-design','screen-myworld'];
+  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail','screen-design','screen-myworld','screen-across'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ paintNavIcons(); }catch(e){}
   try{ window.scrollTo(0,0); }catch(e){}
@@ -3047,8 +3055,11 @@ function jwSat(node, align){
     '<span class="jw-photo jw-photo-sm">'+jwNodeImg(node,false)+'</span>'+jwPill(node.members)+'</button>'+
     '<p class="jw-sname">'+escapeHtml(node.name)+'</p>'+(node.city?'<p class="jw-scity">'+escapeHtml(node.city)+'</p>':'')+'</div>';
 }
-async function renderMyWorld(){
-  var el=document.getElementById('myWorldBody'); if(!el) return;
+async function renderMyWorld(){ return renderWorldView('myWorldBody','mine'); }
+async function renderAcrossMyWorld(){ return renderWorldView('acrossBody','across'); }
+async function renderWorldView(elId, scope){
+  var across=(scope==='across');
+  var el=document.getElementById(elId); if(!el) return;
   el.innerHTML='<div class="jh-wrap"><div class="sk sk-card"></div></div>';
   if(!ME){ try{ ME=await fetchProfile(myPhone()); }catch(e){} }
   var ctx=await myCircleContext();
@@ -3058,8 +3069,9 @@ async function renderMyWorld(){
     var node={ id:x.h.id, name:x.h.household_name||'Home', city:x.h.city||'', members:(x.members||[]).length, style:x.h.home_style||'apartment', mine:true };
     if(i===0) central=node; else sats.push(node);
   });
-  // connected family homes (bridges)
-  var otherIds=(ctx.bridges||[]).map(function(b){return b._other;}).filter(Boolean);
+  // connected family homes (bridges) — only in 'Across My World'
+  var bridgeCount=(ctx.bridges||[]).length;
+  var otherIds=across?((ctx.bridges||[]).map(function(b){return b._other;}).filter(Boolean)):[];
   if(otherIds.length){
     try{
       var hr=await sb.from('households').select('*').in('id',otherIds);
@@ -3071,10 +3083,15 @@ async function renderMyWorld(){
   }
 
   // header + tagline
+  var title=across?'Across My World':'My Family World';
+  var tag=across?'Your family, and every home across your bridges.':'Every Life. Every Relationship. Every Generation.';
   var header='<header class="jw-header"><button class="jw-back" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button>'+
-    '<div class="jw-head-c"><h1 class="jw-title">My Family World</h1>'+
+    '<div class="jw-head-c"><h1 class="jw-title">'+title+'</h1>'+
     '<div class="jw-divider">'+jic('heartfill')+'</div>'+
-    '<p class="jw-tag">Every Life. Every Relationship. Every Generation.</p></div></header>';
+    '<p class="jw-tag">'+tag+'</p></div></header>';
+  var statsH='';
+  if(across){ var totMembers=(central?central.members:0)+sats.reduce(function(a,b){return a+(b.members||0);},0); var homesN=(central?1:0)+sats.length;
+    statsH='<section class="jw-stats"><div class="jw-stat"><span class="jw-stat-n">'+homesN+'</span><span class="jw-stat-l">Homes</span></div><div class="jw-stat"><span class="jw-stat-n">'+bridgeCount+'</span><span class="jw-stat-l">Bridges</span></div><div class="jw-stat"><span class="jw-stat-n">'+totMembers+'</span><span class="jw-stat-l">Loved ones</span></div></section>'; }
 
   // constellation
   var constel='<section class="jw-constel">';
@@ -3116,9 +3133,10 @@ async function renderMyWorld(){
   // family wisdom
   var wisdom='<section class="jw-wis"><span class="jw-wis-ic">'+jic('feather')+'</span><h2 class="jw-wis-h">Family Wisdom</h2><p class="jw-wis-q">A family is many branches of one tree, growing in different directions yet rooted in the same love.</p></section>';
 
+  var crossLink= across?'' : '<section class="jw-crosslink"><button class="jw-cross" onclick="navTo(\'across\')">See across my world '+jic('arrow')+'</button></section>';
   var footer='<footer class="jw-foot"><p>You are home. You are loved. You belong.</p></footer>';
 
-  el.innerHTML='<div class="jh-wrap jw-wrap">'+header+constel+today+wisdom+footer+'</div>';
+  el.innerHTML='<div class="jh-wrap jw-wrap">'+header+statsH+constel+today+wisdom+crossLink+footer+'</div>';
 }
 
 async function buildHome(){
@@ -3197,7 +3215,7 @@ async function buildHome(){
 
   /* 9) ACROSS MY WORLD */
   var awGrid=across.map(function(s){ return '<div><span class="jh-aw-v">'+escapeHtml(s.value)+'</span><p class="jh-aw-l">'+escapeHtml(s.label)+'</p></div>'; }).join('');
-  var awH='<section class="jh-rise" aria-label="Across my world"><div class="jh-aw"><p class="jh-aw-k">'+jic('sparkles')+'Across My World</p><dl class="jh-aw-grid">'+awGrid+'</dl></div></section>';
+  var awH='<section class="jh-rise" aria-label="Across my world"><div class="jh-aw" onclick="navTo(\'across\')" style="cursor:pointer"><p class="jh-aw-k">'+jic('sparkles')+'Across My World</p><dl class="jh-aw-grid">'+awGrid+'</dl></div></section>';
 
   window.__jhSky=skyvos; window.__jhToday=today;
   var tiles=[ {ic:'palette',label:'Design',fn:"navTo('design')"}, {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
@@ -5142,7 +5160,7 @@ function searchGraph(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -5157,6 +5175,7 @@ function navTo(tab){
   if(tab==='live') renderArena();
   if(tab==='timemachine') renderTimeMachine();
   if(tab==='world') renderMyWorld();
+  if(tab==='across') renderAcrossMyWorld();
   if(tab==='homes') renderHomes();
   if(tab==='design') renderDesign();
   var btns=document.querySelectorAll('#bottomNav button');
