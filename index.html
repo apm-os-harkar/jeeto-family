@@ -440,6 +440,36 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .worldwidget svg{width:100%;height:84px;display:block}
 .worldwidget .ww-label{position:absolute;left:14px;bottom:10px;color:#fff;font-family:var(--font-display);font-weight:800;font-size:15px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
 .worldwidget .ww-go{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.9);color:var(--ink);font-size:11px;font-weight:800;padding:5px 11px;border-radius:var(--r-pill)}
+/* living world micro-animations (GPU-cheap: transform/opacity only) */
+@keyframes wdrift{from{transform:translateX(-180px)}to{transform:translateX(1180px)}}
+.wcloud{animation-name:wdrift;animation-timing-function:linear;animation-iteration-count:infinite;will-change:transform}
+.wtree{transform-box:fill-box;transform-origin:bottom center;animation:wsway 6s ease-in-out infinite}
+@keyframes wsway{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg)}}
+@keyframes wrise{0%{transform:translateY(0);opacity:0}25%{opacity:.55}100%{transform:translateY(-20px);opacity:0}}
+.ws1{animation:wrise 4.2s ease-in infinite}.ws2{animation:wrise 4.2s ease-in infinite;animation-delay:1.4s}.ws3{animation:wrise 4.2s ease-in infinite;animation-delay:2.8s}
+.wfly{animation:wfire 5s ease-in-out infinite}
+@keyframes wfire{0%,100%{opacity:0;transform:translate(0,0)}50%{opacity:1;transform:translate(7px,-9px)}}
+.wbird{animation-name:wbirdfly;animation-timing-function:linear;animation-iteration-count:infinite;will-change:transform}
+@keyframes wbirdfly{from{transform:translate(-70px,46px)}to{transform:translate(1080px,-28px)}}
+.wbf{animation:wbfly 13s ease-in-out infinite}
+@keyframes wbfly{0%{transform:translate(0,0)}25%{transform:translate(90px,-34px)}50%{transform:translate(180px,12px)}75%{transform:translate(270px,-22px)}100%{transform:translate(360px,0)}}
+.wnotes,.wfloat{animation:wnote 3s ease-in-out infinite}.wfloat{animation-duration:3.4s}
+@keyframes wnote{0%{opacity:0;transform:translateY(6px)}30%{opacity:1}100%{opacity:0;transform:translateY(-15px)}}
+.wpulse{transform-box:fill-box;transform-origin:center;animation:wring 2.6s ease-out infinite}
+@keyframes wring{0%{opacity:.5;transform:scale(.85)}100%{opacity:0;transform:scale(1.28)}}
+.wbridge{animation:wbglow 3.2s ease-in-out infinite}
+@keyframes wbglow{0%,100%{opacity:.65}50%{opacity:1}}
+.skybreathe{animation:wbreathe 3.4s ease-in-out infinite}
+@keyframes wbreathe{0%,100%{opacity:.65}50%{opacity:1}}
+.wsparkle{animation:wspark 1.9s ease-in-out infinite}
+@keyframes wspark{0%,100%{opacity:0}50%{opacity:1}}
+.wshine{animation:wshim 3.4s ease-in-out infinite}
+@keyframes wshim{0%,100%{opacity:.55}50%{opacity:1}}
+.wsun{animation:wsunp 7s ease-in-out infinite}
+@keyframes wsunp{0%,100%{opacity:.94}50%{opacity:1}}
+@media (prefers-reduced-motion: reduce){
+  .wcloud,.wtree,.ws1,.ws2,.ws3,.wfly,.wbird,.wbf,.wnotes,.wfloat,.wpulse,.wbridge,.skybreathe,.wsparkle,.wshine,.wsun,.housebob,.twinkle{animation:none !important}
+}
 .home-sec{font-family:'Baloo 2';font-weight:800;font-size:17px;margin:0 2px 11px;display:flex;align-items:center;justify-content:space-between}
 .home-sec a{font-size:12.5px;color:var(--rani-d);font-weight:800;cursor:pointer}
 .today-card{background:linear-gradient(150deg,#FFFFFF,#FFF6EC);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);margin-bottom:20px}
@@ -797,14 +827,14 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
   <section class="screen has-nav" id="screen-live">
     <div class="gtop"><button class="gback" onclick="navTo('home')">←</button><div class="h1" style="margin:0;font-size:24px">🎪 Family Arena</div></div>
-    <p class="muted" style="font-size:12.5px;margin:0 2px 14px">What\u2019s happening tonight? Play, laugh and gather live — every event becomes a family Moment.</p>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 14px">What’s happening tonight? Play, laugh and gather live — every event becomes a family Moment.</p>
     <div id="liveBody2"></div>
     <div style="height:24px"></div>
   </section>
 
   <section class="screen has-nav" id="screen-timemachine">
     <div class="gtop"><button class="gback" onclick="navTo('home')">←</button><div class="h1" style="margin:0;font-size:24px">🕰️ Time Machine</div></div>
-    <p class="muted" style="font-size:12.5px;margin:0 2px 16px">Not a replay of old photos — a way to feel your family\u2019s most beautiful moments again.</p>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 16px">Not a replay of old photos — a way to feel your family’s most beautiful moments again.</p>
     <div id="tmBody"></div>
     <div style="height:24px"></div>
   </section>
@@ -859,7 +889,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.8.0';
+var JEETO_VERSION='0.8.1';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2416,38 +2446,112 @@ async function computeMoods(nodes){
 }
 
 /* ---------- SVG scene ---------- */
+/* ====== FAMILY WORLD · LIVING SCENE (Magic polish) ====== */
+/* Per-household local time, weather hook (future-ready), mood-driven
+   Skyvos, living bridges, drifting clouds, smoke, trees, birds,
+   fireflies, festival decoration. GPU-cheap; honours reduced-motion. */
+
+/* --- local time per household (future-ready: extend CITY_TZ freely) --- */
+var CITY_TZ={ 'delhi':5.5,'new delhi':5.5,'gurgaon':5.5,'gurugram':5.5,'noida':5.5,'dwarka':5.5,'mumbai':5.5,'bengaluru':5.5,'bangalore':5.5,'chennai':5.5,'kolkata':5.5,'hyderabad':5.5,'pune':5.5,'jaipur':5.5,'ahmedabad':5.5,'chandigarh':5.5,
+  'stockholm':1,'oslo':1,'copenhagen':1,'berlin':1,'paris':1,'madrid':1,'rome':1,'amsterdam':1,'zurich':1,'vienna':1,
+  'london':0,'dublin':0,'lisbon':0,'reykjavik':0,
+  'new york':-5,'toronto':-5,'boston':-5,'washington':-5,'chicago':-6,'denver':-7,'los angeles':-8,'san francisco':-8,'seattle':-8,'vancouver':-8,
+  'dubai':4,'abu dhabi':4,'doha':3,'riyadh':3,'moscow':3,
+  'singapore':8,'kuala lumpur':8,'hong kong':8,'beijing':8,'shanghai':8,'perth':8,
+  'tokyo':9,'seoul':9,'sydney':10,'melbourne':10,'brisbane':10,'auckland':12,'wellington':12 };
+function cityHour(city){ var off=CITY_TZ[(city||'').trim().toLowerCase()]; var d=new Date();
+  if(off==null) return d.getHours();
+  var utc=d.getUTCHours()+d.getUTCMinutes()/60; return Math.floor((utc+off+24)%24); }
+function modeForHour(h){ if(h>=5&&h<8) return 'dawn'; if(h>=8&&h<17) return 'day'; if(h>=17&&h<20) return 'dusk'; return 'night'; }
+function homeTimeMode(nd){ return modeForHour(cityHour(nd&&nd.city)); }
+
+/* --- weather (architecture only; real data plugs into nd.weather later) --- */
+function homeWeather(nd){ return (nd&&nd.weather)||'clear'; } // clear/cloudy/rain/snow/fog
+function weatherGlyph(w){ return ({cloudy:'☁️',rain:'🌧️',snow:'❄️',fog:'🌫️',sunny:'☀️'})[w]||''; }
+
+/* --- festivals (elegant auto-decoration; approximate windows) --- */
+function festivalToday(){ var d=new Date(), m=d.getMonth()+1, day=d.getDate();
+  if(m===10&&day>=28||m===11&&day<=4) return {name:'Diwali', palette:['#FF8A1E','#FFD66B','#E03A7A','#7C3AED','#2BA84A']};
+  if(m===12&&day>=18&&day<=26) return {name:'Christmas', palette:['#E03A7A','#2BA84A','#FFD66B','#fff','#C42466']};
+  if(m===3&&day>=8&&day<=18) return {name:'Holi', palette:['#E03A7A','#2BA84A','#FFD66B','#7C3AED','#0EA5A5']};
+  if(m===4&&day>=12&&day<=15) return {name:'Baisakhi', palette:['#FF8A1E','#2BA84A','#FFD66B']};
+  if(m===1&&day>=12&&day<=15) return {name:'Lohri / Pongal', palette:['#FF8A1E','#FFD66B','#E03A7A']};
+  return null; }
+
+/* --- sound architecture (FUTURE: lazy-load audio; no implementation now) --- */
+var WorldSound={ enabled:false, _ready:false,
+  prepare:function(){ /* future: lazy-load ambience packs */ this._ready=true; },
+  play:function(key){ /* birds/rain/festival/breeze/celebration — future */ },
+  stop:function(){} };
+
 function skyDefs(mode){
-  var sky={ dawn:['#FFE0B8','#FFC59B','#FBA37E'], day:['#BFE3FF','#D9F0FF','#EAF7FF'], dusk:['#FFC08A','#FF9E7D','#C56B8A'], night:['#1A1633','#241B47','#2E2154'] }[mode];
+  var sky={ dawn:['#FFE0B8','#FFC59B','#FBA37E'], day:['#BFE3FF','#D9F0FF','#EAF7FF'], dusk:['#FFC08A','#FF9E7D','#C56B8A'], night:['#141029','#1F1840','#2A1E4C'] }[mode];
   return '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sky[0]+'"/><stop offset="0.6" stop-color="'+sky[1]+'"/><stop offset="1" stop-color="'+sky[2]+'"/></linearGradient>'+
     '<radialGradient id="glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE9B0" stop-opacity="0.9"/><stop offset="1" stop-color="#FFE9B0" stop-opacity="0"/></radialGradient>'+
     '<radialGradient id="bglow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#C9A8FF" stop-opacity="0.85"/><stop offset="1" stop-color="#C9A8FF" stop-opacity="0"/></radialGradient>'+
+    '<radialGradient id="warmwin" cx="0.5" cy="0.5" r="0.7"><stop offset="0" stop-color="#FFE08A" stop-opacity="0.95"/><stop offset="1" stop-color="#FFE08A" stop-opacity="0"/></radialGradient>'+
     '<filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6"/></filter>'+
-    '<radialGradient id="skyorb" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#fff"/><stop offset="0.5" stop-color="#E9D5FF"/><stop offset="1" stop-color="#A855F7"/></radialGradient>';
+    '<radialGradient id="skyorb" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#fff"/><stop offset="0.5" stop-color="#E9D5FF"/><stop offset="1" stop-color="#A855F7"/></radialGradient>'+
+    '<radialGradient id="skyorb-gold" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#fff"/><stop offset="0.5" stop-color="#FFE9A8"/><stop offset="1" stop-color="#F59E0B"/></radialGradient>'+
+    '<radialGradient id="skyorb-blue" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#fff"/><stop offset="0.5" stop-color="#CDE6FF"/><stop offset="1" stop-color="#3B82F6"/></radialGradient>'+
+    '<radialGradient id="skyorb-fest" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#fff"/><stop offset="0.5" stop-color="#FFC59B"/><stop offset="1" stop-color="#E03A7A"/></radialGradient>';
 }
-function hillPath(mode){ var c=(mode==='night')?['#2C2A4A','#262344']:(mode==='dusk')?['#8A5A6E','#6E4A63']:['#A7D9A0','#8CCB89']; 
+function cloudsSVG(mode){ var fill=(mode==='night')?'#3A335E':(mode==='dusk')?'#F2C3A0':'#FFFFFF'; var op=(mode==='night')?0.5:0.85; var out='';
+  var spec=[[120,70,1,46],[520,50,0.8,60],[820,95,1.1,38]];
+  for(var i=0;i<spec.length;i++){ var c=spec[i]; out+='<g class="wcloud" style="animation-duration:'+(70+i*18)+'s;animation-delay:-'+(i*22)+'s"><g transform="translate('+c[0]+','+c[1]+') scale('+c[2]+')" opacity="'+op+'">'+
+    '<ellipse cx="0" cy="0" rx="34" ry="16" fill="'+fill+'"/><ellipse cx="26" cy="6" rx="26" ry="13" fill="'+fill+'"/><ellipse cx="-24" cy="6" rx="22" ry="12" fill="'+fill+'"/></g></g>'; }
+  return out; }
+function hillPath(mode){ var c=(mode==='night')?['#252247','#1E1B3C']:(mode==='dusk')?['#8A5A6E','#6E4A63']:['#A7D9A0','#8CCB89'];
   return '<path d="M0 470 Q 250 420 500 460 T 1000 450 L1000 680 L0 680 Z" fill="'+c[0]+'"/>'+
          '<path d="M0 540 Q 300 500 620 540 T 1000 530 L1000 680 L0 680 Z" fill="'+c[1]+'"/>'; }
 function celestial(mode){
-  if(mode==='night'){ var stars=''; for(var i=0;i<28;i++){ var x=Math.round(Math.random()*1000),y=Math.round(Math.random()*300),r=(Math.random()*1.4+0.5).toFixed(1); stars+='<circle class="twinkle" cx="'+x+'" cy="'+y+'" r="'+r+'" fill="#fff" opacity="'+(0.5+Math.random()*0.5).toFixed(2)+'" style="animation-delay:'+(Math.random()*3).toFixed(1)+'s"/>'; }
-    return stars+'<circle cx="840" cy="110" r="42" fill="#FDF6E3"/><circle cx="824" cy="98" r="42" fill="'+'#241B47'+'" opacity="0.25"/>'; }
-  if(mode==='day'||mode==='dawn'){ return '<circle cx="180" cy="120" r="46" fill="#FFD66B"/><circle cx="180" cy="120" r="78" fill="url(#glow)"/>'; }
-  return '<circle cx="820" cy="140" r="44" fill="#FFB36B"/><circle cx="820" cy="140" r="86" fill="url(#glow)"/>'; // dusk
+  if(mode==='night'){ var stars=''; for(var i=0;i<22;i++){ var x=Math.round(Math.random()*1000),y=Math.round(Math.random()*280),r=(Math.random()*1.4+0.5).toFixed(1); stars+='<circle class="twinkle" cx="'+x+'" cy="'+y+'" r="'+r+'" fill="#fff" opacity="'+(0.5+Math.random()*0.5).toFixed(2)+'" style="animation-delay:'+(Math.random()*3).toFixed(1)+'s"/>'; }
+    return stars+'<circle cx="840" cy="106" r="40" fill="#FDF6E3"/><circle cx="824" cy="94" r="40" fill="#1F1840" opacity="0.22"/>'; }
+  if(mode==='day'||mode==='dawn'){ return '<g class="wsun"><circle cx="180" cy="118" r="44" fill="#FFD66B"/><circle cx="180" cy="118" r="82" fill="url(#glow)"/></g>'; }
+  return '<g class="wsun"><circle cx="820" cy="140" r="42" fill="#FFB36B"/><circle cx="820" cy="140" r="90" fill="url(#glow)"/></g>';
 }
-function homeSVG(nd, mode){
-  var lit=(mode==='night'||mode==='dusk'); var win=lit?'#FFD66B':'#BcdCF5'; var winLit=lit?'1':'0.5';
+function birdsSVG(mode,season){ var out='';
+  if(mode==='night'){ for(var i=0;i<8;i++){ var x=Math.round(120+Math.random()*760),y=Math.round(360+Math.random()*120); out+='<circle class="wfly" cx="'+x+'" cy="'+y+'" r="2" fill="#FFE9A8" style="animation-delay:'+(Math.random()*4).toFixed(1)+'s"/>'; } return out; }
+  if(season==='spring'){ out+='<text class="wbf" x="160" y="300" font-size="16">🦋</text><text class="wbf" x="600" y="340" font-size="14" style="animation-delay:-5s">🦋</text>'; }
+  out+='<g class="wbird" style="animation-duration:34s"><path d="M0 0 Q5 -5 10 0 Q15 -5 20 0" stroke="#5A4A66" stroke-width="2" fill="none" opacity="0.55"/></g>';
+  out+='<g class="wbird" style="animation-duration:46s;animation-delay:-12s"><path d="M0 0 Q4 -4 8 0 Q12 -4 16 0" stroke="#5A4A66" stroke-width="1.6" fill="none" opacity="0.4"/></g>';
+  return out; }
+function waterSVG(){ return '<g opacity="0.9"><ellipse cx="150" cy="624" rx="120" ry="22" fill="#9FD3E8"/><ellipse class="wshine" cx="150" cy="620" rx="86" ry="11" fill="#CDECF7"/><ellipse class="wshine" cx="180" cy="626" rx="40" ry="5" fill="#fff" opacity="0.6" style="animation-delay:-2s"/></g>'; }
+function treeSVG(x,y,s,mode){ var leaf=(mode==='night')?'#2F6B4A':(mode==='autumn'?'#C2702E':'#4FA86A'); 
+  return '<g transform="translate('+x+','+y+') scale('+s+')"><rect x="-3" y="0" width="6" height="22" rx="2" fill="#6B4A2E"/><g class="wtree"><ellipse cx="0" cy="-10" rx="20" ry="22" fill="'+leaf+'"/><ellipse cx="-12" cy="2" rx="14" ry="15" fill="'+leaf+'"/><ellipse cx="12" cy="2" rx="14" ry="15" fill="'+leaf+'"/></g></g>'; }
+function smokeSVG(){ return '<g class="wsmoke"><circle cx="22" cy="-46" r="4" fill="#fff" opacity="0.0"/><circle class="ws1" cx="22" cy="-44" r="4" fill="#E9E2F0"/><circle class="ws2" cx="24" cy="-52" r="5" fill="#E9E2F0"/><circle class="ws3" cx="20" cy="-60" r="6" fill="#E9E2F0"/></g>'; }
+
+function homeSVG(nd, worldMode){
+  var mode=homeTimeMode(nd); var lit=(mode==='night'||mode==='dusk'); var morning=(mode==='dawn');
+  var win=lit?'#FFD66B':'#BcdCF5'; var winOp=lit?'1':'0.55';
   var roof=nd.mine?'#E03A7A':'#7C3AED'; var body='#FFF6EA'; var door=nd.mine?'#C42466':'#5B21B6';
-  var mood=(WORLD.moods[nd.id]||{}); var fest=isFestivalSeason();
-  var festLights = fest ? '<g>'+[0,1,2,3,4].map(function(k){ return '<circle cx="'+(-26+k*13)+'" cy="-34" r="2.4" fill="'+['#FF8A1E','#E03A7A','#FFD66B','#2BA84A','#7C3AED'][k]+'" class="twinkle" style="animation-delay:'+(k*0.3)+'s"/>'; }).join('')+'</g>' : '';
+  var mood=(WORLD.moods[nd.id]||{}); var fest=festivalToday(); var gameNight=(mood.label==='Game Night');
+  var glowOp=lit?0.65:0.32;
+  // festival string-lights along roofline
+  var festLights = fest ? '<g>'+fest.palette.concat(fest.palette).slice(0,6).map(function(col,k){ return '<circle cx="'+(-30+k*12)+'" cy="-34" r="2.4" fill="'+col+'" class="twinkle" style="animation-delay:'+(k*0.3)+'s"/>'; }).join('')+'</g>' : '';
+  // chimney + smoke (cosy hours)
+  var chimney='<rect x="20" y="-44" width="9" height="16" rx="2" fill="'+roof+'"/>';
+  var smoke=(lit||morning)?smokeSVG():'';
+  // warm window glow at night/dusk
+  var warm = lit ? '<ellipse cx="0" cy="0" rx="60" ry="40" fill="url(#warmwin)" opacity="0.5"/>' : '';
+  // activity floaty + arena music notes
+  var act=''; if(gameNight){ act='<g class="wnotes"><text x="-30" y="-50" font-size="13">🎵</text><text x="22" y="-58" font-size="11" style="animation-delay:-1.4s">🎶</text></g>'; }
+  else if(mood.label==='Family Time'){ act='<text class="wfloat" x="-6" y="-48" font-size="14">❤️</text>'; }
+  else if(cityHour(nd.city)>=19&&cityHour(nd.city)<=21){ act='<text class="wfloat" x="-8" y="-48" font-size="13">🍽️</text>'; }
+  // celebration ring for live arena
+  var ring = gameNight ? '<circle cx="0" cy="6" r="58" fill="none" stroke="#FFD66B" stroke-width="2" opacity="0.5" class="wpulse"/>' : '';
+  // weather glyph (only when real data present — architecture)
+  var wx=homeWeather(nd); var wxg=wx!=='clear'?'<text x="30" y="-26" font-size="13">'+weatherGlyph(wx)+'</text>':'';
+
   return '<g class="house" data-house="'+escapeAttr(nd.id)+'" transform="translate('+nd.x+','+nd.y+')" style="cursor:pointer">'+
-    '<ellipse cx="0" cy="40" rx="62" ry="16" fill="url(#glow)" opacity="'+(lit?0.6:0.3)+'"/>'+
-    '<g class="housebob">'+
+    '<ellipse cx="0" cy="40" rx="62" ry="16" fill="url(#glow)" opacity="'+glowOp+'"/>'+ ring + warm +
+    '<g class="housebob">'+ chimney + smoke +
     '<rect x="-40" y="-18" width="80" height="56" rx="9" fill="'+body+'" stroke="#EADFD0"/>'+
-    '<polygon points="-48,-16 0,-54 48,-16" fill="'+roof+'"/>'+
-    festLights+
+    '<polygon points="-48,-16 0,-54 48,-16" fill="'+roof+'"/>'+ festLights +
     '<rect x="-12" y="6" width="24" height="32" rx="4" fill="'+door+'"/>'+
-    '<rect x="-30" y="-6" width="16" height="16" rx="3" fill="'+win+'" opacity="'+winLit+'"/>'+
-    '<rect x="14" y="-6" width="16" height="16" rx="3" fill="'+win+'" opacity="'+winLit+'"/>'+
-    '</g>'+
+    '<rect x="-30" y="-6" width="16" height="16" rx="3" fill="'+win+'" opacity="'+winOp+'"/>'+
+    '<rect x="14" y="-6" width="16" height="16" rx="3" fill="'+win+'" opacity="'+winOp+'"/>'+
+    '</g>'+ act + wxg +
     '<g transform="translate(0,62)"><rect x="-66" y="-15" width="132" height="26" rx="13" fill="#fff" opacity="0.92"/>'+
     '<text x="0" y="3" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="14" fill="#241826">'+escapeHtml(trimName(nd.name))+'</text></g>'+
     '<g transform="translate(0,90)"><rect x="-58" y="-12" width="116" height="22" rx="11" fill="#241826" opacity="0.78"/>'+
@@ -2455,32 +2559,43 @@ function homeSVG(nd, mode){
     '</g>';
 }
 function trimName(s){ s=s||''; return s.length>14?s.slice(0,13)+'…':s; }
-function bridgeSVG(e){ var a=WORLD.nodes[e.a], b=WORLD.nodes[e.b]; if(!a||!b) return ''; 
+function bridgeSVG(e){ var a=WORLD.nodes[e.a], b=WORLD.nodes[e.b]; if(!a||!b) return '';
   var mx=(a.x+b.x)/2, my=Math.min(a.y,b.y)-90; var d='M '+a.x+' '+(a.y-6)+' Q '+mx+' '+my+' '+b.x+' '+(b.y-6);
-  var active=(e.strength||0)>0; var op=active?0.9:0.4; var pid='bp'+e.a+'_'+e.b;
-  return '<g><path id="'+pid+'" d="'+d+'" fill="none" stroke="#C9A8FF" stroke-width="'+(active?5:3)+'" stroke-linecap="round" opacity="'+op+'" filter="url(#soft)"/>'+
-    '<path d="'+d+'" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="2 12" opacity="'+(active?0.8:0.3)+'"><animate attributeName="stroke-dashoffset" from="0" to="-140" dur="6s" repeatCount="indefinite"/></path>'+
-    (active?'<circle r="3.5" fill="#fff"><animateMotion dur="'+(5+Math.random()*3).toFixed(1)+'s" repeatCount="indefinite" path="'+d+'"/></circle>':'')+'</g>';
+  var active=(e.strength||0)>0; var op=active?0.9:0.4; var fest=festivalToday();
+  var glow='<path d="'+d+'" fill="none" stroke="#C9A8FF" stroke-width="'+(active?5:3)+'" stroke-linecap="round" opacity="'+op+'" filter="url(#soft)"'+(active?' class="wbridge"':'')+'/>';
+  var dashes='<path d="'+d+'" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="2 12" opacity="'+(active?0.8:0.3)+'"><animate attributeName="stroke-dashoffset" from="0" to="-140" dur="6s" repeatCount="indefinite"/></path>';
+  var light = active ? '<circle r="3.6" fill="#fff"><animateMotion dur="'+(5+Math.random()*3).toFixed(1)+'s" repeatCount="indefinite" path="'+d+'"/></circle>' : '';
+  var gold = (active&&fest) ? '<circle r="2.6" fill="#FFD66B"><animateMotion dur="4s" repeatCount="indefinite" path="'+d+'"/></circle><circle r="2.2" fill="#FF8A1E"><animateMotion dur="5.5s" begin="-2s" repeatCount="indefinite" path="'+d+'"/></circle>' : '';
+  return '<g>'+glow+dashes+light+gold+'</g>';
 }
-function skyvosPath(){ var ns=WORLD.nodes; if(!ns.length) return 'M 500 120 q 120 -40 240 0 t 240 0'; 
+function skyvosPath(){ var ns=WORLD.nodes; if(!ns.length) return 'M 500 120 q 120 -40 240 0 t 240 0';
   var pts=ns.map(function(n){return {x:n.x,y:n.y-120};}); var d='M '+pts[0].x+' '+pts[0].y;
   for(var i=1;i<pts.length;i++){ var p=pts[i],pp=pts[i-1]; d+=' Q '+((p.x+pp.x)/2)+' '+(Math.min(p.y,pp.y)-50)+' '+p.x+' '+p.y; }
-  d+=' Q '+((pts[pts.length-1].x+pts[0].x)/2)+' 80 '+pts[0].x+' '+pts[0].y; return d;
-}
+  d+=' Q '+((pts[pts.length-1].x+pts[0].x)/2)+' 80 '+pts[0].x+' '+pts[0].y; return d; }
+function skyvosMood(){ var fest=festivalToday(); var hr=new Date().getHours();
+  var celebrating=Object.keys(WORLD.moods).some(function(k){ var t=WORLD.moods[k].tone; return t==='gold'||t==='rose'; });
+  if(fest) return {grad:'skyorb-fest', glow:'#FF8A1E'};
+  if(celebrating) return {grad:'skyorb-gold', glow:'#FFD66B'};
+  if(hr>=20||hr<6) return {grad:'skyorb-blue', glow:'#7CC0FF'};
+  return {grad:'skyorb', glow:'#C9A8FF'}; }
 function worldSVG(mode){
+  var season=worldSeason();
   var defs='<defs>'+skyDefs(mode)+'</defs>';
-  var sky='<rect x="0" y="0" width="1000" height="680" fill="url(#sky)"/>'+celestial(mode);
-  var season=worldSeason(); var weather='';
-  if(season==='winter'){ for(var i=0;i<26;i++){ var x=Math.round(Math.random()*1000); weather+='<circle cx="'+x+'" cy="-10" r="2.2" fill="#fff" opacity="0.85"><animateMotion dur="'+(6+Math.random()*5).toFixed(1)+'s" repeatCount="indefinite" path="M0 0 L'+(Math.random()*30-15).toFixed(0)+' 700"/></circle>'; } }
-  if(season==='autumn'){ for(var j=0;j<12;j++){ var ax=Math.round(Math.random()*1000); weather+='<text x="'+ax+'" y="-10" font-size="14" opacity="0.8">🍂<animateMotion dur="'+(8+Math.random()*6).toFixed(1)+'s" repeatCount="indefinite" path="M0 0 Q40 350 -20 700"/></text>'; } }
+  var sky='<rect x="0" y="0" width="1000" height="680" fill="url(#sky)"/>'+celestial(mode)+cloudsSVG(mode)+birdsSVG(mode,season);
+  var weather='';
+  if(season==='winter'){ for(var i=0;i<16;i++){ var x=Math.round(Math.random()*1000); weather+='<circle cx="'+x+'" cy="-10" r="2.2" fill="#fff" opacity="0.85"><animateMotion dur="'+(7+Math.random()*5).toFixed(1)+'s" repeatCount="indefinite" path="M0 0 L'+(Math.random()*30-15).toFixed(0)+' 700"/></circle>'; } }
+  if(season==='autumn'){ for(var j=0;j<8;j++){ var ax=Math.round(Math.random()*1000); weather+='<text x="'+ax+'" y="-10" font-size="14" opacity="0.8">🍂<animateMotion dur="'+(9+Math.random()*6).toFixed(1)+'s" repeatCount="indefinite" path="M0 0 Q40 350 -20 700"/></text>'; } }
   var hills=hillPath(mode);
+  var water=waterSVG();
+  var trees=treeSVG(70,452,1.1,mode)+treeSVG(930,470,1.25,mode)+treeSVG(300,500,0.9,mode)+treeSVG(720,506,1.0,mode);
   var bridges=WORLD.edges.map(function(e){ return bridgeSVG(e); }).join('');
   var homes=WORLD.nodes.map(function(n){ return homeSVG(n,mode); }).join('');
-  var sp=skyvosPath();
-  var skyvos='<g><circle r="13" fill="url(#bglow)" opacity="0.9"><animateMotion dur="'+(WORLD.nodes.length*4+14)+'s" repeatCount="indefinite" path="'+sp+'"/></circle>'+
-    '<circle r="7" fill="url(#skyorb)"><animateMotion dur="'+(WORLD.nodes.length*4+14)+'s" repeatCount="indefinite" path="'+sp+'"/></circle></g>';
+  var sp=skyvosPath(); var sm=skyvosMood(); var dur=(WORLD.nodes.length*4+14);
+  var skyvos='<g><circle r="14" fill="url(#bglow)" opacity="0.9" class="skybreathe"><animateMotion dur="'+dur+'s" repeatCount="indefinite" path="'+sp+'"/></circle>'+
+    '<circle r="7" fill="url(#'+sm.grad+')"><animateMotion dur="'+dur+'s" repeatCount="indefinite" path="'+sp+'"/></circle>'+
+    '<circle r="2" fill="#fff" class="wsparkle"><animateMotion dur="'+dur+'s" repeatCount="indefinite" path="'+sp+'"/></circle></g>';
   return '<svg id="worldSvg" viewBox="0 0 1000 680" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'+defs+sky+weather+
-    '<g id="worldG">'+hills+bridges+homes+skyvos+'</g></svg>';
+    '<g id="worldG">'+hills+water+trees+bridges+homes+skyvos+'</g></svg>';
 }
 
 /* ---------- render + interaction ---------- */
