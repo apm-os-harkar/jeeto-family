@@ -867,6 +867,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-hero2-eye{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.16em;color:var(--jh-primary)}
 .jh-hero2-eye svg{width:13px;height:13px;fill:var(--jh-primary);color:var(--jh-primary)}
 .jh-hero2-msg{margin:5px 0 0;font-family:var(--jh-serif);font-size:21px;line-height:1.15;color:var(--jh-fg)}
+.jh-today{display:flex;align-items:center;gap:14px;width:100%;background:var(--jh-card);border:1px solid var(--jh-border);border-radius:22px;padding:14px;cursor:pointer;font-family:inherit;text-align:left;box-shadow:0 1px 3px rgba(120,72,30,.10)}
+.jh-today-ic{width:48px;height:48px;flex-shrink:0;border-radius:14px;background:oklch(0.56 0.13 44/0.12);color:var(--jh-primary);display:flex;align-items:center;justify-content:center}
+.jh-today-ic svg{width:22px;height:22px}
+.jh-today-thumb{width:60px;height:60px;flex-shrink:0;border-radius:14px;overflow:hidden;background:var(--jh-card2)}
+.jh-today-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.jh-today-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.jh-today-eye{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.16em;color:var(--jh-primary);display:flex;align-items:center;gap:6px}
+.jh-today-eye svg{width:13px;height:13px}
+.jh-today-title{font-family:var(--jh-serif);font-size:18px;line-height:1.25;color:var(--jh-fg)}
+.jh-today-sub{font-size:12.5px;color:var(--jh-muted-fg)}
+.jh-today-chev{color:var(--jh-muted-fg);flex-shrink:0}
 .jh-mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .jh-mg-cell{text-align:left;background:none;border:none;padding:0;cursor:pointer;font-family:inherit}
 .jh-mg-img{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1/1;background:var(--jh-card2)}
@@ -1146,7 +1157,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='1.2.0-home';
+var JEETO_VERSION='1.3.0-home';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3121,6 +3132,32 @@ function nextOccurrence(monthDay){ // monthDay = {m,d}; returns next Date (this 
   return cand;
 }
 
+JHService.today=async function(ctx, profs, presence, moments){
+  /* 1) a celebration happening TODAY */
+  try{ var cel=await buildCelebrations(ctx, profs); var ts=new Date().toDateString();
+    var t=(cel||[]).filter(function(c){ return new Date(c.date).toDateString()===ts; })[0];
+    if(t) return { kind:'celebration', eyebrow:'Today', title:t.title, fn:"navTo('calendar')" };
+  }catch(e){}
+  /* 2) an On This Day memory */
+  try{ var otd=await loadOnThisDay();
+    if(otd&&otd.length){ var m=otd[0]; var yrs=m.year?(new Date().getFullYear()-m.year):0;
+      var img=(m.media&&m.media.filter(function(md){return md.media_type==='image';})[0]||{}).media_url||m.img||'';
+      return { kind:'memory', eyebrow:'On this day', title:(m.m&&m.m.title)||'A memory', sub:(yrs>0?(yrs+' year'+(yrs===1?'':'s')+' ago'):'from your past'), thumb:img, fn:"reliveMoment('"+(m.m?m.m.id:m.id)+"')" };
+    }
+  }catch(e){}
+  /* 3) a gentle, observational nudge (Skyvos never invents) */
+  var home=presence.filter(function(p){return p.home;}).length, total=presence.length;
+  if(total>1 && home<=1) return { kind:'nudge', icon:'users', eyebrow:'Tonight', title:'Everyone\u2019s scattered tonight. A hello would travel far.', fn:"navTo('family')" };
+  if(!(moments||[]).length) return { kind:'nudge', icon:'camera', eyebrow:'Today', title:'No moments yet today. Capture something small.', fn:"openCapture()" };
+  return { kind:'nudge', icon:'sparkles', eyebrow:'Today', title:'A calm day at home. Savour it.', fn:"openCapture()" };
+};
+function todayCard(t){
+  if(t.kind==='memory' && t.thumb){
+    return '<button class="jh-today" onclick="'+t.fn+'"><span class="jh-today-thumb"><img src="'+escapeAttr(t.thumb)+'" alt="" loading="lazy" decoding="async"></span><span class="jh-today-body"><span class="jh-today-eye">'+jic('camera')+escapeHtml(t.eyebrow)+'</span><span class="jh-today-title">'+escapeHtml(t.title)+'</span>'+(t.sub?'<span class="jh-today-sub">'+escapeHtml(t.sub)+'</span>':'')+'</span>'+jic2('chev','jh-today-chev')+'</button>';
+  }
+  var ic = t.kind==='celebration' ? 'cake' : (t.icon||'sparkles');
+  return '<button class="jh-today" onclick="'+t.fn+'"><span class="jh-today-ic">'+jic(ic)+'</span><span class="jh-today-body"><span class="jh-today-eye">'+escapeHtml(t.eyebrow)+'</span><span class="jh-today-title">'+escapeHtml(t.title)+'</span></span>'+jic2('chev','jh-today-chev')+'</button>';
+}
 async function buildHome(){
   var body=document.getElementById('homeBody'); if(!body) return;
   var me=myPhone();
@@ -3135,7 +3172,7 @@ async function buildHome(){
   var welcome=await JHService.welcome(ctx);
   var presence=await JHService.presence(famPhones, profs);
   var moments=await JHService.moments(ctx);
-  var hero=JHService.heroCard(presence);
+  var today=await JHService.today(ctx, profs, presence, moments);
   var note=JHService.doorNote();
   var mwk=0; try{ var wk=new Date(); wk.setDate(wk.getDate()-7); var mr=await sb.from('moments').select('id',{count:'exact',head:true}).in('created_by',famPhones).eq('status','active').gte('created_at',wk.toISOString()); mwk=mr.count||0; }catch(e){}
   var skyvos=JHService.skyvos(presence, mwk);
@@ -3156,9 +3193,7 @@ async function buildHome(){
     '<div class="jh-hd-wx">'+jic('sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
 
   /* 2) HERO */
-  var heroImg=JH_HOME_COVER || ((moments[0]&&moments[0].image)?moments[0].image:'');
-  var heroThumb=heroImg ? '<img src="'+escapeAttr(heroImg)+'" alt="" loading="lazy" decoding="async">' : '';
-  var heroH='<section class="jh-hero2 jh-rise" aria-label="Tonight at home"><div class="jh-hero2-thumb">'+heroThumb+'</div><div class="jh-hero2-body"><div class="jh-hero2-eye">'+jic('heartfill')+escapeHtml(hero.eyebrow)+'</div><p class="jh-hero2-msg">'+escapeHtml(hero.message)+'</p></div></section>';
+  var heroH='<section class="jh-rise" aria-label="Today">'+todayCard(today)+'</section>';
 
   /* 3) PRESENCE */
   var homeCount=presence.filter(function(p){return p.home;}).length;
