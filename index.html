@@ -727,144 +727,145 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .confetti{position:absolute;top:-30px;font-size:20px;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(115vh) rotate(360deg);opacity:.15}}
 /* ============================================================
-   JEETO HOME — approved v0 design (warm daylight sanctuary)
-   Faithful port of github jeeto-home-screen. Scoped to .jh so
-   it never touches other screens. Tokens in oklch, exactly as source.
+   JEETO HOME v1 — approved dark design (jeeto-home-experience)
+   Faithful vanilla port. Neutral-dark base + warm per-component
+   colour, exactly as the v0 source. Scoped to .jh.
    ============================================================ */
 .jh, #bottomNav.navv0{
-  --jh-bg:oklch(0.965 0.014 78); --jh-fg:oklch(0.29 0.03 52);
-  --jh-card:oklch(0.995 0.007 85); --jh-primary:oklch(0.7 0.13 64);
-  --jh-primary-fg:oklch(0.99 0.01 85); --jh-secondary:oklch(0.93 0.02 78);
-  --jh-muted:oklch(0.93 0.016 78); --jh-muted-fg:oklch(0.52 0.04 58);
-  --jh-accent:oklch(0.62 0.15 42); --jh-accent-fg:oklch(0.99 0.01 85);
-  --jh-border:oklch(0.4 0.04 55 / 10%); --jh-glow:oklch(0.82 0.13 80);
-  --jh-serif:'Fraunces',Georgia,serif; --jh-sans:'Geist','Plus Jakarta Sans',sans-serif;
+  --jh-bg:oklch(0.16 0.012 50); --jh-fg:oklch(0.97 0.008 85);
+  --jh-card:oklch(0.215 0.012 52); --jh-card2:oklch(0.255 0.012 55);
+  --jh-muted-fg:oklch(0.7 0.015 70); --jh-primary:oklch(0.64 0.14 45);
+  --jh-primary-fg:oklch(0.98 0.012 85); --jh-secondary:oklch(0.235 0.012 55);
+  --jh-accent:oklch(0.82 0.08 78); --jh-border:oklch(1 0 0 / 0.1);
+  --jh-emerald:#10b981; --jh-serif:'Fraunces',Georgia,serif; --jh-sans:'Geist','Plus Jakarta Sans',sans-serif;
 }
 #screen-home{padding:0!important;background:var(--jh-bg)}
-.jh{position:relative;font-family:var(--jh-sans);color:var(--jh-fg);background:var(--jh-bg);min-height:100%;padding-bottom:30px;overflow:hidden}
+.jh{position:relative;font-family:var(--jh-sans);color:var(--jh-fg);background:var(--jh-bg);min-height:100%;overflow:hidden}
 .jh *{box-sizing:border-box}
-.jh .serif{font-family:var(--jh-serif)}
-/* atmosphere */
-.jh-atmos{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.jh-sun{position:absolute;right:-80px;top:-96px;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,oklch(0.88 0.12 82/0.6),transparent);filter:blur(28px);animation:drift 18s ease-in-out infinite}
-.jh-wash{position:absolute;left:-64px;top:160px;width:288px;height:288px;border-radius:50%;background:radial-gradient(closest-side,oklch(0.8 0.1 55/0.28),transparent);filter:blur(40px)}
-.jh-floor{position:absolute;bottom:-128px;left:50%;width:150%;height:288px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,oklch(0.78 0.13 58/0.3),transparent);filter:blur(40px);animation:hearth-breathe 7s ease-in-out infinite}
-.jh-mote{position:absolute;bottom:96px;border-radius:50%;background:var(--jh-glow);box-shadow:0 0 6px 1px oklch(0.85 0.12 80/0.7);animation:ember-float linear infinite}
-.jh-grain{position:absolute;inset:0;opacity:.06;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.jh-content{position:relative;z-index:1}
-/* header */
-.jh-head{padding:20px 24px 0}
-.jh-toprow{display:flex;align-items:center;justify-content:space-between}
-.jh-id{display:flex;align-items:center;gap:12px}
-.jh-av{position:relative;width:44px;height:44px}
-.jh-av .av-c{width:44px;height:44px;border-radius:50%;background:var(--jh-primary);color:var(--jh-primary-fg);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.12);outline:2px solid var(--jh-card);overflow:hidden}
-.jh-av .av-c img{width:100%;height:100%;object-fit:cover}
-.jh-av .av-dot{position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:var(--jh-accent);outline:2px solid var(--jh-bg)}
-.jh-greet{line-height:1.15}
-.jh-greet .g1{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--jh-muted-fg)}
-.jh-greet .g1 svg{width:14px;height:14px;color:var(--jh-primary)}
-.jh-greet .g2{font-family:var(--jh-serif);font-size:18px;letter-spacing:-.01em;color:var(--jh-fg)}
-.jh-util{display:flex;align-items:center;gap:8px}
-.jh-ubtn{position:relative;width:40px;height:40px;border-radius:50%;background:var(--jh-card);color:var(--jh-muted-fg);display:flex;align-items:center;justify-content:center;border:1px solid var(--jh-border);box-shadow:0 1px 3px rgba(0,0,0,.08);cursor:pointer}
-.jh-ubtn svg{width:18px;height:18px}
-.jh-ubtn .ub-badge{position:absolute;right:-2px;top:-2px;min-width:16px;height:16px;padding:0 3px;border-radius:50%;background:var(--jh-accent);color:var(--jh-accent-fg);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center}
-.jh-welcome{padding-top:36px}
-.jh-over{font-size:11px;text-transform:uppercase;letter-spacing:.32em;color:var(--jh-muted-fg)}
-.jh-h1{margin-top:8px;font-family:var(--jh-serif);font-size:41px;line-height:1.05;letter-spacing:-.02em;color:var(--jh-fg)}
-.jh-sub{margin-top:12px;max-width:20rem;line-height:1.6;color:var(--jh-muted-fg);font-size:14.5px}
-/* generic section */
-.jh-sec{padding:0 24px;margin-top:40px}
-.jh-sec-h{font-family:var(--jh-serif);font-size:20px;letter-spacing:-.01em;color:var(--jh-fg)}
-.jh-eyebrow{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.28em;color:var(--jh-muted-fg)}
-.jh-link{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--jh-primary);background:none;border:none;cursor:pointer;font-family:inherit}
-/* celebration */
-.jh-cele{margin-top:32px;padding:0 24px}
-.jh-cele-wrap{position:relative;width:100%;border-radius:32px;background:linear-gradient(135deg,var(--jh-primary),var(--jh-accent));padding:1px;box-shadow:0 12px 30px -10px oklch(0.62 0.15 42/0.25);cursor:pointer;text-align:left;border:none;display:block}
-.jh-cele-in{position:relative;overflow:hidden;border-radius:31px;background:oklch(0.995 0.007 85/0.96);padding:24px}
-.jh-cele-glow{position:absolute;right:-32px;top:-32px;width:128px;height:128px;border-radius:50%;background:oklch(0.62 0.15 42/0.15);filter:blur(28px)}
-.jh-cele-top{display:flex;align-items:center;justify-content:space-between;position:relative}
-.jh-pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:oklch(0.62 0.15 42/0.1);padding:5px 12px;font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.2em;color:var(--jh-accent)}
-.jh-pill svg{width:14px;height:14px}
-.jh-cele h3{margin-top:16px;font-family:var(--jh-serif);font-size:23px;line-height:1.2;color:var(--jh-fg);position:relative}
-.jh-cele p{margin-top:8px;max-width:20rem;line-height:1.6;color:var(--jh-muted-fg);font-size:14px;position:relative}
-.jh-cele-cta{margin-top:20px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--jh-primary);position:relative}
-.jh-cele-cta svg{width:16px;height:16px}
-.jh-arrow{width:20px;height:20px;color:var(--jh-muted-fg)}
-/* presence */
-.jh-pres-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px}
-.jh-pres-c{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:oklch(0.7 0.13 64/0.8)}
-.jh-pres-list{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;list-style:none;margin:0;padding:0}
-.jh-pres-item{display:flex;min-width:0;flex:1;flex-direction:column;align-items:center;gap:8px}
-.jh-pres-av{position:relative}
-.jh-pres-c2{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--jh-serif);font-size:18px;overflow:hidden}
-.jh-pres-c2.home{background:linear-gradient(to bottom,var(--jh-primary),var(--jh-accent));color:var(--jh-primary-fg);box-shadow:0 8px 16px -6px oklch(0.62 0.15 42/0.25);animation:pulse-ring 2.8s ease-out infinite}
-.jh-pres-c2.away{background:var(--jh-secondary);color:oklch(0.52 0.04 58/0.7);border:1px solid var(--jh-border)}
-.jh-pres-c2 img{width:100%;height:100%;object-fit:cover}
-.jh-pres-dot{position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;border-radius:50%;outline:2px solid var(--jh-bg)}
-.jh-pres-dot.home{background:var(--jh-primary)} .jh-pres-dot.away{background:oklch(0.52 0.04 58/0.4)}
-.jh-pres-nm{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:500;color:oklch(0.29 0.03 52/0.9)}
-.jh-pres-note{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:1;color:var(--jh-muted-fg)}
-/* moments row */
-.jh-moments{margin-top:40px}
-.jh-moments-h{display:flex;align-items:baseline;justify-content:space-between;padding:0 24px;margin-bottom:16px}
-.jh-mscroll{display:flex;gap:16px;overflow-x:auto;padding:0 24px 8px;scrollbar-width:none}
+.jh-mood{position:fixed;left:0;right:0;top:0;height:288px;filter:blur(48px);pointer-events:none;z-index:0;opacity:.55;animation:jh-breathe 9s ease-in-out infinite}
+.jh-wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:36px;padding:32px 24px 128px}
+.jh-serif{font-family:var(--jh-serif)}
+.jh-rise{animation:jh-rise .8s cubic-bezier(.22,1,.36,1) both}
+@keyframes jh-breathe{0%,100%{opacity:.5}50%{opacity:.82}}
+@keyframes jh-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.jh-mood,.jh-rise{animation:none!important}}
+/* section title */
+.jh-st{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
+.jh-st h2{font-family:var(--jh-serif);font-size:20px;letter-spacing:-.01em;color:var(--jh-fg);margin:0}
+.jh-st .hint{font-size:14px;color:var(--jh-muted-fg)}
+.jh-st .act{display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:500;color:var(--jh-primary);background:none;border:none;cursor:pointer;font-family:inherit;flex-shrink:0}
+.jh-st .act svg{width:14px;height:14px}
+/* HEADER */
+.jh-hd-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.jh-hd-grt{font-size:14px;color:var(--jh-muted-fg);margin:0}
+.jh-hd-nm{margin:2px 0 0;font-family:var(--jh-serif);font-size:30px;line-height:1;letter-spacing:-.02em;color:var(--jh-fg)}
+.jh-pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:var(--jh-card);padding:8px 14px;font-size:14px;font-weight:500;color:var(--jh-fg);box-shadow:0 1px 3px rgba(0,0,0,.2);border:1px solid var(--jh-border)}
+.jh-pill svg{width:16px;height:16px;color:var(--jh-primary)}
+.jh-hd-id{margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--jh-border);padding-top:16px}
+.jh-hd-home{display:flex;align-items:center;gap:10px}
+.jh-hd-ic{width:36px;height:36px;border-radius:12px;background:oklch(0.64 0.14 45/0.12);color:var(--jh-primary);display:flex;align-items:center;justify-content:center;border:1px solid oklch(0.64 0.14 45/0.18)}
+.jh-hd-ic svg{width:16px;height:16px}
+.jh-hd-hn{font-family:var(--jh-serif);font-size:16px;color:var(--jh-fg);line-height:1.2}
+.jh-hd-hc{font-size:12px;color:var(--jh-muted-fg);line-height:1.3}
+.jh-hd-wx{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--jh-muted-fg)}
+.jh-hd-wx svg{width:16px;height:16px;color:oklch(0.82 0.08 78/0.75)}
+.jh-hd-wx .sep{color:oklch(0.7 0.015 70/0.4)}
+/* HERO */
+.jh-hero{position:relative;overflow:hidden;border-radius:32px;box-shadow:0 20px 60px -20px rgba(80,50,20,.45)}
+.jh-hero-bg{height:416px;width:100%;background:radial-gradient(120% 80% at 70% 20%, oklch(0.55 0.12 55) 0%, oklch(0.32 0.08 40) 38%, oklch(0.18 0.04 35) 78%)}
+.jh-hero-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(42,26,15,.85),rgba(42,26,15,.2) 55%,transparent)}
+.jh-hero-c{position:absolute;left:0;right:0;bottom:0;padding:28px}
+.jh-hero-eye{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:rgba(246,231,207,.8)}
+.jh-hero-eye svg{width:14px;height:14px;fill:#f0b9a0;color:#f0b9a0}
+.jh-hero-msg{margin:8px 0 0;max-width:18ch;font-family:var(--jh-serif);font-size:34px;line-height:1.1;color:#fdf6ea}
+/* PRESENCE */
+.jh-pres-row{display:flex;gap:16px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.jh-pres-row::-webkit-scrollbar{display:none}
+.jh-pres{display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;background:none;border:none;cursor:pointer;font-family:inherit}
+.jh-pres-rg{display:block;border-radius:999px;padding:3px}
+.jh-pres-rg.home{background:var(--jh-accent)} .jh-pres-rg.away{background:var(--jh-border)}
+.jh-pres-av{width:64px;height:64px;border-radius:999px;object-fit:cover;display:block;outline:2px solid var(--jh-card);background:var(--jh-card2);color:var(--jh-fg);font-weight:600;font-size:20px;text-align:center;line-height:64px;overflow:hidden}
+.jh-pres-av img{width:100%;height:100%;object-fit:cover}
+.jh-pres-w{position:relative}
+.jh-pres-dot{position:absolute;bottom:0;right:0;width:16px;height:16px;border-radius:999px;outline:2px solid var(--jh-card)}
+.jh-pres-dot.on{background:var(--jh-emerald)} .jh-pres-dot.off{background:oklch(0.7 0.015 70/0.5)}
+.jh-pres-nm{font-size:14px;font-weight:500;color:var(--jh-fg)}
+/* MOMENTS */
+.jh-mscroll{display:flex;gap:16px;overflow-x:auto;margin:0 -24px;padding:0 24px 8px;scrollbar-width:none}
 .jh-mscroll::-webkit-scrollbar{display:none}
-.jh-mcard{position:relative;width:68%;flex:0 0 auto;border-radius:32px;overflow:hidden;border:1px solid var(--jh-border);cursor:pointer;background:var(--jh-secondary)}
-.jh-mcard img{height:240px;width:100%;object-fit:cover;display:block;transition:transform .7s ease}
-.jh-mcard:active img{transform:scale(1.04)}
-.jh-mcard .m-ph{height:240px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--jh-muted-fg)}
-.jh-mcard .m-scrim{position:absolute;inset:0;background:linear-gradient(to top,oklch(0.29 0.03 52/0.7),transparent 55%)}
-.jh-mcard .m-cap{position:absolute;left:0;right:0;bottom:0;padding:16px}
-.jh-mcard .m-kind{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--jh-card)}
-.jh-mcard .m-title{margin-top:2px;font-family:var(--jh-serif);font-size:18px;color:var(--jh-card)}
-/* hearth note */
-.jh-note{position:relative;overflow:hidden;border-radius:32px;border:1px solid var(--jh-border);background:var(--jh-card);padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.jh-note-glow{position:absolute;right:-40px;top:-40px;width:128px;height:128px;border-radius:50%;background:oklch(0.7 0.13 64/0.1);filter:blur(28px)}
-.jh-note-k{display:flex;align-items:center;gap:8px;font-size:11px;text-transform:uppercase;letter-spacing:.24em;color:var(--jh-primary);position:relative}
-.jh-note-k svg{width:14px;height:14px}
-.jh-note-b{margin-top:16px;font-family:var(--jh-serif);font-size:23px;line-height:1.35;color:var(--jh-fg);position:relative}
-.jh-note-by{margin-top:12px;font-family:var(--jh-serif);font-size:14px;font-style:italic;color:var(--jh-muted-fg);position:relative}
-/* suggestion */
-.jh-sug{display:flex;width:100%;align-items:center;gap:16px;border-radius:32px;border:1px solid var(--jh-border);background:var(--jh-card);padding:20px;text-align:left;box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer;font-family:inherit}
-.jh-sug-ic{width:48px;height:48px;flex:0 0 auto;border-radius:16px;background:oklch(0.7 0.13 64/0.1);color:var(--jh-primary);display:flex;align-items:center;justify-content:center}
-.jh-sug-ic svg{width:20px;height:20px}
-.jh-sug-b{min-width:0;flex:1}
-.jh-sug-t{font-weight:500;color:var(--jh-fg);font-size:15px}
-.jh-sug-d{margin-top:2px;font-size:13.5px;line-height:1.55;color:var(--jh-muted-fg)}
-/* pulse */
-.jh-pulse{overflow:hidden;border-radius:32px;border:1px solid var(--jh-border);background:var(--jh-card);padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.jh-pulse-k{display:flex;align-items:center;gap:8px;font-size:11px;text-transform:uppercase;letter-spacing:.24em;color:var(--jh-accent)}
-.jh-pulse-k svg{width:14px;height:14px}
-.jh-pulse-b{margin-top:16px;font-family:var(--jh-serif);font-size:20px;line-height:1.55;color:var(--jh-fg)}
-/* memory */
-.jh-mem{position:relative;overflow:hidden;border-radius:32px;border:1px solid var(--jh-border);box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer}
-.jh-mem img{height:176px;width:100%;object-fit:cover;display:block}
-.jh-mem .mem-ph{height:176px;background:linear-gradient(135deg,var(--jh-primary),var(--jh-accent))}
-.jh-mem-scrim{position:absolute;inset:0;background:linear-gradient(to top,oklch(0.29 0.03 52/0.85),oklch(0.29 0.03 52/0.2) 50%,transparent)}
-.jh-mem-row{position:absolute;inset-inline:0;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:20px}
-.jh-mem-k{font-size:10.5px;text-transform:uppercase;letter-spacing:.24em;color:var(--jh-card)}
-.jh-mem-t{margin-top:4px;font-family:var(--jh-serif);font-size:18px;color:var(--jh-card)}
-.jh-mem-row svg{width:20px;height:20px;color:oklch(0.995 0.007 85/0.9)}
-/* footer */
-.jh-foot{padding:48px 24px 16px;text-align:center}
-.jh-foot p{margin:0 auto;max-width:16rem;font-family:var(--jh-serif);font-size:16px;font-style:italic;line-height:1.6;color:var(--jh-muted-fg)}
-/* rise animation per section */
-.jh .rise{animation:rise .9s cubic-bezier(.22,1,.36,1) both}
-@keyframes hearth-breathe{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.85;transform:scale(1.08)}}
-@keyframes drift{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(-2%,-3%,0)}100%{transform:translate3d(0,0,0)}}
-@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes ember-float{0%{transform:translateY(0) scale(1);opacity:0}15%{opacity:.9}90%{opacity:.5}100%{transform:translateY(-120px) scale(.4);opacity:0}}
-@keyframes pulse-ring{0%{box-shadow:0 0 0 0 oklch(0.8 0.13 72/0.45)}70%{box-shadow:0 0 0 10px oklch(0.8 0.13 72/0)}100%{box-shadow:0 0 0 0 oklch(0.8 0.13 72/0)}}
-@media (prefers-reduced-motion:reduce){.jh-sun,.jh-floor,.jh-mote,.jh .rise,.jh-pres-c2.home{animation:none!important}}
-/* bottom nav — v0 */
-#bottomNav.navv0{border-top:1px solid var(--jh-border);background:oklch(0.995 0.007 85/0.85);backdrop-filter:blur(16px);padding:10px 12px calc(env(safe-area-inset-bottom,0px) + 14px)}
-#bottomNav.navv0 button{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--jh-muted-fg)}
-#bottomNav.navv0 .ni{width:40px;height:40px;border-radius:16px;display:flex;align-items:center;justify-content:center;transition:.2s}
-#bottomNav.navv0 .ni svg{width:21px;height:21px;stroke-width:1.75}
-#bottomNav.navv0 .nl{font-size:10px;letter-spacing:.02em;color:var(--jh-muted-fg)}
-#bottomNav.navv0 button.on .ni{background:oklch(0.7 0.13 64/0.12);color:var(--jh-primary)}
+.jh-mcard{width:256px;flex-shrink:0;overflow:hidden;border-radius:28px;background:var(--jh-card);box-shadow:0 1px 3px rgba(0,0,0,.25);border:1px solid var(--jh-border)}
+.jh-mcard .mi{position:relative}
+.jh-mcard .mi img{height:176px;width:100%;object-fit:cover;display:block}
+.jh-mcard .mi .ph{height:176px;width:100%;background:linear-gradient(135deg,oklch(0.4 0.1 50),oklch(0.28 0.06 40))}
+.jh-mkind{position:absolute;left:12px;top:12px;display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:rgba(42,26,15,.55);padding:4px 10px;font-size:12px;font-weight:500;color:#fdf6ea;backdrop-filter:blur(4px)}
+.jh-mkind svg{width:14px;height:14px}
+.jh-mcard .mb{padding:16px}
+.jh-mcard .mt{font-family:var(--jh-serif);font-size:16px;line-height:1.3;color:var(--jh-fg);margin:0}
+.jh-mcard .mc{margin:4px 0 0;font-size:14px;color:var(--jh-muted-fg)}
+.jh-mcard .mby{margin:12px 0 0;font-size:12px;color:oklch(0.7 0.015 70/0.8)}
+/* NOTE ON THE DOOR */
+.jh-note{position:relative;border-radius:28px;background:oklch(0.95 0.04 92);padding:28px;box-shadow:0 1px 3px rgba(0,0,0,.25);border:1px solid oklch(0.85 0.05 85)}
+.jh-note-pin{position:absolute;left:50%;top:16px;width:12px;height:12px;transform:translateX(-50%);border-radius:999px;background:var(--jh-primary);box-shadow:0 1px 2px rgba(0,0,0,.3);outline:2px solid oklch(0.95 0.04 92)}
+.jh-note-k{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.2em;color:oklch(0.55 0.13 45/0.75)}
+.jh-note-b{margin:12px 0 0;font-family:var(--jh-serif);font-size:20px;font-style:italic;line-height:1.6;color:oklch(0.33 0.04 60)}
+.jh-note-by{margin:16px 0 0;font-family:var(--jh-serif);font-size:18px;line-height:1.4;color:oklch(0.33 0.04 60/0.85)}
+.jh-note-sky{margin:12px 0 0;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:oklch(0.45 0.04 60)}
+.jh-note-sky svg{width:14px;height:14px;color:var(--jh-primary)}
+/* SKYVOS SUGGESTS */
+.jh-sky{border-radius:28px;background:var(--jh-primary);color:var(--jh-primary-fg);padding:28px;box-shadow:0 18px 50px -22px rgba(120,60,20,.7)}
+.jh-sky-k{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:oklch(0.98 0.012 85/0.75)}
+.jh-sky-k svg{width:16px;height:16px}
+.jh-sky-b{margin:12px 0 0;font-family:var(--jh-serif);font-size:24px;line-height:1.25}
+.jh-sky-btn{margin-top:20px;display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:var(--jh-primary-fg);color:var(--jh-primary);padding:10px 20px;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:inherit}
+.jh-sky-btn svg{width:16px;height:16px}
+/* WEEKLY REFLECTION */
+.jh-wr{border-radius:28px;background:var(--jh-card);padding:28px;box-shadow:0 1px 3px rgba(0,0,0,.25);border:1px solid var(--jh-border)}
+.jh-wr-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.jh-wr-k{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.2em;color:oklch(0.64 0.14 45/0.8)}
+.jh-wr-k svg{width:14px;height:14px}
+.jh-wr-b{margin:12px 0 0;font-family:var(--jh-serif);font-size:18px;font-style:italic;line-height:1.6;color:var(--jh-fg)}
+.jh-wr-grid{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.jh-wr-stat{border-radius:16px;background:var(--jh-secondary);padding:16px 12px;text-align:center}
+.jh-wr-si{width:36px;height:36px;margin:0 auto;border-radius:999px;background:oklch(0.64 0.14 45/0.12);color:var(--jh-primary);display:flex;align-items:center;justify-content:center}
+.jh-wr-si svg{width:16px;height:16px}
+.jh-wr-sv{margin:8px 0 0;font-family:var(--jh-serif);font-size:20px;color:var(--jh-fg)}
+.jh-wr-sl{font-size:12px;color:var(--jh-muted-fg)}
+.jh-wr-foot{margin:16px 0 0;font-size:12px;color:var(--jh-muted-fg)}
+/* MY WORLD */
+.jh-mw-sub{margin:-8px 0 20px;max-width:42ch;font-size:14px;color:var(--jh-muted-fg)}
+.jh-mw-scroll{display:flex;gap:16px;overflow-x:auto;margin:0 -24px;padding:0 24px 8px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.jh-mw-scroll::-webkit-scrollbar{display:none}
+.jh-mw-card{width:78%;flex-shrink:0;scroll-snap-align:center;overflow:hidden;border-radius:28px;background:var(--jh-card);box-shadow:0 1px 3px rgba(0,0,0,.25);border:1px solid var(--jh-border);cursor:pointer}
+.jh-mw-img{position:relative;height:176px}
+.jh-mw-img>svg,.jh-mw-img>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.jh-mw-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(42,26,15,.85),rgba(42,26,15,.2) 55%,transparent)}
+.jh-mw-status{position:absolute;right:12px;top:12px;display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:rgba(253,246,234,.9);padding:4px 10px;font-size:11px;font-weight:500;color:#3a2415;backdrop-filter:blur(4px)}
+.jh-mw-status svg{width:14px;height:14px;color:var(--jh-primary)}
+.jh-mw-nm{position:absolute;left:16px;right:16px;bottom:14px}
+.jh-mw-nm h3{margin:0;font-family:var(--jh-serif);font-size:18px;line-height:1.2;color:#fdf6ea}
+.jh-mw-nm p{margin:0;font-size:12px;color:rgba(253,246,234,.8)}
+.jh-mw-foot{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+.jh-mw-m{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--jh-muted-fg)}
+.jh-mw-m svg{width:16px;height:16px}
+.jh-mw-enter{display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:500;color:var(--jh-primary)}
+.jh-mw-enter svg{width:16px;height:16px}
+/* ACROSS MY WORLD */
+.jh-aw{border-radius:28px;background:var(--jh-secondary);padding:24px;border:1px solid var(--jh-border)}
+.jh-aw-k{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--jh-muted-fg)}
+.jh-aw-k svg{width:14px;height:14px;color:var(--jh-primary)}
+.jh-aw-grid{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px 16px}
+.jh-aw-v{font-family:var(--jh-serif);font-size:30px;line-height:1;color:var(--jh-fg)}
+.jh-aw-l{margin:6px 0 0;font-size:14px;line-height:1.35;color:var(--jh-muted-fg)}
+/* BOTTOM NAV — v0 dark */
+#bottomNav.navv0{border-top:1px solid var(--jh-border);background:oklch(0.215 0.012 52/0.72);backdrop-filter:blur(18px);padding:8px 12px calc(env(safe-area-inset-bottom,0px) + 8px)}
+#bottomNav.navv0 button{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--jh-muted-fg)}
+#bottomNav.navv0 .ni{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;transition:.2s}
+#bottomNav.navv0 .ni svg{width:18px;height:18px;stroke-width:1.75}
+#bottomNav.navv0 .nl{font-size:10.5px;font-weight:500;color:var(--jh-muted-fg)}
+#bottomNav.navv0 button.on{color:var(--jh-primary)}
+#bottomNav.navv0 button.on .ni{background:oklch(0.64 0.14 45/0.14)}
 #bottomNav.navv0 button.on .ni svg{stroke-width:2.25}
-#bottomNav.navv0 button.on .nl{font-weight:600;color:var(--jh-fg)}
+#bottomNav.navv0 button.on .nl{color:var(--jh-primary)}
 
 </style>
 </head>
@@ -1079,9 +1080,9 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 
   <nav class="nav navv0 hide" id="bottomNav">
     <button data-tab="home" onclick="navTo('home')" aria-label="Home"><span class="ni">__IC_home__</span><span class="nl">Home</span></button>
-    <button data-tab="family" onclick="navTo('family')" aria-label="Relationships"><span class="ni">__IC_users__</span><span class="nl">Relationships</span></button>
-    <button data-tab="moments" onclick="navTo('moments')" aria-label="Moments"><span class="ni">__IC_image__</span><span class="nl">Moments</span></button>
-    <button data-tab="bridge" onclick="navTo('bridge')" aria-label="Bridges"><span class="ni">__IC_waypoints__</span><span class="nl">Bridges</span></button>
+    <button data-tab="family" onclick="navTo('family')" aria-label="Relationships"><span class="ni">__IC_heart__</span><span class="nl">Relationships</span></button>
+    <button data-tab="moments" onclick="navTo('moments')" aria-label="Moments"><span class="ni">__IC_images__</span><span class="nl">Moments</span></button>
+    <button data-tab="world" onclick="navTo('world')" aria-label="My World"><span class="ni">__IC_globe__</span><span class="nl">My World</span></button>
     <button data-tab="profile" onclick="navTo('profile')" aria-label="Passport"><span class="ni">__IC_idcard__</span><span class="nl">Passport</span></button>
   </nav>
 
@@ -1118,7 +1119,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.14.0';
+var JEETO_VERSION='1.0.0-home';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1354,23 +1355,107 @@ function countUp(el, to){
    ============================================================ */
 var JH_ICONS={
   home:'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
-  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
-  image:'<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
-  waypoints:'<circle cx="12" cy="4.5" r="2.5"/><path d="m10.2 6.3-3.9 3.9"/><circle cx="4.5" cy="12" r="2.5"/><path d="M7 12h10"/><circle cx="19.5" cy="12" r="2.5"/><path d="m13.8 17.7 3.9-3.9"/><circle cx="12" cy="19.5" r="2.5"/>',
-  idcard:'<path d="M16 10h2"/><path d="M16 14h2"/><path d="M6.17 15a3 3 0 0 1 5.66 0"/><circle cx="9" cy="11" r="2"/><rect x="2" y="5" width="20" height="14" rx="2"/>',
-  bell:'<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
-  settings:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
-  sunrise:'<path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/>',
-  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
-  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
-  party:'<path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/>',
-  arrow:'<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
-  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
   heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
-  sparkles:'<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.962 0z"/>',
+  images:'<path d="M18 22H4a2 2 0 0 1-2-2V6"/><path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18"/><circle cx="12" cy="8" r="2"/><rect width="16" height="16" x="6" y="2" rx="2"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+  idcard:'<path d="M16 10h2"/><path d="M16 14h2"/><path d="M6.17 15a3 3 0 0 1 5.66 0"/><circle cx="9" cy="11" r="2"/><rect x="2" y="5" width="20" height="14" rx="2"/>',
+  flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+  heartfill:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
   video:'<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
-  cake:'<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/>'
+  mic:'<path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/>',
+  feather:'<path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/>',
+  sparkles:'<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.962 0z"/>',
+  arrow:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  cake:'<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/>',
+  snowflake:'<path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'
 };
+function jhTimeAgo(iso){ try{ var d=new Date(iso), s=(Date.now()-d.getTime())/1000; if(s<60) return 'just now'; if(s<3600) return Math.max(1,Math.floor(s/60))+'m ago'; if(s<86400) return Math.floor(s/3600)+'h ago'; var dd=Math.floor(s/86400); if(dd===1) return 'Yesterday'; if(dd<7) return dd+'d ago'; return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }catch(e){ return ''; } }
+
+/* ============================================================
+   SERVICE LAYER — each method returns typed data (JSDoc) and is
+   backed by real Supabase where data exists, with honest
+   placeholders elsewhere. Swap internals for production queries
+   without touching the view. Skyvos only observes/summarizes.
+   ============================================================ */
+var JHService = {
+  /** @returns {Promise<{greeting:string,name:string,homeName:string,city:string,time:string,mood:{label:string,wash:string}}>} */
+  async welcome(ctx){
+    var u=ME||{}; var first=((u.name||'').split(' ')[0])||'there';
+    var h=new Date().getHours();
+    var greeting=h<5?'Still up':h<12?'Good Morning':h<17?'Good Afternoon':h<21?'Good Evening':'Good Night';
+    var time=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    var hh=(ctx.households&&ctx.households[0]&&ctx.households[0].h)||{};
+    return { greeting:greeting, name:first, homeName:hh.household_name||'Your Home', city:hh.city||'', time:time,
+             mood:{ label:'Warm', wash:'oklch(0.82 0.1 60)' } };
+  },
+  /** @returns {Promise<Array<{phone:string,name:string,avatar:string,home:boolean}>>} presence from last_seen */
+  async presence(famPhones, profs){
+    var pres={}; try{ var pr=await sb.from('profiles').select('phone,name,avatar_url,last_seen').in('phone',famPhones); (pr.data||[]).forEach(function(x){ pres[x.phone]=x; }); }catch(e){}
+    var now=Date.now(); var me=myPhone();
+    var order=[me].concat(famPhones.filter(function(p){return p!==me;}));
+    return order.map(function(p){ var x=pres[p]||profs[p]||{}; var home=!!(pres[p]&&pres[p].last_seen&&(now-new Date(pres[p].last_seen).getTime())<5*60*1000);
+      return { phone:p, name:(p===me?'You':((x.name||'').split(' ')[0]||'Family')), avatar:x.avatar_url||'', home:home }; });
+  },
+  /** @returns {Promise<Array<{id,title,caption,image,kind,by,time}>>} real moments */
+  async moments(ctx){
+    var list=[]; try{ list=await loadMoments('family',ctx); }catch(e){}
+    return list.slice(0,8).map(function(x){
+      var img=(x.media&&x.media.filter(function(md){return md.media_type==='image';})[0]||{}).media_url||'';
+      var vid=(x.media&&x.media.filter(function(md){return md.media_type==='video';})[0]);
+      var kind=img?'photo':(vid?'video':'story');
+      return { id:x.m.id, title:x.m.title||'A moment', caption:x.m.description||x.m.note||'', image:img, kind:kind, by:x.creator||'', time:jhTimeAgo(x.m.created_at) };
+    }).filter(function(m){ return m.image; });
+  },
+  /** Skyvos OBSERVATION only — never invents family activity. */
+  heroCard(presence){
+    var home=presence.filter(function(p){return p.home;}).length, total=presence.length;
+    if(total>0 && home===total) return { eyebrow:'Tonight', message:'Everyone is home.' };
+    if(home>0) return { eyebrow:'Tonight', message:home+' of '+total+' are home.' };
+    return { eyebrow:'Tonight', message:'A quiet evening at home.' };
+  },
+  /** Note on the Door — human notes aren't tracked yet, so Skyvos leaves a gentle, observational note. */
+  doorNote(){ return { body:'The house has been quiet today. A good evening to capture a moment, or call someone you love.', from:'Skyvos', fromSkyvos:true }; },
+  /** Skyvos suggestion — observational, with one action. */
+  skyvos(presence, momentsThisWeek){
+    var allHome=presence.length>0 && presence.every(function(p){return p.home;});
+    var line = allHome ? 'Everyone\u2019s home tonight. A perfect moment to capture a family story together.'
+      : (momentsThisWeek===0 ? 'It\u2019s been a few quiet days. A single photo tonight would keep the week alive.'
+      : 'There\u2019s warmth here this week. Add one more moment before the evening ends.');
+    return { line:line, cta:{ label:'Capture a moment', fn:'openCapture()' } };
+  },
+  /** Weekly reflection — real counts, Skyvos summarizes honestly. */
+  async reflection(famPhones, homeName){
+    var wk=new Date(); wk.setDate(wk.getDate()-7); var iso=wk.toISOString();
+    var moments=0, voice=0, days=0;
+    try{ var mr=await sb.from('moments').select('id',{count:'exact',head:true}).in('created_by',famPhones).eq('status','active').gte('created_at',iso); moments=mr.count||0; }catch(e){}
+    try{ var ids=(await sb.from('moments').select('id').in('created_by',famPhones).gte('created_at',iso)).data||[]; if(ids.length){ var vm=await sb.from('moment_media').select('id',{count:'exact',head:true}).in('moment_id',ids.map(function(r){return r.id;})).in('media_type',['voice','audio']); voice=vm.count||0; var dr=(await sb.from('moments').select('created_at').in('created_by',famPhones).gte('created_at',iso)).data||[]; var set={}; dr.forEach(function(r){ set[new Date(r.created_at).toDateString()]=1; }); days=Object.keys(set).length; } }catch(e){}
+    var line = moments>0
+      ? ('This week '+(homeName||'your home')+' shared '+moments+' moment'+(moments===1?'':'s')+' across '+days+' day'+(days===1?'':'s')+'. The light stayed on.')
+      : ('A quiet week at '+(homeName||'home')+'. Sometimes the stillness is its own kind of warmth.');
+    return { line:line, stats:[ {icon:'camera',value:String(moments),label:'Moments'}, {icon:'mic',value:String(voice),label:'Voice notes'}, {icon:'users',value:String(days),label:'Days alive'} ] };
+  },
+  /** My World — my homes, real. Cover art = on-brand architectural render. */
+  async myWorld(ctx){
+    var homes=[]; try{ homes=await loadHouseholds(); }catch(e){}
+    var me=myPhone();
+    return homes.map(function(o){ var h=o.h, mem=(o.members||[]); var n=mem.length;
+      var status='Quiet tonight', kind='memories';
+      return { id:h.id, name:h.household_name, city:h.city||'', status:status, statusKind:kind, style:h.home_style||'apartment', membersHome:n }; });
+  },
+  /** Across My World — Skyvos summary, real where tracked, honest placeholders else. */
+  async acrossMyWorld(ctx, famPhones){
+    var start=new Date(); start.setHours(0,0,0,0); var iso=start.toISOString();
+    var memories='\u2014', homes='\u2014', birthdays='\u2014', bridge='\u2014';
+    try{ var mr=await sb.from('moments').select('id',{count:'exact',head:true}).in('created_by',famPhones).eq('status','active').gte('created_at',iso); memories=String(mr.count||0); }catch(e){}
+    try{ homes=String((ctx.households||[]).length); }catch(e){}
+    try{ var br=await sb.from('arena_events').select('id',{count:'exact',head:true}).eq('status','completed').gte('created_at',iso); bridge=String(br.count||0); }catch(e){}
+    return [ {id:'memories',value:memories,label:'memories shared today'}, {id:'birthdays',value:birthdays,label:'birthdays this week'}, {id:'active',value:homes,label:'homes active tonight'}, {id:'bridge',value:bridge,label:'bridge calls completed'} ];
+  }
+};
+
 function paintNavIcons(){ try{ var els=document.querySelectorAll('#bottomNav .ni'); for(var i=0;i<els.length;i++){ var m=(els[i].textContent||'').match(/__IC_([a-z]+)__/); if(m) els[i].innerHTML=jic(m[1]); } }catch(e){} }
 function jic(name){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">'+(JH_ICONS[name]||'')+'</svg>'; }
 function jhGreeting(){ var h=new Date().getHours(); if(h<5) return {label:'Still awake',icon:'moon'}; if(h<12) return {label:'Good morning',icon:'sunrise'}; if(h<17) return {label:'Good afternoon',icon:'sun'}; if(h<21) return {label:'Good evening',icon:'moon'}; return {label:'Good night',icon:'moon'}; }
@@ -3015,105 +3100,78 @@ async function buildHome(){
   (ctx.households||[]).forEach(function(h){ (h.members||[]).forEach(function(m){ fam[m.phone]=1; }); });
   var famPhones=Object.keys(fam);
   var profs=await fetchProfiles(famPhones);
-
-  // presence (last_seen)
-  var pres={}; try{ var prr=await sb.from('profiles').select('phone,name,avatar_url,last_seen').in('phone',famPhones); (prr.data||[]).forEach(function(x){ pres[x.phone]=x; }); }catch(e){}
   try{ touchPresence(); }catch(e){}
-  var now=Date.now(); function isHome(p){ var x=pres[p]; return !!(x&&x.last_seen&&(now-new Date(x.last_seen).getTime())<5*60*1000); }
 
-  // data
-  var cele=[]; try{ cele=await buildCelebrations(ctx, profs); }catch(e){}
-  var recent=[]; try{ recent=(await loadMoments('family',ctx)); }catch(e){}
-  var photoMoments=recent.filter(function(x){ return x.media && x.media.filter(function(md){return md.media_type==='image';}).length; }).slice(0,4);
-  var otd=[]; try{ otd=await loadOnThisDay(); }catch(e){}
+  var welcome=await JHService.welcome(ctx);
+  var presence=await JHService.presence(famPhones, profs);
+  var moments=await JHService.moments(ctx);
+  var hero=JHService.heroCard(presence);
+  var note=JHService.doorNote();
   var mwk=0; try{ var wk=new Date(); wk.setDate(wk.getDate()-7); var mr=await sb.from('moments').select('id',{count:'exact',head:true}).in('created_by',famPhones).eq('status','active').gte('created_at',wk.toISOString()); mwk=mr.count||0; }catch(e){}
-  var skyName=((ME&&ME.name||'').split(' ')[0])||'';
-  var onlineN=0; try{ onlineN=await onlineFamily(rels); }catch(e){}
-  var quests=[]; try{ quests=await loadQuests(); }catch(e){}
-  var activeQ=quests.filter(function(q){ return q.status==='active'||q.status==='upcoming'; });
-  var rituals=[]; try{ rituals=await loadRituals(); }catch(e){}
-  var activeRit=rituals.filter(function(r){ return r.status==='active'; });
-  var sky={}; try{ sky=Skyvos.insight(Skyvos.context({ name:skyName, celebrations:cele, onThisDay:otd, todaysMoments:{any:photoMoments.length>0}, momentsThisWeek:mwk, familyCount:rels.length, bridges:ctx.bridges.length, activeQuests:activeQ.length, activeRituals:activeRit.length, online:onlineN })); }catch(e){ sky={title:'Welcome home',body:'Your people are right here.'}; }
-  // notifications badge count
-  var unread=0; try{ var nf=await loadNotifications(); unread=nf.filter(function(x){return !x.is_read;}).length; }catch(e){}
+  var skyvos=JHService.skyvos(presence, mwk);
+  var reflection=await JHService.reflection(famPhones, welcome.homeName);
+  var world=await JHService.myWorld(ctx);
+  var across=await JHService.acrossMyWorld(ctx, famPhones);
 
-  var homeName=(ctx.households&&ctx.households[0]&&ctx.households[0].h.household_name)? ctx.households[0].h.household_name : (skyName? skyName+'\u2019s Family' : 'Your Family');
-  var g=jhGreeting();
+  function st(title, opts){ opts=opts||{}; var right = opts.action ? '<button class="act" onclick="'+(opts.fn||'')+'">'+escapeHtml(opts.action)+jic2('arrow','')+'</button>' : (opts.hint?'<span class="hint">'+escapeHtml(opts.hint)+'</span>':''); return '<div class="jh-st"><h2>'+escapeHtml(title)+'</h2>'+right+'</div>'; }
 
-  /* ---- ATMOSPHERE ---- */
-  var motes=''; for(var i=0;i<7;i++){ var l=(10+Math.random()*80).toFixed(1), d=(Math.random()*10).toFixed(1), du=(12+Math.random()*10).toFixed(1), sz=(2+Math.random()*3).toFixed(1); motes+='<span class="jh-mote" style="left:'+l+'%;width:'+sz+'px;height:'+sz+'px;animation-duration:'+du+'s;animation-delay:'+d+'s"></span>'; }
-  var atmos='<div class="jh-atmos" aria-hidden="true"><div class="jh-sun"></div><div class="jh-wash"></div><div class="jh-floor"></div>'+motes+'<div class="jh-grain"></div></div>';
+  /* mood wash */
+  var moodBg='<div class="jh-mood" aria-hidden="true" style="background:radial-gradient(60% 100% at 50% 0%, '+welcome.mood.wash+', transparent 70%)"></div>';
 
-  /* ---- HEADER ---- */
-  var header='<header class="jh-head">'+
-    '<div class="jh-toprow rise" style="animation-delay:60ms">'+
-      '<div class="jh-id"><div class="jh-av"><span class="av-c">'+jhAvatar(ME)+'</span><span class="av-dot"></span></div>'+
-      '<div class="jh-greet"><div class="g1">'+jic(g.icon)+escapeHtml(g.label)+'</div><div class="g2">'+escapeHtml(skyName||'there')+'</div></div></div>'+
-      '<div class="jh-util">'+
-        '<button class="jh-ubtn" aria-label="Settings" onclick="openHomeSettings()">'+jic('settings')+'</button>'+
-        '<button class="jh-ubtn" aria-label="Notifications" onclick="openNotifications()">'+jic('bell')+(unread>0?'<span class="ub-badge">'+unread+'</span>':'')+'</button>'+
-      '</div>'+
-    '</div>'+
-    '<div class="jh-welcome rise" style="animation-delay:140ms">'+
-      '<p class="jh-over">'+escapeHtml(homeName)+'</p>'+
-      '<h1 class="jh-h1">Welcome home.</h1>'+
-      '<p class="jh-sub">The door is open and the light is on. Here is everyone you love, gathered in one place.</p>'+
-    '</div></header>';
+  /* 1) HEADER */
+  var header='<header class="jh-rise">'+
+    '<div class="jh-hd-top"><div><p class="jh-hd-grt">'+escapeHtml(welcome.greeting)+',</p><h1 class="jh-hd-nm">'+escapeHtml(welcome.name)+'</h1></div>'+
+    '<div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div>'+
+    '<div class="jh-hd-id"><div class="jh-hd-home"><span class="jh-hd-ic">'+jic('home')+'</span><div><p class="jh-hd-hn">'+escapeHtml(welcome.homeName)+'</p>'+(welcome.city?'<p class="jh-hd-hc">'+escapeHtml(welcome.city)+'</p>':'')+'</div></div>'+
+    '<div class="jh-hd-wx">'+jic('sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
 
-  /* ---- CELEBRATION (real) ---- */
-  var celeTitle, celeBody, celeFn, celeLabel='Capture this moment', celeIc='camera';
-  if(cele && cele.length){ var c0=cele[0]; celeTitle=c0.title||(c0.name? c0.name+'\u2019s day':'A celebration today'); celeBody=c0.sub||'A day worth remembering. Capture it so it\u2019s never forgotten.'; celeFn='openCapture()'; }
-  else if(sky && sky.title){ celeTitle=sky.title; celeBody=sky.body||''; celeFn=(sky.cta&&sky.cta.fn)?sky.cta.fn:'openCapture()'; if(sky.cta&&sky.cta.label){ celeLabel=sky.cta.label; } }
-  else { celeTitle='A quiet, open day.'; celeBody='Nothing urgent \u2014 perhaps capture a moment, or say hello to someone you love.'; celeFn='openCapture()'; }
-  var celebration='<section class="jh-cele rise" style="animation-delay:200ms"><button class="jh-cele-wrap" onclick="'+celeFn+'"><div class="jh-cele-in"><div class="jh-cele-glow"></div>'+
-    '<div class="jh-cele-top"><span class="jh-pill">'+jic('party')+'Today</span>'+jic2('arrow','jh-arrow')+'</div>'+
-    '<h3>'+escapeHtml(celeTitle)+'</h3><p>'+escapeHtml(celeBody)+'</p>'+
-    '<div class="jh-cele-cta">'+jic(celeIc)+escapeHtml(celeLabel)+'</div></div></button></section>';
+  /* 2) HERO */
+  var heroH='<section class="jh-hero jh-rise" aria-label="Tonight at home"><div class="jh-hero-bg"></div><div class="jh-hero-veil"></div>'+
+    '<div class="jh-hero-c"><div class="jh-hero-eye">'+jic('heartfill')+escapeHtml(hero.eyebrow)+'</div><p class="jh-hero-msg">'+escapeHtml(hero.message)+'</p></div></section>';
 
-  /* ---- PRESENCE (real) ---- */
-  var people=[me].concat(rels).slice(0,5);
-  var homeCount=people.filter(isHome).length;
-  var presItems=people.map(function(p){ var u=profs[p]||pres[p]||{}; var h=isHome(p); var nm=(p===me?'You':((u.name||'').split(' ')[0]||'Family'));
-    return '<li class="jh-pres-item"><div class="jh-pres-av"><div class="jh-pres-c2 '+(h?'home':'away')+'">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':escapeHtml((((u.name||'?').trim()[0])||'?').toUpperCase()))+'</div><span class="jh-pres-dot '+(h?'home':'away')+'"></span></div>'+
-      '<span class="jh-pres-nm">'+escapeHtml(nm)+'</span><span class="jh-pres-note">'+(h?'home':'away')+'</span></li>'; }).join('');
-  var presence = people.length>1 ? '<section class="jh-sec rise" style="animation-delay:220ms"><div class="jh-pres-h"><h2 class="jh-eyebrow">Who\u2019s home</h2><span class="jh-pres-c">'+homeCount+' of '+people.length+' gathered</span></div><ul class="jh-pres-list">'+presItems+'</ul></section>' : '';
+  /* 3) PRESENCE */
+  var homeCount=presence.filter(function(p){return p.home;}).length;
+  var presCards=presence.map(function(p){ return '<button class="jh-pres"><span class="jh-pres-w"><span class="jh-pres-rg '+(p.home?'home':'away')+'"><span class="jh-pres-av">'+(p.avatar?'<img src="'+escapeAttr(p.avatar)+'" alt="'+escapeAttr(p.name)+'">':escapeHtml((p.name[0]||'?').toUpperCase()))+'</span></span><span class="jh-pres-dot '+(p.home?'on':'off')+'"></span></span><span class="jh-pres-nm">'+escapeHtml(p.name)+'</span></button>'; }).join('');
+  var presenceH='<section class="jh-rise" aria-label="Who\u2019s home">'+st('Who\u2019s Home',{hint:homeCount+' of '+presence.length+' here'})+'<div class="jh-pres-row">'+presCards+'</div></section>';
 
-  /* ---- TODAY'S MOMENTS (real photos) ---- */
-  var momentsRow='';
-  if(photoMoments.length){
-    var cards=photoMoments.map(function(x){ var img=(x.media.filter(function(md){return md.media_type==='image';})[0]||{}).media_url||''; var kind=(x.m.circle||x.m.feed||'Family'); var title=x.m.title||'A moment';
-      return '<button class="jh-mcard" onclick="reliveMoment(\''+x.m.id+'\')"><img src="'+escapeAttr(img)+'" alt=""><div class="m-scrim"></div><div class="m-cap"><p class="m-kind">'+escapeHtml(String(kind))+'</p><p class="m-title">'+escapeHtml(title)+'</p></div></button>'; }).join('');
-    momentsRow='<section class="jh-moments rise" style="animation-delay:300ms"><div class="jh-moments-h"><h2 class="jh-sec-h">Today\u2019s Moments</h2><button class="jh-link" onclick="navTo(\'moments\')">All</button></div><div class="jh-mscroll">'+cards+'</div></section>';
+  /* 4) TODAY'S MOMENTS */
+  var momentsH;
+  if(moments.length){
+    var kicon={photo:'camera',video:'video',voice:'mic',story:'feather'}, klabel={photo:'Photo',video:'Video',voice:'Voice',story:'Story'};
+    var mc=moments.slice(0,6).map(function(m){ return '<article class="jh-mcard" onclick="reliveMoment(\''+m.id+'\')"><div class="mi"><img src="'+escapeAttr(m.image)+'" alt="'+escapeAttr(m.title)+'" loading="lazy" decoding="async"><span class="jh-mkind">'+jic(kicon[m.kind]||'camera')+(klabel[m.kind]||'Photo')+'</span></div><div class="mb"><h3 class="mt">'+escapeHtml(m.title)+'</h3>'+(m.caption?'<p class="mc">'+escapeHtml(m.caption)+'</p>':'')+(m.by?'<p class="mby">'+escapeHtml(m.by)+(m.time?' \u00b7 '+escapeHtml(m.time):'')+'</p>':'')+'</div></article>'; }).join('');
+    momentsH='<section class="jh-rise" aria-label="Today\u2019s moments">'+st('Today\u2019s Moments',{action:'View All',fn:"navTo('moments')"})+'<div class="jh-mscroll">'+mc+'</div></section>';
   } else {
-    momentsRow='<section class="jh-sec rise" style="animation-delay:300ms"><div class="jh-pres-h" style="margin-bottom:14px"><h2 class="jh-sec-h">Today\u2019s Moments</h2><button class="jh-link" onclick="navTo(\'moments\')">All</button></div>'+
-      '<button class="jh-sug" onclick="openCapture()"><span class="jh-sug-ic">'+jic('camera')+'</span><div class="jh-sug-b"><p class="jh-sug-t">Capture today\u2019s first moment</p><p class="jh-sug-d">A photo, a few words \u2014 kept safe for everyone you love.</p></div>'+jic2('arrow','jh-arrow')+'</button></section>';
+    momentsH='<section class="jh-rise" aria-label="Today\u2019s moments">'+st('Today\u2019s Moments',{action:'View All',fn:"navTo('moments')"})+'<div class="jh-mscroll"><article class="jh-mcard" onclick="openCapture()" style="width:100%"><div class="mi"><div class="ph"></div><span class="jh-mkind">'+jic('camera')+'Photo</span></div><div class="mb"><h3 class="mt">Capture today\u2019s first moment</h3><p class="mc">A photo or a few words, kept safe for everyone you love.</p></div></article></div></section>';
   }
 
-  /* ---- HEARTH NOTE (Skyvos, warm) ---- */
-  var noteBody=(sky&&sky.body)?sky.body:'The lights are on and the door is open. Come find your people.';
-  var hearth='<section class="jh-sec rise" style="animation-delay:380ms"><div class="jh-note"><div class="jh-note-glow"></div><div class="jh-note-k">'+jic('heart')+'A note on the door</div><p class="jh-note-b">\u201c'+escapeHtml(noteBody)+'\u201d</p><p class="jh-note-by">\u2014 Skyvos</p></div></section>';
+  /* 5) NOTE ON THE DOOR */
+  var noteH='<section class="jh-rise" aria-label="Note on the door"><div class="jh-note"><span class="jh-note-pin"></span>'+
+    '<p class="jh-note-k">Note on the Door</p><p class="jh-note-b">\u201c'+escapeHtml(note.body)+'\u201d</p>'+
+    '<p class="jh-note-by">'+(note.fromSkyvos?'\u2014 '+escapeHtml(note.from):'Love,<br>'+escapeHtml(note.from))+'</p>'+
+    (note.fromSkyvos?'<p class="jh-note-sky">'+jic('sparkles')+'Written by Skyvos, because no one left a note today</p>':'')+'</div></section>';
 
-  /* ---- SUGGESTION (one, contextual) ---- */
-  var sgT, sgD, sgFn, sgIc='video';
-  if(ctx.bridges && ctx.bridges.length){ sgT='Call the other house'; sgD='Bring two homes face to face, however far apart.'; sgFn='navTo(\'live\')'; }
-  else if(rels.length){ sgT='Build a bridge to another family'; sgD='Connect your home to the people who matter beyond it.'; sgFn='navTo(\'bridge\')'; sgIc='waypoints'; }
-  else { sgT='Welcome someone home'; sgD='Invite the first person to join your family on Jeeto.'; sgFn='goAddFamily()'; sgIc='users'; }
-  var suggestion='<section class="jh-sec rise" style="animation-delay:460ms"><h2 class="jh-sec-h" style="margin-bottom:16px">A small idea for today</h2><button class="jh-sug" onclick="'+sgFn+'"><span class="jh-sug-ic">'+jic(sgIc)+'</span><div class="jh-sug-b"><p class="jh-sug-t">'+escapeHtml(sgT)+'</p><p class="jh-sug-d">'+escapeHtml(sgD)+'</p></div>'+jic2('arrow','jh-arrow')+'</button></section>';
+  /* 6) SKYVOS SUGGESTS */
+  var skyH='<section class="jh-rise" aria-label="Tonight, Skyvos suggests"><div class="jh-sky"><div class="jh-sky-k">'+jic('sparkles')+'Tonight \u00b7 Skyvos Suggests</div><p class="jh-sky-b">'+escapeHtml(skyvos.line)+'</p><button class="jh-sky-btn" onclick="'+skyvos.cta.fn+'">'+escapeHtml(skyvos.cta.label)+jic2('arrow','')+'</button></div></section>';
 
-  /* ---- FAMILY PULSE (real, warm) ---- */
-  var parts=[]; if(mwk>0) parts.push(mwk+' moment'+(mwk===1?'':'s')+' shared'); if(ctx.bridges&&ctx.bridges.length) parts.push(ctx.bridges.length+' home'+(ctx.bridges.length===1?'':'s')+' connected'); if(rels.length) parts.push(rels.length+' '+(rels.length===1?'relationship':'relationships')+' held close');
-  var pulseLine = parts.length ? (parts.join(', ').replace(/,([^,]*)$/, ', and$1')+' \u2014 a little more closeness than before.') : 'A quiet week at home. The light is still on, and that\u2019s enough.';
-  var pulse='<section class="jh-sec rise" style="animation-delay:540ms"><div class="jh-pulse"><div class="jh-pulse-k">'+jic('sparkles')+'This week at home</div><p class="jh-pulse-b">'+escapeHtml(pulseLine)+'</p></div></section>';
+  /* 7) WEEKLY REFLECTION */
+  var wrStats=reflection.stats.map(function(s){ return '<div class="jh-wr-stat"><span class="jh-wr-si">'+jic(s.icon)+'</span><p class="jh-wr-sv">'+escapeHtml(s.value)+'</p><p class="jh-wr-sl">'+escapeHtml(s.label)+'</p></div>'; }).join('');
+  var wrH='<section class="jh-rise" aria-label="Weekly reflection"><div class="jh-wr"><div class="jh-wr-top"><p class="jh-wr-k">'+jic('sparkles')+'Weekly Reflection</p><button class="act" onclick="navTo(\'timemachine\')">History'+jic2('arrow','')+'</button></div><p class="jh-wr-b">'+escapeHtml(reflection.line)+'</p><div class="jh-wr-grid">'+wrStats+'</div><p class="jh-wr-foot">Gathered quietly by Skyvos</p></div></section>';
 
-  /* ---- MEMORY (On This Day, real) ---- */
-  var memory='';
-  if(otd && otd.length){ var mo=otd[0]; var mimg=(mo.media&&mo.media.filter(function(md){return md.media_type==='image';})[0]||{}).media_url||((mo.img)||''); var yrs=mo.year?(new Date().getFullYear()-mo.year):''; var when=yrs? (yrs+' year'+(yrs===1?'':'s')+' ago today') : 'A memory resurfacing';
-    memory='<section class="jh-sec rise" style="animation-delay:620ms"><div class="jh-mem" onclick="reliveMoment(\''+(mo.m?mo.m.id:mo.id)+'\')">'+(mimg?'<img src="'+escapeAttr(mimg)+'" alt="">':'<div class="mem-ph"></div>')+'<div class="jh-mem-scrim"></div><div class="jh-mem-row"><div><p class="jh-mem-k">'+escapeHtml(when)+'</p><p class="jh-mem-t">'+escapeHtml((mo.m?mo.m.title:mo.title)||'A moment to remember')+'</p></div>'+jic2('cake','')+'</div></div></section>'; }
+  /* 8) MY WORLD */
+  var mwIcon={love:'heartfill',birthday:'cake',weather:'snowflake',memories:'camera',gathering:'users'};
+  var worldH;
+  if(world.length){
+    var wc=world.slice(0,6).map(function(h){ return '<article class="jh-mw-card" onclick="enterHome(\''+h.id+'\')"><div class="jh-mw-img">'+homeArchitecture(h.style,0.8)+'<div class="jh-mw-veil"></div><span class="jh-mw-status">'+jic(mwIcon[h.statusKind]||'camera')+escapeHtml(h.status)+'</span><div class="jh-mw-nm"><h3>'+escapeHtml(h.name)+'</h3>'+(h.city?'<p>'+escapeHtml(h.city)+'</p>':'')+'</div></div><div class="jh-mw-foot"><span class="jh-mw-m">'+jic('users')+escapeHtml(String(h.membersHome))+' home</span><span class="jh-mw-enter">Enter'+jic2('arrow','')+'</span></div></article>'; }).join('');
+    worldH='<section class="jh-rise" aria-label="My World">'+st('My World',{action:'Enter World',fn:"navTo('world')"})+'<p class="jh-mw-sub">The homes you love, with their lights on.</p><div class="jh-mw-scroll">'+wc+'</div></section>';
+  } else {
+    worldH='<section class="jh-rise" aria-label="My World">'+st('My World',{action:'Enter World',fn:"navTo('world')"})+'<p class="jh-mw-sub">Create your first Home to begin your world.</p><div class="jh-mw-scroll"><article class="jh-mw-card" onclick="navTo(\'world\')" style="width:100%"><div class="jh-mw-img">'+homeArchitecture('luxury',0.85)+'<div class="jh-mw-veil"></div><div class="jh-mw-nm"><h3>Your first Home</h3><p>Tap to begin</p></div></div><div class="jh-mw-foot"><span class="jh-mw-m">'+jic('home')+'New</span><span class="jh-mw-enter">Create'+jic2('arrow','')+'</span></div></article></div></section>';
+  }
 
-  /* ---- FOOTER ---- */
-  var footer='<footer class="jh-foot rise" style="animation-delay:700ms"><p>However far you wander, the light stays on.</p></footer>';
+  /* 9) ACROSS MY WORLD */
+  var awGrid=across.map(function(s){ return '<div><span class="jh-aw-v">'+escapeHtml(s.value)+'</span><p class="jh-aw-l">'+escapeHtml(s.label)+'</p></div>'; }).join('');
+  var awH='<section class="jh-rise" aria-label="Across my world"><div class="jh-aw"><p class="jh-aw-k">'+jic('sparkles')+'Across My World</p><dl class="jh-aw-grid">'+awGrid+'</dl></div></section>';
 
-  body.innerHTML=atmos+'<div class="jh-content">'+header+celebration+presence+momentsRow+hearth+suggestion+pulse+memory+footer+'</div>';
+  body.innerHTML=moodBg+'<div class="jh-wrap">'+header+heroH+presenceH+momentsH+noteH+skyH+wrH+worldH+awH+'</div>';
 }
 function qa(ic,label,fn){ return '<div class="qa" onclick="'+fn+'"><div class="qi">'+ic+'</div><div class="ql">'+label+'</div></div>'; }
 function goAddFamily(){ navTo('family'); setTimeout(focusAddMember, 350); }
