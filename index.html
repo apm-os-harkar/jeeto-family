@@ -878,6 +878,16 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-today-title{font-family:var(--jh-serif);font-size:18px;line-height:1.25;color:var(--jh-fg)}
 .jh-today-sub{font-size:12.5px;color:var(--jh-muted-fg)}
 .jh-today-chev{color:var(--jh-muted-fg);flex-shrink:0}
+.jh-hd-actions{display:flex;align-items:center;gap:10px}
+.jh-gear{width:40px;height:40px;flex-shrink:0;border-radius:50%;background:var(--jh-card);border:1px solid var(--jh-border);color:var(--jh-muted-fg);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 3px rgba(120,72,30,.08)}
+.jh-gear svg{width:18px;height:18px}
+.jh-skyfab{position:fixed;right:16px;bottom:88px;z-index:55;width:58px;height:58px;border:none;background:transparent;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 10px 22px rgba(124,58,237,.45))}
+.jh-skyfab .sky-orb{width:54px;height:54px}
+.skyb-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.skyb-head .sky-orb{width:48px;height:48px;flex-shrink:0}
+.skyb-name{font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--ink)}
+.skyb-sub{font-size:12px;color:var(--ink3)}
+.skyb-line{font-size:15px;line-height:1.6;color:var(--ink2);margin:10px 0 16px}
 .jh-mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .jh-mg-cell{text-align:left;background:none;border:none;padding:0;cursor:pointer;font-family:inherit}
 .jh-mg-img{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1/1;background:var(--jh-card2)}
@@ -1153,7 +1163,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='1.3.1-home';
+var JEETO_VERSION='1.4.0-home';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1405,6 +1415,7 @@ var JH_ICONS={
   cake:'<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/>',
   snowflake:'<path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/>',
   chev:'<path d="m9 18 6-6-6-6"/>',
+  settings:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
   users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'
 };
 function jhTimeAgo(iso){ try{ var d=new Date(iso), s=(Date.now()-d.getTime())/1000; if(s<60) return 'just now'; if(s<3600) return Math.max(1,Math.floor(s/60))+'m ago'; if(s<86400) return Math.floor(s/3600)+'h ago'; var dd=Math.floor(s/86400); if(dd===1) return 'Yesterday'; if(dd<7) return dd+'d ago'; return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }catch(e){ return ''; } }
@@ -2830,6 +2841,13 @@ function todayCard(t){
   var ic = t.kind==='celebration' ? 'cake' : (t.icon||'sparkles');
   return '<button class="jh-today" onclick="'+t.fn+'"><span class="jh-today-ic">'+jic(ic)+'</span><span class="jh-today-body"><span class="jh-today-eye">'+escapeHtml(t.eyebrow)+'</span><span class="jh-today-title">'+escapeHtml(t.title)+'</span></span>'+jic2('chev','jh-today-chev')+'</button>';
 }
+function openSkyvosBubble(){
+  var sky=window.__jhSky||{line:'I\u2019m here, quietly watching over your home.'};
+  var m=document.getElementById('homeModal'); if(!m) return;
+  var cta=(sky.cta&&sky.cta.fn)?'<button class="btn" onclick="closeHomeModal();'+sky.cta.fn+'">'+escapeHtml(sky.cta.label||'Open')+'</button><div style="height:8px"></div>':'';
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="skyb-head">'+skyOrb({mood:'purple',sparkle:true})+'<div><div class="skyb-name">Skyvos</div><div class="skyb-sub">watching over your home</div></div></div><p class="skyb-line">'+escapeHtml(sky.line)+'</p>'+cta+'<button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
+  m.classList.add('show');
+}
 async function buildHome(){
   var body=document.getElementById('homeBody'); if(!body) return;
   var me=myPhone();
@@ -2860,7 +2878,7 @@ async function buildHome(){
   /* 1) HEADER */
   var header='<header class="jh-rise">'+
     '<div class="jh-hd-top"><div><p class="jh-hd-grt">'+escapeHtml(welcome.greeting)+',</p><h1 class="jh-hd-nm">'+escapeHtml(welcome.name)+'</h1></div>'+
-    '<div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div>'+
+    '<div class="jh-hd-actions"><button class="jh-gear" onclick="openHomeSettings()" aria-label="Settings">'+jic('settings')+'</button><div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div></div>'+
     '<div class="jh-hd-id"><div class="jh-hd-home"><span class="jh-hd-ic">'+jic('home')+'</span><div><p class="jh-hd-hn">'+escapeHtml(welcome.homeName)+'</p>'+(welcome.city?'<p class="jh-hd-hc">'+escapeHtml(welcome.city)+'</p>':'')+'</div></div>'+
     '<div class="jh-hd-wx">'+jic('sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
 
@@ -2908,7 +2926,8 @@ async function buildHome(){
   var awGrid=across.map(function(s){ return '<div><span class="jh-aw-v">'+escapeHtml(s.value)+'</span><p class="jh-aw-l">'+escapeHtml(s.label)+'</p></div>'; }).join('');
   var awH='<section class="jh-rise" aria-label="Across my world"><div class="jh-aw"><p class="jh-aw-k">'+jic('sparkles')+'Across My World</p><dl class="jh-aw-grid">'+awGrid+'</dl></div></section>';
 
-  body.innerHTML=moodBg+'<div class="jh-wrap">'+header+heroH+presenceH+momentsH+noteH+skyH+wrH+worldH+awH+'</div>';
+  window.__jhSky=skyvos; window.__jhToday=today;
+  body.innerHTML=moodBg+'<div class="jh-wrap">'+header+heroH+presenceH+momentsH+noteH+skyH+wrH+worldH+awH+'</div>'+'<button class="jh-skyfab" onclick="openSkyvosBubble()" aria-label="Skyvos">'+skyOrb({mood:'purple',sparkle:true})+'</button>';
 }
 function qa(ic,label,fn){ return '<div class="qa" onclick="'+fn+'"><div class="qi">'+ic+'</div><div class="ql">'+label+'</div></div>'; }
 function goAddFamily(){ navTo('family'); setTimeout(focusAddMember, 350); }
