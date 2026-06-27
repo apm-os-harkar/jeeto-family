@@ -343,6 +343,46 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .reactbtn{flex:1;background:none;border:none;font-size:24px;cursor:pointer;padding:4px;border-radius:12px;transition:transform .3s ease}
 .reactbtn:active{transform:scale(1.25)}
 .reactbtn.on{background:var(--grad-soft)}
+/* time machine */
+.tmhero{position:relative;border-radius:var(--r-2xl);overflow:hidden;height:200px;box-shadow:var(--sh-2);margin-bottom:14px;cursor:pointer}
+.tmheroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tmherograd{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78),rgba(0,0,0,.05) 60%)}
+.tmheroinfo{position:absolute;left:0;right:0;bottom:0;padding:18px;color:#fff}
+.tmherok{font-size:10.5px;font-weight:800;letter-spacing:1.4px;opacity:.9}
+.tmherot{font-family:var(--font-display);font-weight:800;font-size:21px;margin:4px 0 2px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.tmheros{font-size:13px;font-weight:700;opacity:.95}
+.tmacts{display:flex;gap:10px;margin-top:4px}
+.tmacts .btn{margin:0}
+.jcard{flex:0 0 auto;width:108px;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 12px;text-align:center;box-shadow:var(--sh-1);cursor:pointer}
+.jyear{font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--rani-d)}
+.jcount{font-size:11px;color:var(--ink3);font-weight:700;margin-top:4px}
+.capcard{position:relative;flex:0 0 auto;width:160px;height:180px;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-1);cursor:pointer}
+.capcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.capgrad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.05) 65%)}
+.capinfo{position:absolute;left:0;right:0;bottom:0;padding:13px;color:#fff}
+.capic{font-size:22px}
+.capt{font-family:var(--font-display);font-weight:800;font-size:14.5px;line-height:1.15;margin-top:4px}
+.capn{font-size:11px;font-weight:700;opacity:.9;margin-top:2px}
+.capgridmini{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.capcellmini{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--paper2);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer}
+.capcellmini img{width:100%;height:100%;object-fit:cover}
+.tmmap{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EAF4FF,#F3ECFF);border:1px solid var(--line);border-radius:var(--r-lg);padding:15px 18px}
+.tmmapic{font-size:32px}
+/* memory reel — immersive */
+#screen-reel{padding:0}
+.reelhead{position:fixed;top:0;left:0;right:0;max-width:var(--app-max);margin:0 auto;z-index:10;display:flex;align-items:center;gap:12px;padding:14px 16px;color:#fff;background:linear-gradient(to bottom,rgba(0,0,0,.5),transparent);font-weight:800;font-size:15px}
+.reelhead .gback{background:rgba(255,255,255,.18);color:#fff;border:none}
+.reelscroll{height:100vh;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch}
+.reelmem{position:relative;height:100vh;scroll-snap-align:start;display:flex;align-items:flex-end;overflow:hidden}
+.reelimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.reelglow{position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(201,168,255,.4),transparent 60%)}
+.reelgrad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82),rgba(0,0,0,.1) 55%)}
+.reelinfo{position:relative;padding:26px 22px 60px;color:#fff;width:100%}
+.reelwhen{font-size:12px;font-weight:800;letter-spacing:.6px;opacity:.95}
+.reeltitle{font-family:var(--font-display);font-weight:800;font-size:27px;line-height:1.15;margin:8px 0;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.reeldesc{font-size:14px;font-weight:600;line-height:1.5;opacity:.95;margin-bottom:8px}
+.reelppl{font-size:13px;font-weight:700;opacity:.95;margin-bottom:14px}
+.reelbtn{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);padding:12px 20px;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;backdrop-filter:blur(6px)}
 .home-sec{font-family:'Baloo 2';font-weight:800;font-size:17px;margin:0 2px 11px;display:flex;align-items:center;justify-content:space-between}
 .home-sec a{font-size:12.5px;color:var(--rani-d);font-weight:800;cursor:pointer}
 .today-card{background:linear-gradient(150deg,#FFFFFF,#FFF6EC);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);margin-bottom:20px}
@@ -705,6 +745,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div style="height:24px"></div>
   </section>
 
+  <section class="screen has-nav" id="screen-timemachine">
+    <div class="gtop"><button class="gback" onclick="navTo('home')">←</button><div class="h1" style="margin:0;font-size:24px">🕰️ Time Machine</div></div>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 16px">Not a replay of old photos — a way to feel your family\u2019s most beautiful moments again.</p>
+    <div id="tmBody"></div>
+    <div style="height:24px"></div>
+  </section>
+
+  <section class="screen" id="screen-reel">
+    <div id="reelBody"></div>
+  </section>
+
   <nav class="nav hide" id="bottomNav">
     <button data-tab="home" onclick="navTo('home')" aria-label="Home"><span class="ni">🏡</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')" aria-label="Relationships"><span class="ni">❤️</span><span class="nl">Relationships</span></button>
@@ -746,7 +797,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.5.0';
+var JEETO_VERSION='0.6.0';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1792,6 +1843,174 @@ async function completeExperience(id){
   setTimeout(function(){ buildLiveRoom(id); }, 200);
 }
 
+/* ============================================================
+   FAMILY TIME MACHINE (Sprint 16)
+   Not a replay of old photos — a way to feel meaningful moments
+   again. Derived from Moments + Life events. Warm, finite, calm.
+   ============================================================ */
+function tmDate(m){ return new Date(m.moment_date||m.created_at); }
+function yearsAgo(d){ var t=new Date(); var y=t.getFullYear()-d.getFullYear(); if(t.getMonth()<d.getMonth()||(t.getMonth()===d.getMonth()&&t.getDate()<d.getDate())) y--; return y; }
+function sameMonthDay(d){ var t=new Date(); return d.getMonth()===t.getMonth() && d.getDate()===t.getDate(); }
+
+async function loadTimeMemories(){
+  if(!ensureSB()) return [];
+  var me=myPhone();
+  try{
+    var mine=await sb.from('moments').select('*').eq('status','active').eq('created_by',me);
+    var tagged=await sb.from('moment_people').select('moment_id').eq('person_phone',me);
+    var ids=(tagged.data||[]).map(function(x){return x.moment_id;});
+    var tq={data:[]}; if(ids.length){ tq=await sb.from('moments').select('*').eq('status','active').in('id',ids); }
+    var map={}; (mine.data||[]).concat(tq.data||[]).forEach(function(m){ map[m.id]=m; });
+    var rows=Object.keys(map).map(function(k){return map[k];});
+    if(!rows.length) return [];
+    var list=await enrichMoments(rows);
+    list.forEach(function(x){ x.date=tmDate(x.m); x.year=x.date.getFullYear(); x.img=(x.media.filter(function(md){return md.media_type==='image';})[0]||{}).media_url||''; });
+    list.sort(function(a,b){ return b.date-a.date; });
+    return list;
+  }catch(e){ return []; }
+}
+function tmToday(mems){ return mems.filter(function(x){ return sameMonthDay(x.date) && yearsAgo(x.date)>=1; }).sort(function(a,b){ return yearsAgo(b.date)-yearsAgo(a.date); }); }
+
+/* ---------- Memory Reel (immersive, vertical, finite) ---------- */
+var REEL=[];
+function openReel(mems, idx, title){
+  if(!mems||!mems.length){ toast('No memories here yet.'); return; }
+  REEL=mems;
+  var box=document.getElementById('reelBody'); if(!box) return;
+  var head='<div class="reelhead"><button class="gback" onclick="navTo(\'timemachine\')" aria-label="Back">←</button><span>'+escapeHtml(title||'Memory Reel')+'</span></div>';
+  box.innerHTML=head+'<div class="reelscroll">'+mems.map(function(x){ return reelCard(x); }).join('')+'</div>';
+  showScreen('screen-reel');
+  if(idx){ setTimeout(function(){ var cards=box.querySelectorAll('.reelmem'); if(cards[idx]) cards[idx].scrollIntoView(); }, 60); }
+}
+function reelCard(x){
+  var ya=yearsAgo(x.date);
+  var when = ya>=1 ? (ya+' year'+(ya>1?'s':'')+' ago'+(sameMonthDay(x.date)?' today':'')) : fmtMomentDate(x.m.moment_date||x.m.created_at);
+  var ppl = x.people&&x.people.length ? x.people.slice(0,4).join(' · ') : '';
+  return '<div class="reelmem" style="background:'+ (x.img?('#000'):'linear-gradient(160deg,#3D2A5C,#241826)') +'">'+
+    (x.img?'<img class="reelimg" loading="lazy" src="'+escapeAttr(x.img)+'">':'<div class="reelglow"></div>')+
+    '<div class="reelgrad"></div>'+
+    '<div class="reelinfo"><div class="reelwhen">🕰️ '+escapeHtml(when)+'</div>'+
+    '<div class="reeltitle">'+escapeHtml(x.m.title)+'</div>'+
+    (x.m.description?'<div class="reeldesc">'+escapeHtml(x.m.description)+'</div>':'')+
+    (ppl?'<div class="reelppl">❤️ '+escapeHtml(ppl)+'</div>':'')+
+    '<button class="reelbtn" onclick="reliveMoment(\''+x.m.id+'\')">Open this memory →</button></div></div>';
+}
+
+/* ---------- Capsules (auto-generated collections) ---------- */
+function buildCapsules(mems){
+  var caps=[]; if(!mems.length) return caps;
+  var years={}; mems.forEach(function(x){ (years[x.year]=years[x.year]||[]).push(x); });
+  Object.keys(years).sort(function(a,b){return b-a;}).forEach(function(y){ caps.push({key:'year-'+y, type:'year', icon:'📅', title:'Your Family in '+y, items:years[y]}); });
+  var match=function(re){ return mems.filter(function(x){ return re.test(((x.m.title||'')+' '+(x.m.description||'')).toLowerCase()); }); };
+  var fest=match(/diwali|holi|eid|christmas|festival|navratri|lohri|onam|pongal|raksha|baisakhi/); if(fest.length) caps.push({key:'festival', type:'festival', icon:'🪔', title:'Festival Capsule', items:fest});
+  var bday=match(/birthday|🎂/); if(bday.length) caps.push({key:'birthday', type:'birthday', icon:'🎂', title:'Birthday Capsule', items:bday});
+  var travel=match(/trip|travel|vacation|holiday|visit|journey|beach|mountain/); if(travel.length) caps.push({key:'travel', type:'travel', icon:'✈️', title:'Travel Capsule', items:travel});
+  var hh=mems.filter(function(x){return x.m.moment_type==='household';}); if(hh.length) caps.push({key:'household', type:'household', icon:'🏠', title:'Household Capsule', items:hh});
+  var br=mems.filter(function(x){return x.m.moment_type==='bridge';}); if(br.length) caps.push({key:'bridge', type:'bridge', icon:'🌉', title:'Bridge Capsule', items:br});
+  var together=mems.filter(function(x){return x.people&&x.people.length>0;}); if(together.length) caps.push({key:'relationship', type:'relationship', icon:'❤️', title:'Together Capsule', items:together});
+  return caps;
+}
+
+/* ---------- Time Machine dashboard ---------- */
+var TM_MEMS=[];
+async function renderTimeMachine(){
+  var box=document.getElementById('tmBody'); if(!box) return;
+  box.innerHTML='<div class="sk sk-hero"></div><div class="sk sk-card"></div>';
+  if(!ME) ME=await fetchProfile(myPhone());
+  var mems=await loadTimeMemories(); TM_MEMS=mems;
+  if(!mems.length){ box.innerHTML='<div class="empty"><span class="big">🕰️</span><div class="e1">Your Time Machine is warming up</div><div class="e2">As your family captures Moments, this becomes a place to feel them again — years from now.</div></div>'; return; }
+  var today=tmToday(mems);
+  var caps=buildCapsules(mems);
+  var years=Object.keys(mems.reduce(function(a,x){a[x.year]=1;return a;},{})).sort(function(a,b){return b-a;});
+
+  var html='';
+  // Today in History hero
+  if(today.length){
+    var t0=today[0]; var ya=yearsAgo(t0.date);
+    html+='<div class="tmhero" onclick="openReel(window.__tmToday,0,\'Today in History\')" style="background:'+(t0.img?'#000':'linear-gradient(150deg,#3D2A5C,#241826)')+'">'+
+      (t0.img?'<img class="tmheroimg" src="'+escapeAttr(t0.img)+'">':'')+'<div class="tmherograd"></div>'+
+      '<div class="tmheroinfo"><div class="tmherok">🕰️ TODAY IN HISTORY</div><div class="tmherot">'+escapeHtml(ya>=1?('Exactly '+ya+' year'+(ya>1?'s':'')+' ago today'):'Today')+'</div><div class="tmheros">'+escapeHtml(t0.m.title)+' · tap to relive</div></div></div>';
+    window.__tmToday=today;
+  } else {
+    html+='<div class="skyvos-mini" style="margin:0 2px 18px"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span>No memory falls on today\u2019s date yet — but your story is still being written.</span></div>';
+  }
+
+  // Random memory + full reel
+  html+='<div class="tmacts"><button class="btn btn-soft" onclick="openReel(TM_MEMS,0,\'All Memories\')">🎞️ Memory Reel</button><button class="btn btn-soft" onclick="tmRandom()">🎲 Random Memory</button></div>';
+
+  // Journeys (by year)
+  html+='<div class="home-sec" style="margin-top:22px">📖 Family Journeys</div><div class="tm-row">';
+  years.forEach(function(y){ var n=mems.filter(function(x){return x.year==y;}).length; html+='<div class="jcard" onclick="openYearJourney('+y+')"><div class="jyear">'+y+'</div><div class="jcount">'+n+' memor'+(n>1?'ies':'y')+'</div></div>'; });
+  html+='</div>';
+  html+='<div class="tmacts"><button class="btn btn-soft" onclick="pickJourney(\'relationship\')">❤️ Relationship Journey</button><button class="btn btn-soft" onclick="pickJourney(\'bridge\')">🌉 Bridge Journey</button></div>';
+
+  // Capsules
+  if(caps.length){
+    html+='<div class="home-sec" style="margin-top:22px">🎁 Memory Capsules</div>';
+    html+='<div class="tm-row">'+caps.map(function(c){ var cover=(c.items[0]&&c.items[0].img)||''; return '<div class="capcard" onclick="openCapsule(\''+c.key+'\')" style="background:'+(cover?'#000':'linear-gradient(135deg,#7C3AED,#241826)')+'">'+(cover?'<img src="'+escapeAttr(cover)+'">':'')+'<div class="capgrad"></div><div class="capinfo"><div class="capic">'+c.icon+'</div><div class="capt">'+escapeHtml(c.title)+'</div><div class="capn">'+c.items.length+' memories</div></div></div>'; }).join('')+'</div>';
+    window.__caps=caps;
+  }
+
+  // Memory map (future-ready placeholder)
+  html+='<div class="home-sec" style="margin-top:22px">🗺️ Memory Map</div><div class="tmmap"><div class="tmmapic">🌍</div><div><div class="w-t">A map of your family\u2019s memories</div><div class="w-s">Trips, cities and visits will appear here as Moments gain places — coming soon.</div></div></div>';
+
+  box.innerHTML=html;
+}
+function tmRandom(){ if(!TM_MEMS.length) return; var i=Math.floor(Math.random()*TM_MEMS.length); openReel([TM_MEMS[i]],0,'A Random Memory'); }
+
+function openYearJourney(year){
+  var items=TM_MEMS.filter(function(x){return x.year==year;}); if(!items.length){ toast('No memories that year.'); return; }
+  var people={}; items.forEach(function(x){ (x.people||[]).forEach(function(p){ people[p]=1; }); });
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:22px">Your Family in '+year+'</div>'+
+    '<p class="muted" style="text-align:center;font-size:13.5px;margin:6px 2px 14px">'+items.length+' moment'+(items.length>1?'s':'')+' · '+Object.keys(people).length+' loved ones</p>'+
+    '<div class="capgridmini">'+items.slice(0,9).map(function(x){ return '<div class="capcellmini" onclick="reliveMoment(\''+x.m.id+'\')">'+(x.img?'<img loading="lazy" src="'+escapeAttr(x.img)+'">':'<span>💛</span>')+'</div>'; }).join('')+'</div>'+
+    '<div style="height:12px"></div><button class="btn" onclick="closeHomeModal();openReel(TM_MEMS.filter(function(x){return x.year=='+year+';}),0,\'Your Family in '+year+'\')">Relive '+year+' 🎞️</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
+  m.classList.add('show');
+}
+function openCapsule(key){
+  var caps=window.__caps||[]; var c=caps.filter(function(x){return x.key===key;})[0]; if(!c){ return; }
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:22px">'+c.icon+' '+escapeHtml(c.title)+'</div>'+
+    '<p class="muted" style="text-align:center;font-size:13.5px;margin:6px 2px 14px">'+c.items.length+' memories, kept together</p>'+
+    '<div class="capgridmini">'+c.items.slice(0,12).map(function(x){ return '<div class="capcellmini" onclick="reliveMoment(\''+x.m.id+'\')">'+(x.img?'<img loading="lazy" src="'+escapeAttr(x.img)+'">':'<span>💛</span>')+'</div>'; }).join('')+'</div>'+
+    '<div style="height:12px"></div><button class="btn" onclick="closeHomeModal();openCapsuleReel(\''+key+'\')">Relive this Capsule 🎞️</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
+  m.classList.add('show');
+}
+function openCapsuleReel(key){ var caps=window.__caps||[]; var c=caps.filter(function(x){return x.key===key;})[0]; if(c) openReel(c.items,0,c.title); }
+
+async function pickJourney(kind){
+  var ctx=await myCircleContext();
+  var m=document.getElementById('homeModal'); if(!m) return;
+  var rows='';
+  if(kind==='relationship'){
+    var conns=ctx.conns||[]; if(!conns.length){ toast('Connect family first.'); return; }
+    var profs=await fetchProfiles(conns);
+    rows=conns.map(function(p){ var u=profs[p]||{}; return '<div class="qmem" onclick="openRelationshipJourney(\''+p+'\',\''+escapeAttr((u.name||p))+'\')" style="cursor:pointer"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span><span style="flex:1">'+escapeHtml(u.name||p)+'</span><span class="qstart">Open →</span></div>'; }).join('');
+  } else {
+    var bridges=ctx.bridges||[]; if(!bridges.length){ toast('No bridges yet.'); return; }
+    rows=bridges.map(function(b){ return '<div class="qmem" onclick="openBridgeJourney(\''+b.id+'\',\''+escapeAttr(b._otherName||'Bridge')+'\')" style="cursor:pointer"><span class="qav">🌉</span><span style="flex:1">'+escapeHtml(b._otherName||'A Bridge')+'</span><span class="qstart">Open →</span></div>'; }).join('');
+  }
+  m.innerHTML='<div class="modal-card" style="max-height:88vh;overflow:auto"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:19px;margin-bottom:12px">'+(kind==='relationship'?'❤️ Choose a relationship':'🌉 Choose a Bridge')+'</div>'+rows+'<div style="height:10px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
+  m.classList.add('show');
+}
+function openRelationshipJourney(phone, name){
+  var items=TM_MEMS.filter(function(x){ return (x.m.created_by===phone) || (x.people||[]).indexOf(name)>-1; });
+  closeHomeModal();
+  if(!items.length){ toast('No shared memories yet with '+name+'.'); return; }
+  openReel(items,0, (((ME&&ME.name)||'You').split(' ')[0])+' ❤️ '+name);
+}
+async function openBridgeJourney(id, name){
+  closeHomeModal();
+  var items=TM_MEMS.filter(function(x){return x.m.moment_type==='bridge';});
+  openReel(items,0,'Bridge · '+name);
+}
+
+
 
 
 function homeAccent(){ try{ return localStorage.getItem('jeeto_accent')||''; }catch(e){ return ''; } }
@@ -1878,6 +2097,7 @@ async function buildHome(){
   /* Quick actions */
   html+='<div class="qa-row">'+
     qa('❤️','Capture','openCapture()')+
+    qa('🕰️','Memories','navTo(\'timemachine\')')+
     qa('🔴','Live','navTo(\'live\')')+
     qa('🧭','Quests','navTo(\'quests\')')+
     qa('🕯️','Rituals','navTo(\'rituals\')')+
@@ -3078,7 +3298,8 @@ async function renderPassport(){
   html+='<div class="pp-journey"><div class="sec-head"><span class="si">🧭</span><span class="st">My Journey</span></div>';
   if(events.length){ events.slice(0,5).forEach(function(ev){ html+='<div class="jrow"><div class="jdot">'+ev.icon+'</div><div style="flex:1;min-width:0"><div class="jt">'+escapeHtml(ev.title)+'</div><div class="jd">'+escapeHtml(ev.when)+'</div></div></div>'; }); }
   else html+='<div class="muted" style="font-size:13px;padding:4px 2px">Your journey will unfold as you connect, build and capture.</div>';
-  html+='<div style="height:14px"></div><button class="btn btn-soft" onclick="viewJourney()">View Complete Journey →</button></div>';
+  html+='<div style="height:14px"></div><button class="btn btn-soft" onclick="viewJourney()">View Complete Journey →</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'timemachine\')">🕰️ Open the Family Time Machine</button></div>';
   html+=skyvosMini('Your Passport is your legacy — it will outlive the phone in your hand.');
 
   body.innerHTML=html;
@@ -3454,7 +3675,7 @@ function searchGraph(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -3467,6 +3688,7 @@ function navTo(tab){
   if(tab==='quests') renderQuests();
   if(tab==='rituals') renderRituals();
   if(tab==='live') renderLive();
+  if(tab==='timemachine') renderTimeMachine();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
