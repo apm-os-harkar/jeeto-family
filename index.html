@@ -436,10 +436,14 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .househeroc{font-size:13px;color:var(--ink2);font-weight:700;margin-top:2px}
 .househeromood{display:inline-block;margin-top:8px;background:var(--grad-soft);border:1px solid var(--line);padding:6px 14px;border-radius:var(--r-pill);font-size:12.5px;font-weight:800;color:var(--ink)}
 /* home widget */
-.worldwidget{position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-1);cursor:pointer;margin-bottom:16px;border:1px solid var(--line)}
-.worldwidget svg{width:100%;height:84px;display:block}
-.worldwidget .ww-label{position:absolute;left:14px;bottom:10px;color:#fff;font-family:var(--font-display);font-weight:800;font-size:15px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
-.worldwidget .ww-go{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.9);color:var(--ink);font-size:11px;font-weight:800;padding:5px 11px;border-radius:var(--r-pill)}
+.worldwidget{position:relative;border-radius:var(--r-2xl);overflow:hidden;box-shadow:var(--sh-2);cursor:pointer;margin-bottom:18px;border:1px solid var(--line);transition:transform .3s ease}
+.worldwidget svg{width:100%;height:184px;display:block}
+.worldwidget:active{transform:scale(.99)}
+.worldwidget .ww-label{position:absolute;left:18px;bottom:18px;color:#fff;font-family:var(--font-display);font-weight:800;font-size:20px;line-height:1.1;text-shadow:0 2px 12px rgba(0,0,0,.55);letter-spacing:.2px}
+.worldwidget .ww-go{position:absolute;right:15px;bottom:15px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.96);color:var(--ink);font-size:13px;font-weight:800;padding:10px 16px;border-radius:var(--r-pill);box-shadow:0 6px 20px rgba(124,58,237,.4);animation:wwglow 3.2s ease-in-out infinite}
+@keyframes wwglow{0%,100%{box-shadow:0 6px 18px rgba(124,58,237,.3)}50%{box-shadow:0 8px 28px rgba(124,58,237,.6)}}
+.wwcloud{animation:wwdrift 28s linear infinite;will-change:transform}
+@keyframes wwdrift{from{transform:translateX(-60px)}to{transform:translateX(320px)}}
 /* living world micro-animations (GPU-cheap: transform/opacity only) */
 @keyframes wdrift{from{transform:translateX(-180px)}to{transform:translateX(1180px)}}
 .wcloud{animation-name:wdrift;animation-timing-function:linear;animation-iteration-count:infinite;will-change:transform}
@@ -889,7 +893,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.8.1';
+var JEETO_VERSION='0.8.2';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2674,14 +2678,45 @@ async function openHouse(id){
 /* ---------- home widget ---------- */
 function worldWidgetSVG(){
   var mode=worldTimeMode();
-  var sky={ dawn:'#FFD9B0', day:'#CDE9FF', dusk:'#FFB088', night:'#241B47' }[mode];
-  var cele=(mode==='night'||mode==='dusk')?'<circle cx="150" cy="22" r="11" fill="#FDF6E3"/>':'<circle cx="30" cy="24" r="12" fill="#FFD66B"/>';
-  return '<svg viewBox="0 0 180 84" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><rect width="180" height="84" fill="'+sky+'"/>'+cele+
-    '<path d="M0 60 Q60 46 120 58 T180 54 L180 84 L0 84Z" fill="'+((mode==='night')?'#2C2A4A':'#9ED39A')+'"/>'+
-    '<g transform="translate(54,40)"><rect x="-15" y="-7" width="30" height="22" rx="3" fill="#FFF6EA"/><polygon points="-18,-6 0,-20 18,-6" fill="#E03A7A"/><rect x="-4" y="2" width="8" height="13" fill="#C42466"/></g>'+
-    '<path d="M70 44 Q92 26 114 44" fill="none" stroke="#C9A8FF" stroke-width="3" stroke-linecap="round" opacity="0.9"/>'+
-    '<g transform="translate(118,42)"><rect x="-13" y="-6" width="26" height="20" rx="3" fill="#FFF6EA"/><polygon points="-16,-5 0,-18 16,-5" fill="#7C3AED"/></g>'+
-    '<circle cx="96" cy="22" r="4.5" fill="url(#none)" ></circle><circle cx="96" cy="22" r="4.5" fill="#E9D5FF"/></svg>';
+  var sky={ dawn:['#FFE6C7','#FFC59B','#F7A98C'], day:['#CDEBFF','#AFDCF7','#DCF1E6'], dusk:['#FFCD96','#F0A07F','#C9708F'], night:['#171232','#241A46','#2E2152'] }[mode]||['#CDEBFF','#AFDCF7','#DCF1E6'];
+  var night=(mode==='night'), dim=(night||mode==='dusk');
+  var backHill=night?'#2B2654':'#A9DCB0', frontHill=night?'#221C46':'#84C683';
+  function tree(x,y,s){ var leaf=night?'#2E6B49':'#46A864'; return '<g transform="translate('+x+','+y+') scale('+s+')"><rect x="-2.5" y="0" width="5" height="16" rx="2" fill="#6B4A2E"/><g class="wtree"><ellipse cx="0" cy="-8" rx="13" ry="15" fill="'+leaf+'"/><ellipse cx="-8" cy="3" rx="9" ry="10" fill="'+leaf+'"/><ellipse cx="9" cy="3" rx="9" ry="10" fill="'+leaf+'"/></g></g>'; }
+  function home(x,y,roof,door,sc){ var win=dim?'#FFD873':'#BcdCF5', wop=dim?'1':'0.5';
+    return '<g transform="translate('+x+','+y+') scale('+sc+')">'+
+      '<ellipse cx="0" cy="46" rx="58" ry="13" fill="url(#wwG)" opacity="'+(dim?0.65:0.34)+'"/>'+
+      '<g class="housebob">'+
+      '<rect x="20" y="-42" width="9" height="16" rx="2" fill="'+roof+'"/>'+
+      '<rect x="-35" y="-15" width="70" height="52" rx="9" fill="#FFF7EC" stroke="#EADFD0"/>'+
+      '<polygon points="-44,-13 0,-50 44,-13" fill="'+roof+'"/>'+
+      '<rect x="-11" y="8" width="22" height="29" rx="4" fill="'+door+'"/>'+
+      '<rect x="-27" y="-4" width="15" height="15" rx="3" fill="'+win+'" opacity="'+wop+'"/>'+
+      '<rect x="12" y="-4" width="15" height="15" rx="3" fill="'+win+'" opacity="'+wop+'"/>'+
+      '</g></g>'; }
+  var cel = dim
+    ? '<circle cx="312" cy="58" r="50" fill="url(#wwG)"/><circle cx="312" cy="58" r="20" fill="#FCF4DC"/><circle cx="303" cy="51" r="20" fill="'+sky[1]+'" opacity="0.45"/>'
+    : '<circle cx="86" cy="60" r="56" fill="url(#wwG)"/><circle cx="86" cy="60" r="23" fill="#FFD66B"/>';
+  var stars = night ? [[44,40],[120,30],[180,58],[214,34],[348,46],[366,78],[70,80]].map(function(p,i){ return '<circle class="twinkle" cx="'+p[0]+'" cy="'+p[1]+'" r="1.5" fill="#fff" style="animation-delay:'+(i*0.4).toFixed(1)+'s"/>'; }).join('') : '';
+  var cloud='<g transform="translate(150,52)"><g class="wwcloud" opacity="'+(night?0.4:0.9)+'"><ellipse cx="0" cy="0" rx="28" ry="12" fill="#fff"/><ellipse cx="20" cy="6" rx="19" ry="10" fill="#fff"/><ellipse cx="-18" cy="6" rx="16" ry="9" fill="#fff"/></g></g>';
+  var bd='M 116 138 Q 210 72 304 138';
+  var bridge='<path d="'+bd+'" fill="none" stroke="#B98CFF" stroke-width="12" stroke-linecap="round" opacity="0.85" filter="url(#wwSoft)"/>'+
+    '<path d="'+bd+'" fill="none" stroke="#C9A8FF" stroke-width="6" stroke-linecap="round" opacity="0.98"/>'+
+    '<path d="'+bd+'" fill="none" stroke="#F3EAFF" stroke-width="2.4" stroke-linecap="round" opacity="0.95"/>'+
+    '<path d="'+bd+'" fill="none" stroke="#fff" stroke-width="1.4" stroke-dasharray="2 11" opacity="0.9"><animate attributeName="stroke-dashoffset" from="0" to="-130" dur="6s" repeatCount="indefinite"/></path>'+
+    '<circle r="4.2" fill="#fff" class="skybreathe"><animateMotion dur="5s" repeatCount="indefinite" path="'+bd+'"/></circle>';
+  var defs='<defs><linearGradient id="wwSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sky[0]+'"/><stop offset="0.55" stop-color="'+sky[1]+'"/><stop offset="1" stop-color="'+sky[2]+'"/></linearGradient>'+
+    '<radialGradient id="wwG" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE9B0" stop-opacity="0.9"/><stop offset="1" stop-color="#FFE9B0" stop-opacity="0"/></radialGradient>'+
+    '<filter id="wwSoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>'+
+    '<linearGradient id="wwScrim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.5"/></linearGradient></defs>';
+  return '<svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">'+defs+
+    '<rect width="400" height="220" fill="url(#wwSky)"/>'+cel+stars+cloud+
+    '<path d="M0 122 Q120 96 240 116 T400 108 L400 220 L0 220Z" fill="'+backHill+'"/>'+
+    home(210,122,'#FF8A1E','#C2410C',0.52)+tree(56,118,0.72)+tree(388,120,0.82)+
+    '<path d="M0 170 Q140 138 280 168 T400 158 L400 220 L0 220Z" fill="'+frontHill+'"/>'+
+    bridge+
+    home(116,150,'#E03A7A','#C42466',1.18)+home(304,150,'#7C3AED','#5B21B6',1.06)+
+    tree(26,182,1.18)+tree(374,184,1.24)+tree(208,190,0.96)+
+    '<rect x="0" y="150" width="400" height="70" fill="url(#wwScrim)"/></svg>';
 }
 
 
@@ -2785,7 +2820,7 @@ async function buildHome(){
   '</div>';
 
   /* My Family World widget */
-  html+='<div class="worldwidget" onclick="navTo(\'world\')">'+worldWidgetSVG()+'<span class="ww-label">🏡 My Family World</span><span class="ww-go">Enter →</span></div>';
+  html+='<div class="worldwidget" onclick="navTo(\'world\')">'+worldWidgetSVG()+'<span class="ww-label">Your Family World</span><span class="ww-go">Enter ✨</span></div>';
 
   /* Family Quests */
   html+='<div class="home-sec">🧭 Family Quests'+(streak&&streak.active&&streak.count>1?'<span class="qchip-streak">🔥 '+streak.count+'-day streak</span>':'<a onclick="navTo(\'quests\')">All →</a>')+'</div>';
