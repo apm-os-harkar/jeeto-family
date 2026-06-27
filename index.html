@@ -894,8 +894,10 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jw-divider::before,.jw-divider::after{content:'';width:40px;height:1px;background:linear-gradient(to right,transparent,var(--jh-border));margin:0 8px}
 .jw-divider::after{background:linear-gradient(to left,transparent,var(--jh-border))}
 .jw-tag{margin-top:10px;max-width:28ch;font-size:13.5px;line-height:1.5;color:var(--jh-muted-fg)}
-.jw-constel{padding:0;position:relative}
-.jw-scene{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:112%;max-width:520px;z-index:0;pointer-events:none}
+.jw-constel{position:relative;border-radius:30px;overflow:hidden;padding:30px 16px 34px;background:linear-gradient(180deg,#F8E8CB 0%,#F1D7AB 46%,#E7C087 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 12px 34px rgba(120,72,30,.12)}
+.jw-scene2{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:30px}
+.jw-sky{position:absolute;top:0;left:0;width:100%;height:auto}
+.jw-hills{position:absolute;bottom:0;left:0;width:100%;height:auto}
 .jw-central-wrap{position:relative;z-index:2}
 .jw-branches{position:relative;z-index:2}
 .jw-skyvos{filter:drop-shadow(0 0 6px rgba(183,148,246,.6))}
@@ -909,7 +911,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jw-bridge{filter:drop-shadow(0 3px 8px rgba(199,160,106,.25))}
 @media (prefers-reduced-motion:reduce){.jw-skyvos animateMotion,.jw-mist,.jw-mist2,.jw-birds{animation:none}}
 .jw-central-wrap{max-width:20rem;margin:0 auto;display:flex;flex-direction:column;align-items:center}
-.jw-central{position:relative;width:100%;border-radius:28px;border-top-left-radius:9rem;border-top-right-radius:9rem;border:1px solid var(--jh-border);background:var(--jh-card);padding:34px 24px 26px;text-align:center;box-shadow:0 18px 48px rgba(120,72,30,.12)}
+.jw-central{position:relative;width:100%;border-radius:28px;border-top-left-radius:9rem;border-top-right-radius:9rem;border:1px solid rgba(255,255,255,.55);background:rgba(255,250,241,.82);backdrop-filter:blur(3px);padding:34px 24px 26px;text-align:center;box-shadow:0 18px 48px rgba(120,72,30,.16)}
 .jw-leaf{position:absolute;top:26px;width:20px;height:20px;color:var(--jh-primary);opacity:.22}
 .jw-leaf-l{left:16px;transform:rotate(-40deg)}
 .jw-leaf-r{right:16px;transform:rotate(40deg) scaleX(-1)}
@@ -925,16 +927,16 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jw-cheart{margin-top:12px;color:var(--jh-primary);opacity:.5}
 .jw-cheart svg{width:15px;height:15px}
 .jw-branches{position:relative;padding-top:24px}
-.jw-trunk{position:absolute;left:50%;top:0;height:100%;width:1px;transform:translateX(-50%);border-left:1px dashed var(--jh-border)}
+.jw-trunk{position:absolute;left:50%;top:0;height:100%;width:1px;transform:translateX(-50%);border-left:1px dashed rgba(122,90,50,.35)}
 .jw-sat-col{position:relative;display:flex;flex-direction:column;gap:30px}
 .jw-sat-row{position:relative;display:flex;align-items:center}
 .jw-half{width:50%}
 .jw-sat{width:50%;display:flex;flex-direction:column;align-items:center}
 .jw-sat-left{padding-right:8px}.jw-sat-right{padding-left:8px}
-.jw-branch-h{position:absolute;top:50%;height:1px;width:22%;border-top:1px dashed var(--jh-border)}
+.jw-branch-h{position:absolute;top:50%;height:1px;width:22%;border-top:1px dashed rgba(122,90,50,.35)}
 .jw-branch-left{left:50%;transform:translateX(-100%)}.jw-branch-right{right:50%;transform:translateX(100%)}
 .jw-sname{margin:14px 0 0;font-family:var(--jh-serif);font-size:16px;font-weight:500;line-height:1.1;color:var(--jh-fg);text-align:center}
-.jw-scity{margin:1px 0 0;font-size:12px;color:var(--jh-muted-fg)}
+.jw-scity{margin:1px 0 0;font-size:12px;color:#7a5a32}
 .jw-add-wrap{display:flex;justify-content:center;padding-top:8px}
 .jw-add{display:flex;flex-direction:column;align-items:center;gap:10px;border:none;background:none;cursor:pointer}
 .jw-add-ic{width:62px;height:62px;border-radius:50%;border:1px dashed color-mix(in oklch,var(--jh-primary) 40%,transparent);background:var(--jh-secondary);color:var(--jh-primary);display:flex;align-items:center;justify-content:center;transform:rotate(-90deg)}
@@ -1312,7 +1314,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='2.3.0-world';
+var JEETO_VERSION='2.4.0-world';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3072,60 +3074,56 @@ async function saveDesign(){
   navTo('home');
 }
 
-/* jwScene — a living, warm natural backdrop: depth (layered hills/mist/trees),
-   a glowing ARCHED BRIDGE (the core metaphor), and Skyvos drifting across the sky. */
+/* jwScene — golden-hour family valley: amber sky + sun, drifting Skyvos,
+   layered warm hills, scattered trees, and glowing bridges. Built to match the v0 scene. */
 function jwScene(){
-  return '<svg class="jw-scene" viewBox="0 0 440 470" preserveAspectRatio="xMidYMin slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">'+
-  '<defs>'+
-    '<linearGradient id="jwSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCF5E9"/><stop offset="0.55" stop-color="#F8EAD3"/><stop offset="1" stop-color="#F3DDBE"/></linearGradient>'+
-    '<linearGradient id="jwRiver" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EFE6D2"/><stop offset="1" stop-color="#E6D2AE"/></linearGradient>'+
-    '<linearGradient id="jwFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6E9D2" stop-opacity="0"/><stop offset="1" stop-color="#FBF4E7"/></linearGradient>'+
-    '<radialGradient id="jwSkyvos" cx="0.5" cy="0.4" r="0.6"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.4" stop-color="#D8C3F4"/><stop offset="1" stop-color="#A982E8"/></radialGradient>'+
-    '<radialGradient id="jwGlow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#B794F6" stop-opacity="0.55"/><stop offset="1" stop-color="#B794F6" stop-opacity="0"/></radialGradient>'+
-    '<radialGradient id="jwLamp" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE0A8" stop-opacity="0.9"/><stop offset="1" stop-color="#FFE0A8" stop-opacity="0"/></radialGradient>'+
-    '<filter id="jwSoft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>'+
-  '</defs>'+
-  '<rect width="440" height="470" fill="url(#jwSky)"/>'+
-  /* mist bands (depth) */
-  '<g opacity="0.5" filter="url(#jwSoft)"><ellipse cx="120" cy="250" rx="160" ry="14" fill="#FFFFFF" class="jw-mist"/><ellipse cx="330" cy="300" rx="150" ry="13" fill="#FFFFFF" class="jw-mist2"/></g>'+
-  /* far hills */
-  '<path d="M0 300 C 90 268 150 286 230 270 C 310 254 380 280 440 266 L440 470 L0 470 Z" fill="#E9D9BC" opacity="0.55"/>'+
-  /* trees on far hill */
-  '<g opacity="0.4" fill="#AEBE9C"><path d="M58 300 q8 -34 16 0 z"/><path d="M76 304 q6 -26 12 0 z"/><path d="M362 286 q9 -36 18 0 z"/></g>'+
-  /* mid hills */
-  '<path d="M0 350 C 80 330 160 360 250 340 C 330 322 390 352 440 338 L440 470 L0 470 Z" fill="#E1C99F" opacity="0.6"/>'+
-  /* river */
-  '<path d="M0 392 C 110 378 150 408 220 398 C 300 386 350 410 440 398 L440 446 C 350 458 300 434 220 446 C 150 456 110 426 0 440 Z" fill="url(#jwRiver)" opacity="0.85"/>'+
-  '<ellipse cx="220" cy="430" rx="120" ry="6" fill="#FFFFFF" opacity="0.25"/>'+
-  /* ===== THE BRIDGE (core) ===== */
-  '<g class="jw-bridge">'+
-    '<path d="M120 372 Q220 320 320 372" fill="none" stroke="#C7A06A" stroke-width="6" stroke-linecap="round"/>'+      /* main arch */
-    '<path d="M120 384 Q220 332 320 384" fill="none" stroke="#A87B45" stroke-width="3" stroke-linecap="round" opacity="0.7"/>'+ /* under shadow */
-    '<path d="M120 360 Q220 312 320 360" fill="none" stroke="#E7C892" stroke-width="2" stroke-linecap="round" opacity="0.9"/>'+ /* top rail */
-    /* deck posts */
-    '<g stroke="#C7A06A" stroke-width="2.4" stroke-linecap="round">'+
-      '<line x1="150" y1="356" x2="150" y2="372"/><line x1="185" y1="343" x2="185" y2="360"/><line x1="220" y1="338" x2="220" y2="356"/><line x1="255" y1="343" x2="255" y2="360"/><line x1="290" y1="356" x2="290" y2="372"/>'+
+  return '<div class="jw-scene2">'+
+  /* ---- sky layer: sun + Skyvos + birds ---- */
+  '<svg class="jw-sky" viewBox="0 0 440 210" preserveAspectRatio="xMidYMin slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">'+
+    '<defs>'+
+      '<radialGradient id="jwSun" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF6DF"/><stop offset="0.4" stop-color="#FFE9B8" stop-opacity="0.9"/><stop offset="1" stop-color="#FFE9B8" stop-opacity="0"/></radialGradient>'+
+      '<radialGradient id="jwSkyvosC" cx="0.5" cy="0.4" r="0.6"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.4" stop-color="#DCC8F6"/><stop offset="1" stop-color="#AE85EA"/></radialGradient>'+
+      '<radialGradient id="jwSkyvosG" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#C4A6F7" stop-opacity="0.6"/><stop offset="1" stop-color="#C4A6F7" stop-opacity="0"/></radialGradient>'+
+    '</defs>'+
+    '<circle cx="372" cy="46" r="74" fill="url(#jwSun)"/>'+
+    '<circle cx="372" cy="46" r="20" fill="#FFF3D2" opacity="0.95"/>'+
+    '<g stroke="#9A8468" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.45" class="jw-birds"><path d="M150 70 q6 -6 12 0 q6 -6 12 0"/><path d="M196 90 q5 -5 10 0 q5 -5 10 0"/><path d="M120 104 q4 -4 8 0 q4 -4 8 0"/></g>'+
+    '<path id="jwFly" d="M40 60 C 120 30 180 96 250 64 C 300 42 340 78 396 58" fill="none" stroke="none"/>'+
+    '<g class="jw-skyvos"><circle r="20" fill="url(#jwSkyvosG)"/><circle r="7.5" fill="url(#jwSkyvosC)"/><circle r="2.4" cx="-3" cy="-3" fill="#fff" class="jw-twinkle"/>'+
+      '<animateMotion dur="18s" repeatCount="indefinite"><mpath href="#jwFly"/></animateMotion></g>'+
+  '</svg>'+
+  /* ---- hills layer: layered domes + trees + glowing bridges ---- */
+  '<svg class="jw-hills" viewBox="0 0 440 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">'+
+    '<defs>'+
+      '<linearGradient id="jwH1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7C795"/><stop offset="1" stop-color="#DBB67E"/></linearGradient>'+
+      '<linearGradient id="jwH2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D7AE72"/><stop offset="1" stop-color="#C99A58"/></linearGradient>'+
+      '<linearGradient id="jwH3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C79A57"/><stop offset="1" stop-color="#B98945"/></linearGradient>'+
+    '</defs>'+
+    /* glowing bridge arcs (the bonds) */
+    '<g fill="none" stroke-linecap="round" opacity="0.85" class="jw-bridge">'+
+      '<path d="M70 120 Q220 56 370 120" stroke="#F6DCA6" stroke-width="3"/>'+
+      '<path d="M70 120 Q220 56 370 120" stroke="#FBE9C2" stroke-width="1.2" opacity="0.8"/>'+
+      '<g stroke="#E7C892" stroke-width="2" opacity="0.7"><line x1="120" y1="98" x2="120" y2="110"/><line x1="170" y1="83" x2="170" y2="96"/><line x1="220" y1="78" x2="220" y2="92"/><line x1="270" y1="83" x2="270" y2="96"/><line x1="320" y1="98" x2="320" y2="110"/></g>'+
     '</g>'+
-    /* warm lamps */
-    '<g><circle cx="150" cy="354" r="9" fill="url(#jwLamp)"/><circle cx="290" cy="354" r="9" fill="url(#jwLamp)"/><circle cx="220" cy="336" r="10" fill="url(#jwLamp)"/></g>'+
-    /* reflection */
-    '<path d="M134 410 Q220 380 306 410" fill="none" stroke="#C7A06A" stroke-width="3" stroke-linecap="round" opacity="0.18"/>'+
-  '</g>'+
-  /* foreground trees (depth, near) */
-  '<g opacity="0.5" fill="#9FB089"><path d="M22 470 L22 430 q18 -54 34 0 L56 470 Z" opacity="0.7"/><path d="M398 470 L398 436 q16 -48 30 0 L428 470 Z" opacity="0.7"/></g>'+
-  /* birds */
-  '<g stroke="#8A7A66" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.55" class="jw-birds"><path d="M120 110 q6 -6 12 0 q6 -6 12 0"/><path d="M170 132 q5 -5 10 0 q5 -5 10 0"/><path d="M95 150 q4 -4 8 0 q4 -4 8 0"/></g>'+
-  /* ===== SKYVOS flying ===== */
-  '<path id="jwFly" d="M40 120 C 130 60 230 150 300 96 C 360 52 410 110 408 96" fill="none" stroke="none"/>'+
-  '<g class="jw-skyvos">'+
-    '<circle r="22" fill="url(#jwGlow)"/>'+
-    '<circle r="8" fill="url(#jwSkyvos)"/>'+
-    '<circle r="2.5" cx="-3" cy="-3" fill="#FFFFFF" class="jw-twinkle"/>'+
-    '<animateMotion dur="16s" repeatCount="indefinite" rotate="0"><mpath href="#jwFly"/></animateMotion>'+
-  '</g>'+
-  /* bottom fade into page */
-  '<rect y="380" width="440" height="90" fill="url(#jwFade)"/>'+
-  '</svg>';
+    /* back domes */
+    '<path d="M-10 150 Q70 90 150 150 Q220 100 300 150 Q370 96 450 150 L450 220 L-10 220 Z" fill="url(#jwH1)" opacity="0.9"/>'+
+    /* trees back */
+    '<g class="jw-trees-b">'+
+      '<g transform="translate(96,128)"><rect x="-1.6" y="6" width="3.2" height="12" fill="#6E5838"/><circle r="11" fill="#90A06E"/></g>'+
+      '<g transform="translate(344,126)"><rect x="-1.6" y="6" width="3.2" height="13" fill="#6E5838"/><circle r="12" fill="#879663"/></g>'+
+    '</g>'+
+    /* mid domes */
+    '<path d="M-10 178 Q90 120 190 178 Q280 130 380 178 Q430 156 460 174 L460 220 L-10 220 Z" fill="url(#jwH2)"/>'+
+    /* trees front */
+    '<g class="jw-trees-f">'+
+      '<g transform="translate(50,170)"><rect x="-2" y="8" width="4" height="16" fill="#5F4A2E"/><circle r="15" fill="#7E9160"/></g>'+
+      '<g transform="translate(230,176)"><rect x="-2" y="9" width="4" height="17" fill="#5F4A2E"/><circle r="16" fill="#738757"/></g>'+
+      '<g transform="translate(404,168)"><rect x="-2" y="8" width="4" height="16" fill="#5F4A2E"/><circle r="15" fill="#7E9160"/></g>'+
+    '</g>'+
+    /* near dome */
+    '<path d="M-10 206 Q140 168 290 206 Q380 184 460 202 L460 220 L-10 220 Z" fill="url(#jwH3)"/>'+
+  '</svg>'+
+  '</div>';
 }
 
 /* ===== My Family World — ported from v0 (components/world/*), wired to real data ===== */
