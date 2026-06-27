@@ -416,6 +416,30 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .claimbtn{background:#fff;border:1.5px solid var(--rani);color:var(--rani-d);border-radius:var(--r-pill);padding:9px 14px;font-weight:800;font-size:12.5px;font-family:inherit;cursor:pointer}
 .twinners{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
 .twin{font-size:11.5px;font-weight:800;color:var(--leaf);background:#E7F6EC;padding:6px 11px;border-radius:var(--r-pill)}
+/* family world */
+#screen-world{padding:0;overflow:hidden}
+.worldback{position:fixed;top:14px;left:14px;z-index:30;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.85);box-shadow:var(--sh-1);font-size:20px;font-weight:800;color:var(--ink);cursor:pointer;backdrop-filter:blur(6px)}
+.worldwrap{position:relative;width:100%;height:calc(100vh - 64px);overflow:hidden}
+#worldSvg{width:100%;height:100%;display:block;touch-action:none}
+.worldload{display:flex;align-items:center;justify-content:center;height:60vh;color:var(--ink2);font-weight:700;font-family:var(--font-display)}
+.worldcap{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:rgba(36,24,38,.7);color:#fff;padding:9px 16px;border-radius:var(--r-pill);font-size:13px;font-weight:700;backdrop-filter:blur(8px);transition:opacity .3s ease;max-width:80%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.worldzoom{position:absolute;right:14px;bottom:24px;display:flex;flex-direction:column;gap:8px}
+.worldzoom button{width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,.9);box-shadow:var(--sh-2);font-size:20px;font-weight:800;color:var(--ink);cursor:pointer}
+.worldhint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.85);color:var(--ink2);padding:8px 16px;border-radius:var(--r-pill);font-size:12px;font-weight:700;backdrop-filter:blur(6px);white-space:nowrap}
+.twinkle{animation:twk 3s ease-in-out infinite}
+@keyframes twk{0%,100%{opacity:.4}50%{opacity:1}}
+.housebob{animation:bob 5s ease-in-out infinite;transform-origin:center}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.househero{text-align:center;padding:8px 0 4px}
+.househeroic{font-size:42px}
+.househerot{font-family:var(--font-display);font-weight:800;font-size:23px;color:var(--ink);margin-top:4px}
+.househeroc{font-size:13px;color:var(--ink2);font-weight:700;margin-top:2px}
+.househeromood{display:inline-block;margin-top:8px;background:var(--grad-soft);border:1px solid var(--line);padding:6px 14px;border-radius:var(--r-pill);font-size:12.5px;font-weight:800;color:var(--ink)}
+/* home widget */
+.worldwidget{position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-1);cursor:pointer;margin-bottom:16px;border:1px solid var(--line)}
+.worldwidget svg{width:100%;height:84px;display:block}
+.worldwidget .ww-label{position:absolute;left:14px;bottom:10px;color:#fff;font-family:var(--font-display);font-weight:800;font-size:15px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.worldwidget .ww-go{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.9);color:var(--ink);font-size:11px;font-weight:800;padding:5px 11px;border-radius:var(--r-pill)}
 .home-sec{font-family:'Baloo 2';font-weight:800;font-size:17px;margin:0 2px 11px;display:flex;align-items:center;justify-content:space-between}
 .home-sec a{font-size:12.5px;color:var(--rani-d);font-weight:800;cursor:pointer}
 .today-card{background:linear-gradient(150deg,#FFFFFF,#FFF6EC);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);margin-bottom:20px}
@@ -789,6 +813,11 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div id="reelBody"></div>
   </section>
 
+  <section class="screen has-nav" id="screen-world">
+    <button class="worldback" onclick="navTo('home')" aria-label="Back">←</button>
+    <div id="worldBody"></div>
+  </section>
+
   <nav class="nav hide" id="bottomNav">
     <button data-tab="home" onclick="navTo('home')" aria-label="Home"><span class="ni">🏡</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')" aria-label="Relationships"><span class="ni">❤️</span><span class="nl">Relationships</span></button>
@@ -830,7 +859,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.7.0';
+var JEETO_VERSION='0.8.0';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2331,6 +2360,216 @@ async function buildArenaGeneric(id){
 }
 async function arenaReact(id, em){ await sb.from('arena_players').upsert({event_id:id, member_phone:myPhone(), reaction:em},{onConflict:'event_id,member_phone'}); flyHeart&&flyHeart(); buildArenaGeneric(id); }
 
+/* ============================================================
+   FAMILY WORLD ENGINE (Sprint 18)
+   Not a page — an emotional world. Households become living homes,
+   Bridges become glowing roads, Skyvos flies between them.
+   Renders entirely from existing Household + Bridge data. No new DB.
+   ============================================================ */
+var WORLD={ nodes:[], edges:[], view:{s:1,tx:0,ty:0}, drag:null, capTimer:null, moods:{} };
+
+function worldTimeMode(){ var h=new Date().getHours();
+  if(h>=5&&h<8) return 'dawn'; if(h>=8&&h<17) return 'day'; if(h>=17&&h<20) return 'dusk'; return 'night'; }
+function worldSeason(){ var m=new Date().getMonth();
+  if(m===11||m<=1) return 'winter'; if(m<=4) return 'spring'; if(m<=7) return 'summer'; return 'autumn'; }
+function isFestivalSeason(){ var m=new Date().getMonth(); return m===9||m===10; } // Oct–Nov (Diwali season)
+
+function worldLayout(n){ var pts=[]; for(var i=0;i<n;i++){ var t=(i+1)/(n+1); var x=130+t*740; var y=400+Math.sin(t*Math.PI*1.6+0.4)*64+((i%2)?42:-12); pts.push({x:Math.round(x),y:Math.round(y)}); } return pts; }
+
+async function buildWorldGraph(){
+  var ctx=await myCircleContext();
+  var nodes=[], idx={};
+  ctx.households.forEach(function(o){ var id=o.h.id; idx[id]=nodes.length; nodes.push({ id:id, name:o.h.household_name, city:o.h.city||'', members:o.members.length, mine:true, _o:o }); });
+  (ctx.bridges||[]).forEach(function(b){ if(idx[b._other]==null){ idx[b._other]=nodes.length; nodes.push({ id:b._other, name:b._otherName||'A household', city:'', members:0, mine:false }); } });
+  var pos=worldLayout(nodes.length); nodes.forEach(function(nd,i){ nd.x=pos[i].x; nd.y=pos[i].y; });
+  var edges=(ctx.bridges||[]).map(function(b){ return { a:idx[b._mine], b:idx[b._other], strength:b.bridge_strength||0, id:b.id }; }).filter(function(e){ return e.a!=null&&e.b!=null; });
+  WORLD.nodes=nodes; WORLD.edges=edges;
+  await computeMoods(nodes);
+  return WORLD;
+}
+
+async function computeMoods(nodes){
+  var moods={}; var mine=nodes.filter(function(n){return n.mine;}).map(function(n){return n.id;});
+  if(!mine.length){ WORLD.moods=moods; return; }
+  var today=new Date(); today.setHours(0,0,0,0);
+  try{
+    var liveR=await sb.from('arena_events').select('household_id,status').in('household_id',mine).in('status',['live','starting']);
+    (liveR.data||[]).forEach(function(x){ if(x.household_id) moods[x.household_id]={label:'Game Night',icon:'🎲',tone:'gold'}; });
+  }catch(e){}
+  try{
+    var mh=await sb.from('moment_households').select('household_id,moment_id').in('household_id',mine);
+    var mids=(mh.data||[]).map(function(x){return x.moment_id;});
+    if(mids.length){ var mr=await sb.from('moments').select('id,created_at,moment_date').in('id',mids);
+      (mr.data||[]).forEach(function(m){ var d=new Date(m.moment_date||m.created_at); if(d>=today){ var hh=(mh.data.filter(function(x){return x.moment_id===m.id;})[0]||{}).household_id; if(hh&&!moods[hh]) moods[hh]={label:'Family Time',icon:'❤️',tone:'rose'}; } });
+    }
+  }catch(e){}
+  try{
+    var since=new Date(Date.now()-5*60000).toISOString();
+    for(var i=0;i<nodes.length;i++){ var nd=nodes[i]; if(!nd.mine||moods[nd.id]||!nd._o) continue;
+      var phones=nd._o.members.map(function(m){return m.phone;}); if(!phones.length) continue;
+      var on=await sb.from('profiles').select('phone').in('phone',phones).gte('last_seen',since);
+      if((on.data||[]).length) moods[nd.id]={label:'Lights On',icon:'🪔',tone:'amber'};
+    }
+  }catch(e){}
+  nodes.forEach(function(nd){ if(!moods[nd.id]) moods[nd.id]={label:'Peaceful',icon:'🌿',tone:'calm'}; });
+  WORLD.moods=moods;
+}
+
+/* ---------- SVG scene ---------- */
+function skyDefs(mode){
+  var sky={ dawn:['#FFE0B8','#FFC59B','#FBA37E'], day:['#BFE3FF','#D9F0FF','#EAF7FF'], dusk:['#FFC08A','#FF9E7D','#C56B8A'], night:['#1A1633','#241B47','#2E2154'] }[mode];
+  return '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sky[0]+'"/><stop offset="0.6" stop-color="'+sky[1]+'"/><stop offset="1" stop-color="'+sky[2]+'"/></linearGradient>'+
+    '<radialGradient id="glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE9B0" stop-opacity="0.9"/><stop offset="1" stop-color="#FFE9B0" stop-opacity="0"/></radialGradient>'+
+    '<radialGradient id="bglow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#C9A8FF" stop-opacity="0.85"/><stop offset="1" stop-color="#C9A8FF" stop-opacity="0"/></radialGradient>'+
+    '<filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6"/></filter>'+
+    '<radialGradient id="skyorb" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#fff"/><stop offset="0.5" stop-color="#E9D5FF"/><stop offset="1" stop-color="#A855F7"/></radialGradient>';
+}
+function hillPath(mode){ var c=(mode==='night')?['#2C2A4A','#262344']:(mode==='dusk')?['#8A5A6E','#6E4A63']:['#A7D9A0','#8CCB89']; 
+  return '<path d="M0 470 Q 250 420 500 460 T 1000 450 L1000 680 L0 680 Z" fill="'+c[0]+'"/>'+
+         '<path d="M0 540 Q 300 500 620 540 T 1000 530 L1000 680 L0 680 Z" fill="'+c[1]+'"/>'; }
+function celestial(mode){
+  if(mode==='night'){ var stars=''; for(var i=0;i<28;i++){ var x=Math.round(Math.random()*1000),y=Math.round(Math.random()*300),r=(Math.random()*1.4+0.5).toFixed(1); stars+='<circle class="twinkle" cx="'+x+'" cy="'+y+'" r="'+r+'" fill="#fff" opacity="'+(0.5+Math.random()*0.5).toFixed(2)+'" style="animation-delay:'+(Math.random()*3).toFixed(1)+'s"/>'; }
+    return stars+'<circle cx="840" cy="110" r="42" fill="#FDF6E3"/><circle cx="824" cy="98" r="42" fill="'+'#241B47'+'" opacity="0.25"/>'; }
+  if(mode==='day'||mode==='dawn'){ return '<circle cx="180" cy="120" r="46" fill="#FFD66B"/><circle cx="180" cy="120" r="78" fill="url(#glow)"/>'; }
+  return '<circle cx="820" cy="140" r="44" fill="#FFB36B"/><circle cx="820" cy="140" r="86" fill="url(#glow)"/>'; // dusk
+}
+function homeSVG(nd, mode){
+  var lit=(mode==='night'||mode==='dusk'); var win=lit?'#FFD66B':'#BcdCF5'; var winLit=lit?'1':'0.5';
+  var roof=nd.mine?'#E03A7A':'#7C3AED'; var body='#FFF6EA'; var door=nd.mine?'#C42466':'#5B21B6';
+  var mood=(WORLD.moods[nd.id]||{}); var fest=isFestivalSeason();
+  var festLights = fest ? '<g>'+[0,1,2,3,4].map(function(k){ return '<circle cx="'+(-26+k*13)+'" cy="-34" r="2.4" fill="'+['#FF8A1E','#E03A7A','#FFD66B','#2BA84A','#7C3AED'][k]+'" class="twinkle" style="animation-delay:'+(k*0.3)+'s"/>'; }).join('')+'</g>' : '';
+  return '<g class="house" data-house="'+escapeAttr(nd.id)+'" transform="translate('+nd.x+','+nd.y+')" style="cursor:pointer">'+
+    '<ellipse cx="0" cy="40" rx="62" ry="16" fill="url(#glow)" opacity="'+(lit?0.6:0.3)+'"/>'+
+    '<g class="housebob">'+
+    '<rect x="-40" y="-18" width="80" height="56" rx="9" fill="'+body+'" stroke="#EADFD0"/>'+
+    '<polygon points="-48,-16 0,-54 48,-16" fill="'+roof+'"/>'+
+    festLights+
+    '<rect x="-12" y="6" width="24" height="32" rx="4" fill="'+door+'"/>'+
+    '<rect x="-30" y="-6" width="16" height="16" rx="3" fill="'+win+'" opacity="'+winLit+'"/>'+
+    '<rect x="14" y="-6" width="16" height="16" rx="3" fill="'+win+'" opacity="'+winLit+'"/>'+
+    '</g>'+
+    '<g transform="translate(0,62)"><rect x="-66" y="-15" width="132" height="26" rx="13" fill="#fff" opacity="0.92"/>'+
+    '<text x="0" y="3" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="14" fill="#241826">'+escapeHtml(trimName(nd.name))+'</text></g>'+
+    '<g transform="translate(0,90)"><rect x="-58" y="-12" width="116" height="22" rx="11" fill="#241826" opacity="0.78"/>'+
+    '<text x="0" y="3" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">'+(mood.icon||'🌿')+' '+escapeHtml(mood.label||'Peaceful')+(nd.mine&&nd.members?(' · '+nd.members):'')+'</text></g>'+
+    '</g>';
+}
+function trimName(s){ s=s||''; return s.length>14?s.slice(0,13)+'…':s; }
+function bridgeSVG(e){ var a=WORLD.nodes[e.a], b=WORLD.nodes[e.b]; if(!a||!b) return ''; 
+  var mx=(a.x+b.x)/2, my=Math.min(a.y,b.y)-90; var d='M '+a.x+' '+(a.y-6)+' Q '+mx+' '+my+' '+b.x+' '+(b.y-6);
+  var active=(e.strength||0)>0; var op=active?0.9:0.4; var pid='bp'+e.a+'_'+e.b;
+  return '<g><path id="'+pid+'" d="'+d+'" fill="none" stroke="#C9A8FF" stroke-width="'+(active?5:3)+'" stroke-linecap="round" opacity="'+op+'" filter="url(#soft)"/>'+
+    '<path d="'+d+'" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="2 12" opacity="'+(active?0.8:0.3)+'"><animate attributeName="stroke-dashoffset" from="0" to="-140" dur="6s" repeatCount="indefinite"/></path>'+
+    (active?'<circle r="3.5" fill="#fff"><animateMotion dur="'+(5+Math.random()*3).toFixed(1)+'s" repeatCount="indefinite" path="'+d+'"/></circle>':'')+'</g>';
+}
+function skyvosPath(){ var ns=WORLD.nodes; if(!ns.length) return 'M 500 120 q 120 -40 240 0 t 240 0'; 
+  var pts=ns.map(function(n){return {x:n.x,y:n.y-120};}); var d='M '+pts[0].x+' '+pts[0].y;
+  for(var i=1;i<pts.length;i++){ var p=pts[i],pp=pts[i-1]; d+=' Q '+((p.x+pp.x)/2)+' '+(Math.min(p.y,pp.y)-50)+' '+p.x+' '+p.y; }
+  d+=' Q '+((pts[pts.length-1].x+pts[0].x)/2)+' 80 '+pts[0].x+' '+pts[0].y; return d;
+}
+function worldSVG(mode){
+  var defs='<defs>'+skyDefs(mode)+'</defs>';
+  var sky='<rect x="0" y="0" width="1000" height="680" fill="url(#sky)"/>'+celestial(mode);
+  var season=worldSeason(); var weather='';
+  if(season==='winter'){ for(var i=0;i<26;i++){ var x=Math.round(Math.random()*1000); weather+='<circle cx="'+x+'" cy="-10" r="2.2" fill="#fff" opacity="0.85"><animateMotion dur="'+(6+Math.random()*5).toFixed(1)+'s" repeatCount="indefinite" path="M0 0 L'+(Math.random()*30-15).toFixed(0)+' 700"/></circle>'; } }
+  if(season==='autumn'){ for(var j=0;j<12;j++){ var ax=Math.round(Math.random()*1000); weather+='<text x="'+ax+'" y="-10" font-size="14" opacity="0.8">🍂<animateMotion dur="'+(8+Math.random()*6).toFixed(1)+'s" repeatCount="indefinite" path="M0 0 Q40 350 -20 700"/></text>'; } }
+  var hills=hillPath(mode);
+  var bridges=WORLD.edges.map(function(e){ return bridgeSVG(e); }).join('');
+  var homes=WORLD.nodes.map(function(n){ return homeSVG(n,mode); }).join('');
+  var sp=skyvosPath();
+  var skyvos='<g><circle r="13" fill="url(#bglow)" opacity="0.9"><animateMotion dur="'+(WORLD.nodes.length*4+14)+'s" repeatCount="indefinite" path="'+sp+'"/></circle>'+
+    '<circle r="7" fill="url(#skyorb)"><animateMotion dur="'+(WORLD.nodes.length*4+14)+'s" repeatCount="indefinite" path="'+sp+'"/></circle></g>';
+  return '<svg id="worldSvg" viewBox="0 0 1000 680" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'+defs+sky+weather+
+    '<g id="worldG">'+hills+bridges+homes+skyvos+'</g></svg>';
+}
+
+/* ---------- render + interaction ---------- */
+async function renderWorld(){
+  var box=document.getElementById('worldBody'); if(!box) return;
+  box.innerHTML='<div class="worldload">Entering your family world…</div>';
+  if(!ME) ME=await fetchProfile(myPhone());
+  await buildWorldGraph();
+  if(!WORLD.nodes.length){ box.innerHTML='<div class="empty"><span class="big">🏡</span><div class="e1">Your world is waiting</div><div class="e2">Create a household and it becomes the first living home in your family\u2019s world.</div><div style="height:14px"></div><button class="btn" onclick="navTo(\'bridge\')">Create a household</button></div>'; return; }
+  var mode=worldTimeMode();
+  WORLD.view={s:1,tx:0,ty:0};
+  box.innerHTML='<div class="worldwrap" id="worldWrap">'+worldSVG(mode)+
+    '<div class="worldcap" id="worldCap">🤖 Skyvos is exploring your world…</div>'+
+    '<div class="worldzoom"><button onclick="worldZoom(0.2)">＋</button><button onclick="worldZoom(-0.2)">－</button></div>'+
+    '<div class="worldhint">'+({night:'🌙 Goodnight',dawn:'🌅 Good morning',day:'☀️ A bright day',dusk:'🌇 Golden hour'}[mode])+' · tap a home to enter</div></div>';
+  wireWorld();
+  startWorldCaption();
+}
+function wireWorld(){
+  var svg=document.getElementById('worldSvg'); if(!svg) return;
+  var moved=false, start=null;
+  function pt(ev){ var t=ev.touches?ev.touches[0]:ev; return {x:t.clientX,y:t.clientY}; }
+  svg.addEventListener('pointerdown', function(ev){ start=pt(ev); moved=false; WORLD.drag={x:WORLD.view.tx,y:WORLD.view.ty,px:start.x,py:start.y}; });
+  svg.addEventListener('pointermove', function(ev){ if(!WORLD.drag) return; var p=pt(ev); var dx=p.x-WORLD.drag.px, dy=p.y-WORLD.drag.py; if(Math.abs(dx)+Math.abs(dy)>6) moved=true; WORLD.view.tx=WORLD.drag.x+dx; WORLD.view.ty=WORLD.drag.y+dy; applyWorldView(); });
+  svg.addEventListener('pointerup', function(ev){ WORLD.drag=null; if(!moved){ var g=ev.target.closest&&ev.target.closest('[data-house]'); if(g) openHouse(g.getAttribute('data-house')); } });
+  svg.addEventListener('pointerleave', function(){ WORLD.drag=null; });
+}
+function applyWorldView(){ var g=document.getElementById('worldG'); if(g) g.setAttribute('transform','translate('+WORLD.view.tx+','+WORLD.view.ty+') scale('+WORLD.view.s+')'); }
+function worldZoom(d){ WORLD.view.s=Math.max(0.7,Math.min(2.3,WORLD.view.s+d)); applyWorldView(); }
+function startWorldCaption(){
+  if(WORLD.capTimer) clearInterval(WORLD.capTimer);
+  var lines=[]; WORLD.nodes.forEach(function(n){ lines.push('🤖 Skyvos is visiting '+n.name); });
+  if(WORLD.edges.length) lines.push('🌉 Skyvos is crossing a glowing bridge');
+  lines.push('✨ Skyvos is sprinkling a little warmth');
+  if(isFestivalSeason()) lines.push('🪔 Skyvos is lighting the festival lamps');
+  var i=0; var cap=document.getElementById('worldCap'); if(cap) cap.textContent=lines[0];
+  WORLD.capTimer=setInterval(function(){ var c=document.getElementById('worldCap'); if(!c){ clearInterval(WORLD.capTimer); WORLD.capTimer=null; return; } i=(i+1)%lines.length; c.style.opacity=0; setTimeout(function(){ c.textContent=lines[i]; c.style.opacity=1; },300); }, 4200);
+}
+function leaveWorld(){ if(WORLD.capTimer){ clearInterval(WORLD.capTimer); WORLD.capTimer=null; } }
+
+/* ---------- house opens ---------- */
+async function openHouse(id){
+  var nd=WORLD.nodes.filter(function(n){return n.id===id;})[0]; if(!nd) return;
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div><div id="houseBody"><div class="sk sk-card"></div></div></div>';
+  m.classList.add('show');
+  var hb=document.getElementById('houseBody');
+  var mood=WORLD.moods[id]||{label:'Peaceful',icon:'🌿'};
+  var head='<div class="househero"><div class="househeroic">🏡</div><div class="househerot">'+escapeHtml(nd.name)+'</div>'+(nd.city?'<div class="househeroc">📍 '+escapeHtml(nd.city)+'</div>':'')+'<div class="househeromood">'+mood.icon+' '+escapeHtml(mood.label)+'</div></div>';
+  if(!nd.mine){ hb.innerHTML=head+'<p class="muted" style="text-align:center;font-size:13.5px;margin:14px 6px">A part of your family\u2019s world, connected by a glowing bridge. 🌉</p><button class="btn btn-soft" onclick="closeHomeModal()">Close</button>'; return; }
+  var o=nd._o; var body=head;
+  // members
+  body+='<div class="field-label" style="margin-top:14px">Family · '+o.members.length+'</div><div class="liveavs">'+o.members.map(function(mm){ return '<div class="liveav"><span class="qav">'+(((mm.name||'?')[0])||'?').toUpperCase()+'</span></div>'; }).join('')+'</div>';
+  hb.innerHTML=body+'<div class="sk sk-card"></div>';
+  // moments + arena tonight (best-effort)
+  var extra='';
+  try{ var mh=await sb.from('moment_households').select('moment_id').eq('household_id',id);
+    var ids=(mh.data||[]).map(function(x){return x.moment_id;});
+    if(ids.length){ var mr=await sb.from('moments').select('*').in('id',ids).eq('status','active').order('created_at',{ascending:false}).limit(3); var rows=mr.data||[];
+      if(rows.length){ var en=await enrichMoments(rows);
+        extra+='<div class="field-label" style="margin-top:14px">Recent Moments</div>'+en.map(function(x){ return '<div class="task" onclick="closeHomeModal();reliveMoment(\''+x.m.id+'\')" style="cursor:pointer"><div style="font-size:20px">'+(x.media[0]?'<img src="'+escapeAttr(x.media[0].media_url)+'" style="width:34px;height:34px;border-radius:8px;object-fit:cover">':'💛')+'</div><div style="flex:1;min-width:0"><div class="tk-t">'+escapeHtml(x.m.title)+'</div></div><span class="qstart">Relive →</span></div>'; }).join('');
+      }
+    }
+  }catch(e){}
+  try{ var ar=await sb.from('arena_events').select('*').eq('household_id',id).in('status',['live','starting','scheduled']).limit(2); var aev=ar.data||[];
+    if(aev.length){ extra+='<div class="field-label" style="margin-top:14px">🎪 Arena tonight</div>'+aev.map(function(e){ return '<div class="task" onclick="closeHomeModal();openArenaEvent(\''+e.id+'\')" style="cursor:pointer"><div style="font-size:20px">🎲</div><div style="flex:1"><div class="tk-t">'+escapeHtml(e.title)+'</div></div><span class="qstart">Join →</span></div>'; }).join('');
+    }
+  }catch(e){}
+  // bridge connections
+  try{ var ctx=await myCircleContext(); var br=(ctx.bridges||[]).filter(function(b){ return b._mine===id; });
+    if(br.length){ extra+='<div class="field-label" style="margin-top:14px">🌉 Bridges</div>'+br.map(function(b){ return '<div class="task"><div style="font-size:20px">🌉</div><div style="flex:1"><div class="tk-t">'+escapeHtml(b._otherName)+'</div></div></div>'; }).join(''); }
+  }catch(e){}
+  hb.innerHTML=body+extra+'<div style="height:10px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close the door</button>';
+}
+
+/* ---------- home widget ---------- */
+function worldWidgetSVG(){
+  var mode=worldTimeMode();
+  var sky={ dawn:'#FFD9B0', day:'#CDE9FF', dusk:'#FFB088', night:'#241B47' }[mode];
+  var cele=(mode==='night'||mode==='dusk')?'<circle cx="150" cy="22" r="11" fill="#FDF6E3"/>':'<circle cx="30" cy="24" r="12" fill="#FFD66B"/>';
+  return '<svg viewBox="0 0 180 84" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><rect width="180" height="84" fill="'+sky+'"/>'+cele+
+    '<path d="M0 60 Q60 46 120 58 T180 54 L180 84 L0 84Z" fill="'+((mode==='night')?'#2C2A4A':'#9ED39A')+'"/>'+
+    '<g transform="translate(54,40)"><rect x="-15" y="-7" width="30" height="22" rx="3" fill="#FFF6EA"/><polygon points="-18,-6 0,-20 18,-6" fill="#E03A7A"/><rect x="-4" y="2" width="8" height="13" fill="#C42466"/></g>'+
+    '<path d="M70 44 Q92 26 114 44" fill="none" stroke="#C9A8FF" stroke-width="3" stroke-linecap="round" opacity="0.9"/>'+
+    '<g transform="translate(118,42)"><rect x="-13" y="-6" width="26" height="20" rx="3" fill="#FFF6EA"/><polygon points="-16,-5 0,-18 16,-5" fill="#7C3AED"/></g>'+
+    '<circle cx="96" cy="22" r="4.5" fill="url(#none)" ></circle><circle cx="96" cy="22" r="4.5" fill="#E9D5FF"/></svg>';
+}
+
+
 
 
 
@@ -2420,6 +2659,7 @@ async function buildHome(){
   html+='<div class="qa-row">'+
     qa('❤️','Capture','openCapture()')+
     qa('🕰️','Memories','navTo(\'timemachine\')')+
+    qa('🏡','World','navTo(\'world\')')+
     qa('🎪','Arena','navTo(\'live\')')+
     qa('🧭','Quests','navTo(\'quests\')')+
     qa('🕯️','Rituals','navTo(\'rituals\')')+
@@ -2428,6 +2668,9 @@ async function buildHome(){
     qa('🌉','Bridges','navTo(\'bridge\')')+
     qa('📅','Calendar','navTo(\'calendar\')')+
   '</div>';
+
+  /* My Family World widget */
+  html+='<div class="worldwidget" onclick="navTo(\'world\')">'+worldWidgetSVG()+'<span class="ww-label">🏡 My Family World</span><span class="ww-go">Enter →</span></div>';
 
   /* Family Quests */
   html+='<div class="home-sec">🧭 Family Quests'+(streak&&streak.active&&streak.count>1?'<span class="qchip-streak">🔥 '+streak.count+'-day streak</span>':'<a onclick="navTo(\'quests\')">All →</a>')+'</div>';
@@ -3621,7 +3864,8 @@ async function renderPassport(){
   if(events.length){ events.slice(0,5).forEach(function(ev){ html+='<div class="jrow"><div class="jdot">'+ev.icon+'</div><div style="flex:1;min-width:0"><div class="jt">'+escapeHtml(ev.title)+'</div><div class="jd">'+escapeHtml(ev.when)+'</div></div></div>'; }); }
   else html+='<div class="muted" style="font-size:13px;padding:4px 2px">Your journey will unfold as you connect, build and capture.</div>';
   html+='<div style="height:14px"></div><button class="btn btn-soft" onclick="viewJourney()">View Complete Journey →</button>'+
-    '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'timemachine\')">🕰️ Open the Family Time Machine</button></div>';
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'timemachine\')">🕰️ Open the Family Time Machine</button>'+
+    '<div style="height:8px"></div><button class="btn btn-soft" onclick="navTo(\'world\')">🏡 Enter your Family World</button></div>';
   html+=skyvosMini('Your Passport is your legacy — it will outlive the phone in your hand.');
 
   body.innerHTML=html;
@@ -3997,7 +4241,8 @@ function searchGraph(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine' };
+  try{ if(typeof leaveWorld==='function') leaveWorld(); }catch(e){}
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-world' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -4011,6 +4256,7 @@ function navTo(tab){
   if(tab==='rituals') renderRituals();
   if(tab==='live') renderArena();
   if(tab==='timemachine') renderTimeMachine();
+  if(tab==='world') renderWorld();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
