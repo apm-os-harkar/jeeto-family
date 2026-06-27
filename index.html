@@ -244,6 +244,38 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .sky-orb-sm{width:26px;height:26px}
 .sky-orb-sm .sky-core{width:8px;height:8px;margin:-4px 0 0 -4px}
 .skyvos-mini{display:flex;align-items:center;gap:11px;background:var(--grad-soft);border:1px solid var(--line);border-radius:16px;padding:11px 14px;margin:16px 2px 4px;font-size:12.5px;font-weight:700;color:var(--ink2);line-height:1.45}
+/* quests */
+.qtabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto}
+.qtab{flex:0 0 auto;background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);padding:9px 15px;font-size:13px;font-weight:800;color:var(--ink2);cursor:pointer;box-shadow:var(--sh-1)}
+.qtab.on{background:var(--grad);color:#fff;border-color:transparent}
+.qcard{background:#fff;border:1px solid var(--line);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-1);margin-bottom:14px;cursor:pointer;transition:transform .3s ease}
+.qcard:active{transform:scale(.99)}
+.qhead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;color:#fff}
+.qhead .qicon{font-size:26px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.2))}
+.qhead .qreward{font-size:11px;font-weight:800;background:rgba(255,255,255,.22);padding:5px 10px;border-radius:var(--r-pill);backdrop-filter:blur(4px)}
+.qbody{padding:14px 16px}
+.qtitle{font-family:var(--font-display);font-weight:800;font-size:16.5px;line-height:1.2}
+.qdesc{font-size:12.5px;color:var(--ink2);font-weight:600;line-height:1.45;margin-top:5px}
+.qprog{margin-top:12px}
+.qbar{height:9px;background:var(--paper2);border-radius:var(--r-pill);overflow:hidden}
+.qbar i{display:block;height:100%;background:var(--grad);border-radius:var(--r-pill);transition:width .5s ease}
+.qpct{font-size:11.5px;color:var(--ink2);font-weight:800;margin-top:6px}
+.qfoot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.qavs{display:flex}
+.qav{width:28px;height:28px;border-radius:50%;background:var(--grad-soft);border:2px solid #fff;margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--rani-d);overflow:hidden;flex:0 0 auto}
+.qav:first-child{margin-left:0}
+.qav img{width:100%;height:100%;object-fit:cover}
+.qchip{font-size:11px;font-weight:800;color:var(--ink2);background:var(--paper2);padding:5px 11px;border-radius:var(--r-pill)}
+.qchip.done{background:#E7F6EC;color:var(--leaf)}
+.qchip.soft{background:var(--paper2);color:var(--ink3);text-transform:capitalize}
+.qstart{font-size:12.5px;font-weight:800;color:var(--rani-d)}
+.qrow{display:flex;gap:10px;align-items:flex-end}
+.qmem{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.qmem:last-child{border-bottom:0}
+.qmem .qav{margin:0;width:32px;height:32px}
+.qmemst{font-size:11px;font-weight:800;color:var(--ink3)}
+.reward-line{font-size:12px;font-weight:800;color:#fff;margin-top:8px;opacity:.95}
+.qchip-streak{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:#C2410C;background:linear-gradient(135deg,#FFE9CC,#FFD9B0);padding:6px 12px;border-radius:var(--r-pill)}
 .home-sec{font-family:'Baloo 2';font-weight:800;font-size:17px;margin:0 2px 11px;display:flex;align-items:center;justify-content:space-between}
 .home-sec a{font-size:12.5px;color:var(--rani-d);font-weight:800;cursor:pointer}
 .today-card{background:linear-gradient(150deg,#FFFFFF,#FFF6EC);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--sh-2);margin-bottom:20px}
@@ -584,6 +616,13 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div style="height:20px"></div>
   </section>
 
+  <section class="screen has-nav" id="screen-quests">
+    <div class="gtop"><button class="gback" onclick="navTo('home')">←</button><div class="h1" style="margin:0;font-size:24px">🧭 Family Quests</div></div>
+    <p class="muted" style="font-size:12.5px;margin:0 2px 14px">Real activities that bring your family closer. Not games — shared memories. Never required.</p>
+    <div id="questsBody"></div>
+    <div style="height:24px"></div>
+  </section>
+
   <nav class="nav hide" id="bottomNav">
     <button data-tab="home" onclick="navTo('home')" aria-label="Home"><span class="ni">🏡</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')" aria-label="Relationships"><span class="ni">❤️</span><span class="nl">Relationships</span></button>
@@ -625,7 +664,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.2.0';
+var JEETO_VERSION='0.3.0';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -663,7 +702,7 @@ var Skyvos=(function(){
       celebrations:input.celebrations||[], onThisDay:input.onThisDay||[],
       pending:input.pending||0, todaysMoments:input.todaysMoments||{any:false},
       momentsThisWeek:input.momentsThisWeek||0, familyCount:input.familyCount||0,
-      bridges:input.bridges||0
+      bridges:input.bridges||0, activeQuests:input.activeQuests||0
     };
   }
 
@@ -701,6 +740,10 @@ var Skyvos=(function(){
       title:'A quiet week',
       body:'A peaceful week so far. Maybe it\u2019s time to create a Moment together.',
       cta:{label:'Capture a Moment', fn:'closeSkyvos();openCapture()'} });
+    if(c.activeQuests===0 && c.familyCount>0) out.push({ kind:'quest', icon:'🧭', weight:30,
+      title:'Grow closer this week',
+      body:'A Quest turns an ordinary week into a shared memory — a dinner, a call, a walk together. Only if it feels right.',
+      cta:{label:'Explore Quests', fn:"closeSkyvos();navTo('quests')"} });
     out.push({ kind:'greeting', icon:'🌟', weight:10,
       title:(c.name?'Welcome home, '+c.name:'Welcome home'),
       body:'Your people are right here. Every Moment you keep becomes family heritage.' });
@@ -874,6 +917,289 @@ function openSkyvos(){
 function closeSkyvos(){ var m=document.getElementById('homeModal'); if(m) m.classList.remove('show'); }
 /* a small companion line that appears gently on other screens */
 function skyvosMini(text){ return '<div class="skyvos-mini"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">'+escapeHtml(text)+'</span></div>'; }
+
+/* ============================================================
+   FAMILY QUESTS ENGINE (Sprint 13)
+   Real-life activities that strengthen relationships. Not games.
+   Rewards are emotional only. Completed quests enter the Life timeline.
+   ============================================================ */
+var QUEST_CATS={
+  relationship:{g:'linear-gradient(135deg,#FF8A1E,#E03A7A)'},
+  health:{g:'linear-gradient(135deg,#5BD06E,#2BA84A)'},
+  memories:{g:'linear-gradient(135deg,#C9A8FF,#7C3AED)'},
+  learning:{g:'linear-gradient(135deg,#6BA8FF,#2563EB)'},
+  celebration:{g:'linear-gradient(135deg,#FFC93C,#FF7A1E)'},
+  travel:{g:'linear-gradient(135deg,#5FE0DA,#0EA5A5)'},
+  traditions:{g:'linear-gradient(135deg,#FFB05A,#C2410C)'},
+  kindness:{g:'linear-gradient(135deg,#FF9CC8,#DB2777)'},
+  fitness:{g:'linear-gradient(135deg,#7BE495,#16A34A)'},
+  community:{g:'linear-gradient(135deg,#A99BFF,#6D28D9)'}
+};
+function questCatGrad(c){ return (QUEST_CATS[c]||QUEST_CATS.relationship).g; }
+
+/* Quest template catalog — Skyvos recommends from here. target/unit drive progress. */
+var QUEST_TEMPLATES=[
+  {key:'steps50k', title:'Walk 50,000 steps together', desc:'A whole family, one shared goal. Log your walks until you reach it together.', category:'fitness', quest_type:'weekly', icon:'🚶', target:50000, unit:'steps', reward:'Golden Leaf', reward_type:'leaf'},
+  {key:'grandparents', title:'Capture a Moment with grandparents', desc:'A photo, a story, a laugh. Some Moments must be captured before they pass.', category:'memories', quest_type:'custom', icon:'👵', target:1, unit:'moment', reward:'Memory Capsule', reward_type:'capsule'},
+  {key:'dinner', title:'Family dinner together', desc:'No phones. Just food and faces. Share one meal as a whole family.', category:'relationship', quest_type:'weekly', icon:'🍽️', target:1, unit:'dinner', reward:'Family Badge', reward_type:'badge'},
+  {key:'callrelative', title:'Call one relative', desc:'Someone would smile just to hear your voice today.', category:'kindness', quest_type:'daily', icon:'📞', target:1, unit:'call', reward:'Relationship Strength', reward_type:'strength'},
+  {key:'familystory', title:'Read one family story', desc:'Pass a story down. The ones we tell are the ones that survive.', category:'traditions', quest_type:'custom', icon:'📖', target:1, unit:'story', reward:'Legacy Seed', reward_type:'seed'},
+  {key:'cook', title:'Cook together', desc:'Hands in the same kitchen make the warmest memories.', category:'traditions', quest_type:'weekly', icon:'🍳', target:1, unit:'meal', reward:'Family Badge', reward_type:'badge'},
+  {key:'oldmemories', title:'Watch old memories together', desc:'Open the Moments you saved and relive them as a family.', category:'memories', quest_type:'custom', icon:'🎞️', target:1, unit:'session', reward:'Memory Capsule', reward_type:'capsule'},
+  {key:'planttree', title:'Plant one tree', desc:'Something that will outlive all of us, planted together.', category:'community', quest_type:'seasonal', icon:'🌳', target:1, unit:'tree', reward:'Legacy Seed', reward_type:'seed'},
+  {key:'visitgp', title:'Visit grandparents', desc:'Show up. Presence is the gift no message can replace.', category:'relationship', quest_type:'monthly', icon:'🏡', target:1, unit:'visit', reward:'Golden Leaf', reward_type:'leaf'},
+  {key:'legacystory', title:'Record one Legacy story', desc:'Capture an elder telling a story, in their own voice, forever.', category:'traditions', quest_type:'custom', icon:'🎙️', target:1, unit:'story', reward:'Legacy Seed', reward_type:'seed'},
+  {key:'festival', title:'Celebrate one festival together', desc:'Gather, light up, and make this festival a Moment to keep.', category:'celebration', quest_type:'festival', icon:'🪔', target:1, unit:'celebration', reward:'Festival Badge', reward_type:'badge'},
+  /* household */
+  {key:'cleanhome', title:'Clean the home together', desc:'Many hands, one home. Tidy up as a team.', category:'health', quest_type:'household', icon:'🧹', target:1, unit:'session', reward:'Family Badge', reward_type:'badge'},
+  {key:'movienight', title:'Family movie night', desc:'Dim the lights, share the couch, pick one film together.', category:'relationship', quest_type:'household', icon:'🎬', target:1, unit:'night', reward:'Family Badge', reward_type:'badge'},
+  {key:'sundaybreakfast', title:'Sunday breakfast together', desc:'Start the week around one table.', category:'relationship', quest_type:'household', icon:'🥐', target:1, unit:'breakfast', reward:'Family Badge', reward_type:'badge'},
+  {key:'gardenday', title:'Garden day', desc:'Grow something together and watch it return the love.', category:'community', quest_type:'household', icon:'🌱', target:1, unit:'day', reward:'Legacy Seed', reward_type:'seed'},
+  {key:'familywalk', title:'Family walk', desc:'A slow walk, side by side. The best conversations happen here.', category:'fitness', quest_type:'household', icon:'🚶', target:1, unit:'walk', reward:'Golden Leaf', reward_type:'leaf'},
+  /* bridge */
+  {key:'videocall', title:'Bridge video call', desc:'Bring two households face to face across any distance.', category:'relationship', quest_type:'bridge', icon:'📹', target:1, unit:'call', reward:'Bridge Strength', reward_type:'strength'},
+  {key:'recipes', title:'Exchange family recipes', desc:'Trade the dishes that taste like home between your households.', category:'traditions', quest_type:'bridge', icon:'🍲', target:1, unit:'recipe', reward:'Bridge Strength', reward_type:'strength'},
+  {key:'jointceleb', title:'A joint celebration', desc:'One festival, two families, twice the joy.', category:'celebration', quest_type:'bridge', icon:'🎉', target:1, unit:'celebration', reward:'Bridge Strength', reward_type:'strength'},
+  {key:'memorybook', title:'Shared memory book', desc:'Build one Moment book that belongs to both households.', category:'memories', quest_type:'bridge', icon:'📔', target:1, unit:'book', reward:'Memory Capsule', reward_type:'capsule'}
+];
+function questTpl(key){ return QUEST_TEMPLATES.filter(function(t){return t.key===key;})[0]; }
+function rewardIcon(t){ return {leaf:'🍃',capsule:'🎁',badge:'🏅',seed:'🌱',strength:'❤️'}[t]||'🏅'; }
+
+/* ---------- data ---------- */
+async function loadQuests(){
+  if(!ensureSB()) return [];
+  var me=myPhone();
+  try{
+    var mineR=await sb.from('quests').select('*').eq('created_by',me);
+    var partR=await sb.from('quest_participants').select('quest_id').eq('member_phone',me);
+    var ids=(partR.data||[]).map(function(x){return x.quest_id;});
+    var partQ={data:[]};
+    if(ids.length){ partQ=await sb.from('quests').select('*').in('id',ids); }
+    var map={}; (mineR.data||[]).concat(partQ.data||[]).forEach(function(q){ map[q.id]=q; });
+    var list=Object.keys(map).map(function(k){ return map[k]; });
+    var qids=list.map(function(q){return q.id;});
+    var parts={};
+    if(qids.length){ var pr=await sb.from('quest_participants').select('*').in('quest_id',qids); (pr.data||[]).forEach(function(p){ (parts[p.quest_id]=parts[p.quest_id]||[]).push(p); }); }
+    list.forEach(function(q){ q._parts=parts[q.id]||[]; });
+    list.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+    return list;
+  }catch(e){ return []; }
+}
+function questDaysLeft(due){ if(!due) return null; var d=new Date(due); var t=new Date(); t.setHours(0,0,0,0); return Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-t)/86400000); }
+
+/* ---------- streaks (encourage, never shame) ---------- */
+async function bumpStreak(type){
+  if(!ensureSB()) return;
+  var me=myPhone(); var td=new Date().toISOString().slice(0,10);
+  try{
+    var r=await sb.from('streaks').select('*').eq('owner_phone',me).eq('streak_type',type).maybeSingle();
+    var row=r.data;
+    if(!row){ await sb.from('streaks').insert({owner_phone:me,streak_type:type,count:1,best:1,last_date:td}); return; }
+    if(row.last_date===td) return;
+    var y=new Date(); y.setDate(y.getDate()-1); var yd=y.toISOString().slice(0,10);
+    var cnt=(row.last_date===yd)?(row.count+1):1;
+    await sb.from('streaks').update({count:cnt, best:Math.max(row.best||0,cnt), last_date:td, updated_at:new Date().toISOString()}).eq('id',row.id);
+  }catch(e){}
+}
+async function loadStreak(type){
+  if(!ensureSB()) return null;
+  try{
+    var r=await sb.from('streaks').select('*').eq('owner_phone',myPhone()).eq('streak_type',type).maybeSingle();
+    var row=r.data; if(!row) return null;
+    var td=new Date().toISOString().slice(0,10); var y=new Date(); y.setDate(y.getDate()-1); var yd=y.toISOString().slice(0,10);
+    if(row.last_date!==td && row.last_date!==yd) return {count:0,best:row.best||0,active:false};
+    return {count:row.count,best:row.best||0,active:true};
+  }catch(e){ return null; }
+}
+
+/* ---------- Skyvos quest recommendations (personal, never forced) ---------- */
+function questPicks(ctx){
+  ctx=ctx||{}; var picks=[];
+  // festival coming -> festival quest
+  var fest=(ctx.celebrations||[]).filter(function(c){ return (c.sub||'').toLowerCase().indexOf('festival')>-1; })[0];
+  if(fest) picks.push(questTpl('festival'));
+  // quiet week -> gather
+  if((ctx.momentsThisWeek||0)===0) picks.push(questTpl('dinner'));
+  // has a bridge -> bridge quest
+  if((ctx.bridges||0)>0) picks.push(questTpl('videocall'));
+  // elders / memory nudge (default, always meaningful)
+  picks.push(questTpl('grandparents'));
+  picks.push(questTpl('familywalk'));
+  picks.push(questTpl('legacystory'));
+  // de-dup, cap 3
+  var seen={}, out=[];
+  picks.forEach(function(t){ if(t && !seen[t.key]){ seen[t.key]=1; out.push(t); } });
+  return out.slice(0,3);
+}
+
+/* ---------- Quests screen ---------- */
+var QTAB='active';
+function questTab(t){ QTAB=t; renderQuests(); }
+async function renderQuests(){
+  var box=document.getElementById('questsBody'); if(!box) return;
+  box.innerHTML='<div class="sk sk-card"></div><div class="sk sk-card"></div>';
+  if(!ME) ME=await fetchProfile(myPhone());
+  var quests=await loadQuests();
+  var active=quests.filter(function(q){ return q.status==='active'||q.status==='upcoming'; });
+  var done=quests.filter(function(q){ return q.status==='completed'; });
+  var phones={}; quests.forEach(function(q){ (q._parts||[]).forEach(function(p){ phones[p.member_phone]=1; }); });
+  var profs=await fetchProfiles(Object.keys(phones));
+
+  var tabs='<div class="qtabs">'+
+    qtabBtn('active','Active',active.length)+
+    qtabBtn('recommended','For You','')+
+    qtabBtn('completed','Completed',done.length)+'</div>';
+
+  var body='';
+  if(QTAB==='active'){
+    body = active.length ? active.map(function(q){ return questCard(q,profs); }).join('')
+      : '<div class="empty"><span class="big">🧭</span><div class="e1">No active Quests yet</div><div class="e2">A Quest turns an ordinary week into a shared memory. Start one below.</div></div>';
+    body+='<button class="btn" onclick="openQuestCreate()" style="margin-top:8px">＋ Start a new Quest</button>';
+  } else if(QTAB==='completed'){
+    body = done.length ? done.map(function(q){ return questCard(q,profs); }).join('')
+      : '<div class="empty"><span class="big">🏅</span><div class="e1">Your first badge is waiting</div><div class="e2">Completed Quests live here forever — and in your Journey.</div></div>';
+  } else {
+    var picks=questPicks(window.__questCtx||{});
+    body='<div class="skyvos-mini" style="margin:2px 2px 16px"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span>Skyvos picked these for your family. Never required — only if they feel right.</span></div>';
+    body+=picks.map(function(t){ return questTplCard(t); }).join('');
+    body+='<div class="home-sec" style="margin-top:18px">All Quests</div>';
+    body+=QUEST_TEMPLATES.map(function(t){ return questTplCard(t); }).join('');
+  }
+  box.innerHTML=tabs+body;
+}
+function qtabBtn(id,label,count){ return '<button class="qtab'+(QTAB===id?' on':'')+'" onclick="questTab(\''+id+'\')">'+label+(count!==''&&count>0?' · '+count:'')+'</button>'; }
+
+function questCard(q, profs){
+  var pct=Math.min(100, Math.round((q.progress_count/Math.max(q.target_count,1))*100));
+  var dl=questDaysLeft(q.due_date);
+  var members=(q._parts||[]).filter(function(p){return p.status==='accepted';});
+  var av=members.slice(0,4).map(function(p){ var u=profs[p.member_phone]||{}; return u.avatar_url?'<span class="qav"><img src="'+escapeAttr(u.avatar_url)+'"></span>':'<span class="qav">'+(((u.name||'?')[0])||'?').toUpperCase()+'</span>'; }).join('');
+  var statusChip = q.status==='completed' ? '<span class="qchip done">✓ Completed</span>'
+                 : (dl!=null ? '<span class="qchip">'+(dl<0?'Overdue':dl===0?'Last day':dl+' days left')+'</span>' : '<span class="qchip">In progress</span>');
+  return '<div class="qcard" onclick="openQuest(\''+q.id+'\')">'+
+    '<div class="qhead" style="background:'+questCatGrad(q.category)+'"><span class="qicon">'+(q.icon||'✨')+'</span><span class="qreward">'+rewardIcon(q.reward_type)+' '+escapeHtml(q.reward||'Badge')+'</span></div>'+
+    '<div class="qbody"><div class="qtitle">'+escapeHtml(q.title)+'</div>'+
+    (q.description?'<div class="qdesc">'+escapeHtml(q.description)+'</div>':'')+
+    '<div class="qprog"><div class="qbar"><i style="width:'+pct+'%"></i></div><div class="qpct">'+q.progress_count+' / '+q.target_count+' '+escapeHtml(q.unit||'')+'</div></div>'+
+    '<div class="qfoot"><div class="qavs">'+(av||'<span class="qav">+</span>')+'</div>'+statusChip+'</div></div></div>';
+}
+function questTplCard(t){
+  if(!t) return '';
+  return '<div class="qcard" onclick="openQuestCreate(\''+t.key+'\')">'+
+    '<div class="qhead" style="background:'+questCatGrad(t.category)+'"><span class="qicon">'+t.icon+'</span><span class="qreward">'+rewardIcon(t.reward_type)+' '+escapeHtml(t.reward)+'</span></div>'+
+    '<div class="qbody"><div class="qtitle">'+escapeHtml(t.title)+'</div><div class="qdesc">'+escapeHtml(t.desc)+'</div>'+
+    '<div class="qfoot"><span class="qchip soft">'+escapeHtml(t.category)+' · '+escapeHtml(t.quest_type)+'</span><span class="qstart">Start →</span></div></div></div>';
+}
+
+/* ---------- create ---------- */
+async function openQuestCreate(tplKey){
+  var t=tplKey?questTpl(tplKey):null;
+  var ctx=await myCircleContext();
+  var hOpts=ctx.households.map(function(h){ return '<option value="'+escapeAttr(h.h.id)+'">'+escapeHtml(h.h.household_name)+'</option>'; }).join('');
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">'+(t?t.icon+' Start this Quest':'✨ Create a Quest')+'</div>'+
+    '<div class="field-label">Title</div><input class="fi" id="qTitle" value="'+escapeAttr(t?t.title:'')+'" placeholder="e.g. Family dinner together" style="margin-bottom:12px">'+
+    '<div class="field-label">What is it?</div><input class="fi" id="qDesc" value="'+escapeAttr(t?t.desc:'')+'" placeholder="A short, warm description" style="margin-bottom:12px">'+
+    '<div class="field-label">Category</div><select class="fi" id="qCat" style="margin-bottom:12px">'+['relationship','health','memories','learning','celebration','travel','traditions','kindness','fitness','community'].map(function(c){ return '<option'+(t&&t.category===c?' selected':'')+'>'+c+'</option>'; }).join('')+'</select>'+
+    '<div class="qrow"><div style="flex:1"><div class="field-label">Goal</div><input class="fi" id="qTarget" type="number" min="1" value="'+(t?t.target:1)+'"></div><div style="flex:1"><div class="field-label">Unit</div><input class="fi" id="qUnit" value="'+escapeAttr(t?t.unit:'step')+'"></div></div>'+
+    '<div class="field-label" style="margin-top:12px">Reward (emotional only)</div><input class="fi" id="qReward" value="'+escapeAttr(t?t.reward:'Family Badge')+'" style="margin-bottom:12px">'+
+    (hOpts?'<div class="field-label">Household (optional)</div><select class="fi" id="qHH" style="margin-bottom:12px"><option value="">No specific household</option>'+hOpts+'</select>':'<input type="hidden" id="qHH" value="">')+
+    '<div class="field-label">Finish by (optional)</div><input class="fi" id="qDue" type="date" style="margin-bottom:16px">'+
+    '<button class="btn" onclick="submitQuest(\''+(t?t.reward_type:'badge')+'\',\''+(t?t.quest_type:'custom')+'\',\''+(t?t.icon:'✨')+'\')">Begin Quest ❤️</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+async function submitQuest(rewardType, questType, icon){
+  var title=(document.getElementById('qTitle').value||'').trim(); if(!title){ toast('Give your Quest a name.'); return; }
+  var rec={
+    title:title, description:(document.getElementById('qDesc').value||'').trim(),
+    category:(document.getElementById('qCat').value||'relationship'), quest_type:questType||'custom', icon:icon||'✨',
+    created_by:myPhone(), target_count:Math.max(parseInt(document.getElementById('qTarget').value,10)||1,1),
+    unit:(document.getElementById('qUnit').value||'step').trim(), reward:(document.getElementById('qReward').value||'Family Badge').trim(),
+    reward_type:rewardType||'badge', status:'active',
+    household_id:(document.getElementById('qHH')||{}).value||null, due_date:(document.getElementById('qDue')||{}).value||null
+  };
+  var r=await sb.from('quests').insert(rec).select().single();
+  if(r.error){ toast(humanError(r.error,'Could not start the Quest.')); return; }
+  await sb.from('quest_participants').insert({quest_id:r.data.id, member_phone:myPhone(), status:'accepted'});
+  closeHomeModal(); toast('Quest begun ✨'); QTAB='active'; renderQuests(); navTo('quests');
+}
+
+/* ---------- detail / participate / progress ---------- */
+async function openQuest(id){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="sk sk-card"></div></div>'; m.classList.add('show');
+  var qr=await sb.from('quests').select('*').eq('id',id).single(); var q=qr.data; if(!q){ closeHomeModal(); return; }
+  var pr=await sb.from('quest_participants').select('*').eq('quest_id',id); var parts=pr.data||[];
+  var profs=await fetchProfiles(parts.map(function(p){return p.member_phone;}).concat([q.created_by]));
+  var me=myPhone(); var mine=parts.filter(function(p){return p.member_phone===me;})[0];
+  var pct=Math.min(100,Math.round((q.progress_count/Math.max(q.target_count,1))*100));
+  var done=q.status==='completed';
+  var memberHtml=parts.filter(function(p){return p.status!=='declined';}).map(function(p){ var u=profs[p.member_phone]||{}; return '<div class="qmem"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span><span style="flex:1;min-width:0">'+escapeHtml(u.name||p.member_phone)+(p.member_phone===q.created_by?' · host':'')+'</span><span class="qmemst">'+(p.status==='invited'?'invited':'in')+'</span></div>'; }).join('');
+
+  var actions='';
+  if(!done){
+    if(mine && mine.status==='accepted'){
+      actions+= q.target_count>1
+        ? '<div class="qrow"><input class="fi" id="qAmt" type="number" min="1" value="1" style="flex:0 0 90px"><button class="btn" onclick="addQuestProgress(\''+id+'\')" style="flex:1">Log progress</button></div>'
+        : '<button class="btn" onclick="addQuestProgress(\''+id+'\',1)">Mark as done ✓</button>';
+      actions+='<div style="height:8px"></div><button class="btn btn-soft" onclick="leaveQuest(\''+id+'\')">Leave Quest</button>';
+    } else {
+      actions+='<button class="btn" onclick="joinQuest(\''+id+'\')">Join this Quest ❤️</button>';
+    }
+    actions+='<div style="height:8px"></div><button class="btn btn-soft" onclick="inviteToQuest(\''+id+'\')">Invite family</button>';
+  }
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+    '<div class="qhead" style="background:'+questCatGrad(q.category)+';border-radius:20px;margin-bottom:14px"><span class="qicon" style="font-size:30px">'+(q.icon||'✨')+'</span><span class="qreward">'+rewardIcon(q.reward_type)+' '+escapeHtml(q.reward||'Badge')+'</span></div>'+
+    '<div class="modal-q" style="font-size:21px;text-align:center">'+escapeHtml(q.title)+'</div>'+
+    (q.description?'<p class="muted" style="text-align:center;font-size:13.5px;margin:6px 2px 14px">'+escapeHtml(q.description)+'</p>':'<div style="height:8px"></div>')+
+    '<div class="qprog" style="margin-bottom:16px"><div class="qbar"><i style="width:'+pct+'%"></i></div><div class="qpct">'+q.progress_count+' / '+q.target_count+' '+escapeHtml(q.unit||'')+(done?' · ✓ complete':'')+'</div></div>'+
+    '<div class="field-label">Family on this Quest</div><div style="margin-bottom:16px">'+(memberHtml||'<div class="muted" style="font-size:13px">Just getting started.</div>')+'</div>'+
+    actions+'<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
+}
+async function addQuestProgress(id, fixed){
+  var amt=fixed||parseInt((document.getElementById('qAmt')||{}).value,10)||1;
+  var r=await sb.rpc('add_quest_progress',{p_quest:id,p_phone:myPhone(),p_amount:amt,p_note:null});
+  if(r.error){ toast(humanError(r.error,'Could not log progress.')); return; }
+  var q=r.data;
+  if(q && q.status==='completed'){
+    closeHomeModal(); await bumpStreak('family');
+    celebrateQuest(q);
+  } else {
+    toast('Progress logged 🌱'); openQuest(id);
+  }
+  renderHome();
+}
+async function joinQuest(id){
+  var r=await sb.from('quest_participants').upsert({quest_id:id, member_phone:myPhone(), status:'accepted'},{onConflict:'quest_id,member_phone'});
+  if(r.error){ toast(humanError(r.error,'Could not join.')); return; }
+  toast('You\u2019re in ❤️'); openQuest(id); renderHome();
+}
+async function leaveQuest(id){
+  await sb.from('quest_participants').update({status:'declined'}).eq('quest_id',id).eq('member_phone',myPhone());
+  toast('You\u2019ve stepped back. Join again anytime.'); closeHomeModal(); renderHome();
+}
+async function inviteToQuest(id){
+  var ctx=await myCircleContext(); var conns=ctx.conns||[];
+  if(!conns.length){ toast('Connect family first, then invite them.'); return; }
+  var profs=await fetchProfiles(conns);
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card" style="max-height:88vh;overflow:auto"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:19px;margin-bottom:12px">Invite family</div>'+
+    conns.map(function(p){ var u=profs[p]||{}; return '<div class="qmem" onclick="sendQuestInvite(\''+id+'\',\''+p+'\')" style="cursor:pointer"><span class="qav">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':(((u.name||'?')[0])||'?').toUpperCase())+'</span><span style="flex:1">'+escapeHtml(u.name||p)+'</span><span class="qstart">Invite →</span></div>'; }).join('')+
+    '<div style="height:10px"></div><button class="btn btn-soft" onclick="openQuest(\''+id+'\')">Back</button></div>';
+}
+async function sendQuestInvite(id, phone){
+  await sb.from('quest_participants').upsert({quest_id:id, member_phone:phone, status:'invited'},{onConflict:'quest_id,member_phone'});
+  try{ var qr=await sb.from('quests').select('title').eq('id',id).single(); await sb.from('notifications').insert({recipient_phone:phone, kind:'quest', body:'You\u2019re invited to the Quest \u201c'+(qr.data?qr.data.title:'a family Quest')+'\u201d', is_read:false}); }catch(e){}
+  toast('Invited ❤️');
+}
+function celebrateQuest(q){
+  var c=document.getElementById('celebrate'); if(!c){ toast('Quest complete! '+(q.reward||'')); return; }
+  c.className='celebrate show';
+  c.innerHTML='<div class="box"><h2>'+(q.icon||'🏅')+' Quest Complete</h2><div class="plus">'+escapeHtml(q.title)+'</div><div class="big-heart">'+rewardIcon(q.reward_type)+'</div><div class="reward-line">Reward earned · '+escapeHtml(q.reward||'Family Badge')+'</div></div>';
+  setTimeout(function(){ c.className='celebrate'; }, 2600);
+}
+
 function homeAccent(){ try{ return localStorage.getItem('jeeto_accent')||''; }catch(e){ return ''; } }
 function applyAccent(){ var a=homeAccent(); var root=document.documentElement;
   if(a==='violet'){ root.style.setProperty('--rani','#7C3AED'); root.style.setProperty('--rani-d','#5b21b6'); }
@@ -922,7 +1248,11 @@ async function buildHome(){
   var otd=[]; try{ otd=await loadOnThisDay(); }catch(e){}
   var mwk=0; try{ var wk=new Date(); wk.setDate(wk.getDate()-7); var mr=await sb.from('moments').select('id',{count:'exact',head:true}).in('created_by',famPhones).eq('status','active').gte('created_at',wk.toISOString()); mwk=mr.count||0; }catch(e){}
   var skyName=((ME&&ME.name||'').split(' ')[0])||'';
-  window.__skyvos=Skyvos.insight(Skyvos.context({ name:skyName, celebrations:cele, onThisDay:otd, pending:pending, todaysMoments:todayMoments, momentsThisWeek:mwk, familyCount:ctx.conns.length, bridges:ctx.bridges.length }));
+  var quests=await loadQuests();
+  var activeQ=quests.filter(function(q){ return q.status==='active'||q.status==='upcoming'; });
+  var streak=await loadStreak('family'); if(!streak||!streak.active){ var ms=await loadStreak('moments'); if(ms&&ms.active) streak=ms; }
+  window.__questCtx={ celebrations:cele, momentsThisWeek:mwk, bridges:ctx.bridges.length };
+  window.__skyvos=Skyvos.insight(Skyvos.context({ name:skyName, celebrations:cele, onThisDay:otd, pending:pending, todaysMoments:todayMoments, momentsThisWeek:mwk, familyCount:ctx.conns.length, bridges:ctx.bridges.length, activeQuests:activeQ.length }));
 
   var html='';
 
@@ -941,11 +1271,26 @@ async function buildHome(){
   /* Quick actions */
   html+='<div class="qa-row">'+
     qa('❤️','Capture','openCapture()')+
+    qa('🧭','Quests','navTo(\'quests\')')+
     qa('👋','Welcome','goAddFamily()')+
     qa('🏠','Household','goHousehold()')+
     qa('🌉','Bridges','navTo(\'bridge\')')+
     qa('📅','Calendar','navTo(\'calendar\')')+
   '</div>';
+
+  /* Family Quests */
+  html+='<div class="home-sec">🧭 Family Quests'+(streak&&streak.active&&streak.count>1?'<span class="qchip-streak">🔥 '+streak.count+'-day streak</span>':'<a onclick="navTo(\'quests\')">All →</a>')+'</div>';
+  var famProfs=profs;
+  if(activeQ.length){
+    activeQ.slice(0,2).forEach(function(q){ html+=questCard(q, famProfs); });
+  }
+  var pick=questPicks(window.__questCtx)[0];
+  if(pick){
+    html+='<div class="skyvos-mini" style="margin:6px 2px 8px"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span>Skyvos suggests a Quest for your family:</span></div>';
+    html+=questTplCard(pick);
+  }
+  if(!activeQ.length && !pick) html+='<div class="today-empty" style="margin-bottom:22px">Start a Quest and turn this week into a memory. 🧭</div>';
+  html+='<div style="height:6px"></div>';
 
   /* Today's Moments */
   if(todayMoments.any){
@@ -1993,6 +2338,7 @@ async function submitMoment(){
   btn.disabled=false; btn.textContent='Save Moment ❤️';
   if(r && r.error){ toast(momentErr(r.error.message)); return; }
   closeMomentModal(); celebrateMoment(CAP.type);
+  try{ bumpStreak('moments'); }catch(e){}
   MCACHE={}; setCircle(CAP.type); loadDashboard();
 }
 function celebrateMoment(type){
@@ -2497,7 +2843,7 @@ function searchGraph(){
 
 /* ---------- nav ---------- */
 function navTo(tab){
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -2507,6 +2853,7 @@ function navTo(tab){
   if(tab==='profile') renderPassport();
   if(tab==='graph') renderGraph();
   if(tab==='calendar') renderCalendar();
+  if(tab==='quests') renderQuests();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
