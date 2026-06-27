@@ -10,16 +10,33 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
+/* ============================================================
+   JEETO DESIGN SYSTEM v1.0  (the single source of truth for style)
+   Colors · Typography · Spacing · Radius · Shadows · Motion.
+   Every screen and component below is built only from these tokens.
+   ============================================================ */
 :root{
+  /* color — palette (frozen, warm) */
   --paper:#FFF9F1; --paper2:#FFEFDD;
   --ink:#241826; --ink2:#7A6A76; --ink3:#A99BA4;
   --saffron:#FF8A1E; --saffron-l:#FFB05A; --rani:#E03A7A; --rani-d:#C42466; --violet:#7C3AED;
   --leaf:#2BA84A; --card:#FFFFFF; --line:#F4ECE1;
   --grad:linear-gradient(135deg,#FF9A36,#E03A7A 62%,#B5379D);
   --grad-soft:linear-gradient(135deg,#FFF0E2,#FFE7F0);
+  /* elevation */
   --sh-1:0 1px 2px rgba(122,68,20,.05), 0 8px 22px rgba(122,68,20,.07);
   --sh-2:0 2px 6px rgba(122,68,20,.06), 0 18px 40px rgba(122,68,20,.12);
   --sh-pop:0 10px 26px rgba(224,58,122,.30);
+  /* spacing scale (4pt) */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px; --s-8:32px;
+  /* radius scale */
+  --r-sm:12px; --r-md:16px; --r-lg:20px; --r-xl:24px; --r-2xl:30px; --r-pill:999px;
+  /* typography */
+  --font-display:'Baloo 2',system-ui,sans-serif; --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+  /* motion (300–500ms, soft, no bounce) */
+  --motion-fast:.3s ease; --motion:.4s ease; --motion-slow:.5s ease;
+  /* layout */
+  --app-max:440px; --tap-min:44px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -71,24 +88,6 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .topbar .hi{font-size:13px;color:var(--ink2);font-weight:600}
 .topbar .nm{font-family:'Baloo 2';font-size:20px;font-weight:800;margin-top:-1px}
 
-/* HERO — family strength */
-.hero{position:relative;overflow:hidden;border-radius:26px;padding:17px 22px;display:flex;align-items:center;gap:15px;color:#fff;background:linear-gradient(135deg,#FF8A1E 0%,#E03A7A 60%,#7C3AED 132%);box-shadow:0 14px 34px rgba(224,58,122,.30);margin-bottom:18px}
-.hero::before{content:"";position:absolute;top:-60%;right:-10%;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 62%);pointer-events:none}
-.hero .he{font-size:10px;font-weight:800;letter-spacing:1.6px;opacity:.9;text-transform:uppercase}
-.hero .seed{font-size:38px;display:inline-block;animation:breathe 3.2s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,.18));flex:0 0 auto}
-@keyframes breathe{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.12) rotate(2deg)}}
-.hero .hero-mid{flex:1;min-width:0}
-.hero .tier{font-family:'Baloo 2';font-size:21px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hero .num{font-family:'Baloo 2';font-size:44px;font-weight:800;line-height:1;text-shadow:0 3px 10px rgba(0,0,0,.18);flex:0 0 auto}
-
-/* dashboard card */
-.dash{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px 16px;box-shadow:var(--sh-1);margin-bottom:18px;animation:rise .5s ease both}
-.dash-head{font-family:'Baloo 2';font-weight:800;font-size:16px;margin-bottom:14px;padding-left:2px}
-.dash-row{display:flex;text-align:center}
-.dash-item{flex:1;position:relative}
-.dash-item+.dash-item::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:1px;background:var(--line)}
-.dash-item .dv{font-family:'Baloo 2';font-weight:800;font-size:23px;line-height:1}
-.dash-item .dl{font-size:9.5px;color:var(--ink2);font-weight:700;margin-top:6px;line-height:1.25;letter-spacing:.1px}
 /* notification bell */
 .bell{position:relative;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:20px;cursor:pointer;box-shadow:var(--sh-1);flex:0 0 auto;display:flex;align-items:center;justify-content:center;transition:transform .3s ease}
 .bell:active{transform:scale(.93)}
@@ -109,7 +108,6 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .notif-tx{font-size:13.5px;font-weight:600;line-height:1.4}
 .notif-ago{font-size:11px;color:var(--ink3);font-weight:700;margin-top:3px}
 /* household */
-.dash-sub{text-align:center;font-size:12px;color:var(--ink2);font-weight:700;margin:-6px 2px 18px}
 .hh-pick{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:9px;font-size:14px;font-weight:700;cursor:pointer;text-align:left}
 .hh-pick input{width:20px;height:20px;accent-color:var(--rani);flex:0 0 auto}
 /* bridge */
@@ -133,19 +131,6 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .bbar{height:8px;border-radius:8px;background:var(--line);overflow:hidden;margin:9px 22px 4px}
 .bbar > i{display:block;height:100%;background:var(--grad);border-radius:8px;transition:width .5s}
 .bstage{text-align:center;font-size:12px;font-weight:800;color:var(--ink2);margin:2px 0 8px}
-/* moments — home card */
-.mhome{background:linear-gradient(135deg,#FFF3E6,#FFE9F1);border:1px solid var(--line);border-radius:24px;padding:18px;margin-top:16px;box-shadow:var(--sh-2);cursor:pointer}
-.mhome-head{display:flex;justify-content:space-between;align-items:center;font-family:'Baloo 2';font-weight:800;font-size:17px;margin-bottom:10px}
-.mhome-cta{font-size:13px;color:var(--rani-d);font-weight:800}
-.mhome-empty{font-size:13px;color:var(--ink2);font-weight:600;line-height:1.5}
-.mhome-otd{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
-.mhome-otd .ot-l{font-size:11px;font-weight:800;color:var(--rani-d);letter-spacing:.3px}
-.mhome-otd .ot-t{font-family:'Baloo 2';font-weight:800;font-size:15px;margin-top:2px}
-.mhome-latest{display:flex;gap:11px;align-items:center}
-.mhome-latest img{width:54px;height:54px;border-radius:13px;object-fit:cover;flex:0 0 auto}
-.mhome-latest .ml-ic{width:54px;height:54px;border-radius:13px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
-.mhome-latest .ml-t{font-family:'Baloo 2';font-weight:800;font-size:15px}
-.mhome-latest .ml-d{font-size:12px;color:var(--ink2);font-weight:600}
 /* moments — tabs */
 .mtabs{display:flex;gap:7px;margin:4px 0 12px}
 .mtabs button{flex:1;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:10px 4px;font-size:19px;font-weight:800;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .16s}
@@ -299,14 +284,6 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .sk-hero{height:120px;margin-bottom:18px;border-radius:24px}
 :focus-visible{outline:2px solid var(--rani);outline-offset:2px}
 
-/* tiles */
-.tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.tile{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px 12px;box-shadow:var(--sh-1);cursor:pointer;transition:transform .3s ease,box-shadow .3s ease;text-align:center;animation:rise .5s ease both}
-.tile:active{transform:scale(.96)}
-.tile .tic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:23px;background:var(--grad-soft);margin:0 auto}
-.tile .tt{font-family:'Baloo 2';font-weight:700;font-size:14px;margin-top:10px}
-.tile .ts{font-size:10.5px;color:var(--rani-d);font-weight:700;margin-top:3px;line-height:1.3}
-
 /* section heads */
 .sec-head{display:flex;align-items:center;gap:10px;margin:26px 2px 13px}
 .sec-head .si{font-size:18px}
@@ -372,10 +349,6 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .hh-ic{width:54px;height:54px;border-radius:16px;background:var(--grad-soft);display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto}
 .hh-name{font-family:'Baloo 2';font-weight:800;font-size:17px}
 .hh-loc{font-size:12.5px;color:var(--ink2);font-weight:600;margin-top:1px}
-.bridge-link{display:flex;align-items:center;gap:10px;padding:13px 28px}
-.bl-line{flex:1;height:3px;border-radius:3px;background:var(--grad);opacity:.85}
-.bl-ic{font-size:24px}
-.bridge-status{text-align:center;font-size:13px;font-weight:700;color:var(--ink2);margin:22px 0 16px}
 .bridge-status b{color:var(--rani-d)}
 .btn.glow{animation:btnglow 2.6s ease-in-out infinite}
 @keyframes btnglow{0%,100%{box-shadow:0 10px 26px rgba(224,58,122,.30)}50%{box-shadow:0 12px 38px rgba(224,58,122,.58)}}
@@ -633,6 +606,46 @@ function setMyPhone(p){ localStorage.setItem(SESSION_KEY,p); }
 function clearSession(){ localStorage.removeItem(SESSION_KEY); }
 var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 
+/* ============================================================
+   JEETO OS — version + build stamp
+   ============================================================ */
+var JEETO_VERSION='0.1.0';
+var JEETO_BUILD='2026.06.27';
+
+/* ============================================================
+   SKYVOS — Intelligence Layer (architecture only; NO AI yet).
+   A provider-agnostic adapter. Jeeto must never couple to one
+   vendor. A future provider implements this interface; until then
+   every method is a safe no-op returning neutral values, so the
+   app behaves identically with or without an intelligence provider.
+   To plug in later: Skyvos.use({ suggestMoment, summarizeFamily, ... }).
+   ============================================================ */
+var Skyvos=(function(){
+  var provider=null;                       // set via Skyvos.use(impl)
+  function enabled(){ return !!provider; }
+  function use(impl){ provider=impl||null; }
+  // each capability falls back to a deterministic, non-AI default
+  async function suggestMoment(ctx){ return provider&&provider.suggestMoment ? provider.suggestMoment(ctx) : null; }
+  async function summarizeFamily(ctx){ return provider&&provider.summarizeFamily ? provider.summarizeFamily(ctx) : null; }
+  async function describeRelationship(path){ return provider&&provider.describeRelationship ? provider.describeRelationship(path) : null; }
+  async function dailyPrompt(ctx){ return provider&&provider.dailyPrompt ? provider.dailyPrompt(ctx) : null; }
+  return { version:'0.1.0', enabled:enabled, use:use, suggestMoment:suggestMoment, summarizeFamily:summarizeFamily, describeRelationship:describeRelationship, dailyPrompt:dailyPrompt };
+})();
+
+/* ============================================================
+   ERROR EXPERIENCE — never leak raw technical errors to people.
+   Maps a Supabase/JS error into one warm, human sentence.
+   ============================================================ */
+function humanError(err, fallback){
+  var m=(err && (err.message||err.error_description||err.details))||'';
+  m=(''+m).toLowerCase();
+  if(m.indexOf('duplicate')>-1 || m.indexOf('unique')>-1) return 'That\u2019s already connected.';
+  if(m.indexOf('network')>-1 || m.indexOf('fetch')>-1 || m.indexOf('timeout')>-1) return 'We couldn\u2019t reach Jeeto just now. Check your connection and try again.';
+  if(m.indexOf('permission')>-1 || m.indexOf('row-level')>-1 || m.indexOf('rls')>-1) return 'You don\u2019t have access to that right now.';
+  if(m.indexOf('not found')>-1) return 'We couldn\u2019t find that.';
+  return fallback || 'Something didn\u2019t go through. Please try again in a moment.';
+}
+
 var RELS=['Father','Mother','Husband','Wife','Son','Daughter','Brother','Sister','Grandfather','Grandmother','Grandson','Granddaughter','Uncle','Aunt','Cousin','Friend','Other'];
 function relOptions(sel){ var s='<option value="">Choose relationship…</option>'; RELS.forEach(function(r){ s+='<option'+(r===sel?' selected':'')+'>'+r+'</option>'; }); return s; }
 
@@ -710,7 +723,7 @@ async function saveProfile(){
   var row={ phone:myPhone()||TMP_PHONE, name:name, dob:dob, gender:_gender, avatar_url:_photo||null };
   var r=await sb.from('profiles').upsert(row,{onConflict:'phone'}).select().maybeSingle();
   btn.disabled=false; btn.textContent='Save & continue';
-  if(r.error){ document.getElementById('pfErr').textContent=r.error.message||'Could not save.'; return; }
+  if(r.error){ document.getElementById('pfErr').textContent=humanError(r.error,'Could not save your profile.'); return; }
   ME=r.data||row; await renderHome(); navTo('home');
 }
 
@@ -728,7 +741,6 @@ function countUp(el, to){
   var t0=null, dur=700; function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1); el.textContent=Math.round(from+(to-from)*p); if(p<1) requestAnimationFrame(step); }
   requestAnimationFrame(step);
 }
-var LAST_STRENGTH=null;
 async function renderHome(){
   if(!ME) ME=await fetchProfile(myPhone());
   applyAccent();
@@ -742,8 +754,6 @@ async function renderHome(){
 }
 /* back-compat: every engine calls loadDashboard() to refresh Home */
 async function loadDashboard(){ return renderHome(); }
-function setStat(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
-function bumpEl(el){ if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
 function setAvatar(elId,u){ var el=document.getElementById(elId); if(!el) return; if(u && u.avatar_url){ el.innerHTML='<img src="'+u.avatar_url+'" alt="">'; } else { el.textContent=(((u&&u.name)||'J').trim()[0]||'J').toUpperCase(); } }
 
 /* family strength — modular scoring. First relationship +10, each next +5. */
@@ -1053,7 +1063,8 @@ function openHomeSettings(){
   m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">⚙️ Home Settings</div>'+
     '<div class="field-label">Greeting line (optional)</div><input class="fi" id="hsGreet" value="'+escapeAttr(g)+'" placeholder="Welcome home ❤️" style="margin-bottom:14px">'+
     '<div class="field-label">Accent</div><div class="circle-opts">'+opt('rani','Rani Pink','#E03A7A')+opt('violet','Violet','#7C3AED')+opt('leaf','Leaf Green','#2BA84A')+'</div>'+
-    '<button class="btn" onclick="saveHomeSettings()">Save</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+    '<button class="btn" onclick="saveHomeSettings()">Save</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button>'+
+    '<div style="text-align:center;font-size:11px;color:var(--ink3);font-weight:700;margin-top:14px">Jeeto OS v'+JEETO_VERSION+' · build '+JEETO_BUILD+'</div></div>';
   m.classList.add('show');
 }
 function setAccent(v){ try{ localStorage.setItem('jeeto_accent',v); }catch(e){} applyAccent(); openHomeSettings(); }
@@ -1097,7 +1108,7 @@ async function sendRequest(){
   var btn=document.getElementById('frBtn'); btn.disabled=true; btn.textContent='Sending…';
   var r=await sb.from('family_requests').insert({ sender_phone:me, receiver_phone:rec, relationship:rel, message:msg, status:'pending' });
   btn.disabled=false; btn.textContent='Send request ❤️';
-  if(r.error){ toast(r.error.message||'Could not send.'); return; }
+  if(r.error){ toast(humanError(r.error,'Could not send that invitation.')); return; }
   // light up the receiver's bell
   try{ await sb.from('notifications').insert({ recipient_phone:rec, kind:'request', body:'👋 '+((ME&&ME.name)||'Someone')+' wants to connect with you.' }); }catch(e){}
   flyHeart(btn);
@@ -1118,7 +1129,7 @@ function createRelationship(){ /* performed atomically inside the accept_family_
 async function rejectRequest(id){
   if(!ensureSB()) return;
   var up=await sb.from('family_requests').update({ status:'rejected', responded_at:new Date().toISOString() }).eq('id',id);
-  if(up.error){ toast(up.error.message||'Could not decline.'); return; }
+  if(up.error){ toast(humanError(up.error,'Could not decline right now.')); return; }
   toast('Request declined'); renderFamily();
 }
 async function loadPendingRequests(){
@@ -1262,7 +1273,7 @@ async function acceptFromModal(){
   var btn=document.getElementById('modalAccept'); if(btn){ btn.disabled=true; btn.textContent='Connecting…'; }
   // ONE transaction: request -> relationship -> notifications, or full rollback
   var r=await acceptRequest(REVIEW.id, recvRel);
-  if(r && r.error){ if(btn){ btn.disabled=false; btn.textContent='Accept ❤️'; } toast(r.error.message||'Could not accept — nothing was changed.'); return; }
+  if(r && r.error){ if(btn){ btn.disabled=false; btn.textContent='Accept ❤️'; } toast(humanError(r.error,'Could not accept right now — nothing was changed.')); return; }
   closeReview();
   var rels=await loadRelationships();
   celebrate(rels.length<=1?10:5);     // first +10, then +5 (matches calculateFamilyStrength)
@@ -1388,7 +1399,7 @@ async function submitHousehold(){
   if(!name){ toast('Enter a household name.'); return; }
   var picks=[].slice.call(document.querySelectorAll('#hhPicks input:checked')).map(function(c){ return c.value; });
   var r=await createHousehold(name, city, picks);
-  if(r && r.error){ toast(r.error.message||'Could not create household — nothing was changed.'); return; }
+  if(r && r.error){ toast(humanError(r.error,'Could not create the household — nothing was changed.')); return; }
   closeHouseholdForm(); toast('Household created 🏠'); renderFamily(); loadDashboard();
 }
 
@@ -1925,16 +1936,6 @@ async function loadMomentStrength(){
   if(!ensureSB()) return 0;
   try{ var rows=((await sb.from('moments').select('moment_type').eq('created_by',myPhone()).eq('status','active')).data)||[]; var s=0; rows.forEach(function(x){ s+=MOMENT_W[x.moment_type]||0; }); return s; }catch(e){ return 0; }
 }
-async function renderMomentsHome(){
-  var body=document.getElementById('momentsHomeBody'); if(!body) return;
-  var otd=await loadOnThisDay(); var latest=null;
-  try{ var r=await sb.from('moments').select('*').eq('status','active').eq('created_by',myPhone()).order('created_at',{ascending:false}).limit(1); if(r.data&&r.data.length) latest=(await enrichMoments(r.data))[0]; }catch(e){}
-  var html='';
-  if(otd.length){ var x=otd[0]; var yrs=new Date().getFullYear()-new Date(x.m.moment_date).getFullYear(); html+='<div class="mhome-otd"><div class="ot-l">🕰️ ON THIS DAY · '+yrs+'y ago</div><div class="ot-t">'+escapeHtml(x.m.title)+'</div></div>'; }
-  if(latest){ var im=latest.media.filter(function(md){return md.media_type==='image';})[0]; html+='<div class="mhome-latest">'+(im?'<img src="'+escapeAttr(im.media_url)+'">':'<div class="ml-ic">💛</div>')+'<div><div class="ml-t">'+escapeHtml(latest.m.title)+'</div><div class="ml-d">'+escapeHtml(fmtMomentDate(latest.m.moment_date||latest.m.created_at))+'</div></div></div>'; }
-  if(!html) html='<div class="mhome-empty">Capture your first Moment — a lunch, a milestone, a festival. It becomes family heritage.</div>';
-  body.innerHTML=html;
-}
 
 /* ============================================================
    JEETO PASSPORT — the permanent root identity. One per person.
@@ -2084,7 +2085,7 @@ async function submitEditProfile(){
     city:(document.getElementById('epCity').value||'').trim()||null,
     occupation:(document.getElementById('epOcc').value||'').trim()||null };
   var up2=await sb.from('profiles').update(patch).eq('phone',myPhone());
-  if(up2.error){ btn.disabled=false; btn.textContent='Save Passport ❤️'; toast(up2.error.message||'Could not save.'); return; }
+  if(up2.error){ btn.disabled=false; btn.textContent='Save Passport ❤️'; toast(humanError(up2.error,'Could not save your Passport.')); return; }
   if(handle && PASSPORT && handle.toLowerCase()!==(PASSPORT.passport_handle||'')){
     var hr=await sb.rpc('set_handle',{ p_phone:myPhone(), p_handle:handle });
     if(hr && hr.error){ btn.disabled=false; btn.textContent='Save Passport ❤️'; toast(ppErr(hr.error.message)); return; }
@@ -2250,14 +2251,6 @@ async function archiveLife(id){
 }
 
 /* ---------- Today in My Life (home) ---------- */
-async function renderLifeHome(){
-  var card=document.getElementById('lifeHome'), body=document.getElementById('lifeHomeBody'); if(!card||!body) return;
-  var ev=await loadLife();
-  if(!ev.length){ card.style.display='none'; return; }
-  card.style.display='';
-  var e=ev[0];
-  body.innerHTML='<div class="mhome-latest"><div class="ml-ic">'+(e.icon||'❤️')+'</div><div><div class="ml-t">'+escapeHtml(e.event_title)+'</div><div class="ml-d">'+escapeHtml(lifeRelative(e.event_date))+'</div></div></div>';
-}
 
 /* ============================================================
    RELATIONSHIP GRAPH ENGINE — the intelligence layer.
