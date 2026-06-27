@@ -893,7 +893,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='0.8.2';
+var JEETO_VERSION='0.8.3';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3262,6 +3262,16 @@ function openReview(id, senderPhone, senderRel){
 function closeReview(){ document.getElementById('reviewModal').classList.remove('show'); }
 function reciprocal(rel){ var m={Husband:'Wife',Wife:'Husband',Cousin:'Cousin',Friend:'Friend',Other:'Other'}; return m[rel]||''; }
 
+/* race any promise against a timeout so the UI can never hang forever */
+function withTimeout(promise, ms){
+  return new Promise(function(resolve, reject){
+    var done=false;
+    var t=setTimeout(function(){ if(!done){ done=true; var e=new Error('timeout'); e.__timeout=true; reject(e); } }, ms||15000);
+    Promise.resolve(promise).then(function(v){ if(!done){ done=true; clearTimeout(t); resolve(v); } },
+                                  function(e){ if(!done){ done=true; clearTimeout(t); reject(e); } });
+  });
+}
+
 async function acceptFromModal(){
   if(!REVIEW) return;
   var recvRel=(document.getElementById('modalRel')||{}).value||'';
@@ -3269,14 +3279,23 @@ async function acceptFromModal(){
   var vr=await validateRelationship(REVIEW.sender, recvRel);
   if(!vr.ok && !confirm(vr.message+'\n\nSave anyway?')) return;
   var btn=document.getElementById('modalAccept'); if(btn){ btn.disabled=true; btn.textContent='Connecting…'; }
-  // ONE transaction: request -> relationship -> notifications, or full rollback
-  var r=await acceptRequest(REVIEW.id, recvRel);
-  if(r && r.error){ if(btn){ btn.disabled=false; btn.textContent='Accept ❤️'; } toast(humanError(r.error,'Could not accept right now — nothing was changed.')); return; }
-  closeReview();
-  var rels=await loadRelationships();
-  celebrate(rels.length<=1?10:5);     // first +10, then +5 (matches calculateFamilyStrength)
-  window.__rewardBump=true;
-  renderFamily(); loadDashboard();   // dashboard + family refresh, no page reload
+  var restore=function(){ if(btn){ btn.disabled=false; btn.textContent='Accept ❤️'; } };
+  try{
+    // ONE transaction: request -> relationship -> notifications, or full rollback
+    var r=await withTimeout(acceptRequest(REVIEW.id, recvRel), 15000);
+    if(r && r.error){ restore(); toast(humanError(r.error,'Could not accept right now — nothing was changed.')); return; }
+    closeReview();
+    var rels=[]; try{ rels=await loadRelationships(); }catch(e){ rels=[]; }
+    try{ celebrate(rels.length<=1?10:5); }catch(e){}   // first +10, then +5
+    window.__rewardBump=true;
+    try{ renderFamily(); }catch(e){}
+    try{ loadDashboard(); }catch(e){}                  // dashboard + family refresh, no page reload
+  }catch(err){
+    restore();
+    toast((err && err.__timeout)
+      ? 'This is taking too long — check your connection and try again. Nothing was lost.'
+      : humanError(err,'Could not accept right now. Please try again.'));
+  }
 }
 async function rejectFromModal(){ if(!REVIEW) return; await rejectRequest(REVIEW.id); closeReview(); }
 
