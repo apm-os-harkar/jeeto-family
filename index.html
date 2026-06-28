@@ -769,6 +769,10 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-hd-hn{font-family:var(--jh-serif);font-size:16px;color:var(--jh-fg);line-height:1.2}
 .jh-hd-hc{font-size:12px;color:var(--jh-muted-fg);line-height:1.3}
 .jh-hd-wx{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--jh-muted-fg)}
+.hd-hero-photo{background-size:cover;background-position:center;position:relative}
+.hd-hero-warm{background:linear-gradient(140deg,#FFE9C8,#F3C088);position:relative}
+.hd-hero-shade{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(to top,rgba(40,22,8,.62),rgba(40,22,8,.12) 55%,transparent)}
+.hd-hero-warm .hd-hero-shade{background:linear-gradient(to top,rgba(120,70,20,.28),transparent 60%)}
 .hd-plate{flex:1;min-width:0;border-radius:14px;padding:11px 16px;text-align:center;overflow:hidden;box-shadow:0 8px 22px rgba(160,110,40,.20),inset 0 0 0 2px rgba(255,255,255,.14)}
 .hd-plate-name{font-weight:600;line-height:1.06;word-break:break-word}
 .hd-plate-city{margin-top:3px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:600}
@@ -1225,6 +1229,9 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jd-plate-city{margin-top:4px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--jh-muted-fg)}
 .jd-fields{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .jd-fi{width:100%;border:1px solid var(--jh-border);border-radius:14px;background:var(--jh-card);padding:13px 14px;font-family:inherit;font-size:15px;color:var(--jh-fg)}
+.gd-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.gd-orb{flex:none;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.gd-orb .sky-orb{width:36px;height:36px}
 .jd-fi:focus{outline:none;border-color:var(--jh-primary)}
 .jd-hint{margin:10px 2px 0;font-size:12.5px;color:var(--jh-muted-fg)}
 .jd-models{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -1423,7 +1430,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div id="onThisDay" style="margin-top:18px"></div>
     <div class="mtabs" id="mtabs">
       <button data-circle="private" class="on" onclick="setCircle('private')">👤<span>My</span></button>
-      <button data-circle="household" onclick="setCircle('household')">🏠<span>Household</span></button>
+      <button data-circle="household" onclick="setCircle('household')">🏠<span>Home</span></button>
       <button data-circle="family" onclick="setCircle('family')">❤️<span>Family</span></button>
       <button data-circle="bridge" onclick="setCircle('bridge')">🌉<span>Bridge</span></button>
     </div>
@@ -2218,7 +2225,7 @@ var KashEngine=(function(){
   <div class="modal" id="editModal"></div>
   <div class="modal" id="lifeModal"></div>
   <div class="modal" id="graphModal"></div>
-  <div class="modal" id="homeModal"></div>
+  <div class="modal" id="homeModal" onclick="if(event.target===this)closeHomeModal()"></div>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -2242,7 +2249,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.23.0-realcover';
+var JEETO_VERSION='4.29.0-sheetclose';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2525,7 +2532,7 @@ var JHService = {
     var greeting=h<5?'Still up':h<12?'Good Morning':h<17?'Good Afternoon':h<21?'Good Evening':'Good Night';
     var time=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     var hh=(ctx.households&&ctx.households[0]&&ctx.households[0].h)||{};
-    return { greeting:greeting, name:first, homeName:hh.household_name||'Your Home', city:hh.city||'', time:time,
+    return { greeting:greeting, name:first, homeName:hh.household_name||'Your Home', city:hh.city||'', time:time, night:(h<6||h>=19),
              mood:{ label:'Warm', wash:'oklch(0.82 0.1 60)' } };
   },
   /** @returns {Promise<Array<{phone:string,name:string,avatar:string,home:boolean}>>} presence from last_seen */
@@ -3984,7 +3991,7 @@ async function renderDesign(){
   if(!ME){ try{ ME=await fetchProfile(myPhone()); }catch(e){} }
   var ctx=await myCircleContext();
   var home=(ctx.households&&ctx.households[0]&&ctx.households[0].h)||null;
-  _designHomeId = home?home.id:null;
+  _designHomeId = home?home.id:null; __guardian=guardianName(ctx);
   var nm=(home&&home.household_name)|| (((ME&&ME.name||'').split(' ')[0])||'Your')+'\u2019s';
   var city=(home&&home.city)||'';
 
@@ -4017,6 +4024,12 @@ async function renderDesign(){
     '<label class="av-pick"><input type="file" accept="image/*" id="jdAvatar" onchange="_avPick(this)" hidden>'+jic('camera')+' Choose photo</label>'+
     '<p class="jd-hint">Drag to position, slide to zoom \u2014 this circle is exactly your avatar in the galaxy.</p></section>';
 
+  var _gv=(home&&home.guardian_name)||_lsGet('jeeto_guardian_'+(_designHomeId||'x'))||_lsGet('jeeto_guardian')||'';
+  var guardianSec='<section class="jh-rise"><div class="jh-zlabel">Your Guardian</div>'+
+    '<div class="gd-row"><span class="gd-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span>'+
+    '<input class="jd-fi" id="jdGuardian" value="'+escapeAttr(_gv)+'" placeholder="Skyvos" maxlength="24" oninput="_gdPrev(this.value)"></div>'+
+    '<p class="jd-hint">Name your home\u2019s AI family member \u2014 shown as <b id="gdPrevName">'+escapeHtml(_gv||'Skyvos')+'</b> across your home. Leave blank for Skyvos.</p></section>';
+
   var save='<section class="jh-rise"><button class="btn" onclick="saveDesign()">Save my home</button></section>';
   var footer='<footer class="jh-footer"><p>A house becomes a home in the details.</p></footer>';
 
@@ -4024,6 +4037,7 @@ async function renderDesign(){
     '<div class="jh-zone">'+plate+'</div>'+
     '<div class="jh-zone">'+doorStyle+'</div>'+
     '<div class="jh-zone">'+model+'</div>'+
+    '<div class="jh-zone">'+guardianSec+'</div>'+
     save+footer+'</div>';
   setTimeout(_plateApply,0);
   _avLoaded=false; _avDirty=false; _avS=1; _avX=0; _avY=0; _avFile=null;
@@ -4037,19 +4051,31 @@ async function saveDesign(){
   // 1) name + city
   try{ await sb.from('households').update({household_name:name, city:city||null}).eq('id',_designHomeId); }
   catch(e){ toast(humanError(e,'Could not save the name.')); return; }
-  // 2) avatar (crop -> blob, fall back to raw file; never silently lost)
+  // 2) avatar (crop -> blob, fall back to raw file). Upload under the user's OWN folder (proven path), verify DB write.
+  var _avMsg='';
   if(_avDirty){
     var _blob=null; try{ _blob=await _avCropBlob(); }catch(e){}
     if(!_blob && _avFile){ try{ _blob=await compressHomeCover(_avFile); }catch(e){ _blob=_avFile; } }
     if(_blob){
-      try{ var _p='home-covers/'+_designHomeId+'-'+Date.now()+'.jpg'; var _up=await sb.storage.from('moments').upload(_p,_blob,{contentType:'image/jpeg'}); if(_up.error) throw _up.error; var _url=sb.storage.from('moments').getPublicUrl(_p).data.publicUrl; await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId); }
-      catch(e){ toast(humanError(e,'Avatar didn\u2019t save')); console.warn('avatar save',e); }
-    } else { toast('Re-pick the photo to set your avatar.'); }
+      try{
+        var _p=myPhone()+'/home-cover-'+_designHomeId+'-'+Date.now()+'.jpg';
+        var _up=await sb.storage.from('moments').upload(_p,_blob,{upsert:true,contentType:'image/jpeg'});
+        if(_up.error) throw _up.error;
+        var _url=sb.storage.from('moments').getPublicUrl(_p).data.publicUrl;
+        var _u2=await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId);
+        if(_u2 && _u2.error) throw _u2.error;
+      }catch(e){ _avMsg=humanError(e,'Avatar upload failed'); console.warn('avatar save',e); }
+    } else { _avMsg='Re-pick the photo to set your avatar.'; }
   }
   // 3) door style (always saved on this device; synced when the column exists)
+  // guardian name (per home)
+  var _gn=((document.getElementById('jdGuardian')||{}).value||'').trim().slice(0,24);
+  try{ _lsSet('jeeto_guardian_'+_designHomeId,_gn); _lsSet('jeeto_guardian',_gn); }catch(e){}
+  try{ await sb.from('households').update({guardian_name:_gn||null}).eq('id',_designHomeId); }catch(e){}
+  __guardian=_gn||'Skyvos';
   try{ var _ps=JSON.stringify(_plate||{}); _lsSet('jeeto_plate_'+_designHomeId,_ps); }catch(e){}
   try{ await sb.from('households').update({plate_style:JSON.stringify(_plate||{})}).eq('id',_designHomeId); }catch(e){}
-  toast('Your home is set \u2728');
+  toast(_avMsg ? _avMsg : 'Your home is set \u2728');
   try{ renderHome(); }catch(e){}
   navTo('home');
 }
@@ -4341,7 +4367,7 @@ async function gxOpenHome(home){
   ov.innerHTML='<div class="gxsheet-card"><button class="gxsheet-x" onclick="gxCloseHome()" aria-label="Close">\u2715</button>'+
     '<div class="gxsheet-orb">'+(home.photo?'<img src="'+escapeAttr(home.photo)+'" alt="">':'')+'</div>'+
     '<div class="gxsheet-name">'+escapeHtml(home.name)+(home.city?'<span>'+escapeHtml(home.city)+'</span>':'')+'</div>'+
-    '<div class="gxsheet-sky" id="gxSkyBody"><div class="gxsheet-load">'+skyOrb({mood:'purple',sparkle:true})+'<p>Skyvos is reading '+escapeHtml(home.name)+'\u2026</p></div></div>'+
+    '<div class="gxsheet-sky" id="gxSkyBody"><div class="gxsheet-load">'+skyOrb({mood:'purple',sparkle:true})+'<p>'+_G()+' is reading '+escapeHtml(home.name)+'\u2026</p></div></div>'+
     '<div class="gxsheet-chips" id="gxSkyChips"></div>'+'<div class="gxsheet-reach" id="gxSkyReach"></div>'+
     '<div class="gxsheet-btns">'+(home.mine?'<button class="btn" onclick="gxEnterHome(\''+home.id+'\')">Enter this home</button>':'')+'<button class="btn btn-soft" onclick="gxCloseHome()">Close</button></div></div>';
   document.body.appendChild(ov); requestAnimationFrame(function(){ ov.classList.add('show'); });
@@ -4356,7 +4382,7 @@ async function gxOpenHome(home){
   var online=[], onlineP=[]; phones.forEach(function(p){ var pr=profs[p]; if(pr&&pr.last_seen&&pr.last_seen>since24){ online.push((pr.name||'Someone').split(' ')[0]); onlineP.push({phone:p,name:(pr.name||'Someone').split(' ')[0]}); } });
   var lastBy=''; if(moms.length){ var lp=profs[moms[0].created_by]; lastBy=lp?(lp.name||'').split(' ')[0]:''; }
   var sky=gxWeave(home,{cels:cels,moms:moms.length,lastBy:lastBy,online:online});
-  var body=document.getElementById('gxSkyBody'); if(body) body.innerHTML='<div class="gxsheet-skyhead">'+skyOrb({mood:'purple',sparkle:true})+'<b>Skyvos</b></div><p class="gxsheet-skytext">'+sky.text+'</p>';
+  var body=document.getElementById('gxSkyBody'); if(body) body.innerHTML='<div class="gxsheet-skyhead">'+skyOrb({mood:'purple',sparkle:true})+'<b>'+_G()+'</b></div><p class="gxsheet-skytext">'+sky.text+'</p>';
   var chips=document.getElementById('gxSkyChips'); if(chips) chips.innerHTML=sky.chips;
   var rch=document.getElementById('gxSkyReach'); if(rch){ var who=onlineP.length?onlineP:phones.slice(0,3).map(function(p){return {phone:p,name:((profs[p]&&profs[p].name)||'Someone').split(' ')[0]};}); rch.innerHTML=who.map(function(o){ return '<button class="gxsheet-rbtn" onclick="reachP(\''+escapeAttr(o.phone)+'\')">\ud83d\udcac '+escapeHtml(o.name)+'</button>'; }).join(''); }
 }
@@ -4410,12 +4436,12 @@ function gxLifeEnter(id){ gxCloseLife(); try{ enterHome(id); }catch(e){} }
 var _loopCtx=null;
 function openPledgeSheet(){
   var m=document.getElementById('homeModal'); if(!m) return;
-  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Go present</h3><p class="lp-sheet-p">Pledge time away from the screen \u2014 a game, a meal, a walk. Skyvos keeps your streak.</p><div class="lp-durs"><button onclick="window.__pd=60;_pdSel(this)">1 hr</button><button class="on" onclick="window.__pd=120;_pdSel(this)">2 hrs</button><button onclick="window.__pd=180;_pdSel(this)">3 hrs</button></div><input class="fi" id="pdReason" placeholder="What are you doing? (optional)" style="margin:14px 0"><button class="btn" onclick="startPledge()">Start \ud83c\udf3f</button></div>';
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Go present</h3><p class="lp-sheet-p">Pledge time away from the screen \u2014 a game, a meal, a walk. Skyvos keeps your streak.</p><div class="lp-durs"><button onclick="window.__pd=60;_pdSel(this)">1 hr</button><button class="on" onclick="window.__pd=120;_pdSel(this)">2 hrs</button><button onclick="window.__pd=180;_pdSel(this)">3 hrs</button></div><input class="fi" id="pdReason" placeholder="What are you doing? (optional)" style="margin:14px 0"><button class="btn" onclick="startPledge()">Start \ud83c\udf3f</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   window.__pd=120; m.classList.add('show');
 }
 function openStepSheet(){
   var m=document.getElementById('homeModal'); if(!m) return;
-  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Step goal</h3><p class="lp-sheet-p">Commit to a step goal today. Honour it, self-confirm \u2014 your family rises with you.</p><div class="lp-durs"><button onclick="window.__sg=5000;_pdSel(this)">5,000</button><button class="on" onclick="window.__sg=10000;_pdSel(this)">10,000</button><button onclick="window.__sg=15000;_pdSel(this)">15,000</button></div><button class="btn" onclick="startStep()" style="margin-top:16px">Commit \ud83d\udc5f</button></div>';
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Step goal</h3><p class="lp-sheet-p">Commit to a step goal today. Honour it, self-confirm \u2014 your family rises with you.</p><div class="lp-durs"><button onclick="window.__sg=5000;_pdSel(this)">5,000</button><button class="on" onclick="window.__sg=10000;_pdSel(this)">10,000</button><button onclick="window.__sg=15000;_pdSel(this)">15,000</button></div><button class="btn" onclick="startStep()" style="margin-top:16px">Commit \ud83d\udc5f</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   window.__sg=10000; m.classList.add('show');
 }
 function _pdSel(b){ var ps=b.parentNode.querySelectorAll('button'); for(var i=0;i<ps.length;i++) ps[i].classList.remove('on'); b.classList.add('on'); }
@@ -4448,7 +4474,7 @@ async function uploadPacer(id, file){ var f=await compressHomeCover(file); var p
 function _pacerPick(inp){ var fl=inp.files&&inp.files[0]; if(!fl) return; window.__pacerFile=fl; var pr=document.getElementById('pacerPrev'); var lb=document.getElementById('pacerLbl'); try{ var u=URL.createObjectURL(fl); if(pr){ pr.src=u; pr.style.display='block'; } if(lb) lb.textContent='Change screenshot'; }catch(e){} }
 function openStepConfirm(id, goal){
   var m=document.getElementById('homeModal'); if(!m) return; window.__pacerFile=null;
-  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Upload your Pacer</h3><p class="lp-sheet-p">Add a screenshot from Pacer showing today\u2019s steps. Skyvos logs it as your proof.</p><label class="lp-up"><input type="file" accept="image/*" onchange="_pacerPick(this)" hidden><img id="pacerPrev" class="lp-up-img" style="display:none" alt=""><span id="pacerLbl" class="lp-up-lbl">\ud83d\udcf7 Choose screenshot</span></label><input class="fi" id="pacerSteps" type="number" inputmode="numeric" placeholder="Steps today (from Pacer)" style="margin:12px 0"><button class="btn" onclick="submitStep(\''+id+'\','+(goal||10000)+')">Confirm \u2728</button></div>';
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Upload your Pacer</h3><p class="lp-sheet-p">Add a screenshot from Pacer showing today\u2019s steps. Skyvos logs it as your proof.</p><label class="lp-up"><input type="file" accept="image/*" onchange="_pacerPick(this)" hidden><img id="pacerPrev" class="lp-up-img" style="display:none" alt=""><span id="pacerLbl" class="lp-up-lbl">\ud83d\udcf7 Choose screenshot</span></label><input class="fi" id="pacerSteps" type="number" inputmode="numeric" placeholder="Steps today (from Pacer)" style="margin:12px 0"><button class="btn" onclick="submitStep(\''+id+'\','+(goal||10000)+')">Confirm \u2728</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   m.classList.add('show');
 }
 async function submitStep(id, goal){
@@ -4514,6 +4540,10 @@ function _lsGet(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return '
 function _lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function getMyRole(){ var r=(ME&&ME.family_role)||_lsGet('jeeto_role'); return (r&&FAMILY_ROLES[r])?r:''; }
 function getFamilyPurpose(ctx){ var h=(ctx&&ctx.households&&ctx.households[0]&&ctx.households[0].h)||null; var p=(h&&h.purpose)||_lsGet('jeeto_purpose'); return p||PURPOSE_DEFAULT; }
+var __guardian='Skyvos';
+function guardianName(ctx){ var h=(ctx&&ctx.households&&ctx.households[0]&&ctx.households[0].h)||null; var g=(h&&h.guardian_name)|| _lsGet('jeeto_guardian_'+((h&&h.id)||'x')) || _lsGet('jeeto_guardian') || 'Skyvos'; g=String(g||'Skyvos').trim().slice(0,24); return g||'Skyvos'; }
+function _G(){ return escapeHtml(__guardian||'Skyvos'); }
+function _gdPrev(v){ var e=document.getElementById('gdPrevName'); if(e) e.textContent=(String(v||'').trim().slice(0,24))||'Skyvos'; }
 window.__nameByPhone=window.__nameByPhone||{};
 function _idxNames(profs){ if(!profs) return; window.__nameByPhone=window.__nameByPhone||{}; Object.keys(profs).forEach(function(p){ if(profs[p]&&profs[p].name) window.__nameByPhone[p]=profs[p].name; }); }
 function reachP(phone){ reachOut(phone, (window.__nameByPhone&&window.__nameByPhone[phone])||''); }
@@ -4534,7 +4564,7 @@ async function _reachOpen(phone, name){
   var icCall='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
   var icSms='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
   var mem=(c.memory&&c.memory.img)?'<div class="ro-mem"><img src="'+escapeAttr(c.memory.img)+'" alt="" onclick="openPhotoZoom(\''+escapeAttr(c.memory.img)+'\')"><span class="ro-mem-cap">A memory worth sending \u2014 tap to save, then share it along \ud83d\udc95</span></div>':'';
-  body.innerHTML='<div class="ro-sky"><span class="ro-sky-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span><span>Skyvos drafted this for you \u2014 edit it however you like</span></div>'+
+  body.innerHTML='<div class="ro-sky"><span class="ro-sky-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span><span>'+_G()+' drafted this for you \u2014 edit it however you like</span></div>'+
     '<textarea class="fi" id="roMsg" rows="3" style="resize:none;margin-bottom:10px">'+escapeHtml(c.msg)+'</textarea>'+mem+
     '<button class="ro-opt" onclick="_reachSend(\'wa\',\''+escapeAttr(phone)+'\')"><span class="ro-ic ro-wa">'+icWa+'</span><span class="ro-l">WhatsApp</span><span class="ro-go">Send</span></button>'+
     '<button class="ro-opt" onclick="_reachSend(\'sms\',\''+escapeAttr(phone)+'\')"><span class="ro-ic ro-sms">'+icSms+'</span><span class="ro-l">Message</span><span class="ro-go">Send</span></button>'+
@@ -4663,7 +4693,7 @@ async function saveProfilePhoto(){
 async function _avCropBlob(){ if(!_avImg||!_avLoaded) return null; var k=_avBase*_avS, r=AV_OUT/AV_CS; var c=document.createElement('canvas'); c.width=AV_OUT; c.height=AV_OUT; var ctx=c.getContext('2d'); ctx.fillStyle='#caa46a'; ctx.fillRect(0,0,AV_OUT,AV_OUT); try{ ctx.drawImage(_avImg, _avX*r, _avY*r, _avNat.w*k*r, _avNat.h*k*r); }catch(e){ return null; } return await new Promise(function(res){ try{ c.toBlob(function(b){res(b);}, 'image/jpeg', 0.85); }catch(e){ res(null); } }); }
 function _jhReadImg(file){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){ var img=new Image(); img.onload=function(){res(img);}; img.onerror=rej; img.src=fr.result; }; fr.onerror=rej; fr.readAsDataURL(file); }); }
 async function compressHomeCover(file){ try{ var img=await _jhReadImg(file); var max=1280,w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } } var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); var blob=await new Promise(function(r){ c.toBlob(r,'image/jpeg',0.82); }); return blob||file; }catch(e){ return file; } }
-async function uploadHomeCover(id, file){ var f=await compressHomeCover(file); var path='home-covers/'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:false, contentType:'image/jpeg'}); if(up.error) throw up.error; return sb.storage.from('moments').getPublicUrl(path).data.publicUrl; }
+async function uploadHomeCover(id, file){ var f=await compressHomeCover(file); var path=myPhone()+'/home-cover-'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:true, contentType:'image/jpeg'}); if(up.error) throw up.error; return sb.storage.from('moments').getPublicUrl(path).data.publicUrl; }
 function previewHomeCover(input, prevId){ var fl=input.files&&input.files[0]; if(!fl) return; var pr=document.getElementById(prevId); if(!pr) return; var url=URL.createObjectURL(fl); pr.innerHTML='<img src="'+url+'" alt="">'; pr.classList.add('has'); }
 function _plateResolve(raw){ if(!raw) return null; var o; try{ o=(typeof raw==='string')?JSON.parse(raw):raw; }catch(e){ return null; } if(!o||!o.theme) return null; try{ return { T:_pf(PLATE_THEMES,o.theme), F:_pf(PLATE_FONTS,o.font), S:_pf(PLATE_SIZES,o.size||'m') }; }catch(e){ return null; } }
 async function buildHome(){
@@ -4709,8 +4739,8 @@ async function buildHome(){
     '<div class="jh-hd-top"><div><p class="jh-hd-grt">'+escapeHtml(welcome.greeting)+',</p><h1 class="jh-hd-nm">'+escapeHtml(welcome.name)+'</h1></div>'+
     '<div class="jh-hd-actions"><button class="jh-gear" onclick="openHomeSettings()" aria-label="Settings">'+jic('settings')+'</button><div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div></div>'+
     '<div class="jh-hd-id">'+_np+
-    '<div class="jh-hd-wx">'+jic('sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
-  _lastCtx=ctx;
+    '<div class="jh-hd-wx">'+jic(welcome.night?'moon':'sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
+  _lastCtx=ctx; __guardian=guardianName(ctx);
   var _meP=myPhone(), _fam=[];
   try{ Object.keys(profs).forEach(function(p){ if(p!==_meP && profs[p]){ _fam.push({phone:p,name:((profs[p].name||'Someone').split(' ')[0]||'Someone'),last:profs[p].last_seen||'',dob:profs[p].dob||''}); } }); }catch(e){}
   var _quiet=null; _fam.forEach(function(x){ if(!_quiet) _quiet=x; else if((x.last||'')<(_quiet.last||'')) _quiet=x; });
@@ -4741,10 +4771,10 @@ async function buildHome(){
   var noteH='<section class="jh-rise" aria-label="Note on the door"><div class="jh-note"><span class="jh-note-pin"></span>'+
     '<p class="jh-note-k">Note on the Door</p><p class="jh-note-b">\u201c'+escapeHtml(note.body)+'\u201d</p>'+
     '<p class="jh-note-by">'+(note.fromSkyvos?'\u2014 '+escapeHtml(note.from):'Love,<br>'+escapeHtml(note.from))+'</p>'+
-    (note.fromSkyvos?'<p class="jh-note-sky">'+jic('sparkles')+'Written by Skyvos, because no one left a note today</p>':'')+'</div></section>';
+    (note.fromSkyvos?'<p class="jh-note-sky">'+jic('sparkles')+'Written by '+_G()+', because no one left a note today</p>':'')+'</div></section>';
 
   /* 6) SKYVOS SUGGESTS */
-  var skyH='<section class="jh-rise" aria-label="Tonight, Skyvos suggests"><div class="jh-sky"><div class="jh-sky-k">'+jic('sparkles')+'Tonight \u00b7 Skyvos Suggests</div><p class="jh-sky-b">'+escapeHtml(skyvos.line)+'</p><button class="jh-sky-btn" onclick="'+skyvos.cta.fn+'">'+escapeHtml(skyvos.cta.label)+jic2('arrow','')+'</button></div></section>';
+  var skyH='<section class="jh-rise" aria-label="Tonight, Skyvos suggests"><div class="jh-sky"><div class="jh-sky-k">'+jic('sparkles')+'Tonight \u00b7 '+_G()+' Suggests</div><p class="jh-sky-b">'+escapeHtml(skyvos.line)+'</p><button class="jh-sky-btn" onclick="'+skyvos.cta.fn+'">'+escapeHtml(skyvos.cta.label)+jic2('arrow','')+'</button></div></section>';
 
   /* 7) WEEKLY REFLECTION */
   var wrStats=reflection.stats.map(function(s){ return '<div class="jh-wr-stat"><span class="jh-wr-si">'+jic(s.icon)+'</span><p class="jh-wr-sv">'+escapeHtml(s.value)+'</p><p class="jh-wr-sl">'+escapeHtml(s.label)+'</p></div>'; }).join('');
@@ -4769,7 +4799,7 @@ async function buildHome(){
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
   var zLow='<div class="jh-zone"><div class="jh-zlabel">Your World</div>'+skyH+wrH+awH+'</div>';
   var footer='<footer class="jh-footer"><p>However far you wander, the light stays on.</p></footer>';
-  body.innerHTML=moodBg+'<div class="jh-wrap">'+header+purposeBand+zTop+zMid+zLow+footer+'</div>'+'<button class="jh-skyfab" onclick="openSkyvosBubble()" aria-label="Skyvos">'+skyOrb({mood:'purple',sparkle:true})+'</button>';
+  body.innerHTML=moodBg+'<div class="jh-wrap">'+header+purposeBand+zTop+zMid+zLow+footer+'</div>'+'<button class="jh-skyfab" onclick="openSkyvosBubble()" aria-label="'+escapeAttr(__guardian)+'">'+skyOrb({mood:'purple',sparkle:true})+'</button>';
 }
 function qa(ic,label,fn){ return '<div class="qa" onclick="'+fn+'"><div class="qi">'+ic+'</div><div class="ql">'+label+'</div></div>'; }
 function goAddFamily(){ navTo('family'); setTimeout(focusAddMember, 350); }
@@ -5439,7 +5469,10 @@ async function renderHomeDetail(id){
     (iAmHead?act("archiveHome('"+id+"')",'Close this home'):'')+
     '</div>';
   var story=await homeStory(id, h, members, profs, s);
-  el.innerHTML='<div class="hd-hero">'+homeArchitecture(style, md.glow)+'<div class="hc-bloom" style="opacity:'+(0.3*md.glow).toFixed(2)+'"></div><div class="hc-grain"></div><div class="hc-vig"></div>'+
+  var _cov=h.cover_url||'';
+  var _heroCls=_cov?'hd-hero hd-hero-photo':'hd-hero hd-hero-warm';
+  var _heroBg=_cov?(' style="background-image:url('+_cov+')"'):'';
+  el.innerHTML='<div class="'+_heroCls+'"'+_heroBg+'><div class="hd-hero-shade"></div>'+
     '<div class="hd-hero-in"><div class="hc-mood">'+md.state.toUpperCase()+(anc?' \u00b7 ANCESTRAL':'')+'</div>'+
     '<div class="hd-name">'+escapeHtml(h.household_name)+'</div>'+
     '<div class="hd-city">'+(h.city?escapeHtml(h.city)+'  \u00b7  ':'')+homeStyleLabel(style)+'</div></div></div>'+
@@ -6128,7 +6161,7 @@ async function openCapture(){
 function buildCaptureModal(){
   var connected=CAP.connected||[];
   var people = connected.length ? connected.map(function(p){ return '<label class="hh-pick"><input type="checkbox" value="'+escapeAttr(p.phone)+'"> '+escapeHtml(p.name)+'</label>'; }).join('') : '<div class="muted" style="font-size:13px;padding:2px">Connect with family first to tag them — you can still save the Moment.</div>';
-  var circles=[['private','👤','My Moment','Visible only to me'],['household','🏠','Household Moment','Your household only'],['family','❤️','Family Moment','Your whole family'],['bridge','🌉','Bridge Moment','Connected bridge households']];
+  var circles=[['private','👤','My Moment','Visible only to me'],['household','🏠','Home Moment','Your home only'],['family','❤️','Family Moment','Your whole family'],['bridge','🌉','Bridge Moment','Connected bridge households']];
   var copts=circles.map(function(c){ return '<div class="circle-opt" data-c="'+c[0]+'" onclick="pickCircle(\''+c[0]+'\')"><span class="ce">'+c[1]+'</span><span style="flex:1">'+c[2]+'<span class="cd">'+c[3]+'</span></span><span class="cradio">○</span></div>'; }).join('');
   var m=document.getElementById('momentModal');
   m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
@@ -6138,7 +6171,7 @@ function buildCaptureModal(){
     '<div class="field-label" style="margin-top:14px">Moment title</div>'+
     '<input class="fi" id="capTitle" placeholder="e.g. Sunday Lunch" style="margin-bottom:13px">'+
     '<div class="field-label">What made this moment special?</div>'+
-    '<textarea class="fi" id="capDesc" rows="3" placeholder="Describe what happened…" style="margin-bottom:13px;resize:vertical"></textarea>'+
+    '<textarea class="fi" id="capDesc" rows="5" placeholder="Describe what happened…" style="margin-bottom:13px;resize:vertical;min-height:120px;line-height:1.5"></textarea>'+
     '<div class="field-label">When did it happen?</div>'+
     '<input class="fi" id="capDate" type="date" style="margin-bottom:13px">'+
     '<div class="field-label">Who was with you?</div>'+
@@ -6171,7 +6204,7 @@ function pickCircle(c){
   var extra=document.getElementById('capExtra'); if(!extra) return;
   if(c==='household'){
     var hs=CAP.households||[];
-    extra.innerHTML = hs.length>1 ? '<div class="field-label">Which household?</div><select class="fi" id="capHH" style="margin-bottom:13px">'+hs.map(function(h){return '<option value="'+escapeAttr(h.id)+'">'+escapeHtml(h.name)+'</option>';}).join('')+'</select>'
+    extra.innerHTML = hs.length>1 ? '<div class="field-label">Which home?</div><select class="fi" id="capHH" style="margin-bottom:13px">'+hs.map(function(h){return '<option value="'+escapeAttr(h.id)+'">'+escapeHtml(h.name)+'</option>';}).join('')+'</select>'
       : (hs.length===1 ? '<input type="hidden" id="capHH" value="'+escapeAttr(hs[0].id)+'">' : '<div class="muted" style="font-size:13px;margin-bottom:10px">Create a household first to use this circle.</div>');
   } else if(c==='bridge'){
     var bs=CAP.bridges||[];
@@ -6214,7 +6247,7 @@ async function submitMoment(){
 function celebrateMoment(type){
   playChime('moment');
   var plus=MOMENT_W[type]||1;
-  var label={private:'My Moment',household:'Household Moment',family:'Family Moment',bridge:'Bridge Moment'}[type]||'Moment';
+  var label={private:'My Moment',household:'Home Moment',family:'Family Moment',bridge:'Bridge Moment'}[type]||'Moment';
   var c=document.getElementById('celebrate'); if(!c){ toast('Moment captured ❤️ +'+plus); return; }
   var conf=''; var ems=['❤️','✨','💛','🎉','📸','🙏'];
   for(var i=0;i<14;i++){ conf+='<span class="confetti" style="left:'+(Math.random()*100)+'%;animation-duration:'+(2+Math.random()*2).toFixed(2)+'s;animation-delay:'+(Math.random()*0.8).toFixed(2)+'s">'+ems[i%ems.length]+'</span>'; }
@@ -6592,6 +6625,10 @@ async function loadGraph(){
   try{
     var r=await sb.from('relationship_graph').select('*').eq('person_a_phone',me).order('relationship_distance',{ascending:true});
     var edges=r.data||[];
+    // ALWAYS include direct relationships (daughter/son/etc.) even if the derived graph is empty or stale
+    try{ var rels=await loadRelationships(); var have={}; edges.forEach(function(e){ have[e.person_b_phone]=1; });
+      rels.forEach(function(c){ var v=relView(c,me); if(v.other && !have[v.other]){ edges.push({ person_a_phone:me, person_b_phone:v.other, relationship_type:(v.rel||'Family'), relationship_distance:1, relationship_origin:'direct' }); have[v.other]=1; } });
+    }catch(e){}
     var phones=edges.map(function(e){return e.person_b_phone;}).concat(edges.map(function(e){return e.via_phone;}).filter(Boolean));
     return { edges:edges, profs:await fetchProfiles(phones) };
   }catch(e){ return { edges:[], profs:{} }; }
