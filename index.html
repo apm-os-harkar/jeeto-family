@@ -929,6 +929,18 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 /* HTML orb constellation */
 .gxh-field{position:absolute;inset:0;overflow:hidden}
 .gxh-stars{position:absolute;inset:0;transform-origin:center;z-index:0}
+/* Avatar cropper */
+.av-stage{display:flex;justify-content:center;margin:6px 0 14px}
+.av-crop{position:relative;width:260px;height:260px;border-radius:50%;overflow:hidden;background:#1a1330;cursor:grab;box-shadow:0 10px 32px rgba(80,50,20,.22),inset 0 0 0 3px rgba(255,255,255,.7)}
+.av-crop:active{cursor:grabbing}
+.av-img{position:absolute;left:0;top:0;transform-origin:0 0;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.av-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;opacity:.65;font-size:14px}
+.av-zoom{width:100%;max-width:300px;display:block;margin:0 auto 14px;accent-color:var(--saffron,#E8A317)}
+.av-pick{display:inline-flex;align-items:center;gap:8px;justify-content:center;width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-weight:600;color:var(--ink);cursor:pointer}
+.av-pick svg{width:18px;height:18px}
+.pp-photo-wrap{position:relative;display:inline-block;cursor:pointer}
+.pp-photo-cam{position:absolute;right:6px;bottom:6px;width:30px;height:30px;border-radius:50%;background:var(--saffron,#E8A317);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.pp-photo-cam svg{width:16px;height:16px}
 .gxh-star{position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 2px rgba(255,255,255,.6);animation:gxhtw 3s ease-in-out infinite}
 @keyframes gxhtw{0%,100%{opacity:.25}50%{opacity:.85}}
 .gxh-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -1519,7 +1531,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.14.0-avatar';
+var JEETO_VERSION='4.16.0-avatar';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3246,8 +3258,10 @@ async function renderDesign(){
 
   // 2) AVATAR
   var model='<section class="jh-rise"><div class="jh-zlabel">Avatar</div>'+
-    '<label class="hh-cover"><input type="file" accept="image/*" id="jdAvatar" onchange="previewHomeCover(this,\'jdAvatarPrev\')" hidden><div id="jdAvatarPrev" class="hh-cover-prev'+((home&&home.cover_url)?' has':'')+'">'+((home&&home.cover_url)?'<img src="'+escapeAttr(home.cover_url)+'">':'<span>+ Choose your avatar photo</span>')+'</div></label>'+
-    '<p class="jd-hint">This photo becomes your circle in the galaxy (My Family & Across My World).</p></section>';
+    '<div class="av-stage"><div class="av-crop" id="avCrop" onpointerdown="_avDown(event)" style="touch-action:none"><img id="avImg" class="av-img" alt="" style="display:none"><div id="avEmpty" class="av-empty">Tap \u201cChoose photo\u201d</div></div></div>'+
+    '<input type="range" class="av-zoom" id="avZoom" min="1" max="3" step="0.01" value="1" oninput="_avZoom(this)">'+
+    '<label class="av-pick"><input type="file" accept="image/*" id="jdAvatar" onchange="_avPick(this)" hidden>'+jic('camera')+' Choose photo</label>'+
+    '<p class="jd-hint">Drag to position, slide to zoom \u2014 this circle is exactly your avatar in the galaxy.</p></section>';
 
   // 3) FAMILY (adults & kids)
   function isKid(m){ var r=((m.role||m.relation||'')+'').toLowerCase(); return /son|daughter|child|kid|grand/.test(r); }
@@ -3266,6 +3280,8 @@ async function renderDesign(){
     '<div class="jh-zone">'+model+'</div>'+
     '<div class="jh-zone">'+famHtml+'</div>'+
     save+footer+'</div>';
+  _avLoaded=false; _avDirty=false; _avS=1; _avX=0; _avY=0;
+  if(home&&home.cover_url){ setTimeout(function(){ _avRoot=document.getElementById('screen-design'); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; _avLoadImg(home.cover_url,false); var z=_avQ('.av-zoom'); if(z) z.value=1; },40); }
 }
 async function saveDesign(){
   var name=(document.getElementById('jdName').value||'').trim();
@@ -3273,7 +3289,7 @@ async function saveDesign(){
   if(!name){ toast('Give your home a name plate.'); return; }
   if(!_designHomeId){ toast('Create a Home first, then design it.'); navTo('world'); return; }
   try{ await sb.from('households').update({household_name:name, city:city||null}).eq('id',_designHomeId);
-    var _af=document.getElementById('jdAvatar'); var _ff=_af&&_af.files&&_af.files[0]; if(_ff){ var _u=await uploadHomeCover(_designHomeId,_ff); await sb.from('households').update({cover_url:_u}).eq('id',_designHomeId); } }
+    if(_avDirty){ var _b=await _avCropBlob(); if(_b){ var _p='home-covers/'+_designHomeId+'-'+Date.now()+'.jpg'; var _up=await sb.storage.from('moments').upload(_p,_b,{contentType:'image/jpeg'}); if(!_up.error){ var _url=sb.storage.from('moments').getPublicUrl(_p).data.publicUrl; await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId); } } } }
   catch(e){ toast(humanError(e,'Could not save your home.')); return; }
   toast('Your home is set \u2728');
   try{ renderHome(); }catch(e){}
@@ -3834,6 +3850,39 @@ async function savePurpose(){
   closeHomeModal(); toast('Purpose saved \u2728'); try{ buildHome(); }catch(e){}
 }
 
+/* ===== Avatar cropper — drag to position, slide to zoom; outputs a square crop ===== */
+var _avImg=null, _avNat={w:0,h:0}, _avBase=1, _avS=1, _avX=0, _avY=0, _avDirty=false, _avLoaded=false, _avDrag=false, _avLast=null, _avRoot=null;
+var AV_CS=260, AV_OUT=512;
+function _avQ(sel){ return (_avRoot||document).querySelector(sel); }
+function _avSetRoot(el){ _avRoot=(el&&(el.closest('.modal-card')||el.closest('section')))||document; }
+function _avClamp(){ var k=_avBase*_avS, dw=_avNat.w*k, dh=_avNat.h*k; _avX=Math.min(0,Math.max(AV_CS-dw,_avX)); _avY=Math.min(0,Math.max(AV_CS-dh,_avY)); }
+function _avRender(){ var img=_avQ('.av-img'); if(!img) return; var k=_avBase*_avS; img.style.width=_avNat.w+'px'; img.style.height=_avNat.h+'px'; img.style.transform='translate('+_avX.toFixed(1)+'px,'+_avY.toFixed(1)+'px) scale('+k.toFixed(4)+')'; }
+function _avLoadImg(src, dirty){ var img=_avQ('.av-img'); if(!img) return; var im=new Image(); im.crossOrigin='anonymous'; im.onload=function(){ _avImg=im; _avNat={w:im.naturalWidth||1,h:im.naturalHeight||1}; _avBase=Math.max(AV_CS/_avNat.w, AV_CS/_avNat.h); _avS=1; var k=_avBase; _avX=(AV_CS-_avNat.w*k)/2; _avY=(AV_CS-_avNat.h*k)/2; _avLoaded=true; if(dirty)_avDirty=true; img.src=src; img.style.display='block'; _avRender(); }; im.onerror=function(){}; im.src=src; }
+function _avPick(input){ _avSetRoot(input); var f=input.files&&input.files[0]; if(!f) return; var u=URL.createObjectURL(f); _avLoadImg(u, true); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; var z=_avQ('.av-zoom'); if(z) z.value=1; }
+function _avZoom(el){ _avSetRoot(el); if(!_avLoaded) return; _avS=parseFloat((el&&el.value!=null)?el.value:el)||1; _avClamp(); _avRender(); _avDirty=true; }
+function _avDown(e){ _avSetRoot(e.currentTarget||e.target); if(!_avLoaded) return; _avDrag=true; _avLast={x:e.clientX,y:e.clientY}; try{ window.addEventListener('pointermove',_avMove); window.addEventListener('pointerup',_avUp); }catch(_){} }
+function _avMove(e){ if(!_avDrag||!_avLast) return; _avX+=(e.clientX-_avLast.x); _avY+=(e.clientY-_avLast.y); _avLast={x:e.clientX,y:e.clientY}; _avClamp(); _avRender(); _avDirty=true; }
+function _avUp(){ _avDrag=false; _avLast=null; try{ window.removeEventListener('pointermove',_avMove); window.removeEventListener('pointerup',_avUp); }catch(_){} }
+function openProfilePhoto(){
+  var m=document.getElementById('homeModal'); if(!m) return; var cur=(ME&&ME.avatar_url)||'';
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Your profile photo</h3>'+
+    '<div class="av-stage"><div class="av-crop" onpointerdown="_avDown(event)" style="touch-action:none"><img class="av-img" alt="" style="display:none"><div class="av-empty">Tap \u201cChoose photo\u201d</div></div></div>'+
+    '<input type="range" class="av-zoom" min="1" max="3" step="0.01" value="1" oninput="_avZoom(this)">'+
+    '<label class="av-pick"><input type="file" accept="image/*" onchange="_avPick(this)" hidden>'+jic('camera')+' Choose photo</label>'+
+    '<p class="jd-hint" style="text-align:center">Drag to position, slide to zoom.</p>'+
+    '<button class="btn" onclick="saveProfilePhoto()">Save photo</button></div>';
+  m.classList.add('show'); _avLoaded=false; _avDirty=false; _avS=1; _avX=0; _avY=0;
+  if(cur){ setTimeout(function(){ _avRoot=document.querySelector('#homeModal .modal-card'); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; _avLoadImg(cur,false); },40); }
+}
+async function saveProfilePhoto(){
+  if(!_avDirty){ closeHomeModal(); return; }
+  _avRoot=document.querySelector('#homeModal .modal-card');
+  var b=await _avCropBlob(); if(!b){ toast('Could not save the photo \u2014 try choosing it again.'); return; }
+  try{ var p='avatars/'+myPhone()+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(p,b,{contentType:'image/jpeg'}); if(up.error) throw up.error; var url=sb.storage.from('moments').getPublicUrl(p).data.publicUrl; await sb.from('profiles').update({avatar_url:url}).eq('phone',myPhone()); if(ME) ME.avatar_url=url; }
+  catch(e){ toast(humanError(e,'Could not save the photo.')); return; }
+  closeHomeModal(); toast('Profile photo updated \u2728'); try{ renderPassport(); }catch(e){}
+}
+async function _avCropBlob(){ if(!_avImg||!_avLoaded) return null; var k=_avBase*_avS, r=AV_OUT/AV_CS; var c=document.createElement('canvas'); c.width=AV_OUT; c.height=AV_OUT; var ctx=c.getContext('2d'); ctx.fillStyle='#caa46a'; ctx.fillRect(0,0,AV_OUT,AV_OUT); try{ ctx.drawImage(_avImg, _avX*r, _avY*r, _avNat.w*k*r, _avNat.h*k*r); }catch(e){ return null; } return await new Promise(function(res){ try{ c.toBlob(function(b){res(b);}, 'image/jpeg', 0.85); }catch(e){ res(null); } }); }
 function _jhReadImg(file){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){ var img=new Image(); img.onload=function(){res(img);}; img.onerror=rej; img.src=fr.result; }; fr.onerror=rej; fr.readAsDataURL(file); }); }
 async function compressHomeCover(file){ try{ var img=await _jhReadImg(file); var max=1280,w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } } var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); var blob=await new Promise(function(r){ c.toBlob(r,'image/jpeg',0.82); }); return blob||file; }catch(e){ return file; } }
 async function uploadHomeCover(id, file){ var f=await compressHomeCover(file); var path='home-covers/'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:false, contentType:'image/jpeg'}); if(up.error) throw up.error; return sb.storage.from('moments').getPublicUrl(path).data.publicUrl; }
@@ -5461,8 +5510,7 @@ async function renderPassport(){
   var years=(pass&&pass.member_since)? Math.max(0, Math.floor((Date.now()-new Date(pass.member_since).getTime())/(365.25*86400000))) : 0;
   var sinceTxt=(pass&&pass.member_since)? new Date(pass.member_since).toLocaleDateString('en-US',{month:'long',year:'numeric'}) : '—';
   var u=ME||{};
-  var photo=u.avatar_url ? '<img class="pp-photo" src="'+escapeAttr(u.avatar_url)+'">'
-    : '<div class="pp-photo" style="display:flex;align-items:center;justify-content:center;font-size:42px;color:#7C3AED">'+escapeHtml(((u.name||'J')[0]||'J').toUpperCase())+'</div>';
+  var photo='<div class="pp-photo-wrap" onclick="openProfilePhoto()" title="Change photo">'+(u.avatar_url ? '<img class="pp-photo" src="'+escapeAttr(u.avatar_url)+'">' : '<div class="pp-photo" style="display:flex;align-items:center;justify-content:center;font-size:42px;color:#7C3AED">'+escapeHtml(((u.name||'J')[0]||'J').toUpperCase())+'</div>')+'<span class="pp-photo-cam">'+jic('camera')+'</span></div>';
 
   var html='<div class="pp-card">'+
     '<div class="pp-top">❤️ JEETO PASSPORT</div>'+ photo +
