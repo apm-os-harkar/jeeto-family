@@ -934,7 +934,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gxh-line{stroke:rgba(255,205,130,.34);stroke-width:1;vector-effect:non-scaling-stroke}
 .gxh-line.mine{stroke:rgba(140,200,255,.4)}
 .gxh-orb{position:absolute;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;z-index:2}
-.gxh-node{position:relative;width:60px;height:60px}
+.gxh-node{position:relative;width:60px;height:60px;animation:gxhfloat 6.5s ease-in-out infinite}
 .gxh-orb.hero .gxh-node{width:86px;height:86px}
 .gxh-av{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.85);box-shadow:0 6px 20px rgba(0,0,0,.5);background:linear-gradient(135deg,#caa46a,#8a5a2a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px}
 .gxh-av img{width:100%;height:100%;object-fit:cover}
@@ -942,14 +942,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gxh-glow{position:absolute;inset:-7px;border-radius:50%;border:2px solid rgba(255,210,140,.16)}
 .gxh-nm{font-size:12px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.75);max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gxh-orb.hero .gxh-nm{font-size:14px;font-weight:600}
-.gxh-orb.lvl1 .gxh-node{animation:gxhbr 3.4s ease-in-out infinite}
-.gxh-orb.lvl2 .gxh-node{animation:gxhbr 2.6s ease-in-out infinite}
-.gxh-orb.lvl3 .gxh-node{animation:gxhbr 1.8s ease-in-out infinite}
+.gxh-orb.lvl1 .gxh-node{animation-duration:5s}
+.gxh-orb.lvl2 .gxh-node{animation-duration:3.6s}
+.gxh-orb.lvl3 .gxh-node{animation-duration:2.4s}
 .gxh-orb.lvl2 .gxh-glow,.gxh-orb.lvl3 .gxh-glow{border-top-color:rgba(255,235,180,.95)}
 .gxh-orb.lvl2 .gxh-glow{animation:gxhsp 8s linear infinite}
 .gxh-orb.lvl3 .gxh-glow{animation:gxhsp 4s linear infinite;inset:-9px;border-color:rgba(255,210,140,.4);border-top-color:rgba(255,240,190,1)}
 @keyframes gxhbr{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
 @keyframes gxhsp{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes gxhfloat{0%,100%{transform:translateY(0) scale(1)}25%{transform:translate(2px,-3px) scale(1.02)}50%{transform:translate(0,-4px) scale(1.04)}75%{transform:translate(-2px,-2px) scale(1.02)}}
+.gxh-line{animation:gxhline 4.5s ease-in-out infinite}
+@keyframes gxhline{0%,100%{opacity:.5}50%{opacity:.95}}
 .gx-labels{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 .gx-label{position:absolute;top:0;left:0;pointer-events:auto;background:none;border:none;cursor:pointer;font-family:inherit;text-align:center;white-space:nowrap;transition:opacity .2s;padding:2px 6px}
 .gx-label b{display:block;font-family:var(--jh-serif);font-size:13px;font-weight:600;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.85)}
@@ -1514,7 +1517,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.8.0-upload';
+var JEETO_VERSION='4.9.0-alive';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3473,7 +3476,7 @@ var JeetoGalaxy=(function(){
   function pos(i,n){ if(i===0) return {x:50,y:50}; var k=Math.max(n-1,1), idx=i-1; var ang=(idx/k)*Math.PI*2 - Math.PI/2; var jit=(idx%2===0)?1:0.74; return { x:50+Math.cos(ang)*34*jit, y:50+Math.sin(ang)*30*jit }; }
   function lvlOf(a){ a=a||0; return a<=0?0:(a<2?1:(a<5?2:3)); }
   function orbHtml(h,i,n){ var p=pos(i,n), hero=(i===0), lvl=lvlOf(h.act); var photo=h.photo; var initial=escapeHtml(((h.name||'?')[0]||'?').toUpperCase()); var av=photo?'<img src="'+escapeAttr(photo)+'" alt="">':initial;
-    return '<button class="gxh-orb'+(hero?' hero':'')+' lvl'+lvl+'" style="left:'+p.x.toFixed(2)+'%;top:'+p.y.toFixed(2)+'%" onclick="JeetoGalaxy.tap('+i+')"><span class="gxh-node"><span class="gxh-glow"></span><span class="gxh-av">'+av+'</span></span><span class="gxh-nm">'+escapeHtml(h.name||'Home')+'</span></button>'; }
+    return '<button class="gxh-orb'+(hero?' hero':'')+' lvl'+lvl+'" style="left:'+p.x.toFixed(2)+'%;top:'+p.y.toFixed(2)+'%" onclick="JeetoGalaxy.tap('+i+')"><span class="gxh-node" style="animation-delay:'+(Math.random()*5).toFixed(1)+'s"><span class="gxh-glow"></span><span class="gxh-av">'+av+'</span></span><span class="gxh-nm">'+escapeHtml(h.name||'Home')+'</span></button>'; }
   function bridges(homes){ var n=homes.length; if(n<2) return ''; var s='<svg class="gxh-lines" viewBox="0 0 100 100" preserveAspectRatio="none">'; for(var i=1;i<n;i++){ var p=pos(i,n); s+='<line x1="50" y1="50" x2="'+p.x.toFixed(2)+'" y2="'+p.y.toFixed(2)+'" class="gxh-line'+(homes[i].mine?' mine':'')+'"/>'; } return s+'</svg>'; }
   function init(hostEl,data){
     dispose(); host=hostEl; if(!host) return; active=true; _homes=(data&&data.homes)||[]; _across=!!(data&&data.landscape);
@@ -3665,13 +3668,13 @@ async function renderLoop(){
 var _lastCtx=null;
 /* ===== Purpose & Role header — shared purpose + a dignified role + a reason to show up ===== */
 var FAMILY_ROLES={
-  storykeeper:{emoji:'\ud83d\udcd6',title:'The Storykeeper',essence:'You turn ordinary days into memories we keep forever.',invite:'Capture one moment from today \u2014 the family is waiting for the story only you can tell.',cta:{label:'Share a moment',go:"navTo('moments')"}},
+  storykeeper:{emoji:'\ud83d\udcd6',title:'The Storykeeper',essence:'You turn ordinary days into memories we keep forever.',invite:'Capture one moment from today \u2014 the family is waiting for the story only you can tell.',cta:{label:'Share a moment',go:"openCapture()"}},
   anchor:{emoji:'\u2693',title:'The Anchor',essence:'You keep everyone grounded, safe, and held.',invite:'Someone has been quiet. Reach out \u2014 they\u2019re waiting for their anchor.',cta:{label:'Open the family',go:"navTo('family')"}},
-  spark:{emoji:'\u2728',title:'The Spark',essence:'You bring the laughter, the warmth, the light.',invite:'Share the thing that made you smile today. The family lights up when you do.',cta:{label:'Share a moment',go:"navTo('moments')"}},
+  spark:{emoji:'\u2728',title:'The Spark',essence:'You bring the laughter, the warmth, the light.',invite:'Share the thing that made you smile today. The family lights up when you do.',cta:{label:'Share a moment',go:"openCapture()"}},
   bridge:{emoji:'\ud83c\udf09',title:'The Bridge',essence:'You connect the ones who live far apart.',invite:'A home far away is thinking of you. Reach across the distance today.',cta:{label:'Across my world',go:"navTo('across')"}},
   keeper:{emoji:'\ud83d\udd6f\ufe0f',title:'The Keeper of Traditions',essence:'You hold the rituals that make us who we are.',invite:'Begin a small ritual the whole family can share this week.',cta:{label:'Open rituals',go:"navTo('rituals')"}},
   witness:{emoji:'\ud83d\udc4f',title:'The Witness',essence:'You notice everyone, and you celebrate them.',invite:'Someone did something worth celebrating. Be the one who sees it.',cta:{label:'Open the family',go:"navTo('family')"}},
-  glue:{emoji:'\ud83e\uddf6',title:'The Glue',essence:'You quietly hold us all together.',invite:'Bring the family into one shared moment today.',cta:{label:'Share a moment',go:"navTo('moments')"}}
+  glue:{emoji:'\ud83e\uddf6',title:'The Glue',essence:'You quietly hold us all together.',invite:'Bring the family into one shared moment today.',cta:{label:'Share a moment',go:"openCapture()"}}
 };
 var PURPOSE_DEFAULT='Across every distance, we stay one \u2014 sharing our days, holding our memories, showing up for each other.';
 function _lsGet(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
@@ -3741,9 +3744,9 @@ function roleInvite(roleId,sig){ sig=sig||{};
   if(roleId==='bridge'){ if(sig.far){ return {text:sig.far.name+' is across the distance, thinking of you. Reach across today.', cta:{label:'Visit '+sig.far.name, go:"navTo('across')"}}; } return {text:'A home far away is thinking of you. Reach across the distance.', cta:{label:'Across my world', go:"navTo('across')"}}; }
   if(roleId==='keeper'){ if(sig.up){ var k=sig.up.days<=0?'today':(sig.up.days===1?'tomorrow':'in '+sig.up.days+' days'); return {text:sig.up.name+'\u2019s birthday is '+k+'. Begin a ritual to honour it.', cta:{label:'Open rituals', go:"navTo('rituals')"}}; } return {text:'Begin a small ritual the whole family can share this week.', cta:{label:'Open rituals', go:"navTo('rituals')"}}; }
   if(roleId==='witness'){ if(sig.up){ __roleReach={phone:sig.up.phone,name:sig.up.name}; var t=sig.up.days<=0?'today':(sig.up.days===1?'tomorrow':'in '+sig.up.days+' days'); return {text:sig.up.name+'\u2019s big day is '+t+'. Be the first to celebrate them.', cta:{label:'Celebrate '+sig.up.name, go:(sig.up.phone?'roleReach()':"navTo('family')")}}; } if(sig.fam&&sig.fam.length){ __roleReach={phone:sig.fam[0].phone,name:sig.fam[0].name}; return {text:'Celebrate '+sig.fam[0].name+' today \u2014 for simply being part of this family.', cta:{label:'Cheer on '+sig.fam[0].name, go:'roleReach()'}}; } return {text:'Notice someone today, and celebrate them out loud.', cta:{label:'Open the family', go:"navTo('family')"}}; }
-  if(roleId==='glue'){ if(sig.pair&&sig.pair.length>=2){ return {text:'Bring '+sig.pair[0]+' and '+sig.pair[1]+' into one shared moment today.', cta:{label:'Share a moment', go:"navTo('moments')"}}; } return {text:'Bring the family into one shared moment today.', cta:{label:'Share a moment', go:"navTo('moments')"}}; }
-  if(roleId==='spark'){ return {text:'Share the thing that made you smile today \u2014 the family lights up when you do.', cta:{label:'Share a moment', go:"navTo('moments')"}}; }
-  return {text:'Capture one moment from today \u2014 the story only you can tell.', cta:{label:'Share a moment', go:"navTo('moments')"}};
+  if(roleId==='glue'){ if(sig.pair&&sig.pair.length>=2){ return {text:'Bring '+sig.pair[0]+' and '+sig.pair[1]+' into one shared moment today.', cta:{label:'Share a moment', go:"openCapture()"}}; } return {text:'Bring the family into one shared moment today.', cta:{label:'Share a moment', go:"openCapture()"}}; }
+  if(roleId==='spark'){ return {text:'Share the thing that made you smile today \u2014 the family lights up when you do.', cta:{label:'Share a moment', go:"openCapture()"}}; }
+  return {text:'Capture one moment from today \u2014 the story only you can tell.', cta:{label:'Share a moment', go:"openCapture()"}};
 }
 function jhRoleHeader(ctx, sig){
   var purpose=getFamilyPurpose(ctx); var roleId=getMyRole();
