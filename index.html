@@ -2239,7 +2239,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.20.0-galaxy';
+var JEETO_VERSION='4.21.0-avatarfix';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -4625,7 +4625,14 @@ function _avQ(sel){ return (_avRoot||document).querySelector(sel); }
 function _avSetRoot(el){ _avRoot=(el&&(el.closest('.modal-card')||el.closest('section')))||document; }
 function _avClamp(){ var k=_avBase*_avS, dw=_avNat.w*k, dh=_avNat.h*k; _avX=Math.min(0,Math.max(AV_CS-dw,_avX)); _avY=Math.min(0,Math.max(AV_CS-dh,_avY)); }
 function _avRender(){ var img=_avQ('.av-img'); if(!img) return; var k=_avBase*_avS; img.style.width=_avNat.w+'px'; img.style.height=_avNat.h+'px'; img.style.transform='translate('+_avX.toFixed(1)+'px,'+_avY.toFixed(1)+'px) scale('+k.toFixed(4)+')'; }
-function _avLoadImg(src, dirty){ var img=_avQ('.av-img'); if(!img) return; var im=new Image(); im.crossOrigin='anonymous'; im.onload=function(){ _avImg=im; _avNat={w:im.naturalWidth||1,h:im.naturalHeight||1}; _avBase=Math.max(AV_CS/_avNat.w, AV_CS/_avNat.h); _avS=1; var k=_avBase; _avX=(AV_CS-_avNat.w*k)/2; _avY=(AV_CS-_avNat.h*k)/2; _avLoaded=true; if(dirty)_avDirty=true; img.src=src; img.style.display='block'; _avRender(); }; im.onerror=function(){}; im.src=src; }
+function _avLoadImg(src, dirty){ var img=_avQ('.av-img'); if(!img) return;
+  function _go(u){ img.src=u; img.style.display='block'; var ph=_avQ('.av-empty'); if(ph) ph.style.display='none';
+    function _seat(im2){ _avImg=im2; _avNat={w:im2.naturalWidth||1,h:im2.naturalHeight||1}; _avBase=Math.max(AV_CS/_avNat.w, AV_CS/_avNat.h); _avS=1; var k=_avBase; _avX=(AV_CS-_avNat.w*k)/2; _avY=(AV_CS-_avNat.h*k)/2; _avLoaded=true; if(dirty)_avDirty=true; _avRender(); }
+    var im=new Image(); im.onload=function(){ _seat(im); }; im.onerror=function(){}; im.src=u;
+  }
+  if(/^https?:/i.test(src)){ try{ fetch(src,{mode:'cors'}).then(function(r){ return r.blob(); }).then(function(b){ _go(URL.createObjectURL(b)); }).catch(function(){ _go(src); }); }catch(e){ _go(src); } }
+  else { _go(src); }
+}
 function _avPick(input){ _avSetRoot(input); var f=input.files&&input.files[0]; if(!f) return; _avFile=f; var u=URL.createObjectURL(f); _avLoadImg(u, true); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; var z=_avQ('.av-zoom'); if(z) z.value=1; }
 function _avZoom(el){ _avSetRoot(el); if(!_avLoaded) return; _avS=parseFloat((el&&el.value!=null)?el.value:el)||1; _avClamp(); _avRender(); _avDirty=true; }
 function _avDown(e){ _avSetRoot(e.currentTarget||e.target); if(!_avLoaded) return; _avDrag=true; _avLast={x:e.clientX,y:e.clientY}; try{ window.addEventListener('pointermove',_avMove); window.addEventListener('pointerup',_avUp); }catch(_){} }
