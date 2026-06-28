@@ -898,7 +898,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gx-add svg{width:16px;height:16px;transform:rotate(-90deg)}
 .gx-hint{position:absolute;left:0;right:0;bottom:16px;z-index:2;text-align:center;font-size:11px;letter-spacing:.04em;color:rgba(255,255,255,.55)}
 .gx-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
-.gx-screen-big{height:84vh;min-height:560px}
+/* Across = wide landscape view IN PLACE (app stays portrait) */
+.gx-landscape{position:fixed;z-index:400;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#241a4d 0%,#140f2e 52%,#070512 100%)}
+@media (orientation:portrait){.gx-landscape{top:50%;left:50%;width:100vh;height:100vw;transform:translate(-50%,-50%) rotate(90deg);transform-origin:center}}
+@media (orientation:landscape){.gx-landscape{inset:0;width:100vw;height:100vh;transform:none}}
+.gx-landscape .gx-host{position:absolute;inset:0}
+.gx-back-l{position:absolute;top:16px;left:16px;z-index:5}
+.gx-title-l{position:absolute;top:18px;left:0;right:0;z-index:4;text-align:center;font-family:var(--jh-serif);font-size:20px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5);pointer-events:none}
+.gx-hint-l{position:absolute;left:0;right:0;bottom:18px}
+.gx-screen-big{height:86vh;min-height:560px}
+.jw-wrap-bare{padding:0;gap:0}
+.jw-wrap-bare .gx-screen-big{border-radius:22px}
 @media (orientation:landscape){.gx-screen-big{height:88vh}}
 /* ===== Valley map ===== */
 .jw-constel{position:relative;padding:0}
@@ -1356,7 +1366,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='3.2.0-galaxy';
+var JEETO_VERSION='3.4.0-galaxy';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3278,22 +3288,30 @@ async function renderWorldView(elId, scope){
   var crossLink= across?'' : '<section class="jw-crosslink"><button class="jw-cross" onclick="navTo(\'across\')">See across my world '+jic('arrow')+'</button></section>';
   var footer='<footer class="jw-foot"><p>You are home. You are loved. You belong.</p></footer>';
 
-  var galaxy='<section class="gx-screen'+(across?' gx-screen-big':'')+'"><div class="gx-host" id="gxHost"></div>'+
-    '<div class="gx-top"><button class="gx-back" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button><div class="gx-top-c"><h1 class="gx-title">'+title+'</h1><p class="gx-tag">'+tag+'</p></div></div>'+
-    '<button class="gx-add" onclick="openHouseholdForm()">'+jic('arrow')+'<span>Add a Household</span></button>'+
-    '<div class="gx-hint">'+(across?'\u21bb Rotate your phone \u00b7 ':'')+'Drag \u00b7 pinch to zoom \u00b7 tap a home</div></section>';
-  el.innerHTML='<div class="jh-wrap jw-wrap">'+galaxy+today+wisdom+crossLink+footer+'</div>';
   var ghomes=[];
   if(central) ghomes.push({id:central.id,name:central.name,city:central.city,members:central.members,mine:central.mine,photo:(central.cover||((/harkar/i.test(central.name||'')&&typeof JH_HOME_COVER!=='undefined')?JH_HOME_COVER:''))});
   sats.forEach(function(n){ ghomes.push({id:n.id,name:n.name,city:n.city,members:n.members,mine:n.mine,photo:n.cover||''}); });
-  setTimeout(function(){ try{ JeetoGalaxy.init(document.getElementById('gxHost'),{homes:ghomes,scope:scope,big:across}); }catch(e){ console.warn('galaxy',e); } },60);
+  if(across){
+    el.innerHTML='<div class="gx-landscape" id="gxLand"><div class="gx-host" id="gxHost"></div>'+
+      '<button class="gx-back gx-back-l" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button>'+
+      '<div class="gx-title-l">Across My World</div>'+
+      '<div class="gx-hint gx-hint-l">Drag \u00b7 pinch \u00b7 tap a home</div></div>';
+    setTimeout(function(){ try{ JeetoGalaxy.init(document.getElementById('gxHost'),{homes:ghomes,scope:scope,big:true,landscape:true}); }catch(e){ console.warn('galaxy',e); } },60);
+  } else {
+    var galaxy='<section class="gx-screen"><div class="gx-host" id="gxHost"></div>'+
+      '<div class="gx-top"><button class="gx-back" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button><div class="gx-top-c"><h1 class="gx-title">'+title+'</h1><p class="gx-tag">'+tag+'</p></div></div>'+
+      '<button class="gx-add" onclick="openHouseholdForm()">'+jic('arrow')+'<span>Add a Household</span></button>'+
+      '<div class="gx-hint">Drag \u00b7 pinch to zoom \u00b7 tap a home</div></section>';
+    el.innerHTML='<div class="jh-wrap jw-wrap">'+galaxy+today+wisdom+crossLink+footer+'</div>';
+    setTimeout(function(){ try{ JeetoGalaxy.init(document.getElementById('gxHost'),{homes:ghomes,scope:scope,big:false,landscape:false}); }catch(e){ console.warn('galaxy',e); } },60);
+  }
 }
 
 /* ===== JeetoGalaxy — 3D family galaxy: spinning avatar planet-orbs + glowing bridges ===== */
 var JeetoGalaxy=(function(){
   var renderer,scene,camera,world,stars,raf=null,host,W=0,H=0,active=false;
   var orbs=[],orbMeshes=[],lines=[];
-  var rot={x:0.25,y:0}, target={x:0.25,y:0}, dist=9, distT=9, dragging=false, lastP=null, downP=null, downT=0, moved=0, distP0=0, pinch0=0;
+  var rot={x:0.25,y:0}, target={x:0.25,y:0}, dist=9, distT=9, dragging=false, lastP=null, downP=null, downT=0, moved=0, distP0=0, pinch0=0, landscape=false;
   var ray=new (window.THREE?THREE.Raycaster:function(){})(), v2={x:0,y:0};
   function clear3(){ if(raf){cancelAnimationFrame(raf);raf=null;} if(renderer){ try{ renderer.dispose(); if(renderer.domElement&&renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);}catch(e){} } orbs=[];orbMeshes=[];lines=[]; window.removeEventListener('resize',onResize); active=false; }
   var _halo=null;
@@ -3316,25 +3334,26 @@ var JeetoGalaxy=(function(){
   function ringTex(){ if(_ring) return _ring; var s=256,cv=document.createElement('canvas');cv.width=cv.height=s;var c=cv.getContext('2d');c.strokeStyle='rgba(255,255,255,0.95)';c.lineWidth=s*0.035;c.beginPath();c.arc(s/2,s/2,s*0.43,0,7);c.stroke();_ring=new THREE.CanvasTexture(cv);return _ring; }
   function makeStars(){ var n=1400,geo=new THREE.BufferGeometry(),a=new Float32Array(n*3); for(var i=0;i<n;i++){var r=18+Math.random()*34,th=Math.random()*6.283,ph=Math.acos(2*Math.random()-1);a[i*3]=r*Math.sin(ph)*Math.cos(th);a[i*3+1]=r*Math.sin(ph)*Math.sin(th);a[i*3+2]=r*Math.cos(ph);} geo.setAttribute('position',new THREE.BufferAttribute(a,3)); return new THREE.Points(geo,new THREE.PointsMaterial({color:0xffffff,size:0.13,sizeAttenuation:true,transparent:true,opacity:0.85,depthWrite:false})); }
   function makeBridge(a,b,mine){ var mid=a.clone().add(b).multiplyScalar(0.5); mid.y+=0.9+a.distanceTo(b)*0.12; var curve=new THREE.QuadraticBezierCurve3(a,mid,b); var line=new THREE.Mesh(new THREE.TubeGeometry(curve,44,0.022,6,false),new THREE.MeshBasicMaterial({color:mine?0xFFCF8A:0xC4A6F7,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending,depthWrite:false})); var spark=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false})); return {line:line,spark:spark,curve:curve,t:Math.random()}; }
-  function positionsFor(n,sp){ sp=sp||1; var pos=[]; for(var i=0;i<n;i++){ if(i===0) pos.push(new THREE.Vector3(0,0,0)); else { var k=i-1,cnt=Math.max(1,n-1),ang=k*(6.283/cnt)+0.4,r=(3.0+(k%2)*0.9)*sp,y=(((k%3)-1)*0.95)*sp; pos.push(new THREE.Vector3(Math.cos(ang)*r,y,Math.sin(ang)*r)); } } return pos; }
+  function positionsFor(n,sp){ sp=sp||1; var pos=[],GA=2.399963; for(var i=0;i<n;i++){ if(i===0){ pos.push(new THREE.Vector3(0,0,0)); continue; } var phi=Math.acos(1-2*(i/(n+1))), theta=i*GA, r=(2.6+(i%3)*0.8+(i%2)*0.5)*sp; pos.push(new THREE.Vector3(r*Math.sin(phi)*Math.cos(theta), r*Math.cos(phi)*0.75, r*Math.sin(phi)*Math.sin(theta))); } return pos; }
   function init(hostEl,data){
     if(typeof THREE==='undefined'){ hostEl.innerHTML='<div class="gx-fallback">Loading 3D\u2026</div>'; return; }
     clear3(); host=hostEl; active=true; ray=new THREE.Raycaster();
-    var big=!!data.big, SZ=big?1.5:1.0; rot={x:0.25,y:0}; target={x:0.25,y:0}; dist=big?12.5:9; distT=dist;
+    landscape=!!data.landscape; var big=!!data.big, SZ=big?1.5:1.0; rot={x:0.25,y:0}; target={x:0.25,y:0}; dist=big?12.5:9; distT=dist;
     W=host.clientWidth||320; H=host.clientHeight||480;
     renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); renderer.setSize(W,H); host.appendChild(renderer.domElement);
     scene=new THREE.Scene(); camera=new THREE.PerspectiveCamera(55,W/H,0.1,120); camera.position.set(0,0,dist);
     world=new THREE.Group(); scene.add(world); stars=makeStars(); scene.add(stars);
     var homes=data.homes||[]; var pos=positionsFor(homes.length, big?1.4:1.0);
-    homes.forEach(function(h,i){ var o=makeOrb(h,i===0,SZ); o.grp.position.copy(pos[i]); world.add(o.grp); o.mesh.userData.idx=i; o.mesh.userData.home=h; orbMeshes.push(o.mesh); orbs.push({mesh:o.mesh,pos:pos[i]}); });
+    homes.forEach(function(h,i){ var o=makeOrb(h,i===0,SZ); o.grp.position.copy(pos[i]); world.add(o.grp); o.mesh.userData.idx=i; o.mesh.userData.home=h; orbMeshes.push(o.mesh); orbs.push({mesh:o.mesh,pos:pos[i],spin:0.004+Math.random()*0.02,wob:Math.random()*0.004}); });
     for(var i=1;i<homes.length;i++){ var ln=makeBridge(pos[0],pos[i],homes[i].mine); world.add(ln.line); world.add(ln.spark); lines.push(ln); }
     bindControls(); window.addEventListener('resize',onResize); loop();
   }
+  function isRot(){ return landscape && window.matchMedia('(orientation:portrait)').matches; }
   function onResize(){ if(!renderer||!host) return; W=host.clientWidth; H=host.clientHeight; renderer.setSize(W,H); camera.aspect=W/H; camera.updateProjectionMatrix(); }
-  function pick(cx,cy){ var r=renderer.domElement.getBoundingClientRect(); v2.x=((cx-r.left)/r.width)*2-1; v2.y=-((cy-r.top)/r.height)*2+1; ray.setFromCamera(v2,camera); var hit=ray.intersectObjects(orbMeshes,false); if(hit.length){ var h=hit[0].object.userData.home; if(h){ if(h.mine) enterHome(h.id); else toast(h.name+' \u2014 connected by a bridge \ud83c\udf09'); } } }
+  function pick(cx,cy){ if(isRot()){ v2.x=((window.innerHeight-cy)/window.innerHeight)*2-1; v2.y=-((cx/window.innerWidth)*2-1); } else { var r=renderer.domElement.getBoundingClientRect(); v2.x=((cx-r.left)/r.width)*2-1; v2.y=-((cy-r.top)/r.height)*2+1; } ray.setFromCamera(v2,camera); var hit=ray.intersectObjects(orbMeshes,false); if(hit.length){ var h=hit[0].object.userData.home; if(h){ if(h.mine) enterHome(h.id); else toast(h.name+' \u2014 connected by a bridge \ud83c\udf09'); } } }
   function bindControls(){ var d=renderer.domElement;
     d.addEventListener('pointerdown',function(e){ dragging=true; lastP={x:e.clientX,y:e.clientY}; downP={x:e.clientX,y:e.clientY}; downT=Date.now(); moved=0; });
-    window.addEventListener('pointermove',function(e){ if(!dragging||!lastP) return; var dx=e.clientX-lastP.x, dy=e.clientY-lastP.y; lastP={x:e.clientX,y:e.clientY}; moved+=Math.abs(dx)+Math.abs(dy); target.y+=dx*0.006; target.x+=dy*0.006; target.x=Math.max(-1.2,Math.min(1.2,target.x)); });
+    window.addEventListener('pointermove',function(e){ if(!dragging||!lastP) return; var dx=e.clientX-lastP.x, dy=e.clientY-lastP.y; lastP={x:e.clientX,y:e.clientY}; moved+=Math.abs(dx)+Math.abs(dy); if(isRot()){ var t=dx; dx=dy; dy=-t; } target.y+=dx*0.006; target.x+=dy*0.006; target.x=Math.max(-1.2,Math.min(1.2,target.x)); });
     window.addEventListener('pointerup',function(e){ if(dragging && moved<8 && (Date.now()-downT)<400 && downP){ pick(e.clientX,e.clientY); } dragging=false; lastP=null; });
     d.addEventListener('wheel',function(e){ e.preventDefault(); distT*=(1+(e.deltaY>0?0.08:-0.08)); distT=Math.max(4,Math.min(16,distT)); },{passive:false});
     d.addEventListener('touchstart',function(e){ if(e.touches.length===2){ distP0=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); pinch0=distT; } },{passive:true});
@@ -3344,7 +3363,7 @@ var JeetoGalaxy=(function(){
     if(!dragging) target.y+=0.0016;
     rot.x+=(target.x-rot.x)*0.08; rot.y+=(target.y-rot.y)*0.08; world.rotation.set(rot.x,rot.y,0); stars.rotation.y+=0.0003;
     dist+=(distT-dist)*0.1; camera.position.z=dist;
-    for(var i=0;i<orbs.length;i++){ orbs[i].mesh.rotation.y+=0.012; }
+    for(var i=0;i<orbs.length;i++){ orbs[i].mesh.rotation.y+=orbs[i].spin; orbs[i].mesh.rotation.x+=orbs[i].wob; }
     for(var j=0;j<lines.length;j++){ var ln=lines[j]; ln.t=(ln.t+0.004)%1; ln.spark.position.copy(ln.curve.getPoint(ln.t)); }
     renderer.render(scene,camera);
   }
