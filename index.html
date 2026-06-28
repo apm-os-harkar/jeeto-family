@@ -2239,7 +2239,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.18.0-festivals';
+var JEETO_VERSION='4.20.0-galaxy';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -4023,7 +4023,7 @@ async function renderDesign(){
     '<div class="jh-zone">'+model+'</div>'+
     save+footer+'</div>';
   setTimeout(_plateApply,0);
-  _avLoaded=false; _avDirty=false; _avS=1; _avX=0; _avY=0;
+  _avLoaded=false; _avDirty=false; _avS=1; _avX=0; _avY=0; _avFile=null;
   if(home&&home.cover_url){ setTimeout(function(){ _avRoot=document.getElementById('screen-design'); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; _avLoadImg(home.cover_url,false); var z=_avQ('.av-zoom'); if(z) z.value=1; },40); }
 }
 async function saveDesign(){
@@ -4031,10 +4031,21 @@ async function saveDesign(){
   var city=(document.getElementById('jdCity').value||'').trim();
   if(!name){ toast('Give your home a name plate.'); return; }
   if(!_designHomeId){ toast('Create a Home first, then design it.'); navTo('world'); return; }
-  try{ await sb.from('households').update({household_name:name, city:city||null}).eq('id',_designHomeId);
-    if(_avDirty){ var _b=await _avCropBlob(); if(_b){ var _p='home-covers/'+_designHomeId+'-'+Date.now()+'.jpg'; var _up=await sb.storage.from('moments').upload(_p,_b,{contentType:'image/jpeg'}); if(!_up.error){ var _url=sb.storage.from('moments').getPublicUrl(_p).data.publicUrl; await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId); } } } }
-  catch(e){ toast(humanError(e,'Could not save your home.')); return; }
-  try{ var _ps=JSON.stringify(_plate||{}); _lsSet('jeeto_plate_'+_designHomeId,_ps); await sb.from('households').update({plate_style:_ps}).eq('id',_designHomeId); }catch(e){}
+  // 1) name + city
+  try{ await sb.from('households').update({household_name:name, city:city||null}).eq('id',_designHomeId); }
+  catch(e){ toast(humanError(e,'Could not save the name.')); return; }
+  // 2) avatar (crop -> blob, fall back to raw file; never silently lost)
+  if(_avDirty){
+    var _blob=null; try{ _blob=await _avCropBlob(); }catch(e){}
+    if(!_blob && _avFile){ try{ _blob=await compressHomeCover(_avFile); }catch(e){ _blob=_avFile; } }
+    if(_blob){
+      try{ var _p='home-covers/'+_designHomeId+'-'+Date.now()+'.jpg'; var _up=await sb.storage.from('moments').upload(_p,_blob,{contentType:'image/jpeg'}); if(_up.error) throw _up.error; var _url=sb.storage.from('moments').getPublicUrl(_p).data.publicUrl; await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId); }
+      catch(e){ toast('Avatar didn\u2019t upload \u2014 check your connection and try again.'); }
+    } else { toast('Re-pick the photo to set your avatar.'); }
+  }
+  // 3) door style (always saved on this device; synced when the column exists)
+  try{ var _ps=JSON.stringify(_plate||{}); _lsSet('jeeto_plate_'+_designHomeId,_ps); }catch(e){}
+  try{ await sb.from('households').update({plate_style:JSON.stringify(_plate||{})}).eq('id',_designHomeId); }catch(e){}
   toast('Your home is set \u2728');
   try{ renderHome(); }catch(e){}
   navTo('home');
@@ -4137,6 +4148,11 @@ function jwSat(node, align){
 }
 async function renderMyWorld(){ return renderWorldView('myWorldBody','mine'); }
 async function renderAcrossMyWorld(){ return renderWorldView('acrossBody','across'); }
+function _gxBoot(ghomes,scope,big,landscape){
+  function go(){ var h=document.getElementById('gxHost'); if(!h) return; try{ JeetoGalaxy.init(h,{homes:ghomes,scope:scope,big:big,landscape:landscape}); }catch(e){ console.warn('galaxy',e); } }
+  setTimeout(go,140);
+  setTimeout(function(){ var h=document.getElementById('gxHost'); if(h && !h.querySelector('.gxh-orb')){ go(); } },700);
+}
 async function renderWorldView(elId, scope){
   var across=(scope==='across');
   var el=document.getElementById(elId); if(!el) return;
@@ -4193,7 +4209,7 @@ async function renderWorldView(elId, scope){
   var actHtml = acts.length ? acts.map(function(a){
     return '<li class="jw-act"><span class="jw-act-av">'+(a.avatar?'<img src="'+escapeAttr(a.avatar)+'">':escapeHtml((a.name[0]||'?').toUpperCase()))+'</span><p class="jw-act-t"><b>'+escapeHtml(a.name)+'</b> <span>'+escapeHtml(a.action)+'</span></p><span class="jw-act-time">'+escapeHtml(a.time)+'</span></li>';
   }).join('') : '<li class="jw-act-empty">Your world is calm right now. New memories will appear here.</li>';
-  var today='<section class="jw-card"><div class="jw-live-h"><span class="jw-live"></span><h2>Today in My World</h2></div><ul class="jw-act-list">'+actHtml+'</ul><button class="jw-viewall" onclick="navTo(\'moments\')">View All Activity '+jic('arrow')+'</button></section>';
+  var today='<section class="jw-card"><div class="jw-live-h"><span class="jw-live"></span><h2>Today in My '+(across?'World':'Family')+'</h2></div><ul class="jw-act-list">'+actHtml+'</ul><button class="jw-viewall" onclick="navTo(\'moments\')">View All Activity '+jic('arrow')+'</button></section>';
 
   // family wisdom
   var wisdom='<section class="jw-wis"><span class="jw-wis-ic">'+jic('feather')+'</span><h2 class="jw-wis-h">Family Wisdom</h2><p class="jw-wis-q">A family is many branches of one tree, growing in different directions yet rooted in the same love.</p></section>';
@@ -4233,21 +4249,26 @@ async function renderWorldView(elId, scope){
       '<button class="gx-back gx-back-l" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button>'+
       '<div class="gx-title-l">Across My World</div>'+
       '<div class="gx-hint gx-hint-l">Drag \u00b7 pinch \u00b7 tap a home</div></div>';
-    setTimeout(function(){ try{ JeetoGalaxy.init(document.getElementById('gxHost'),{homes:ghomes,scope:scope,big:true,landscape:true}); }catch(e){ console.warn('galaxy',e); } },140);
+    _gxBoot(ghomes,scope,true,true);
   } else {
     var galaxy='<section class="gx-screen"><div class="gx-host" id="gxHost"></div>'+
       '<div class="gx-top"><button class="gx-back" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button><div class="gx-top-c"><h1 class="gx-title">'+title+'</h1><p class="gx-tag">'+tag+'</p></div></div>'+
-      '<button class="gx-add" onclick="openHouseholdForm()">'+jic('arrow')+'<span>Add a Household</span></button>'+
       '<div class="gx-hint">Drag \u00b7 pinch to zoom \u00b7 tap a home</div></section>';
     el.innerHTML='<div class="jh-wrap jw-wrap">'+galaxy+today+wisdom+crossLink+footer+'</div>';
-    setTimeout(function(){ try{ JeetoGalaxy.init(document.getElementById('gxHost'),{homes:ghomes,scope:scope,big:false,landscape:false}); }catch(e){ console.warn('galaxy',e); } },140);
+    _gxBoot(ghomes,scope,false,false);
   }
 }
 
 /* ===== JeetoGalaxy — reliable HTML/CSS orb constellation (no WebGL) ===== */
 var JeetoGalaxy=(function(){
   var host=null, active=false, _homes=[], _across=false, raf=null, sats=[], heroEl=null, starLayer=null, t0=0;
-  function dispose(){ active=false; if(raf){ cancelAnimationFrame(raf); raf=null; } if(host){ try{ host.innerHTML=''; }catch(e){} } host=null; sats=[]; heroEl=null; starLayer=null; }
+  var _fieldEl=null, _vx=0,_vy=0,_vs=1, _ptrs={}, _panLast=null, _pinch=null, _moved=false;
+  function _applyView(){ if(_fieldEl){ _fieldEl.style.transformOrigin='50% 50%'; _fieldEl.style.transform='translate('+_vx.toFixed(1)+'px,'+_vy.toFixed(1)+'px) scale('+_vs.toFixed(3)+')'; } }
+  function _ptrDown(e){ _ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; _moved=false; var ks=Object.keys(_ptrs); if(ks.length===1){ _panLast={x:e.clientX,y:e.clientY}; _pinch=null; } else if(ks.length===2){ var a=_ptrs[ks[0]],b=_ptrs[ks[1]]; _pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1,s:_vs}; _panLast=null; } try{ host.setPointerCapture(e.pointerId); }catch(_){} }
+  function _ptrMove(e){ if(!_ptrs[e.pointerId]) return; _ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; var ks=Object.keys(_ptrs); if(ks.length>=2&&_pinch){ var a=_ptrs[ks[0]],b=_ptrs[ks[1]]; var d=Math.hypot(a.x-b.x,a.y-b.y); _vs=Math.max(0.6,Math.min(3,_pinch.s*(d/_pinch.d))); _moved=true; _applyView(); if(e.cancelable)e.preventDefault(); } else if(ks.length===1&&_panLast){ var dx=e.clientX-_panLast.x, dy=e.clientY-_panLast.y; if(Math.abs(dx)+Math.abs(dy)>3) _moved=true; _vx+=dx; _vy+=dy; _panLast={x:e.clientX,y:e.clientY}; _applyView(); if(e.cancelable)e.preventDefault(); } }
+  function _ptrUp(e){ delete _ptrs[e.pointerId]; var ks=Object.keys(_ptrs); if(ks.length<2) _pinch=null; if(ks.length===1){ _panLast={x:_ptrs[ks[0]].x,y:_ptrs[ks[0]].y}; } else if(ks.length===0){ _panLast=null; } try{ host.releasePointerCapture(e.pointerId); }catch(_){} }
+  function _wheel(e){ _vs=Math.max(0.6,Math.min(3,_vs*(1-(e.deltaY||0)*0.0012))); _applyView(); if(e.cancelable)e.preventDefault(); }
+  function dispose(){ active=false; if(raf){ cancelAnimationFrame(raf); raf=null; } if(host){ try{ host.removeEventListener('pointerdown',_ptrDown); host.removeEventListener('pointermove',_ptrMove); host.removeEventListener('pointerup',_ptrUp); host.removeEventListener('pointercancel',_ptrUp); host.removeEventListener('wheel',_wheel); }catch(e){} try{ host.innerHTML=''; }catch(e){} } host=null; sats=[]; heroEl=null; starLayer=null; _fieldEl=null; _ptrs={}; _panLast=null; _pinch=null; _moved=false; }
   function lvlOf(a){ a=a||0; return a<=0?0:(a<2?1:(a<5?2:3)); }
   function orbHtml(h,i,hero){ var lvl=lvlOf(h.act); var photo=h.photo; var initial=escapeHtml(((h.name||'?')[0]||'?').toUpperCase()); var av=photo?'<img src="'+escapeAttr(photo)+'" alt="">':initial;
     return '<button class="gxh-orb'+(hero?' hero':'')+' lvl'+lvl+'" data-i="'+i+'" style="left:50%;top:50%" onclick="JeetoGalaxy.tap('+i+')"><span class="gxh-node" style="animation-delay:'+(Math.random()*5).toFixed(1)+'s"><span class="gxh-glow"></span><span class="gxh-av">'+av+'</span></span></button>'; }
@@ -4261,6 +4282,9 @@ var JeetoGalaxy=(function(){
     host.innerHTML='<div class="gxh-field"><div class="gxh-stars">'+stars+'</div>'+'<svg class="gxh-lines" viewBox="0 0 100 100" preserveAspectRatio="none">'+lines+'</svg>'+orbs+'</div>';
     // wire orbit params
     var orbEls=host.querySelectorAll('.gxh-orb'); heroEl=orbEls[0]; starLayer=host.querySelector('.gxh-stars');
+    _fieldEl=host.querySelector('.gxh-field'); _vx=0;_vy=0;_vs=1; _ptrs={}; _panLast=null; _pinch=null; _moved=false; _applyView();
+    host.style.touchAction='none'; host.style.cursor='grab';
+    host.addEventListener('pointerdown',_ptrDown); host.addEventListener('pointermove',_ptrMove); host.addEventListener('pointerup',_ptrUp); host.addEventListener('pointercancel',_ptrUp); host.addEventListener('wheel',_wheel,{passive:false});
     sats=[];
     for(var j=1;j<n;j++){
       var el=host.querySelector('.gxh-orb[data-i="'+j+'"]');
@@ -4291,7 +4315,7 @@ var JeetoGalaxy=(function(){
       if(sx.pu){ var p=((t*sx.pspd)+sx.pph)%1; var px=50+(x-50)*p, py=50+(y-50)*p; sx.pu.setAttribute('cx',px.toFixed(2)); sx.pu.setAttribute('cy',py.toFixed(2)); sx.pu.setAttribute('r',(0.7+Math.min(sx.link,5)*0.22).toFixed(2)); sx.pu.setAttribute('opacity',(sx.link>0?0.9:0).toFixed(2)); }
     }
   }
-  function tap(i){ var h=_homes[i]; if(!h) return; if(_across){ if(typeof gxOpenHome==='function') gxOpenHome(h); } else { if(typeof gxOpenHomeLife==='function') gxOpenHomeLife(h); } }
+  function tap(i){ if(_moved){ _moved=false; return; } var h=_homes[i]; if(!h) return; if(_across){ if(typeof gxOpenHome==='function') gxOpenHome(h); } else { if(typeof gxOpenHomeLife==='function') gxOpenHomeLife(h); } }
   return { init:init, dispose:dispose, isActive:function(){return active;}, tap:tap };
 })();
 
@@ -4595,14 +4619,14 @@ async function savePurpose(){
 }
 
 /* ===== Avatar cropper — drag to position, slide to zoom; outputs a square crop ===== */
-var _avImg=null, _avNat={w:0,h:0}, _avBase=1, _avS=1, _avX=0, _avY=0, _avDirty=false, _avLoaded=false, _avDrag=false, _avLast=null, _avRoot=null;
+var _avImg=null, _avNat={w:0,h:0}, _avBase=1, _avS=1, _avX=0, _avY=0, _avDirty=false, _avLoaded=false, _avDrag=false, _avLast=null, _avRoot=null, _avFile=null;
 var AV_CS=260, AV_OUT=512;
 function _avQ(sel){ return (_avRoot||document).querySelector(sel); }
 function _avSetRoot(el){ _avRoot=(el&&(el.closest('.modal-card')||el.closest('section')))||document; }
 function _avClamp(){ var k=_avBase*_avS, dw=_avNat.w*k, dh=_avNat.h*k; _avX=Math.min(0,Math.max(AV_CS-dw,_avX)); _avY=Math.min(0,Math.max(AV_CS-dh,_avY)); }
 function _avRender(){ var img=_avQ('.av-img'); if(!img) return; var k=_avBase*_avS; img.style.width=_avNat.w+'px'; img.style.height=_avNat.h+'px'; img.style.transform='translate('+_avX.toFixed(1)+'px,'+_avY.toFixed(1)+'px) scale('+k.toFixed(4)+')'; }
 function _avLoadImg(src, dirty){ var img=_avQ('.av-img'); if(!img) return; var im=new Image(); im.crossOrigin='anonymous'; im.onload=function(){ _avImg=im; _avNat={w:im.naturalWidth||1,h:im.naturalHeight||1}; _avBase=Math.max(AV_CS/_avNat.w, AV_CS/_avNat.h); _avS=1; var k=_avBase; _avX=(AV_CS-_avNat.w*k)/2; _avY=(AV_CS-_avNat.h*k)/2; _avLoaded=true; if(dirty)_avDirty=true; img.src=src; img.style.display='block'; _avRender(); }; im.onerror=function(){}; im.src=src; }
-function _avPick(input){ _avSetRoot(input); var f=input.files&&input.files[0]; if(!f) return; var u=URL.createObjectURL(f); _avLoadImg(u, true); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; var z=_avQ('.av-zoom'); if(z) z.value=1; }
+function _avPick(input){ _avSetRoot(input); var f=input.files&&input.files[0]; if(!f) return; _avFile=f; var u=URL.createObjectURL(f); _avLoadImg(u, true); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; var z=_avQ('.av-zoom'); if(z) z.value=1; }
 function _avZoom(el){ _avSetRoot(el); if(!_avLoaded) return; _avS=parseFloat((el&&el.value!=null)?el.value:el)||1; _avClamp(); _avRender(); _avDirty=true; }
 function _avDown(e){ _avSetRoot(e.currentTarget||e.target); if(!_avLoaded) return; _avDrag=true; _avLast={x:e.clientX,y:e.clientY}; try{ window.addEventListener('pointermove',_avMove); window.addEventListener('pointerup',_avUp); }catch(_){} }
 function _avMove(e){ if(!_avDrag||!_avLast) return; _avX+=(e.clientX-_avLast.x); _avY+=(e.clientY-_avLast.y); _avLast={x:e.clientX,y:e.clientY}; _avClamp(); _avRender(); _avDirty=true; }
@@ -4631,6 +4655,7 @@ function _jhReadImg(file){ return new Promise(function(res,rej){ var fr=new File
 async function compressHomeCover(file){ try{ var img=await _jhReadImg(file); var max=1280,w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } } var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); var blob=await new Promise(function(r){ c.toBlob(r,'image/jpeg',0.82); }); return blob||file; }catch(e){ return file; } }
 async function uploadHomeCover(id, file){ var f=await compressHomeCover(file); var path='home-covers/'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:false, contentType:'image/jpeg'}); if(up.error) throw up.error; return sb.storage.from('moments').getPublicUrl(path).data.publicUrl; }
 function previewHomeCover(input, prevId){ var fl=input.files&&input.files[0]; if(!fl) return; var pr=document.getElementById(prevId); if(!pr) return; var url=URL.createObjectURL(fl); pr.innerHTML='<img src="'+url+'" alt="">'; pr.classList.add('has'); }
+function _plateResolve(raw){ if(!raw) return null; var o; try{ o=(typeof raw==='string')?JSON.parse(raw):raw; }catch(e){ return null; } if(!o||!o.theme) return null; try{ return { T:_pf(PLATE_THEMES,o.theme), F:_pf(PLATE_FONTS,o.font), S:_pf(PLATE_SIZES,o.size||'m') }; }catch(e){ return null; } }
 async function buildHome(){
   var body=document.getElementById('homeBody'); if(!body) return;
   var me=myPhone();
@@ -4658,10 +4683,16 @@ async function buildHome(){
   var moodBg='<div class="jh-mood" aria-hidden="true" style="background:radial-gradient(60% 100% at 50% 0%, '+welcome.mood.wash+', transparent 70%)"></div>';
 
   /* 1) HEADER */
+  var _h0=(ctx.households&&ctx.households[0]&&ctx.households[0].h)||{};
+  var _pl=_plateResolve(_h0.plate_style||_lsGet('jeeto_plate_'+(_h0.id||'x')));
+  var _hnStyle=_pl?(' style="font-family:'+_pl.F.css+';color:'+_pl.T.ink+'"'):'';
+  var _hcStyle=_pl?(' style="color:'+_pl.T.sub+'"'):'';
+  var _icStyle=_pl?(' style="color:'+_pl.T.ink+'"'):'';
+  var _chipStyle=_pl?(' style="background:'+_pl.T.bg+';border-color:transparent"'):'';
   var header='<header class="jh-rise">'+
     '<div class="jh-hd-top"><div><p class="jh-hd-grt">'+escapeHtml(welcome.greeting)+',</p><h1 class="jh-hd-nm">'+escapeHtml(welcome.name)+'</h1></div>'+
     '<div class="jh-hd-actions"><button class="jh-gear" onclick="openHomeSettings()" aria-label="Settings">'+jic('settings')+'</button><div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div></div>'+
-    '<div class="jh-hd-id"><div class="jh-hd-home"><span class="jh-hd-ic">'+jic('home')+'</span><div><p class="jh-hd-hn">'+escapeHtml(welcome.homeName)+'</p>'+(welcome.city?'<p class="jh-hd-hc">'+escapeHtml(welcome.city)+'</p>':'')+'</div></div>'+
+    '<div class="jh-hd-id"><div class="jh-hd-home"'+_chipStyle+'><span class="jh-hd-ic"'+_icStyle+'>'+jic('home')+'</span><div><p class="jh-hd-hn"'+_hnStyle+'>'+escapeHtml(welcome.homeName)+'</p>'+(welcome.city?'<p class="jh-hd-hc"'+_hcStyle+'>'+escapeHtml(welcome.city)+'</p>':'')+'</div></div>'+
     '<div class="jh-hd-wx">'+jic('sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
   _lastCtx=ctx;
   var _meP=myPhone(), _fam=[];
