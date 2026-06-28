@@ -911,6 +911,21 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .rl-b{display:flex;flex-direction:column;gap:3px}
 .rl-t{font-family:var(--font-display,var(--jh-serif));font-size:16px;font-weight:700;color:var(--ink)}
 .rl-e{font-size:12.5px;color:var(--ink3);line-height:1.4}
+/* Reach-out channels */
+.ro-opt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:14px;margin-top:10px;border:1px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;text-decoration:none;color:var(--ink)}
+.ro-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.ro-ic svg{width:21px;height:21px}
+.ro-wa{background:#25D366}.ro-call{background:#3b82f6}.ro-sms{background:#E8A317}
+.ro-l{flex:1;font-size:15px;font-weight:600}
+.ro-go{font-size:12px;color:var(--ink3);font-weight:600}
+.gxm-reach{display:block;width:100%;margin:2px 0 12px;padding:11px;border:none;border-radius:12px;background:#25D366;color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.gxsheet-reach{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.gxsheet-rbtn{font-size:13px;font-weight:600;color:#fff;background:#25D366;border:none;border-radius:999px;padding:8px 14px;cursor:pointer}
+.ro-load{display:flex;align-items:center;gap:11px;color:var(--ink3);font-size:14px;padding:18px 4px}.ro-load .sky-orb{width:32px;height:32px}
+.ro-sky{display:flex;align-items:center;gap:9px;margin:4px 0 10px;font-size:12.5px;color:var(--ink3)}.ro-sky-orb .sky-orb{width:26px;height:26px}
+.ro-mem{margin:0 0 12px;border-radius:14px;overflow:hidden;position:relative;border:1px solid var(--line)}
+.ro-mem img{width:100%;max-height:200px;object-fit:cover;display:block;cursor:pointer}
+.ro-mem-cap{display:block;padding:9px 12px;font-size:12px;color:var(--ink2);background:var(--card2,#f6efe4)}
 /* HTML orb constellation */
 .gxh-field{position:absolute;inset:0;overflow:hidden}
 .gxh-star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:gxhtw 3s ease-in-out infinite}
@@ -1499,7 +1514,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.3.0-purpose';
+var JEETO_VERSION='4.8.0-upload';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3491,22 +3506,23 @@ async function gxOpenHome(home){
     '<div class="gxsheet-orb">'+(home.photo?'<img src="'+escapeAttr(home.photo)+'" alt="">':'')+'</div>'+
     '<div class="gxsheet-name">'+escapeHtml(home.name)+(home.city?'<span>'+escapeHtml(home.city)+'</span>':'')+'</div>'+
     '<div class="gxsheet-sky" id="gxSkyBody"><div class="gxsheet-load">'+skyOrb({mood:'purple',sparkle:true})+'<p>Skyvos is reading '+escapeHtml(home.name)+'\u2026</p></div></div>'+
-    '<div class="gxsheet-chips" id="gxSkyChips"></div>'+
+    '<div class="gxsheet-chips" id="gxSkyChips"></div>'+'<div class="gxsheet-reach" id="gxSkyReach"></div>'+
     '<div class="gxsheet-btns">'+(home.mine?'<button class="btn" onclick="gxEnterHome(\''+home.id+'\')">Enter this home</button>':'')+'<button class="btn btn-soft" onclick="gxCloseHome()">Close</button></div></div>';
   document.body.appendChild(ov); requestAnimationFrame(function(){ ov.classList.add('show'); });
   // gather signals
   var phones=(home.phones&&home.phones.length)?home.phones:[];
   if(!phones.length){ try{ var mr=await sb.from('household_members').select('member_phone').eq('household_id',home.id).eq('status','active'); phones=(mr.data||[]).map(function(r){return r.member_phone;}).filter(Boolean); }catch(e){} }
-  var profs={}; try{ profs=await fetchProfiles(phones); }catch(e){}
+  var profs={}; try{ profs=await fetchProfiles(phones); }catch(e){} _idxNames(profs);
   var since24=new Date(Date.now()-864e5).toISOString(), since7=new Date(Date.now()-7*864e5).toISOString();
   var moms=[]; try{ var mq=await sb.from('moments').select('*').in('created_by',phones).gte('created_at',since7).order('created_at',{ascending:false}).limit(20); moms=mq.data||[]; }catch(e){}
   var cels=[]; phones.forEach(function(p){ var pr=profs[p]; if(pr&&pr.dob){ var du=_daysUntilBday(pr.dob); if(du!=null&&du<=30) cels.push({name:(pr.name||'Someone').split(' ')[0],days:du,kind:'birthday'}); } });
   cels.sort(function(a,b){return a.days-b.days;});
-  var online=[]; phones.forEach(function(p){ var pr=profs[p]; if(pr&&pr.last_seen&&pr.last_seen>since24) online.push((pr.name||'Someone').split(' ')[0]); });
+  var online=[], onlineP=[]; phones.forEach(function(p){ var pr=profs[p]; if(pr&&pr.last_seen&&pr.last_seen>since24){ online.push((pr.name||'Someone').split(' ')[0]); onlineP.push({phone:p,name:(pr.name||'Someone').split(' ')[0]}); } });
   var lastBy=''; if(moms.length){ var lp=profs[moms[0].created_by]; lastBy=lp?(lp.name||'').split(' ')[0]:''; }
   var sky=gxWeave(home,{cels:cels,moms:moms.length,lastBy:lastBy,online:online});
   var body=document.getElementById('gxSkyBody'); if(body) body.innerHTML='<div class="gxsheet-skyhead">'+skyOrb({mood:'purple',sparkle:true})+'<b>Skyvos</b></div><p class="gxsheet-skytext">'+sky.text+'</p>';
   var chips=document.getElementById('gxSkyChips'); if(chips) chips.innerHTML=sky.chips;
+  var rch=document.getElementById('gxSkyReach'); if(rch){ var who=onlineP.length?onlineP:phones.slice(0,3).map(function(p){return {phone:p,name:((profs[p]&&profs[p].name)||'Someone').split(' ')[0]};}); rch.innerHTML=who.map(function(o){ return '<button class="gxsheet-rbtn" onclick="reachP(\''+escapeAttr(o.phone)+'\')">\ud83d\udcac '+escapeHtml(o.name)+'</button>'; }).join(''); }
 }
 
 /* ===== My Family: tap a home -> its LIFE page (member orbs + each person's activity) ===== */
@@ -3519,7 +3535,7 @@ function gxLifeMember(phone){
   var det=document.getElementById('gxLifeDetail'); if(!det) return;
   var line = mine.length ? (nm+' has shared '+mine.length+' moment'+(mine.length>1?'s':'')+' lately.') : (nm+' has been quiet lately \u2014 nothing new just yet.');
   var list = mine.slice(0,6).map(function(m){ var cap=(m.caption||m.text||m.title||'A moment'); return '<div class="gxm-row"><span class="gxm-dot"></span><span class="gxm-cap">'+escapeHtml(String(cap).slice(0,80))+'</span><span class="gxm-time">'+(m.created_at?jhTimeAgo(m.created_at):'')+'</span></div>'; }).join('');
-  det.innerHTML='<div class="gxm-dethead">'+skyOrb({mood:'purple',sparkle:true})+'<p>'+escapeHtml(line)+'</p></div>'+(list||'');
+  det.innerHTML='<div class="gxm-dethead">'+skyOrb({mood:'purple',sparkle:true})+'<p>'+escapeHtml(line)+'</p></div>'+'<button class="gxm-reach" onclick="reachP(\''+escapeAttr(phone)+'\')">\ud83d\udcac Reach out to '+escapeHtml(nm)+'</button>'+(list||'');
   det.classList.add('show');
 }
 async function gxOpenHomeLife(home){
@@ -3536,7 +3552,7 @@ async function gxOpenHomeLife(home){
   // gather
   var phones=(home.phones&&home.phones.length)?home.phones:[];
   if(!phones.length){ try{ var mr=await sb.from('household_members').select('member_phone').eq('household_id',home.id).eq('status','active'); phones=(mr.data||[]).map(function(r){return r.member_phone;}).filter(Boolean); }catch(e){} }
-  var profs={}; try{ profs=await fetchProfiles(phones); }catch(e){}
+  var profs={}; try{ profs=await fetchProfiles(phones); }catch(e){} _idxNames(profs);
   var since=new Date(Date.now()-30*864e5).toISOString(), since24=new Date(Date.now()-864e5).toISOString();
   var moms=[]; try{ var mq=await sb.from('moments').select('*').in('created_by',phones).gte('created_at',since).order('created_at',{ascending:false}).limit(60); moms=mq.data||[]; }catch(e){}
   window.__gxLife={profs:profs,moms:moms};
@@ -3662,12 +3678,69 @@ function _lsGet(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return '
 function _lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function getMyRole(){ var r=(ME&&ME.family_role)||_lsGet('jeeto_role'); return (r&&FAMILY_ROLES[r])?r:''; }
 function getFamilyPurpose(ctx){ var h=(ctx&&ctx.households&&ctx.households[0]&&ctx.households[0].h)||null; var p=(h&&h.purpose)||_lsGet('jeeto_purpose'); return p||PURPOSE_DEFAULT; }
+window.__nameByPhone=window.__nameByPhone||{};
+function _idxNames(profs){ if(!profs) return; window.__nameByPhone=window.__nameByPhone||{}; Object.keys(profs).forEach(function(p){ if(profs[p]&&profs[p].name) window.__nameByPhone[p]=profs[p].name; }); }
+function reachP(phone){ reachOut(phone, (window.__nameByPhone&&window.__nameByPhone[phone])||''); }
+function _digits(p){ return String(p||'').replace(/\D/g,''); }
+function _intl(p){ var d=_digits(p); if(d.length===10) d='91'+d; return d; }
+var __roleReach=null;
+function roleReach(){ var t=__roleReach||{}; reachOut(t.phone,t.name); }
+function reachOut(phone, name){ return _reachOpen(phone, name); }
+async function _reachOpen(phone, name){
+  var d=_intl(phone); if(!d){ toast('No number on file for '+((name||'').split(' ')[0]||'them')+' yet.'); return; }
+  var nm=escapeHtml(name||'them');
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Reach out to '+nm+'</h3><div id="roBody"><div class="ro-load">'+skyOrb({mood:'purple',sparkle:true})+'<span>Skyvos is finding a memory to share\u2026</span></div></div></div>';
+  m.classList.add('show');
+  var c=await composeReach(phone, name);
+  var body=document.getElementById('roBody'); if(!body) return;
+  var icWa='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.3 0 .5l-.4.5c-.2.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.6-.1l1.8.9c.3.1.5.2.5.4.1.1.1.6-.1 1.1z"/></svg>';
+  var icCall='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+  var icSms='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  var mem=(c.memory&&c.memory.img)?'<div class="ro-mem"><img src="'+escapeAttr(c.memory.img)+'" alt="" onclick="openPhotoZoom(\''+escapeAttr(c.memory.img)+'\')"><span class="ro-mem-cap">A memory worth sending \u2014 tap to save, then share it along \ud83d\udc95</span></div>':'';
+  body.innerHTML='<div class="ro-sky"><span class="ro-sky-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span><span>Skyvos drafted this for you \u2014 edit it however you like</span></div>'+
+    '<textarea class="fi" id="roMsg" rows="3" style="resize:none;margin-bottom:10px">'+escapeHtml(c.msg)+'</textarea>'+mem+
+    '<button class="ro-opt" onclick="_reachSend(\'wa\',\''+escapeAttr(phone)+'\')"><span class="ro-ic ro-wa">'+icWa+'</span><span class="ro-l">WhatsApp</span><span class="ro-go">Send</span></button>'+
+    '<button class="ro-opt" onclick="_reachSend(\'sms\',\''+escapeAttr(phone)+'\')"><span class="ro-ic ro-sms">'+icSms+'</span><span class="ro-l">Message</span><span class="ro-go">Send</span></button>'+
+    '<button class="ro-opt" onclick="_reachSend(\'call\',\''+escapeAttr(phone)+'\')"><span class="ro-ic ro-call">'+icCall+'</span><span class="ro-l">Call</span><span class="ro-go">Dial</span></button>';
+}
+function _reachSend(kind, phone){ var t=((document.getElementById('roMsg')||{}).value||''); var d=_intl(phone); var enc=encodeURIComponent(t); try{ if(kind==='wa'){ window.open('https://wa.me/'+d+'?text='+enc,'_blank'); } else if(kind==='sms'){ location.href='sms:+'+d+'?&body='+enc; } else { location.href='tel:+'+d; } }catch(e){} closeHomeModal(); }
+async function composeReach(phone, name){
+  var first=((name||'').split(' ')[0]||'there'); var memory=null;
+  try{
+    var idset={};
+    try{ var cq=await sb.from('moments').select('id,created_at,title,description,note').eq('created_by',phone).order('created_at',{ascending:false}).limit(40); (cq.data||[]).forEach(function(r){ idset[r.id]={id:r.id,created_at:r.created_at,title:r.title,description:r.description,note:r.note}; }); }catch(e){}
+    try{ var tq=await sb.from('moment_people').select('moment_id').eq('person_phone',phone); var tids=(tq.data||[]).map(function(r){return r.moment_id;}); if(tids.length){ var tm=await sb.from('moments').select('id,created_at,title,description,note').in('id',tids).order('created_at',{ascending:false}).limit(40); (tm.data||[]).forEach(function(r){ idset[r.id]={id:r.id,created_at:r.created_at,title:r.title,description:r.description,note:r.note}; }); } }catch(e){}
+    var moms=Object.keys(idset).map(function(k){return idset[k];}); moms.sort(function(a,b){return (a.created_at<b.created_at)?1:-1;});
+    if(moms.length){
+      var ids=moms.map(function(x){return x.id;}); var md=[];
+      try{ var mdq=await sb.from('moment_media').select('moment_id,media_type,media_url').in('moment_id',ids); md=mdq.data||[]; }catch(e){}
+      var imgByMom={}; md.forEach(function(x){ if((x.media_type||'')==='image' && x.media_url && !imgByMom[x.moment_id]) imgByMom[x.moment_id]=x.media_url; });
+      // pool of joyful candidates: those with a photo first, else any with a caption
+      var withPhoto=moms.filter(function(m){ return imgByMom[m.id]; });
+      var withCap=moms.filter(function(m){ return (((m.title||m.description||m.note||'')+'').trim().length>1); });
+      var pool=withPhoto.length?withPhoto:(withCap.length?withCap:moms);
+      // vary: avoid repeating the last memory we used for this person
+      var lastK='jeeto_reach_last_'+phone; var last=_lsGet(lastK);
+      var fresh=pool.filter(function(m){ return String(m.id)!==String(last); }); if(!fresh.length) fresh=pool;
+      var chosen=fresh[Math.floor(Math.random()*fresh.length)];
+      _lsSet(lastK, String(chosen.id));
+      var cap=((chosen.title||chosen.description||chosen.note||'')+'').trim();
+      memory={ caption:cap, when:jhTimeAgo(chosen.created_at), img:(imgByMom[chosen.id]||'') };
+    }
+  }catch(e){}
+  var msg, cap=memory&&memory.caption;
+  if(cap && cap.length>1){ msg='Hey '+first+', I was just looking back at \u201c'+cap+'\u201d \u2014 '+memory.when+'. Made me smile, and made me think of you. \ud83d\udc9b'; }
+  else if(memory){ msg='Hey '+first+', I was looking back through our memories together and you came to mind. Thinking of you today. \ud83d\udc9b'; }
+  else { msg='Hey '+first+', you crossed my mind today \u2014 just wanted to say I\u2019m thinking of you. \ud83d\udc9b'; }
+  return { msg:msg, memory:memory };
+}
 function _daysSince(iso){ if(!iso) return null; try{ var d=(Date.now()-new Date(iso).getTime())/864e5; return Math.max(0,Math.round(d)); }catch(e){ return null; } }
 function roleInvite(roleId,sig){ sig=sig||{};
-  if(roleId==='anchor'){ if(sig.quiet){ var d=sig.quietDays; var w=(d==null)?'has been out of touch':(d<=0?'has been quiet today':(d===1?'hasn\u2019t shared since yesterday':'hasn\u2019t shared in '+d+' days')); return {text:sig.quiet.name+' '+w+'. Reach out \u2014 they\u2019re waiting for their anchor.', cta:{label:'Reach out to '+sig.quiet.name, go:"navTo('family')"}}; } return {text:'Reach out to someone who\u2019s drifted quiet \u2014 be their anchor today.', cta:{label:'Open the family', go:"navTo('family')"}}; }
+  if(roleId==='anchor'){ if(sig.quiet){ __roleReach={phone:sig.quiet.phone,name:sig.quiet.name}; var d=sig.quietDays; var w=(d==null)?'has been out of touch':(d<=0?'has been quiet today':(d===1?'hasn\u2019t shared since yesterday':'hasn\u2019t shared in '+d+' days')); return {text:sig.quiet.name+' '+w+'. Reach out \u2014 they\u2019re waiting for their anchor.', cta:{label:'Reach out to '+sig.quiet.name, go:'roleReach()'}}; } return {text:'Reach out to someone who\u2019s drifted quiet \u2014 be their anchor today.', cta:{label:'Open the family', go:"navTo('family')"}}; }
   if(roleId==='bridge'){ if(sig.far){ return {text:sig.far.name+' is across the distance, thinking of you. Reach across today.', cta:{label:'Visit '+sig.far.name, go:"navTo('across')"}}; } return {text:'A home far away is thinking of you. Reach across the distance.', cta:{label:'Across my world', go:"navTo('across')"}}; }
   if(roleId==='keeper'){ if(sig.up){ var k=sig.up.days<=0?'today':(sig.up.days===1?'tomorrow':'in '+sig.up.days+' days'); return {text:sig.up.name+'\u2019s birthday is '+k+'. Begin a ritual to honour it.', cta:{label:'Open rituals', go:"navTo('rituals')"}}; } return {text:'Begin a small ritual the whole family can share this week.', cta:{label:'Open rituals', go:"navTo('rituals')"}}; }
-  if(roleId==='witness'){ if(sig.up){ var t=sig.up.days<=0?'today':(sig.up.days===1?'tomorrow':'in '+sig.up.days+' days'); return {text:sig.up.name+'\u2019s big day is '+t+'. Be the first to celebrate them.', cta:{label:'Celebrate '+sig.up.name, go:"navTo('family')"}}; } if(sig.fam&&sig.fam.length){ return {text:'Celebrate '+sig.fam[0].name+' today \u2014 for simply being part of this family.', cta:{label:'Cheer on '+sig.fam[0].name, go:"navTo('family')"}}; } return {text:'Notice someone today, and celebrate them out loud.', cta:{label:'Open the family', go:"navTo('family')"}}; }
+  if(roleId==='witness'){ if(sig.up){ __roleReach={phone:sig.up.phone,name:sig.up.name}; var t=sig.up.days<=0?'today':(sig.up.days===1?'tomorrow':'in '+sig.up.days+' days'); return {text:sig.up.name+'\u2019s big day is '+t+'. Be the first to celebrate them.', cta:{label:'Celebrate '+sig.up.name, go:(sig.up.phone?'roleReach()':"navTo('family')")}}; } if(sig.fam&&sig.fam.length){ __roleReach={phone:sig.fam[0].phone,name:sig.fam[0].name}; return {text:'Celebrate '+sig.fam[0].name+' today \u2014 for simply being part of this family.', cta:{label:'Cheer on '+sig.fam[0].name, go:'roleReach()'}}; } return {text:'Notice someone today, and celebrate them out loud.', cta:{label:'Open the family', go:"navTo('family')"}}; }
   if(roleId==='glue'){ if(sig.pair&&sig.pair.length>=2){ return {text:'Bring '+sig.pair[0]+' and '+sig.pair[1]+' into one shared moment today.', cta:{label:'Share a moment', go:"navTo('moments')"}}; } return {text:'Bring the family into one shared moment today.', cta:{label:'Share a moment', go:"navTo('moments')"}}; }
   if(roleId==='spark'){ return {text:'Share the thing that made you smile today \u2014 the family lights up when you do.', cta:{label:'Share a moment', go:"navTo('moments')"}}; }
   return {text:'Capture one moment from today \u2014 the story only you can tell.', cta:{label:'Share a moment', go:"navTo('moments')"}};
@@ -3752,7 +3825,7 @@ async function buildHome(){
   var _meP=myPhone(), _fam=[];
   try{ Object.keys(profs).forEach(function(p){ if(p!==_meP && profs[p]){ _fam.push({phone:p,name:((profs[p].name||'Someone').split(' ')[0]||'Someone'),last:profs[p].last_seen||'',dob:profs[p].dob||''}); } }); }catch(e){}
   var _quiet=null; _fam.forEach(function(x){ if(!_quiet) _quiet=x; else if((x.last||'')<(_quiet.last||'')) _quiet=x; });
-  var _up=null; _fam.forEach(function(x){ if(x.dob){ var _du=_daysUntilBday(x.dob); if(_du!=null&&_du<=30&&(!_up||_du<_up.days)) _up={name:x.name,days:_du}; } });
+  var _up=null; _fam.forEach(function(x){ if(x.dob){ var _du=_daysUntilBday(x.dob); if(_du!=null&&_du<=30&&(!_up||_du<_up.days)) _up={name:x.name,days:_du,phone:x.phone}; } });
   var _far=null; (ctx.bridges||[]).forEach(function(b){ if(!_far&&b._otherName) _far={name:b._otherName}; });
   var _sig={ fam:_fam, quiet:_quiet, quietDays:(_quiet?_daysSince(_quiet.last):null), up:_up, far:_far, pair:_fam.slice(0,2).map(function(z){return z.name;}) };
   var purposeBand=jhRoleHeader(ctx,_sig);
@@ -4098,6 +4171,7 @@ async function renderFamily(){
   var phones=[]; incoming.forEach(function(x){ phones.push(x.sender_phone); }); sent.forEach(function(x){ phones.push(x.receiver_phone); });
   rels.forEach(function(c){ phones.push(relView(c,me).other); });
   var profs=await fetchProfiles(phones);
+  _idxNames(profs);
   window.__profs=profs;
   function nm(p){ return (profs[p] && profs[p].name) || p; }
   function av(p){ return profs[p] && profs[p].avatar_url; }
@@ -4130,6 +4204,7 @@ async function renderFamily(){
       '<div class="info"><div class="nm">'+escapeHtml(nm(v.other))+lifeBadge(profs[v.other])+'</div>'+
       '<div style="margin-top:5px"><span class="rl-pill">'+escapeHtml(v.rel||'family')+'</span>'+relStatusBadge(v.relStatus)+'</div>'+
       '<div class="meta"><span>🗓️ '+escapeHtml(fmtJoined(v.since))+'</span><span>📞 +91 '+escapeHtml(v.other)+'</span></div>'+
+      '<button class="btn btn-sm" style="margin-top:10px;margin-right:6px" onclick="reachP(\''+v.other+'\')">\ud83d\udcac Reach out</button>'+
       '<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="openRelManage(\''+v.id+'\')">⚙️ Manage</button>'+
       '</div></div></div>';
   });
@@ -5229,10 +5304,13 @@ async function submitMoment(){
   var media=[];
   try{
     for(var i=0;i<CAP.files.length;i++){
-      var f=CAP.files[i]; var safe=(f.name||'file').replace(/[^a-zA-Z0-9._-]/g,'_');
+      var f=CAP.files[i]; var isImg=(f.type||'').indexOf('image')===0;
+      var upF=f, ct=(f.type||undefined);
+      if(isImg){ try{ upF=await compressHomeCover(f); ct='image/jpeg'; }catch(e){ upF=f; } }
+      var safe=(f.name||'file').replace(/[^a-zA-Z0-9._-]/g,'_'); if(isImg) safe=safe.replace(/\.[^.]+$/,'')+'.jpg';
       var path=myPhone()+'/'+Date.now()+'-'+i+'-'+safe;
       btn.textContent='Uploading '+(i+1)+'/'+CAP.files.length+'…';
-      var up=await sb.storage.from('moments').upload(path, f, { upsert:false, contentType:f.type||undefined });
+      var up=await sb.storage.from('moments').upload(path, upF, { upsert:false, contentType:ct });
       if(up.error) throw up.error;
       media.push({ url:sb.storage.from('moments').getPublicUrl(path).data.publicUrl, type:mediaKind(f) });
     }
