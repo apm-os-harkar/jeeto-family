@@ -906,6 +906,86 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gx-back-l{position:absolute;top:16px;left:16px;z-index:5}
 .gx-title-l{position:absolute;top:18px;left:0;right:0;z-index:4;text-align:center;font-family:var(--jh-serif);font-size:20px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5);pointer-events:none}
 .gx-hint-l{position:absolute;left:0;right:0;bottom:18px}
+/* Skyvos home read overlay */
+.gxsheet{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(10,7,20,.72);backdrop-filter:blur(8px);opacity:0;transition:opacity .2s}
+.gxsheet.show{opacity:1}
+.gxsheet-card{position:relative;width:100%;max-width:360px;background:var(--paper);border-radius:26px;padding:26px 22px 22px;box-shadow:0 24px 70px rgba(0,0,0,.5);text-align:center;transform:translateY(10px);transition:transform .25s}
+.gxsheet.show .gxsheet-card{transform:none}
+.gxsheet-x{position:absolute;top:14px;right:14px;width:32px;height:32px;border:none;border-radius:50%;background:var(--card2,#f0e8dc);color:var(--ink2);font-size:15px;cursor:pointer}
+.gxsheet-orb{width:96px;height:96px;margin:4px auto 0;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:0 10px 28px rgba(120,72,30,.3),0 0 0 6px rgba(255,224,160,.25);background:linear-gradient(135deg,#d8b27a,#b07f47)}
+.gxsheet-orb img{width:100%;height:100%;object-fit:cover}
+.gxsheet-name{margin-top:14px;font-family:var(--font-display,var(--jh-serif));font-size:22px;font-weight:600;color:var(--ink)}
+.gxsheet-name span{display:block;font-family:inherit;font-size:13px;font-weight:400;color:var(--ink3);margin-top:2px}
+.gxsheet-sky{margin-top:16px;text-align:left;background:var(--card2,#f6efe4);border-radius:16px;padding:16px}
+.gxsheet-load{display:flex;align-items:center;gap:12px;color:var(--ink3);font-size:14px}
+.gxsheet-load .sky-orb,.gxsheet-skyhead .sky-orb{width:34px;height:34px;flex-shrink:0}
+.gxsheet-skyhead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.gxsheet-skyhead b{font-family:var(--font-display,var(--jh-serif));font-size:16px;color:var(--ink)}
+.gxsheet-skytext{margin:0;font-size:14.5px;line-height:1.6;color:var(--ink2)}
+.gxsheet-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.gxchip{font-size:12px;font-weight:600;color:var(--ink2);background:var(--card2,#f0e8dc);border:1px solid var(--line);border-radius:999px;padding:6px 11px}
+.gxchip-warm{background:#fdeccd;border-color:#f3d9a8;color:#8a5a1a}
+.gxchip-live{background:#e3f5e6;border-color:#bfe6c6;color:#2c7a3c}
+.gxsheet-btns{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+/* My Family home-life page */
+.gxlife{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(10,7,20,.72);backdrop-filter:blur(8px);opacity:0;transition:opacity .2s}
+.gxlife.show{opacity:1}
+.gxlife-card{position:relative;width:100%;max-width:380px;max-height:88vh;overflow-y:auto;background:var(--paper);border-radius:26px;box-shadow:0 24px 70px rgba(0,0,0,.5);transform:translateY(10px);transition:transform .25s}
+.gxlife.show .gxlife-card{transform:none}
+.gxlife-head{height:130px;background:linear-gradient(135deg,#caa46a,#8a5a2a);background-size:cover;background-position:center;border-radius:26px 26px 0 0;position:relative;display:flex;align-items:flex-end}
+.gxlife-head::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(20,12,4,.7),transparent);border-radius:26px 26px 0 0}
+.gxlife-head-v{position:relative;z-index:1;padding:16px 20px;color:#fff}
+.gxlife-head-v h2{margin:0;font-family:var(--font-display,var(--jh-serif));font-size:23px;font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.gxlife-head-v p{margin:2px 0 0;font-size:13px;opacity:.9}
+.gxlife-label{padding:18px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--ink3)}
+.gxlife-members{display:flex;gap:16px;overflow-x:auto;padding:4px 20px 8px;scrollbar-width:none}.gxlife-members::-webkit-scrollbar{display:none}
+.gxlife-load{display:flex;align-items:center;gap:10px;color:var(--ink3);font-size:13px;padding:6px 0}.gxlife-load .sky-orb{width:30px;height:30px}
+.gxm{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:none;cursor:pointer;font-family:inherit;opacity:.72;transition:opacity .15s}
+.gxm.sel,.gxm.on{opacity:1}
+.gxm-av{position:relative;width:58px;height:58px;border-radius:50%;overflow:hidden;border:2px solid var(--line);background:var(--card2,#efe6d8);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink2)}
+.gxm-av img{width:100%;height:100%;object-fit:cover}
+.gxm.on .gxm-av{border-color:var(--saffron,#E8A317);box-shadow:0 0 0 3px rgba(232,163,23,.25);animation:gxbreathe 3s ease-in-out infinite}
+.gxm.sel .gxm-av{border-color:var(--violet,#7c5cff);box-shadow:0 0 0 3px rgba(124,92,255,.3)}
+@keyframes gxbreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.gxm-live{position:absolute;right:2px;bottom:2px;width:13px;height:13px;border-radius:50%;background:#36c860;border:2px solid var(--paper)}
+.gxm-n{font-size:12px;color:var(--ink2);max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gxlife-detail{margin:6px 20px 4px;background:var(--card2,#f6efe4);border-radius:16px;padding:0;max-height:0;overflow:hidden;transition:max-height .25s}
+.gxlife-detail.show{padding:16px;max-height:420px}
+.gxm-dethead{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}.gxm-dethead .sky-orb{width:30px;height:30px;flex-shrink:0}.gxm-dethead p{margin:0;font-size:14px;line-height:1.5;color:var(--ink2)}
+.gxm-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid var(--line)}
+.gxm-dot{width:6px;height:6px;border-radius:50%;background:var(--saffron,#E8A317);flex-shrink:0}
+.gxm-cap{flex:1;font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gxm-time{font-size:11px;color:var(--ink3);flex-shrink:0}
+.gxlife-empty{padding:10px 20px;color:var(--ink3);font-size:13px}
+.gxlife-btns{display:flex;flex-direction:column;gap:8px;padding:16px 20px 20px}
+/* Family Loop / Presence Pledge */
+.lp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lp-grid .lp-card{padding:18px 14px}
+@media (max-width:380px){.lp-grid{grid-template-columns:1fr}}
+.lp-card{border-radius:22px;border:1px solid var(--line);background:var(--card);padding:22px;text-align:center;box-shadow:0 1px 3px rgba(120,72,30,.08)}
+.lp-on{border-color:var(--leaf,#2BA84A);background:linear-gradient(180deg,#f2fbf3,#fff)}
+.lp-k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--leaf,#2BA84A)}
+.lp-reason{margin-top:8px;font-family:var(--font-display,var(--jh-serif));font-size:20px;color:var(--ink)}
+.lp-sub{margin:8px 0 16px;font-size:14px;line-height:1.5;color:var(--ink3)}
+.lp-streak{margin-top:12px;font-size:13px;font-weight:600;color:#b9631a}
+.lp-scores{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.lp-score{border-radius:18px;border:1px solid var(--line);background:var(--card);padding:16px 6px;text-align:center;box-shadow:0 1px 3px rgba(120,72,30,.06)}
+.lp-score span{display:block;font-family:var(--font-display,var(--jh-serif));font-size:28px;font-weight:600;color:var(--leaf,#2BA84A);line-height:1}
+.lp-score label{display:block;margin-top:5px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.lp-item{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);margin-bottom:10px}
+.lp-item-orb .sky-orb{width:34px;height:34px;flex-shrink:0}
+.lp-item-b{flex:1;min-width:0}.lp-item-b p{margin:0;font-size:14px;line-height:1.4;color:var(--ink)}
+.lp-item-meta{font-size:12px;color:var(--ink3)}
+.lp-empty{padding:18px;text-align:center;color:var(--ink3);font-size:14px}
+.lp-sheet-h{margin:6px 0 4px;font-family:var(--font-display,var(--jh-serif));font-size:20px;color:var(--ink)}
+.lp-sheet-p{margin:0 0 14px;font-size:14px;color:var(--ink3);line-height:1.5}
+.lp-durs{display:flex;gap:10px}
+.lp-durs button{flex:1;padding:14px 0;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-family:inherit;font-size:15px;font-weight:600;color:var(--ink2);cursor:pointer}
+.lp-durs button.on{border-color:var(--leaf,#2BA84A);background:#eefbf0;color:var(--leaf,#2BA84A)}
+.lp-up{display:block;position:relative;border:1.5px dashed var(--line);border-radius:16px;min-height:120px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:var(--card2,#f6efe4)}
+.lp-up-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lp-up-lbl{position:relative;z-index:1;font-size:14px;font-weight:600;color:var(--ink2);background:rgba(255,255,255,.82);padding:7px 13px;border-radius:999px}
+.lp-proof{width:46px;height:46px;border-radius:10px;object-fit:cover;flex-shrink:0;cursor:pointer;border:1px solid var(--line)}
 .gx-screen-big{height:86vh;min-height:560px}
 .jw-wrap-bare{padding:0;gap:0}
 .jw-wrap-bare .gx-screen-big{border-radius:22px}
@@ -1209,6 +1289,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <section class="screen has-nav" id="screen-design"><div class="jh" id="designBody"></div></section>
   <section class="screen has-nav" id="screen-myworld"><div class="jh" id="myWorldBody"></div></section>
   <section class="screen has-nav" id="screen-across"><div class="jh" id="acrossBody"></div></section>
+  <section class="screen has-nav" id="screen-loop"><div class="jh" id="loopBody"></div></section>
 
   <!-- FAMILY -->
   <section class="screen has-nav" id="screen-homes"><div id="homesBody"></div></section>
@@ -1366,7 +1447,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='3.4.0-galaxy';
+var JEETO_VERSION='4.0.0-loop';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -1528,7 +1609,7 @@ function closeCelebrate(){ document.getElementById('celebrate').classList.remove
 function showScreen(id){
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
-  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail','screen-design','screen-myworld','screen-across'];
+  var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail','screen-design','screen-myworld','screen-across','screen-loop'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
   try{ paintNavIcons(); }catch(e){}
   try{ window.scrollTo(0,0); }catch(e){}
@@ -3233,7 +3314,7 @@ async function renderWorldView(elId, scope){
 
   var central=null, sats=[];
   (ctx.households||[]).forEach(function(x,i){
-    var node={ id:x.h.id, name:x.h.household_name||'Home', city:x.h.city||'', members:(x.members||[]).length, style:x.h.home_style||'apartment', cover:x.h.cover_url||'', mine:true };
+    var node={ id:x.h.id, name:x.h.household_name||'Home', city:x.h.city||'', members:(x.members||[]).length, style:x.h.home_style||'apartment', cover:x.h.cover_url||'', mine:true, phones:(x.members||[]).map(function(m){return m.member_phone||m.phone;}).filter(Boolean) };
     if(i===0) central=node; else sats.push(node);
   });
   // connected family homes (bridges) — only in 'Across My World'
@@ -3243,9 +3324,9 @@ async function renderWorldView(elId, scope){
     try{
       var hr=await sb.from('households').select('*').in('id',otherIds);
       var hh=hr.data||[];
-      var mr=await sb.from('household_members').select('household_id').in('household_id',otherIds).eq('status','active');
-      var counts={}; (mr.data||[]).forEach(function(r){ counts[r.household_id]=(counts[r.household_id]||0)+1; });
-      hh.forEach(function(h){ sats.push({ id:h.id, name:h.household_name||'A home', city:h.city||'', members:counts[h.id]||0, style:h.home_style||'apartment', cover:h.cover_url||'', mine:false }); });
+      var mr=await sb.from('household_members').select('household_id,member_phone').in('household_id',otherIds).eq('status','active');
+      var counts={},bphones={}; (mr.data||[]).forEach(function(r){ counts[r.household_id]=(counts[r.household_id]||0)+1; (bphones[r.household_id]=bphones[r.household_id]||[]).push(r.member_phone); });
+      hh.forEach(function(h){ sats.push({ id:h.id, name:h.household_name||'A home', city:h.city||'', members:counts[h.id]||0, style:h.home_style||'apartment', cover:h.cover_url||'', mine:false, phones:(bphones[h.id]||[]) }); });
     }catch(e){}
   }
 
@@ -3288,9 +3369,20 @@ async function renderWorldView(elId, scope){
   var crossLink= across?'' : '<section class="jw-crosslink"><button class="jw-cross" onclick="navTo(\'across\')">See across my world '+jic('arrow')+'</button></section>';
   var footer='<footer class="jw-foot"><p>You are home. You are loved. You belong.</p></footer>';
 
+  var _since=new Date(Date.now()-864e5).toISOString();
+  var _allHomes=(central?[central]:[]).concat(sats), _pHome={}, _allPhones=[];
+  _allHomes.forEach(function(h){ (h.phones||[]).forEach(function(p){ if(p){ _allPhones.push(p); if(!_pHome[p]) _pHome[p]=h.id; } }); });
+  var _aM={},_aO={},_aQ={},_aE={};
+  if(_allPhones.length){
+    try{ var _mq=await sb.from('moments').select('created_by').gte('created_at',_since).in('created_by',_allPhones); (_mq.data||[]).forEach(function(r){ var h=_pHome[r.created_by]; if(h) _aM[h]=(_aM[h]||0)+1; }); }catch(e){}
+    try{ var _pq=await sb.from('profiles').select('phone,last_seen,dob').in('phone',_allPhones); (_pq.data||[]).forEach(function(r){ var h=_pHome[r.phone]; if(!h) return; if(r.last_seen&&r.last_seen>_since) _aO[h]=(_aO[h]||0)+1; if(r.dob){ var du=_daysUntilBday(r.dob); if(du!=null&&du<=7) _aE[h]=Math.max(_aE[h]||0, 8-du); } }); }catch(e){}
+    try{ var _qq=await sb.from('quests').select('created_by,created_at').gte('created_at',_since).in('created_by',_allPhones); (_qq.data||[]).forEach(function(r){ var h=_pHome[r.created_by]; if(h) _aQ[h]=(_aQ[h]||0)+1; }); }catch(e){}
+    try{ var _plq=await sb.from('pledges').select('user_phone,confirmed_at').eq('status','confirmed').gte('confirmed_at',_since).in('user_phone',_allPhones); (_plq.data||[]).forEach(function(r){ var h=_pHome[r.user_phone]; if(h) _aQ[h]=(_aQ[h]||0)+2; }); }catch(e){}
+  }
+  function _actOf(id){ return (_aM[id]||0)*2 + (_aQ[id]||0)*2 + (_aO[id]||0) + (_aE[id]||0)*3; }
   var ghomes=[];
-  if(central) ghomes.push({id:central.id,name:central.name,city:central.city,members:central.members,mine:central.mine,photo:(central.cover||((/harkar/i.test(central.name||'')&&typeof JH_HOME_COVER!=='undefined')?JH_HOME_COVER:''))});
-  sats.forEach(function(n){ ghomes.push({id:n.id,name:n.name,city:n.city,members:n.members,mine:n.mine,photo:n.cover||''}); });
+  if(central) ghomes.push({id:central.id,name:central.name,city:central.city,members:central.members,mine:central.mine,phones:(central.phones||[]),act:_actOf(central.id),photo:(central.cover||((/harkar/i.test(central.name||'')&&typeof JH_HOME_COVER!=='undefined')?JH_HOME_COVER:''))});
+  sats.forEach(function(n){ ghomes.push({id:n.id,name:n.name,city:n.city,members:n.members,mine:n.mine,phones:(n.phones||[]),act:_actOf(n.id),photo:n.cover||''}); });
   if(across){
     el.innerHTML='<div class="gx-landscape" id="gxLand"><div class="gx-host" id="gxHost"></div>'+
       '<button class="gx-back gx-back-l" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button>'+
@@ -3311,7 +3403,7 @@ async function renderWorldView(elId, scope){
 var JeetoGalaxy=(function(){
   var renderer,scene,camera,world,stars,raf=null,host,W=0,H=0,active=false;
   var orbs=[],orbMeshes=[],lines=[];
-  var rot={x:0.25,y:0}, target={x:0.25,y:0}, dist=9, distT=9, dragging=false, lastP=null, downP=null, downT=0, moved=0, distP0=0, pinch0=0, landscape=false;
+  var rot={x:0.25,y:0}, target={x:0.25,y:0}, dist=9, distT=9, dragging=false, lastP=null, downP=null, downT=0, moved=0, distP0=0, pinch0=0, landscape=false, gxAcross=false;
   var ray=new (window.THREE?THREE.Raycaster:function(){})(), v2={x:0,y:0};
   function clear3(){ if(raf){cancelAnimationFrame(raf);raf=null;} if(renderer){ try{ renderer.dispose(); if(renderer.domElement&&renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);}catch(e){} } orbs=[];orbMeshes=[];lines=[]; window.removeEventListener('resize',onResize); active=false; }
   var _halo=null;
@@ -3328,7 +3420,7 @@ var JeetoGalaxy=(function(){
     rim.scale.set(R*2.18,R*2.18,1); grp.add(rim);
     if(home.photo){ var im=new Image(); im.crossOrigin='anonymous'; im.onload=function(){ try{ var t=new THREE.Texture(im); t.needsUpdate=true; mat.map=t; mat.color.setHex(0xffffff); mat.needsUpdate=true; }catch(e){} }; im.onerror=function(){}; im.src=home.photo; }
     grp.userData.mesh=mesh;
-    return {grp:grp,mesh:mesh};
+    return {grp:grp,mesh:mesh,halo:halo};
   }
   var _ring=null;
   function ringTex(){ if(_ring) return _ring; var s=256,cv=document.createElement('canvas');cv.width=cv.height=s;var c=cv.getContext('2d');c.strokeStyle='rgba(255,255,255,0.95)';c.lineWidth=s*0.035;c.beginPath();c.arc(s/2,s/2,s*0.43,0,7);c.stroke();_ring=new THREE.CanvasTexture(cv);return _ring; }
@@ -3338,19 +3430,19 @@ var JeetoGalaxy=(function(){
   function init(hostEl,data){
     if(typeof THREE==='undefined'){ hostEl.innerHTML='<div class="gx-fallback">Loading 3D\u2026</div>'; return; }
     clear3(); host=hostEl; active=true; ray=new THREE.Raycaster();
-    landscape=!!data.landscape; var big=!!data.big, SZ=big?1.5:1.0; rot={x:0.25,y:0}; target={x:0.25,y:0}; dist=big?12.5:9; distT=dist;
+    landscape=!!data.landscape; gxAcross=!!data.landscape; var big=!!data.big, SZ=big?1.5:1.0; rot={x:0.25,y:0}; target={x:0.25,y:0}; dist=big?12.5:9; distT=dist;
     W=host.clientWidth||320; H=host.clientHeight||480;
     renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); renderer.setSize(W,H); host.appendChild(renderer.domElement);
     scene=new THREE.Scene(); camera=new THREE.PerspectiveCamera(55,W/H,0.1,120); camera.position.set(0,0,dist);
     world=new THREE.Group(); scene.add(world); stars=makeStars(); scene.add(stars);
     var homes=data.homes||[]; var pos=positionsFor(homes.length, big?1.4:1.0);
-    homes.forEach(function(h,i){ var o=makeOrb(h,i===0,SZ); o.grp.position.copy(pos[i]); world.add(o.grp); o.mesh.userData.idx=i; o.mesh.userData.home=h; orbMeshes.push(o.mesh); orbs.push({mesh:o.mesh,pos:pos[i],spin:0.004+Math.random()*0.02,wob:Math.random()*0.004}); });
+    homes.forEach(function(h,i){ var o=makeOrb(h,i===0,SZ); o.grp.position.copy(pos[i]); world.add(o.grp); o.mesh.userData.idx=i; o.mesh.userData.home=h; orbMeshes.push(o.mesh); var _act=h.act||0, _lvl=_act<=0?0:(_act<2?1:(_act<5?2:3)); var _spin=_lvl<=1?0:(_lvl===2?0.006:0.02); var _amp=_lvl===0?0:(0.02+_lvl*0.022); if(o.halo) o.halo.material.opacity=0.42+_lvl*0.18; orbs.push({grp:o.grp,mesh:o.mesh,pos:pos[i],spin:_spin,amp:_amp,phase:Math.random()*6.28,bspd:0.8+Math.random()*0.5}); });
     for(var i=1;i<homes.length;i++){ var ln=makeBridge(pos[0],pos[i],homes[i].mine); world.add(ln.line); world.add(ln.spark); lines.push(ln); }
     bindControls(); window.addEventListener('resize',onResize); loop();
   }
   function isRot(){ return landscape && window.matchMedia('(orientation:portrait)').matches; }
   function onResize(){ if(!renderer||!host) return; W=host.clientWidth; H=host.clientHeight; renderer.setSize(W,H); camera.aspect=W/H; camera.updateProjectionMatrix(); }
-  function pick(cx,cy){ if(isRot()){ v2.x=((window.innerHeight-cy)/window.innerHeight)*2-1; v2.y=-((cx/window.innerWidth)*2-1); } else { var r=renderer.domElement.getBoundingClientRect(); v2.x=((cx-r.left)/r.width)*2-1; v2.y=-((cy-r.top)/r.height)*2+1; } ray.setFromCamera(v2,camera); var hit=ray.intersectObjects(orbMeshes,false); if(hit.length){ var h=hit[0].object.userData.home; if(h){ if(h.mine) enterHome(h.id); else toast(h.name+' \u2014 connected by a bridge \ud83c\udf09'); } } }
+  function pick(cx,cy){ if(isRot()){ v2.x=((window.innerHeight-cy)/window.innerHeight)*2-1; v2.y=-((cx/window.innerWidth)*2-1); } else { var r=renderer.domElement.getBoundingClientRect(); v2.x=((cx-r.left)/r.width)*2-1; v2.y=-((cy-r.top)/r.height)*2+1; } ray.setFromCamera(v2,camera); var hit=ray.intersectObjects(orbMeshes,false); if(hit.length){ var h=hit[0].object.userData.home; if(h){ if(gxAcross && typeof gxOpenHome==='function') gxOpenHome(h); else if(!gxAcross && typeof gxOpenHomeLife==='function') gxOpenHomeLife(h); else if(h.mine) enterHome(h.id); } } }
   function bindControls(){ var d=renderer.domElement;
     d.addEventListener('pointerdown',function(e){ dragging=true; lastP={x:e.clientX,y:e.clientY}; downP={x:e.clientX,y:e.clientY}; downT=Date.now(); moved=0; });
     window.addEventListener('pointermove',function(e){ if(!dragging||!lastP) return; var dx=e.clientX-lastP.x, dy=e.clientY-lastP.y; lastP={x:e.clientX,y:e.clientY}; moved+=Math.abs(dx)+Math.abs(dy); if(isRot()){ var t=dx; dx=dy; dy=-t; } target.y+=dx*0.006; target.x+=dy*0.006; target.x=Math.max(-1.2,Math.min(1.2,target.x)); });
@@ -3362,13 +3454,189 @@ var JeetoGalaxy=(function(){
   function loop(){ raf=requestAnimationFrame(loop);
     if(!dragging) target.y+=0.0016;
     rot.x+=(target.x-rot.x)*0.08; rot.y+=(target.y-rot.y)*0.08; world.rotation.set(rot.x,rot.y,0); stars.rotation.y+=0.0003;
-    dist+=(distT-dist)*0.1; camera.position.z=dist;
-    for(var i=0;i<orbs.length;i++){ orbs[i].mesh.rotation.y+=orbs[i].spin; orbs[i].mesh.rotation.x+=orbs[i].wob; }
+    dist+=(distT-dist)*0.1; camera.position.z=dist; camera.lookAt(0,0,0);
+    var _t=performance.now()*0.001;
+    for(var i=0;i<orbs.length;i++){ var ob=orbs[i]; ob.mesh.rotation.y+=ob.spin; if(ob.amp>0){ ob.grp.scale.setScalar(1+ob.amp*Math.sin(_t*ob.bspd+ob.phase)); } }
     for(var j=0;j<lines.length;j++){ var ln=lines[j]; ln.t=(ln.t+0.004)%1; ln.spark.position.copy(ln.curve.getPoint(ln.t)); }
     renderer.render(scene,camera);
   }
   return { init:init, dispose:clear3, isActive:function(){return active;} };
 })();
+
+/* ===== Tap an orb -> full Skyvos read of that home (excitement + recent + live) ===== */
+function _daysUntilBday(dob){ try{ var d=new Date(dob); if(isNaN(d.getTime())) return null; var now=new Date(); var n0=new Date(now.getFullYear(),now.getMonth(),now.getDate()); var t=new Date(now.getFullYear(),d.getMonth(),d.getDate()); t.setHours(0,0,0,0); if(t<n0) t.setFullYear(now.getFullYear()+1); return Math.round((t-n0)/864e5); }catch(e){ return null; } }
+function gxCloseHome(){ var ov=document.getElementById('gxSheet'); if(ov){ ov.classList.remove('show'); setTimeout(function(){ if(ov.parentNode) ov.remove(); },200); } }
+function gxEnterHome(id){ gxCloseHome(); try{ enterHome(id); }catch(e){} }
+function gxWeave(home,d){
+  var parts=[],chips=[],nm=escapeHtml(home.name);
+  if(d.cels.length){ var c=d.cels[0]; var when=c.days===0?'today':(c.days===1?'tomorrow':'in '+c.days+' days'); if(c.days<=7){ parts.push('\u2728 '+escapeHtml(c.name)+'\u2019s '+c.kind+' is '+when+' \u2014 '+nm+' is humming with anticipation.'); } else { parts.push(escapeHtml(c.name)+'\u2019s '+c.kind+' is coming up '+when+'.'); } chips.push('<span class="gxchip gxchip-warm">\ud83c\udf82 '+escapeHtml(c.name)+' \u00b7 '+when+'</span>'); }
+  if(d.moms>0){ parts.push('They\u2019ve shared '+d.moms+' moment'+(d.moms>1?'s':'')+' lately'+(d.lastBy?', the latest from '+escapeHtml(d.lastBy):'')+'.'); chips.push('<span class="gxchip">\ud83d\udcf8 '+d.moms+' recent moment'+(d.moms>1?'s':'')+'</span>'); }
+  if(d.online.length){ parts.push(d.online.length+' '+(d.online.length>1?'are':'is')+' online right now'+(d.online.length<=3?' ('+d.online.map(escapeHtml).join(', ')+')':'')+'.'); chips.push('<span class="gxchip gxchip-live">\ud83d\udfe2 '+d.online.length+' online</span>'); }
+  if(!parts.length){ parts.push('It\u2019s a calm stretch at '+nm+' \u2014 no new ripples in the last while. Quiet is its own kind of peace.'); }
+  return { text:parts.join(' '), chips:chips.join('') };
+}
+async function gxOpenHome(home){
+  if(!home) return;
+  var ov=document.getElementById('gxSheet'); if(ov) ov.remove();
+  ov=document.createElement('div'); ov.id='gxSheet'; ov.className='gxsheet'; ov.onclick=function(e){ if(e.target===ov) gxCloseHome(); };
+  ov.innerHTML='<div class="gxsheet-card"><button class="gxsheet-x" onclick="gxCloseHome()" aria-label="Close">\u2715</button>'+
+    '<div class="gxsheet-orb">'+(home.photo?'<img src="'+escapeAttr(home.photo)+'" alt="">':'')+'</div>'+
+    '<div class="gxsheet-name">'+escapeHtml(home.name)+(home.city?'<span>'+escapeHtml(home.city)+'</span>':'')+'</div>'+
+    '<div class="gxsheet-sky" id="gxSkyBody"><div class="gxsheet-load">'+skyOrb({mood:'purple',sparkle:true})+'<p>Skyvos is reading '+escapeHtml(home.name)+'\u2026</p></div></div>'+
+    '<div class="gxsheet-chips" id="gxSkyChips"></div>'+
+    '<div class="gxsheet-btns">'+(home.mine?'<button class="btn" onclick="gxEnterHome(\''+home.id+'\')">Enter this home</button>':'')+'<button class="btn btn-soft" onclick="gxCloseHome()">Close</button></div></div>';
+  document.body.appendChild(ov); requestAnimationFrame(function(){ ov.classList.add('show'); });
+  // gather signals
+  var phones=(home.phones&&home.phones.length)?home.phones:[];
+  if(!phones.length){ try{ var mr=await sb.from('household_members').select('member_phone').eq('household_id',home.id).eq('status','active'); phones=(mr.data||[]).map(function(r){return r.member_phone;}).filter(Boolean); }catch(e){} }
+  var profs={}; try{ profs=await fetchProfiles(phones); }catch(e){}
+  var since24=new Date(Date.now()-864e5).toISOString(), since7=new Date(Date.now()-7*864e5).toISOString();
+  var moms=[]; try{ var mq=await sb.from('moments').select('*').in('created_by',phones).gte('created_at',since7).order('created_at',{ascending:false}).limit(20); moms=mq.data||[]; }catch(e){}
+  var cels=[]; phones.forEach(function(p){ var pr=profs[p]; if(pr&&pr.dob){ var du=_daysUntilBday(pr.dob); if(du!=null&&du<=30) cels.push({name:(pr.name||'Someone').split(' ')[0],days:du,kind:'birthday'}); } });
+  cels.sort(function(a,b){return a.days-b.days;});
+  var online=[]; phones.forEach(function(p){ var pr=profs[p]; if(pr&&pr.last_seen&&pr.last_seen>since24) online.push((pr.name||'Someone').split(' ')[0]); });
+  var lastBy=''; if(moms.length){ var lp=profs[moms[0].created_by]; lastBy=lp?(lp.name||'').split(' ')[0]:''; }
+  var sky=gxWeave(home,{cels:cels,moms:moms.length,lastBy:lastBy,online:online});
+  var body=document.getElementById('gxSkyBody'); if(body) body.innerHTML='<div class="gxsheet-skyhead">'+skyOrb({mood:'purple',sparkle:true})+'<b>Skyvos</b></div><p class="gxsheet-skytext">'+sky.text+'</p>';
+  var chips=document.getElementById('gxSkyChips'); if(chips) chips.innerHTML=sky.chips;
+}
+
+/* ===== My Family: tap a home -> its LIFE page (member orbs + each person's activity) ===== */
+function gxCloseLife(){ var ov=document.getElementById('gxLife'); if(ov){ ov.classList.remove('show'); setTimeout(function(){ if(ov.parentNode) ov.remove(); },200); } }
+function gxLifeMember(phone){
+  var L=window.__gxLife||{}; var profs=L.profs||{}, moms=L.moms||[];
+  var pr=profs[phone]||{}; var nm=(pr.name||'Someone').split(' ')[0];
+  var mine=moms.filter(function(m){ return m.created_by===phone; });
+  var els=document.querySelectorAll('.gxm'); for(var i=0;i<els.length;i++){ els[i].classList.toggle('sel', els[i].getAttribute('data-p')===phone); }
+  var det=document.getElementById('gxLifeDetail'); if(!det) return;
+  var line = mine.length ? (nm+' has shared '+mine.length+' moment'+(mine.length>1?'s':'')+' lately.') : (nm+' has been quiet lately \u2014 nothing new just yet.');
+  var list = mine.slice(0,6).map(function(m){ var cap=(m.caption||m.text||m.title||'A moment'); return '<div class="gxm-row"><span class="gxm-dot"></span><span class="gxm-cap">'+escapeHtml(String(cap).slice(0,80))+'</span><span class="gxm-time">'+(m.created_at?jhTimeAgo(m.created_at):'')+'</span></div>'; }).join('');
+  det.innerHTML='<div class="gxm-dethead">'+skyOrb({mood:'purple',sparkle:true})+'<p>'+escapeHtml(line)+'</p></div>'+(list||'');
+  det.classList.add('show');
+}
+async function gxOpenHomeLife(home){
+  if(!home) return;
+  var ov=document.getElementById('gxLife'); if(ov) ov.remove();
+  ov=document.createElement('div'); ov.id='gxLife'; ov.className='gxlife'; ov.onclick=function(e){ if(e.target===ov) gxCloseLife(); };
+  var coverStyle = home.photo ? ('background-image:url('+home.photo+')') : '';
+  ov.innerHTML='<div class="gxlife-card"><button class="gxsheet-x" onclick="gxCloseLife()" aria-label="Close">\u2715</button>'+
+    '<div class="gxlife-head" style="'+coverStyle+'"><div class="gxlife-head-v"><h2>'+escapeHtml(home.name)+'</h2>'+(home.city?'<p>'+escapeHtml(home.city)+'</p>':'')+'</div></div>'+
+    '<div class="gxlife-label">Who\u2019s inside</div><div class="gxlife-members" id="gxLifeMembers"><div class="gxlife-load">'+skyOrb({mood:'purple',sparkle:true})+'<span>Reading their lives\u2026</span></div></div>'+
+    '<div class="gxlife-detail" id="gxLifeDetail"></div>'+
+    '<div class="gxlife-btns">'+(home.mine?'<button class="btn" onclick="gxLifeEnter(\''+home.id+'\')">Open my home</button>':'')+'<button class="btn btn-soft" onclick="gxCloseLife()">Close</button></div></div>';
+  document.body.appendChild(ov); requestAnimationFrame(function(){ ov.classList.add('show'); });
+  // gather
+  var phones=(home.phones&&home.phones.length)?home.phones:[];
+  if(!phones.length){ try{ var mr=await sb.from('household_members').select('member_phone').eq('household_id',home.id).eq('status','active'); phones=(mr.data||[]).map(function(r){return r.member_phone;}).filter(Boolean); }catch(e){} }
+  var profs={}; try{ profs=await fetchProfiles(phones); }catch(e){}
+  var since=new Date(Date.now()-30*864e5).toISOString(), since24=new Date(Date.now()-864e5).toISOString();
+  var moms=[]; try{ var mq=await sb.from('moments').select('*').in('created_by',phones).gte('created_at',since).order('created_at',{ascending:false}).limit(60); moms=mq.data||[]; }catch(e){}
+  window.__gxLife={profs:profs,moms:moms};
+  // per-member activity (24h)
+  var cnt24={}; moms.forEach(function(m){ if(m.created_at>since24) cnt24[m.created_by]=(cnt24[m.created_by]||0)+1; });
+  var host=document.getElementById('gxLifeMembers'); if(!host) return;
+  if(!phones.length){ host.innerHTML='<div class="gxlife-empty">No members yet.</div>'; return; }
+  host.innerHTML=phones.map(function(p){ var pr=profs[p]||{}; var nm=(pr.name||'?'); var act=cnt24[p]||0; var online=(pr.last_seen&&pr.last_seen>since24);
+    var glow=(act>0||online); var av=pr.avatar_url?'<img src="'+escapeAttr(pr.avatar_url)+'">':escapeHtml((nm[0]||'?').toUpperCase());
+    return '<button class="gxm'+(glow?' on':'')+'" data-p="'+escapeAttr(p)+'" onclick="gxLifeMember(\''+escapeAttr(p)+'\')"><span class="gxm-av">'+av+(online?'<span class="gxm-live"></span>':'')+'</span><span class="gxm-n">'+escapeHtml(nm.split(' ')[0])+'</span></button>';
+  }).join('');
+  // auto-select the most active member
+  var best=phones[0], bestc=-1; phones.forEach(function(p){ var c=(cnt24[p]||0); if(c>bestc){ bestc=c; best=p; } });
+  gxLifeMember(best);
+}
+function gxLifeEnter(id){ gxCloseLife(); try{ enterHome(id); }catch(e){} }
+
+/* ===== Presence Pledge + Family Loop — presence over screens, Skyvos witnesses ===== */
+var _loopCtx=null;
+function openPledgeSheet(){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Go present</h3><p class="lp-sheet-p">Pledge time away from the screen \u2014 a game, a meal, a walk. Skyvos keeps your streak.</p><div class="lp-durs"><button onclick="window.__pd=60;_pdSel(this)">1 hr</button><button class="on" onclick="window.__pd=120;_pdSel(this)">2 hrs</button><button onclick="window.__pd=180;_pdSel(this)">3 hrs</button></div><input class="fi" id="pdReason" placeholder="What are you doing? (optional)" style="margin:14px 0"><button class="btn" onclick="startPledge()">Start \ud83c\udf3f</button></div>';
+  window.__pd=120; m.classList.add('show');
+}
+function openStepSheet(){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Step goal</h3><p class="lp-sheet-p">Commit to a step goal today. Honour it, self-confirm \u2014 your family rises with you.</p><div class="lp-durs"><button onclick="window.__sg=5000;_pdSel(this)">5,000</button><button class="on" onclick="window.__sg=10000;_pdSel(this)">10,000</button><button onclick="window.__sg=15000;_pdSel(this)">15,000</button></div><button class="btn" onclick="startStep()" style="margin-top:16px">Commit \ud83d\udc5f</button></div>';
+  window.__sg=10000; m.classList.add('show');
+}
+function _pdSel(b){ var ps=b.parentNode.querySelectorAll('button'); for(var i=0;i<ps.length;i++) ps[i].classList.remove('on'); b.classList.add('on'); }
+function _hhId(){ return (_loopCtx&&_loopCtx.households&&_loopCtx.households[0])?_loopCtx.households[0].h.id:null; }
+async function startPledge(){
+  var min=window.__pd||120; var reason=((document.getElementById('pdReason')||{}).value||'').trim();
+  try{ await sb.from('pledges').insert({user_phone:myPhone(),household_id:_hhId(),kind:'presence',reason:reason||null,duration_min:min,status:'active'}); }
+  catch(e){ toast(humanError(e,'Could not start the pledge.')); return; }
+  closeHomeModal(); toast('Go be present \ud83c\udf3f'); renderLoop();
+}
+async function startStep(){
+  var goal=window.__sg||10000;
+  try{ await sb.from('pledges').insert({user_phone:myPhone(),household_id:_hhId(),kind:'steps',goal:goal,status:'active'}); }
+  catch(e){ toast(humanError(e,'Could not start the goal.')); return; }
+  closeHomeModal(); toast('Goal set \u2014 go move \ud83d\udc5f'); renderLoop();
+}
+async function _streakFor(me,kind){
+  var days={}; try{ var r=await sb.from('pledges').select('confirmed_at').eq('user_phone',me).eq('status','confirmed').eq('kind',kind||'presence'); (r.data||[]).forEach(function(x){ if(x.confirmed_at) days[x.confirmed_at.slice(0,10)]=1; }); }catch(e){}
+  var streak=1, d=new Date(); for(var i=1;i<=365;i++){ d.setDate(d.getDate()-1); var key=d.toISOString().slice(0,10); if(days[key]) streak++; else break; } return streak;
+}
+async function confirmCommit(id,kind){
+  var me=myPhone(); var streak=await _streakFor(me,kind); var points=10+(streak-1)*5;
+  try{ await sb.from('pledges').update({status:'confirmed',confirmed_at:new Date().toISOString(),points:points,streak:streak}).eq('id',id); }
+  catch(e){ toast(humanError(e,'Could not log it.')); return; }
+  toast('Skyvos logged it \u2728 +'+points+(streak>1?' \u00b7 '+streak+'-day streak':''));
+  renderLoop();
+}
+async function cancelPledge(id){ try{ await sb.from('pledges').delete().eq('id',id); }catch(e){} toast('No worries \u2014 try again anytime.'); renderLoop(); }
+async function uploadPacer(id, file){ var f=await compressHomeCover(file); var path='pacer/'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:false, contentType:'image/jpeg'}); if(up.error) throw up.error; return sb.storage.from('moments').getPublicUrl(path).data.publicUrl; }
+function _pacerPick(inp){ var fl=inp.files&&inp.files[0]; if(!fl) return; window.__pacerFile=fl; var pr=document.getElementById('pacerPrev'); var lb=document.getElementById('pacerLbl'); try{ var u=URL.createObjectURL(fl); if(pr){ pr.src=u; pr.style.display='block'; } if(lb) lb.textContent='Change screenshot'; }catch(e){} }
+function openStepConfirm(id, goal){
+  var m=document.getElementById('homeModal'); if(!m) return; window.__pacerFile=null;
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Upload your Pacer</h3><p class="lp-sheet-p">Add a screenshot from Pacer showing today\u2019s steps. Skyvos logs it as your proof.</p><label class="lp-up"><input type="file" accept="image/*" onchange="_pacerPick(this)" hidden><img id="pacerPrev" class="lp-up-img" style="display:none" alt=""><span id="pacerLbl" class="lp-up-lbl">\ud83d\udcf7 Choose screenshot</span></label><input class="fi" id="pacerSteps" type="number" inputmode="numeric" placeholder="Steps today (from Pacer)" style="margin:12px 0"><button class="btn" onclick="submitStep(\''+id+'\','+(goal||10000)+')">Confirm \u2728</button></div>';
+  m.classList.add('show');
+}
+async function submitStep(id, goal){
+  var me=myPhone(); var file=window.__pacerFile||null; var steps=parseInt((document.getElementById('pacerSteps')||{}).value||'',10);
+  var streak=await _streakFor(me,'steps'); var points=10+(streak-1)*5; var proof=null;
+  if(file){ try{ proof=await uploadPacer(id,file); points+=5; }catch(e){ toast(humanError(e,'Upload failed \u2014 try again.')); return; } }
+  var patch={status:'confirmed',confirmed_at:new Date().toISOString(),points:points,streak:streak}; if(proof) patch.proof_url=proof; if(!isNaN(steps)&&steps>0) patch.result=steps;
+  try{ await sb.from('pledges').update(patch).eq('id',id); }catch(e){ toast(humanError(e,'Could not log it.')); return; }
+  closeHomeModal(); toast('Skyvos logged it \u2728 +'+points+(streak>1?' \u00b7 '+streak+'-day streak':'')); renderLoop();
+}
+
+function _commitCard(active){
+  if(active.kind==='steps'){
+    return '<div class="lp-card lp-on"><div class="lp-k">Step goal in progress</div><div class="lp-reason">'+(active.goal||10000).toLocaleString()+' steps \ud83d\udc5f</div><p class="lp-sub">Hit your goal? Tell Skyvos you honoured it.</p><button class="btn" onclick="openStepConfirm(\''+active.id+'\','+(active.goal||10000)+')">Upload my Pacer \ud83d\udcf7</button><button class="btn btn-soft" onclick="cancelPledge(\''+active.id+'\')">Not today</button></div>';
+  }
+  return '<div class="lp-card lp-on"><div class="lp-k">Pledge in progress</div><div class="lp-reason">'+(active.reason?escapeHtml(active.reason):'Staying present')+' \u00b7 '+(active.duration_min/60)+'h</div><p class="lp-sub">When you\u2019re back, tell Skyvos you stayed present.</p><button class="btn" onclick="confirmCommit(\''+active.id+'\',\'presence\')">I stayed present \u2728</button><button class="btn btn-soft" onclick="cancelPledge(\''+active.id+'\')">I got distracted</button></div>';
+}
+async function renderLoop(){
+  var el=document.getElementById('loopBody'); if(!el) return;
+  el.innerHTML='<div class="jh-wrap"><div class="sk sk-card"></div></div>';
+  if(!ME){ try{ ME=await fetchProfile(myPhone()); }catch(e){} }
+  var ctx=await myCircleContext(); _loopCtx=ctx;
+  var me=ctx.me||myPhone();
+  var hh=(ctx.households&&ctx.households[0])||null;
+  var hhPhones=hh?(hh.members||[]).map(function(m){return m.member_phone||m.phone;}).filter(Boolean):[me];
+  var famPhones=[me].concat(ctx.conns||[]).filter(Boolean); if(!famPhones.length) famPhones=[me];
+  var acts=[]; try{ var ap=await sb.from('pledges').select('*').eq('user_phone',me).eq('status','active').order('created_at',{ascending:false}); acts=ap.data||[]; }catch(e){}
+  var actPres=null,actStep=null; acts.forEach(function(a){ if(a.kind==='steps'){ if(!actStep) actStep=a; } else if(!actPres) actPres=a; });
+  var sP=0,sH=0,sF=0,streakP=0,streakS=0;
+  try{ var cp=await sb.from('pledges').select('points,user_phone,confirmed_at,streak,kind').in('user_phone',famPhones).eq('status','confirmed'); var rows=cp.data||[];
+    rows.forEach(function(r){ var pt=r.points||0; if(r.user_phone===me) sP+=pt; if(hhPhones.indexOf(r.user_phone)>=0) sH+=pt; sF+=pt; });
+    var mp=rows.filter(function(r){return r.user_phone===me&&r.confirmed_at&&r.kind!=='steps';}).sort(function(a,b){return a.confirmed_at<b.confirmed_at?1:-1;});
+    var ms=rows.filter(function(r){return r.user_phone===me&&r.confirmed_at&&r.kind==='steps';}).sort(function(a,b){return a.confirmed_at<b.confirmed_at?1:-1;});
+    streakP=mp.length?(mp[0].streak||0):0; streakS=ms.length?(ms[0].streak||0):0;
+  }catch(e){}
+  var feed=[]; try{ var fq=await sb.from('pledges').select('*').in('user_phone',famPhones).eq('status','confirmed').order('confirmed_at',{ascending:false}).limit(20); feed=fq.data||[]; }catch(e){}
+  var profs={}; try{ profs=await fetchProfiles(famPhones); }catch(e){}
+  var presence = actPres ? _commitCard(actPres)
+    : '<div class="lp-card"><div class="lp-k">Be present</div><p class="lp-sub">Step away from the screen \u2014 Skyvos witnesses, your family rises with you.</p><button class="btn" onclick="openPledgeSheet()">Go present \ud83c\udf3f</button>'+(streakP>0?'<div class="lp-streak">\ud83d\udd25 '+streakP+'-day streak</div>':'')+'</div>';
+  var steps = actStep ? _commitCard(actStep)
+    : '<div class="lp-card"><div class="lp-k">Step goal</div><p class="lp-sub">Commit to your steps today, honour it yourself \u2014 every step lifts the family.</p><button class="btn" onclick="openStepSheet()">Set a goal \ud83d\udc5f</button>'+(streakS>0?'<div class="lp-streak">\ud83d\udd25 '+streakS+'-day streak</div>':'')+'</div>';
+  var scores='<div class="lp-scores"><div class="lp-score"><span>'+sP+'</span><label>You</label></div><div class="lp-score"><span>'+sH+'</span><label>This Home</label></div><div class="lp-score"><span>'+sF+'</span><label>Family</label></div></div>';
+  var feedHtml = feed.length ? feed.map(function(r){ var p=profs[r.user_phone]||{}; var nm=(p.name||'Someone').split(' ')[0]; var when=r.confirmed_at?jhTimeAgo(r.confirmed_at):''; var what=(r.kind==='steps')?('walked '+(((r.result||r.goal)||0).toLocaleString())+' steps'):('stayed present '+(r.duration_min/60)+'h'); return '<div class="lp-item"><span class="lp-item-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span><div class="lp-item-b"><p><b>'+escapeHtml(nm)+'</b> '+what+(r.streak>1?' \u00b7 \ud83d\udd25 '+r.streak+'-day streak':'')+'</p><span class="lp-item-meta">+'+(r.points||0)+' to the family \u00b7 '+when+'</span></div></div>'; }).join('') : '<div class="lp-empty">No commitments yet \u2014 be the first.</div>';
+  el.innerHTML='<div class="jh-wrap"><header class="jh-rise"><div class="jh-hd-top"><div><p class="jh-hd-grt">The Family Loop</p><h1 class="jh-hd-nm">Presence over screens</h1></div></div></header>'+
+    '<section class="jh-rise lp-grid">'+presence+steps+'</section>'+
+    '<section class="jh-rise"><div class="jh-zlabel">Scores rise together</div>'+scores+'</section>'+
+    '<section class="jh-rise"><div class="jh-zlabel">The Loop</div>'+feedHtml+'</section></div>';
+}
 
 function _jhReadImg(file){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){ var img=new Image(); img.onload=function(){res(img);}; img.onerror=rej; img.src=fr.result; }; fr.onerror=rej; fr.readAsDataURL(file); }); }
 async function compressHomeCover(file){ try{ var img=await _jhReadImg(file); var max=1280,w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } } var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); var blob=await new Promise(function(r){ c.toBlob(r,'image/jpeg',0.82); }); return blob||file; }catch(e){ return file; } }
@@ -3451,7 +3719,7 @@ async function buildHome(){
   var awH='<section class="jh-rise" aria-label="Across my world"><button class="jh-aw-teaser" onclick="navTo(\'across\')"><span class="jh-aw-teaser-ic">'+jic('sparkles')+'</span><span class="jh-aw-teaser-t"><b>Across My World</b><span>Your whole family, across every home</span></span><span class="jh-aw-teaser-go">'+jic('chev')+'</span></button></section>';
 
   window.__jhSky=skyvos; window.__jhToday=today;
-  var tiles=[ {ic:'palette',label:'Design',fn:"navTo('design')"}, {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
+  var tiles=[ {ic:'palette',label:'Design',fn:"navTo('design')"}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')"}, {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
   var exploreH='<section class="jh-rise" aria-label="Explore">'+st('Explore')+'<div class="jh-grid4">'+tiles.map(function(t){ return '<button class="jh-tile" onclick="'+t.fn+'"><span class="jh-tile-ic">'+jic(t.ic)+'</span><span class="jh-tile-l">'+t.label+'</span></button>'; }).join('')+'</div></section>';
     var zTop='<div class="jh-zone"><div class="jh-zlabel">Right Now</div>'+heroH+exploreH+'</div>';
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
@@ -5401,7 +5669,7 @@ function searchGraph(){
 /* ---------- nav ---------- */
 function navTo(tab){
   try{ if(typeof JeetoGalaxy!=='undefined'&&JeetoGalaxy.isActive&&JeetoGalaxy.isActive()&&tab!=='world'&&tab!=='across') JeetoGalaxy.dispose(); }catch(e){}
-  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across' };
+  var map={ home:'screen-home', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across', loop:'screen-loop' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -5417,6 +5685,7 @@ function navTo(tab){
   if(tab==='timemachine') renderTimeMachine();
   if(tab==='world') renderMyWorld();
   if(tab==='across') renderAcrossMyWorld();
+  if(tab==='loop') renderLoop();
   if(tab==='homes') renderHomes();
   if(tab==='design') renderDesign();
   var btns=document.querySelectorAll('#bottomNav button');
