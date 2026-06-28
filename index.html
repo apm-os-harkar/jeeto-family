@@ -2275,7 +2275,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.34.0-phototap';
+var JEETO_VERSION='4.35.0-imageshare';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3998,8 +3998,7 @@ function openPhotoZoom(src){
     '<div class="pz-stage" id="pzStage"><img id="pzImg" src="'+escapeAttr(src)+'" alt="" draggable="false"></div>'+
     '<div class="pz-filters" id="pzFilters">'+_pzFilterBtns()+'</div>'+
     '<div class="pz-actions">'+
-      '<button class="pz-act pz-share" onclick="_pzShare()">'+icShare+'Share</button>'+
-      '<button class="pz-act pz-wa" onclick="_pzWhatsApp()">'+icWa+'WhatsApp</button>'+
+      '<button class="pz-act pz-share" onclick="_pzShare()">'+icWa+'Send photo</button>'+
       '<button class="pz-act" onclick="_pzDownload()">'+icDl+'Save</button>'+
     '</div>';
   document.body.appendChild(ov);
@@ -4010,21 +4009,37 @@ function openPhotoZoom(src){
   _pzApply();
 }
 function closePhotoZoom(){ var ov=document.getElementById('pzOverlay'); if(ov) ov.remove(); }
-async function _pzRender(){
-  var resp=await fetch(_pz.src,{mode:'cors'}); var b=await resp.blob(); var url=URL.createObjectURL(b);
+async function _pzFile(){
+  // fetch the real bytes (public bucket sends CORS), apply the chosen filter if any, return a real File
+  var resp=await fetch(_pz.src,{mode:'cors'}); var raw=await resp.blob();
+  if(_pz.filter==='none'){ return new File([raw],'jeeto-photo.jpg',{type:(raw.type||'image/jpeg')}); }
+  var url=URL.createObjectURL(raw);
   var img=await new Promise(function(res,rej){ var im=new Image(); im.onload=function(){res(im);}; im.onerror=rej; im.src=url; });
   var c=document.createElement('canvas'); c.width=img.naturalWidth||img.width; c.height=img.naturalHeight||img.height; var ctx=c.getContext('2d');
   try{ ctx.filter=_pzCss(_pz.filter); }catch(e){}
   ctx.drawImage(img,0,0,c.width,c.height);
-  return await new Promise(function(res){ c.toBlob(function(bl){ res(bl); },'image/jpeg',0.92); });
+  var bl=await new Promise(function(res){ c.toBlob(function(x){ res(x); },'image/jpeg',0.92); });
+  return new File([bl||raw],'jeeto-photo.jpg',{type:'image/jpeg'});
 }
+function _pzSaveFile(file){ try{ var a=document.createElement('a'); a.href=URL.createObjectURL(file); a.download='jeeto-photo.jpg'; document.body.appendChild(a); a.click(); a.remove(); return true; }catch(e){ return false; } }
 async function _pzShare(){
-  try{ var bl=await _pzRender(); if(bl && navigator.canShare){ var file=new File([bl],'jeeto-photo.jpg',{type:'image/jpeg'}); if(navigator.canShare({files:[file]})){ await navigator.share({files:[file],text:'Shared from Jeeto Family \u2728'}); return; } } }
-  catch(e){ if(e&&e.name==='AbortError') return; }
-  _pzWhatsApp();
+  var file=null;
+  try{ file=await _pzFile(); }catch(e){ file=null; }
+  // 1) share the ACTUAL IMAGE to the native sheet (WhatsApp, Instagram, anyone)
+  if(file && navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file]}); return; }
+    catch(e){ if(e&&e.name==='AbortError') return; }
+  }
+  // 2) no image-share support -> SAVE the photo so they can attach it themselves (never a link)
+  if(file && _pzSaveFile(file)){ toast('Photo saved to your device \u2014 attach it in WhatsApp or Instagram.'); return; }
+  // 3) absolute last resort -> open the image to long-press save
+  try{ window.open(_pz.src,'_blank'); }catch(_){}
 }
-function _pzWhatsApp(){ try{ window.open('https://wa.me/?text='+encodeURIComponent(_pz.src),'_blank'); }catch(e){ toast('Could not open WhatsApp.'); } }
-async function _pzDownload(){ try{ var bl=await _pzRender(); var a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download='jeeto-photo.jpg'; document.body.appendChild(a); a.click(); a.remove(); }catch(e){ try{ window.open(_pz.src,'_blank'); }catch(_){} } }
+async function _pzDownload(){
+  var file=null; try{ file=await _pzFile(); }catch(e){ file=null; }
+  if(file && _pzSaveFile(file)){ toast('Saved \u2728'); return; }
+  try{ window.open(_pz.src,'_blank'); }catch(_){}
+}
 function openSkyvosBubble(){
   var sky=window.__jhSky||{line:'I\u2019m here, quietly watching over your home.'};
   var m=document.getElementById('homeModal'); if(!m) return;
