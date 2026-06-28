@@ -2242,7 +2242,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.22.0-plate';
+var JEETO_VERSION='4.23.0-realcover';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2581,7 +2581,7 @@ var JHService = {
     var me=myPhone();
     return homes.map(function(o){ var h=o.h, mem=(o.members||[]); var n=mem.length;
       var status='Quiet tonight', kind='memories';
-      return { id:h.id, name:h.household_name, city:h.city||'', status:status, statusKind:kind, style:h.home_style||'apartment', membersHome:n }; });
+      return { id:h.id, name:h.household_name, city:h.city||'', status:status, statusKind:kind, style:h.home_style||'apartment', membersHome:n, cover:h.cover_url||'' }; });
   },
   /** Across My World — Skyvos summary, real where tracked, honest placeholders else. */
   async acrossMyWorld(ctx, famPhones){
@@ -4043,7 +4043,7 @@ async function saveDesign(){
     if(!_blob && _avFile){ try{ _blob=await compressHomeCover(_avFile); }catch(e){ _blob=_avFile; } }
     if(_blob){
       try{ var _p='home-covers/'+_designHomeId+'-'+Date.now()+'.jpg'; var _up=await sb.storage.from('moments').upload(_p,_blob,{contentType:'image/jpeg'}); if(_up.error) throw _up.error; var _url=sb.storage.from('moments').getPublicUrl(_p).data.publicUrl; await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId); }
-      catch(e){ toast('Avatar didn\u2019t upload \u2014 check your connection and try again.'); }
+      catch(e){ toast(humanError(e,'Avatar didn\u2019t save')); console.warn('avatar save',e); }
     } else { toast('Re-pick the photo to set your avatar.'); }
   }
   // 3) door style (always saved on this device; synced when the column exists)
@@ -4139,7 +4139,7 @@ function jwScene(){
 
 /* ===== My Family World — ported from v0 (components/world/*), wired to real data ===== */
 function jwNodeImg(node, big){
-  var photo = (node.cover||'') || ((node.mine && /harkar/i.test(node.name||'') && typeof JH_HOME_COVER!=='undefined' && JH_HOME_COVER) ? JH_HOME_COVER : '');
+  var photo = (node.cover||'');
   if(photo) return '<img src="'+escapeAttr(photo)+'" alt="'+escapeAttr(node.name)+'">';
   return homeArchitecture(node.style||'apartment', big?0.85:0.7);
 }
@@ -4244,7 +4244,7 @@ async function renderWorldView(elId, scope){
   function _threadCalc(B){ var act=_betweenDays(B); var idle=Math.max(0,_dom-act); var L=Math.max(14, Math.min(46, 30 - act*0.9 + idle*0.5)); return {act:act,idle:idle,length:L}; }
   var _threadRows=[], _meP2=myPhone(), _moDate=new Date(_now2.getFullYear(),_now2.getMonth(),1).toISOString().slice(0,10);
   var ghomes=[];
-  if(central) ghomes.push({id:central.id,name:central.name,city:central.city,members:central.members,mine:central.mine,phones:(central.phones||[]),act:_actOf(central.id),link:0,month:0,photo:(central.cover||((/harkar/i.test(central.name||'')&&typeof JH_HOME_COVER!=='undefined')?JH_HOME_COVER:''))});
+  if(central) ghomes.push({id:central.id,name:central.name,city:central.city,members:central.members,mine:central.mine,phones:(central.phones||[]),act:_actOf(central.id),link:0,month:0,photo:(central.cover||'')});
   sats.forEach(function(n){ var _tc=_threadCalc(n.phones||[]); if(n.id&&(central&&central.id)) _threadRows.push({owner_phone:_meP2, home_a:central.id, home_b:n.id, month:_moDate, active_days:_tc.act, idle_days:_tc.idle, length:_tc.length}); ghomes.push({id:n.id,name:n.name,city:n.city,members:n.members,mine:n.mine,phones:(n.phones||[]),act:_actOf(n.id),link:(_link[n.id]||0),month:_tc.length,photo:n.cover||''}); });
   if(_threadRows.length){ try{ sb.from('thread_months').upsert(_threadRows,{onConflict:'owner_phone,home_b,month'}).then(function(){},function(){}); }catch(e){} }
   if(across){
@@ -4753,7 +4753,7 @@ async function buildHome(){
   /* 8) MY WORLD */
   var worldH;
   if(world.length){
-    var wc=world.slice(0,6).map(function(h){ var _cover=(h.name&&/harkar/i.test(h.name)&&JH_HOME_COVER)?'<img src="'+JH_HOME_COVER+'" alt="" loading="lazy" decoding="async">':homeArchitecture(h.style,0.8); return '<button class="jh-wl-row" onclick="enterHome(\''+h.id+'\')"><span class="jh-wl-thumb">'+_cover+'</span><span class="jh-wl-meta"><span class="jh-wl-nm">'+escapeHtml(h.name)+'</span><span class="jh-wl-sub">'+(h.city?escapeHtml(h.city)+' \u00b7 ':'')+escapeHtml(String(h.membersHome))+' home</span></span><span class="jh-wl-chev">'+jic('chev')+'</span></button>'; }).join('');
+    var wc=world.slice(0,6).map(function(h){ var _cover=h.cover?'<img src="'+escapeAttr(h.cover)+'" alt="" loading="lazy" decoding="async">':homeArchitecture(h.style,0.8); return '<button class="jh-wl-row" onclick="enterHome(\''+h.id+'\')"><span class="jh-wl-thumb">'+_cover+'</span><span class="jh-wl-meta"><span class="jh-wl-nm">'+escapeHtml(h.name)+'</span><span class="jh-wl-sub">'+(h.city?escapeHtml(h.city)+' \u00b7 ':'')+escapeHtml(String(h.membersHome))+' home</span></span><span class="jh-wl-chev">'+jic('chev')+'</span></button>'; }).join('');
     worldH='<section class="jh-rise" aria-label="My World">'+st('My World',{action:'Enter World',fn:"navTo('world')"})+'<div class="jh-wl">'+wc+'</div></section>';
   } else {
     worldH='<section class="jh-rise" aria-label="My World">'+st('My World',{action:'Enter World',fn:"navTo('world')"})+'<div class="jh-wl"><button class="jh-wl-row" onclick="navTo(\'world\')"><span class="jh-wl-thumb">'+homeArchitecture('luxury',0.85)+'</span><span class="jh-wl-meta"><span class="jh-wl-nm">Create your first Home</span><span class="jh-wl-sub">Tap to begin your world</span></span><span class="jh-wl-chev">'+jic('chev')+'</span></button></div></section>';
