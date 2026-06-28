@@ -769,6 +769,9 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-hd-hn{font-family:var(--jh-serif);font-size:16px;color:var(--jh-fg);line-height:1.2}
 .jh-hd-hc{font-size:12px;color:var(--jh-muted-fg);line-height:1.3}
 .jh-hd-wx{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--jh-muted-fg)}
+.hd-plate{flex:1;min-width:0;border-radius:14px;padding:11px 16px;text-align:center;overflow:hidden;box-shadow:0 8px 22px rgba(160,110,40,.20),inset 0 0 0 2px rgba(255,255,255,.14)}
+.hd-plate-name{font-weight:600;line-height:1.06;word-break:break-word}
+.hd-plate-city{margin-top:3px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:600}
 .jh-hd-wx svg{width:16px;height:16px;color:oklch(0.82 0.08 78/0.75)}
 .jh-hd-wx .sep{color:oklch(0.7 0.015 70/0.4)}
 /* HERO */
@@ -2239,7 +2242,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.21.0-avatarfix';
+var JEETO_VERSION='4.22.0-plate';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -4696,10 +4699,16 @@ async function buildHome(){
   var _hcStyle=_pl?(' style="color:'+_pl.T.sub+'"'):'';
   var _icStyle=_pl?(' style="color:'+_pl.T.ink+'"'):'';
   var _chipStyle=_pl?(' style="background:'+_pl.T.bg+';border-color:transparent"'):'';
+  var _np;
+  if(_pl){ var _nsz=Math.min(27, Math.round(19*((_pl.S&&_pl.S.scale)||1)));
+    _np='<div class="hd-plate" style="background:'+_pl.T.bg+'"><div class="hd-plate-name" style="font-family:'+_pl.F.css+';color:'+_pl.T.ink+';font-size:'+_nsz+'px">'+escapeHtml(welcome.homeName)+'</div>'+(welcome.city?'<div class="hd-plate-city" style="color:'+_pl.T.sub+'">'+escapeHtml(welcome.city)+'</div>':'')+'</div>';
+  } else {
+    _np='<div class="jh-hd-home"><span class="jh-hd-ic">'+jic('home')+'</span><div><p class="jh-hd-hn">'+escapeHtml(welcome.homeName)+'</p>'+(welcome.city?'<p class="jh-hd-hc">'+escapeHtml(welcome.city)+'</p>':'')+'</div></div>';
+  }
   var header='<header class="jh-rise">'+
     '<div class="jh-hd-top"><div><p class="jh-hd-grt">'+escapeHtml(welcome.greeting)+',</p><h1 class="jh-hd-nm">'+escapeHtml(welcome.name)+'</h1></div>'+
     '<div class="jh-hd-actions"><button class="jh-gear" onclick="openHomeSettings()" aria-label="Settings">'+jic('settings')+'</button><div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div></div>'+
-    '<div class="jh-hd-id"><div class="jh-hd-home"'+_chipStyle+'><span class="jh-hd-ic"'+_icStyle+'>'+jic('home')+'</span><div><p class="jh-hd-hn"'+_hnStyle+'>'+escapeHtml(welcome.homeName)+'</p>'+(welcome.city?'<p class="jh-hd-hc"'+_hcStyle+'>'+escapeHtml(welcome.city)+'</p>':'')+'</div></div>'+
+    '<div class="jh-hd-id">'+_np+
     '<div class="jh-hd-wx">'+jic('sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
   _lastCtx=ctx;
   var _meP=myPhone(), _fam=[];
