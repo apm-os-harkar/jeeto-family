@@ -938,6 +938,13 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gxh-stars{position:absolute;inset:0;transform-origin:center;z-index:0}
 /* Avatar cropper */
 .av-stage{display:flex;justify-content:center;margin:6px 0 14px}
+.mv-toggle{display:flex;gap:8px;margin:2px 0 14px}
+.mv-toggle button{flex:1;padding:10px;border:1px solid var(--line);border-radius:13px;background:var(--card);font-family:inherit;font-weight:800;font-size:13px;color:var(--ink2);cursor:pointer}
+.mv-toggle button.on{background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border-color:transparent}
+.mg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.mg-cell{position:relative;aspect-ratio:1;border-radius:11px;overflow:hidden;background:var(--paper2);padding:0;border:none;cursor:pointer}
+.mg-cell img{width:100%;height:100%;object-fit:cover;display:block}
+.mg-vid{position:absolute;right:6px;bottom:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;z-index:2}
 .av-crop{position:relative;width:260px;height:260px;border-radius:50%;overflow:hidden;background:#1a1330;cursor:grab;box-shadow:0 10px 32px rgba(80,50,20,.22),inset 0 0 0 3px rgba(255,255,255,.7)}
 #screen-design,#designBody{overflow-x:hidden}
 #designBody .jh-wrap{max-width:100%;overflow-x:hidden}
@@ -2254,7 +2261,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.30.0-coverlocal';
+var JEETO_VERSION='4.31.0-gallery';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -6088,20 +6095,30 @@ function tlGroup(dateStr){
   if(d.getFullYear()===now.getFullYear()) return 'This Year';
   return 'Past Years';
 }
+var MVIEW='grid';
+function setMView(v){ MVIEW=v; renderMomentFeed(); }
 function renderMomentFeed(){
   var box=document.getElementById('momentFeed'); if(!box) return;
   var list=MCACHE[MCIRCLE]||[];
   var q=((document.getElementById('momentSearch')||{}).value||'').trim().toLowerCase();
   if(q){ list=list.filter(function(x){ return (x.m.title||'').toLowerCase().indexOf(q)>=0 || (x.m.description||'').toLowerCase().indexOf(q)>=0 || x.people.join(' ').toLowerCase().indexOf(q)>=0; }); }
+  var _mvToggle='<div class="mv-toggle"><button class="'+(MVIEW==="grid"?"on":"")+'" onclick="setMView(\'grid\')">▦ Photos</button><button class="'+(MVIEW==="timeline"?"on":"")+'" onclick="setMView(\'timeline\')">☰ Timeline</button></div>';
   if(!list.length){
     var msg={ private:'Every family has a story.', household:'Your household\u2019s story starts here.', family:'Your family\u2019s story starts here.', bridge:'A Bridge\u2019s story starts here.' }[MCIRCLE];
-    box.innerHTML='<div class="empty"><span class="big">💛</span><div class="e1">'+msg+'</div><div class="e2">The best day to preserve a memory is today. Capture today\u2019s first Moment ❤️</div></div>';
+    box.innerHTML=_mvToggle+'<div class="empty"><span class="big">💛</span><div class="e1">'+msg+'</div><div class="e2">The best day to preserve a memory is today. Capture today\u2019s first Moment ❤️</div></div>';
     return;
+  }
+  if(MVIEW==='grid'){
+    var imgs=[];
+    list.forEach(function(x){ (x.media||[]).forEach(function(md){ if(md.media_url && (md.media_type==='image'||md.media_type==='video')) imgs.push({url:md.media_url,id:x.m.id,vid:md.media_type==='video',title:x.m.title||''}); }); });
+    if(!imgs.length){ box.innerHTML=_mvToggle+'<div class="empty"><span class="big">📷</span><div class="e1">No photos in this circle yet</div><div class="e2">Photos you capture appear here as thumbnails. Voice & text moments live in Timeline.</div></div>'; return; }
+    var grid='<div class="mg-grid">'+imgs.map(function(im){ return '<button class="mg-cell" onclick="reliveMoment(\''+im.id+'\')">'+(im.vid?'<span class="mg-vid">▶</span>':'')+'<img loading="lazy" decoding="async" src="'+escapeAttr(im.url)+'" alt="'+escapeAttr(im.title)+'"></button>'; }).join('')+'</div>';
+    box.innerHTML=_mvToggle+grid; return;
   }
   var order=['Today','This Week','This Month','This Year','Past Years'], groups={};
   list.forEach(function(x){ var g=tlGroup(x.m.moment_date||x.m.created_at); (groups[g]=groups[g]||[]).push(x); });
   var html=''; order.forEach(function(g){ if(groups[g]){ html+='<div class="tl-head">'+g+'</div>'; groups[g].forEach(function(x){ html+=momentCard(x); }); } });
-  box.innerHTML=html;
+  box.innerHTML=_mvToggle+html;
 }
 function momentCard(x){
   var m=x.m, me=myPhone();
