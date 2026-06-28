@@ -942,6 +942,18 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .mv-toggle button{flex:1;padding:10px;border:1px solid var(--line);border-radius:13px;background:var(--card);font-family:inherit;font-weight:800;font-size:13px;color:var(--ink2);cursor:pointer}
 .mv-toggle button.on{background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border-color:transparent}
 .mg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.pz{position:fixed;inset:0;z-index:300;background:rgba(8,5,12,.95);display:flex;flex-direction:column;touch-action:none}
+.pz-x{position:absolute;top:14px;right:14px;z-index:5;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;border:none;font-size:18px;cursor:pointer}
+.pz-stage{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pz-stage img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center;will-change:transform;user-select:none;-webkit-user-select:none}
+.pz-filters{display:flex;gap:8px;overflow-x:auto;padding:10px 12px;-webkit-overflow-scrolling:touch}
+.pz-fl{flex:none;padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+.pz-fl.on{background:#fff;color:#111;border-color:#fff}
+.pz-actions{display:flex;gap:8px;padding:10px 12px calc(14px + env(safe-area-inset-bottom))}
+.pz-act{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;border-radius:14px;border:none;background:rgba(255,255,255,.12);color:#fff;font-weight:800;font-size:14px;cursor:pointer}
+.pz-act.pz-wa{background:#25D366}
+.pz-act.pz-share{background:linear-gradient(135deg,#FF8A1E,#E03A7A)}
+.pz-act svg{width:18px;height:18px}
 .mg-cell{position:relative;aspect-ratio:1;border-radius:11px;overflow:hidden;background:var(--paper2);padding:0;border:none;cursor:pointer}
 .mg-cell img{width:100%;height:100%;object-fit:cover;display:block}
 .mg-vid{position:absolute;right:6px;bottom:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;z-index:2}
@@ -2261,7 +2273,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.31.0-gallery';
+var JEETO_VERSION='4.32.0-lightbox';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3950,7 +3962,66 @@ function todayCard(t){
   var ic = t.kind==='celebration' ? 'cake' : (t.icon||'sparkles');
   return '<button class="jh-today" onclick="'+t.fn+'"><span class="jh-today-ic">'+jic(ic)+'</span><span class="jh-today-body"><span class="jh-today-eye">'+escapeHtml(t.eyebrow)+'</span><span class="jh-today-title">'+escapeHtml(t.title)+'</span></span>'+jic2('chev','jh-today-chev')+'</button>';
 }
-function openPhotoZoom(src){ if(!src) return; var ov=document.createElement('div'); ov.className='jh-zoom'; ov.onclick=function(){ ov.remove(); }; ov.innerHTML='<img src="'+src+'" alt=""><span class="jh-zoom-x">\u2715</span>'; document.body.appendChild(ov); }
+/* ===== Photo lightbox: pinch/double-tap zoom, filters, share to WhatsApp/Insta ===== */
+var PZ_FILTERS=[
+ {id:'none',name:'Original',css:'none'},
+ {id:'mono',name:'Mono',css:'grayscale(1) contrast(1.05)'},
+ {id:'warm',name:'Warm',css:'saturate(1.2) sepia(.25) contrast(1.05) brightness(1.03)'},
+ {id:'cool',name:'Cool',css:'saturate(1.1) hue-rotate(-12deg) brightness(1.03)'},
+ {id:'vivid',name:'Vivid',css:'saturate(1.6) contrast(1.12)'},
+ {id:'fade',name:'Fade',css:'contrast(.9) brightness(1.08) saturate(.85)'},
+ {id:'noir',name:'Noir',css:'grayscale(1) contrast(1.3) brightness(.95)'},
+ {id:'sun',name:'Sunny',css:'brightness(1.1) saturate(1.25) sepia(.12)'}
+];
+var _pz={src:'',filter:'none',vx:0,vy:0,vs:1,ptrs:{},pinch:null,last:null};
+function _pzCss(id){ for(var i=0;i<PZ_FILTERS.length;i++){ if(PZ_FILTERS[i].id===id) return PZ_FILTERS[i].css; } return 'none'; }
+function _pzFilterBtns(){ return PZ_FILTERS.map(function(fl){ return '<button class="pz-fl'+(_pz.filter===fl.id?' on':'')+'" onclick="_pzSetFilter(\''+fl.id+'\')">'+escapeHtml(fl.name)+'</button>'; }).join(''); }
+function _pzSetFilter(id){ _pz.filter=id; var im=document.getElementById('pzImg'); if(im) im.style.filter=_pzCss(id); var fb=document.getElementById('pzFilters'); if(fb) fb.innerHTML=_pzFilterBtns(); }
+function _pzApply(){ var im=document.getElementById('pzImg'); if(im) im.style.transform='translate('+_pz.vx.toFixed(1)+'px,'+_pz.vy.toFixed(1)+'px) scale('+_pz.vs.toFixed(3)+')'; }
+function _pzDown(e){ _pz.ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; var ks=Object.keys(_pz.ptrs); if(ks.length===1){ _pz.last={x:e.clientX,y:e.clientY}; _pz.pinch=null; } else if(ks.length===2){ var a=_pz.ptrs[ks[0]],b=_pz.ptrs[ks[1]]; _pz.pinch={d:Math.hypot(a.x-b.x,a.y-b.y),s:_pz.vs}; } }
+function _pzMove(e){ if(!_pz.ptrs[e.pointerId]) return; _pz.ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; var ks=Object.keys(_pz.ptrs); if(ks.length>=2&&_pz.pinch){ var a=_pz.ptrs[ks[0]],b=_pz.ptrs[ks[1]]; var d=Math.hypot(a.x-b.x,a.y-b.y); _pz.vs=Math.max(1,Math.min(5,_pz.pinch.s*(d/_pz.pinch.d))); if(_pz.vs<=1){_pz.vx=0;_pz.vy=0;} _pzApply(); } else if(ks.length===1&&_pz.last&&_pz.vs>1){ _pz.vx+=(e.clientX-_pz.last.x); _pz.vy+=(e.clientY-_pz.last.y); _pz.last={x:e.clientX,y:e.clientY}; _pzApply(); } }
+function _pzUp(e){ delete _pz.ptrs[e.pointerId]; var ks=Object.keys(_pz.ptrs); if(ks.length<2) _pz.pinch=null; if(ks.length===1){ _pz.last={x:_pz.ptrs[ks[0]].x,y:_pz.ptrs[ks[0]].y}; } if(ks.length===0&&_pz.vs<=1){ _pz.vx=0;_pz.vy=0; _pzApply(); } }
+function _pzWheel(e){ _pz.vs=Math.max(1,Math.min(5,_pz.vs*(1-(e.deltaY||0)*0.0015))); if(_pz.vs<=1){_pz.vx=0;_pz.vy=0;} _pzApply(); if(e.cancelable)e.preventDefault(); }
+function _pzDbl(){ if(_pz.vs>1){ _pz.vs=1;_pz.vx=0;_pz.vy=0; } else { _pz.vs=2.5; } _pzApply(); }
+function openPhotoZoom(src){
+  if(!src) return;
+  _pz={src:src,filter:'none',vx:0,vy:0,vs:1,ptrs:{},pinch:null,last:null};
+  var ov=document.getElementById('pzOverlay'); if(ov) ov.remove();
+  var icShare='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>';
+  var icWa='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6 0-1.2.6-1.8.9-2.1.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.1.1.3 0 .5l-.4.5-.3.3c-.1.1-.3.3-.1.5.1.3.7 1.1 1.5 1.8 1 .9 1.8 1.1 2.1 1.3.2.1.4.1.5-.1l.6-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.3.1.5-.1 1z"/></svg>';
+  var icDl='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  ov=document.createElement('div'); ov.id='pzOverlay'; ov.className='pz';
+  ov.innerHTML='<button class="pz-x" onclick="closePhotoZoom()" aria-label="Close">\u2715</button>'+
+    '<div class="pz-stage" id="pzStage"><img id="pzImg" src="'+escapeAttr(src)+'" alt="" draggable="false"></div>'+
+    '<div class="pz-filters" id="pzFilters">'+_pzFilterBtns()+'</div>'+
+    '<div class="pz-actions">'+
+      '<button class="pz-act pz-share" onclick="_pzShare()">'+icShare+'Share</button>'+
+      '<button class="pz-act pz-wa" onclick="_pzWhatsApp()">'+icWa+'WhatsApp</button>'+
+      '<button class="pz-act" onclick="_pzDownload()">'+icDl+'Save</button>'+
+    '</div>';
+  document.body.appendChild(ov);
+  var stage=document.getElementById('pzStage');
+  stage.style.touchAction='none';
+  stage.addEventListener('pointerdown',_pzDown); stage.addEventListener('pointermove',_pzMove); stage.addEventListener('pointerup',_pzUp); stage.addEventListener('pointercancel',_pzUp);
+  stage.addEventListener('wheel',_pzWheel,{passive:false}); stage.addEventListener('dblclick',_pzDbl);
+  _pzApply();
+}
+function closePhotoZoom(){ var ov=document.getElementById('pzOverlay'); if(ov) ov.remove(); }
+async function _pzRender(){
+  var resp=await fetch(_pz.src,{mode:'cors'}); var b=await resp.blob(); var url=URL.createObjectURL(b);
+  var img=await new Promise(function(res,rej){ var im=new Image(); im.onload=function(){res(im);}; im.onerror=rej; im.src=url; });
+  var c=document.createElement('canvas'); c.width=img.naturalWidth||img.width; c.height=img.naturalHeight||img.height; var ctx=c.getContext('2d');
+  try{ ctx.filter=_pzCss(_pz.filter); }catch(e){}
+  ctx.drawImage(img,0,0,c.width,c.height);
+  return await new Promise(function(res){ c.toBlob(function(bl){ res(bl); },'image/jpeg',0.92); });
+}
+async function _pzShare(){
+  try{ var bl=await _pzRender(); if(bl && navigator.canShare){ var file=new File([bl],'jeeto-photo.jpg',{type:'image/jpeg'}); if(navigator.canShare({files:[file]})){ await navigator.share({files:[file],text:'Shared from Jeeto Family \u2728'}); return; } } }
+  catch(e){ if(e&&e.name==='AbortError') return; }
+  _pzWhatsApp();
+}
+function _pzWhatsApp(){ try{ window.open('https://wa.me/?text='+encodeURIComponent(_pz.src),'_blank'); }catch(e){ toast('Could not open WhatsApp.'); } }
+async function _pzDownload(){ try{ var bl=await _pzRender(); var a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download='jeeto-photo.jpg'; document.body.appendChild(a); a.click(); a.remove(); }catch(e){ try{ window.open(_pz.src,'_blank'); }catch(_){} } }
 function openSkyvosBubble(){
   var sky=window.__jhSky||{line:'I\u2019m here, quietly watching over your home.'};
   var m=document.getElementById('homeModal'); if(!m) return;
