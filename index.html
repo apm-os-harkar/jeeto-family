@@ -898,6 +898,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gx-add svg{width:16px;height:16px;transform:rotate(-90deg)}
 .gx-hint{position:absolute;left:0;right:0;bottom:16px;z-index:2;text-align:center;font-size:11px;letter-spacing:.04em;color:rgba(255,255,255,.55)}
 .gx-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+.gx-screen-big{height:84vh;min-height:560px}
+@media (orientation:landscape){.gx-screen-big{height:88vh}}
 /* ===== Valley map ===== */
 .jw-constel{position:relative;padding:0}
 .jw-valley{position:relative;width:100%;aspect-ratio:1/1;margin:0}
@@ -1317,7 +1319,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <button data-tab="home" onclick="navTo('home')" aria-label="Home"><span class="ni">__IC_home__</span><span class="nl">Home</span></button>
     <button data-tab="family" onclick="navTo('family')" aria-label="Relationships"><span class="ni">__IC_heart__</span><span class="nl">Relationships</span></button>
     <button data-tab="moments" onclick="navTo('moments')" aria-label="Moments"><span class="ni">__IC_images__</span><span class="nl">Moments</span></button>
-    <button data-tab="world" onclick="navTo('world')" aria-label="My World"><span class="ni">__IC_globe__</span><span class="nl">My World</span></button>
+    <button data-tab="world" onclick="navTo('world')" aria-label="My Family"><span class="ni">__IC_globe__</span><span class="nl">My Family</span></button>
     <button data-tab="profile" onclick="navTo('profile')" aria-label="Passport"><span class="ni">__IC_idcard__</span><span class="nl">Passport</span></button>
   </nav>
 
@@ -1354,7 +1356,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='3.1.0-galaxy';
+var JEETO_VERSION='3.2.0-galaxy';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3238,8 +3240,8 @@ async function renderWorldView(elId, scope){
   }
 
   // header + tagline
-  var title=across?'Across My World':'My Family World';
-  var tag=across?'Your family, and every home across your bridges.':'Every Life. Every Relationship. Every Generation.';
+  var title=across?'Across My World':'My Family';
+  var tag=across?'Every home and family across your bridges.':'Your family, across every home.';
   var header='<header class="jw-header"><button class="jw-back" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button>'+
     '<div class="jw-head-c"><h1 class="jw-title">'+title+'</h1>'+
     '<div class="jw-divider">'+jic('heartfill')+'</div>'+
@@ -3276,15 +3278,15 @@ async function renderWorldView(elId, scope){
   var crossLink= across?'' : '<section class="jw-crosslink"><button class="jw-cross" onclick="navTo(\'across\')">See across my world '+jic('arrow')+'</button></section>';
   var footer='<footer class="jw-foot"><p>You are home. You are loved. You belong.</p></footer>';
 
-  var galaxy='<section class="gx-screen"><div class="gx-host" id="gxHost"></div>'+
+  var galaxy='<section class="gx-screen'+(across?' gx-screen-big':'')+'"><div class="gx-host" id="gxHost"></div>'+
     '<div class="gx-top"><button class="gx-back" onclick="navTo(\'home\')" aria-label="Back">'+jic('arrow')+'</button><div class="gx-top-c"><h1 class="gx-title">'+title+'</h1><p class="gx-tag">'+tag+'</p></div></div>'+
     '<button class="gx-add" onclick="openHouseholdForm()">'+jic('arrow')+'<span>Add a Household</span></button>'+
-    '<div class="gx-hint">Drag to explore \u00b7 pinch to zoom \u00b7 tap a home</div></section>';
+    '<div class="gx-hint">'+(across?'\u21bb Rotate your phone \u00b7 ':'')+'Drag \u00b7 pinch to zoom \u00b7 tap a home</div></section>';
   el.innerHTML='<div class="jh-wrap jw-wrap">'+galaxy+today+wisdom+crossLink+footer+'</div>';
   var ghomes=[];
   if(central) ghomes.push({id:central.id,name:central.name,city:central.city,members:central.members,mine:central.mine,photo:(central.cover||((/harkar/i.test(central.name||'')&&typeof JH_HOME_COVER!=='undefined')?JH_HOME_COVER:''))});
   sats.forEach(function(n){ ghomes.push({id:n.id,name:n.name,city:n.city,members:n.members,mine:n.mine,photo:n.cover||''}); });
-  setTimeout(function(){ try{ JeetoGalaxy.init(document.getElementById('gxHost'),{homes:ghomes,scope:scope}); }catch(e){ console.warn('galaxy',e); } },60);
+  setTimeout(function(){ try{ JeetoGalaxy.init(document.getElementById('gxHost'),{homes:ghomes,scope:scope,big:across}); }catch(e){ console.warn('galaxy',e); } },60);
 }
 
 /* ===== JeetoGalaxy — 3D family galaxy: spinning avatar planet-orbs + glowing bridges ===== */
@@ -3296,9 +3298,9 @@ var JeetoGalaxy=(function(){
   function clear3(){ if(raf){cancelAnimationFrame(raf);raf=null;} if(renderer){ try{ renderer.dispose(); if(renderer.domElement&&renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);}catch(e){} } orbs=[];orbMeshes=[];lines=[]; window.removeEventListener('resize',onResize); active=false; }
   var _halo=null;
   function haloTex(){ if(_halo) return _halo; var s=128,cv=document.createElement('canvas');cv.width=cv.height=s;var c=cv.getContext('2d');var g=c.createRadialGradient(s/2,s/2,2,s/2,s/2,s/2);g.addColorStop(0,'rgba(255,232,190,0.85)');g.addColorStop(0.4,'rgba(255,220,170,0.35)');g.addColorStop(1,'rgba(255,220,170,0)');c.fillStyle=g;c.fillRect(0,0,s,s);_halo=new THREE.CanvasTexture(cv);return _halo; }
-  function makeOrb(home,hero){
+  function makeOrb(home,hero,sz){
     var grp=new THREE.Group();
-    var R=hero?1.0:0.62;
+    var R=(hero?1.0:0.62)*(sz||1);
     var halo=new THREE.Sprite(new THREE.SpriteMaterial({map:haloTex(),transparent:true,opacity:0.7,depthWrite:false,blending:THREE.AdditiveBlending}));
     halo.scale.set(R*3.4,R*3.4,1); grp.add(halo);
     var mat=new THREE.MeshBasicMaterial({color:0xCBA46A});
@@ -3314,16 +3316,17 @@ var JeetoGalaxy=(function(){
   function ringTex(){ if(_ring) return _ring; var s=256,cv=document.createElement('canvas');cv.width=cv.height=s;var c=cv.getContext('2d');c.strokeStyle='rgba(255,255,255,0.95)';c.lineWidth=s*0.035;c.beginPath();c.arc(s/2,s/2,s*0.43,0,7);c.stroke();_ring=new THREE.CanvasTexture(cv);return _ring; }
   function makeStars(){ var n=1400,geo=new THREE.BufferGeometry(),a=new Float32Array(n*3); for(var i=0;i<n;i++){var r=18+Math.random()*34,th=Math.random()*6.283,ph=Math.acos(2*Math.random()-1);a[i*3]=r*Math.sin(ph)*Math.cos(th);a[i*3+1]=r*Math.sin(ph)*Math.sin(th);a[i*3+2]=r*Math.cos(ph);} geo.setAttribute('position',new THREE.BufferAttribute(a,3)); return new THREE.Points(geo,new THREE.PointsMaterial({color:0xffffff,size:0.13,sizeAttenuation:true,transparent:true,opacity:0.85,depthWrite:false})); }
   function makeBridge(a,b,mine){ var mid=a.clone().add(b).multiplyScalar(0.5); mid.y+=0.9+a.distanceTo(b)*0.12; var curve=new THREE.QuadraticBezierCurve3(a,mid,b); var line=new THREE.Mesh(new THREE.TubeGeometry(curve,44,0.022,6,false),new THREE.MeshBasicMaterial({color:mine?0xFFCF8A:0xC4A6F7,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending,depthWrite:false})); var spark=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false})); return {line:line,spark:spark,curve:curve,t:Math.random()}; }
-  function positionsFor(n){ var pos=[]; for(var i=0;i<n;i++){ if(i===0) pos.push(new THREE.Vector3(0,0,0)); else { var k=i-1,cnt=Math.max(1,n-1),ang=k*(6.283/cnt)+0.4,r=3.0+(k%2)*0.9,y=(((k%3)-1)*0.95); pos.push(new THREE.Vector3(Math.cos(ang)*r,y,Math.sin(ang)*r)); } } return pos; }
+  function positionsFor(n,sp){ sp=sp||1; var pos=[]; for(var i=0;i<n;i++){ if(i===0) pos.push(new THREE.Vector3(0,0,0)); else { var k=i-1,cnt=Math.max(1,n-1),ang=k*(6.283/cnt)+0.4,r=(3.0+(k%2)*0.9)*sp,y=(((k%3)-1)*0.95)*sp; pos.push(new THREE.Vector3(Math.cos(ang)*r,y,Math.sin(ang)*r)); } } return pos; }
   function init(hostEl,data){
     if(typeof THREE==='undefined'){ hostEl.innerHTML='<div class="gx-fallback">Loading 3D\u2026</div>'; return; }
     clear3(); host=hostEl; active=true; ray=new THREE.Raycaster();
+    var big=!!data.big, SZ=big?1.5:1.0; rot={x:0.25,y:0}; target={x:0.25,y:0}; dist=big?12.5:9; distT=dist;
     W=host.clientWidth||320; H=host.clientHeight||480;
     renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); renderer.setSize(W,H); host.appendChild(renderer.domElement);
     scene=new THREE.Scene(); camera=new THREE.PerspectiveCamera(55,W/H,0.1,120); camera.position.set(0,0,dist);
     world=new THREE.Group(); scene.add(world); stars=makeStars(); scene.add(stars);
-    var homes=data.homes||[]; var pos=positionsFor(homes.length);
-    homes.forEach(function(h,i){ var o=makeOrb(h,i===0); o.grp.position.copy(pos[i]); world.add(o.grp); o.mesh.userData.idx=i; o.mesh.userData.home=h; orbMeshes.push(o.mesh); orbs.push({mesh:o.mesh,pos:pos[i]}); });
+    var homes=data.homes||[]; var pos=positionsFor(homes.length, big?1.4:1.0);
+    homes.forEach(function(h,i){ var o=makeOrb(h,i===0,SZ); o.grp.position.copy(pos[i]); world.add(o.grp); o.mesh.userData.idx=i; o.mesh.userData.home=h; orbMeshes.push(o.mesh); orbs.push({mesh:o.mesh,pos:pos[i]}); });
     for(var i=1;i<homes.length;i++){ var ln=makeBridge(pos[0],pos[i],homes[i].mine); world.add(ln.line); world.add(ln.spark); lines.push(ln); }
     bindControls(); window.addEventListener('resize',onResize); loop();
   }
