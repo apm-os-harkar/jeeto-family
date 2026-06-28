@@ -1499,7 +1499,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.2.0-purpose';
+var JEETO_VERSION='4.3.0-purpose';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3662,15 +3662,25 @@ function _lsGet(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return '
 function _lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function getMyRole(){ var r=(ME&&ME.family_role)||_lsGet('jeeto_role'); return (r&&FAMILY_ROLES[r])?r:''; }
 function getFamilyPurpose(ctx){ var h=(ctx&&ctx.households&&ctx.households[0]&&ctx.households[0].h)||null; var p=(h&&h.purpose)||_lsGet('jeeto_purpose'); return p||PURPOSE_DEFAULT; }
-function jhRoleHeader(ctx){
+function _daysSince(iso){ if(!iso) return null; try{ var d=(Date.now()-new Date(iso).getTime())/864e5; return Math.max(0,Math.round(d)); }catch(e){ return null; } }
+function roleInvite(roleId,sig){ sig=sig||{};
+  if(roleId==='anchor'){ if(sig.quiet){ var d=sig.quietDays; var w=(d==null)?'has been out of touch':(d<=0?'has been quiet today':(d===1?'hasn\u2019t shared since yesterday':'hasn\u2019t shared in '+d+' days')); return {text:sig.quiet.name+' '+w+'. Reach out \u2014 they\u2019re waiting for their anchor.', cta:{label:'Reach out to '+sig.quiet.name, go:"navTo('family')"}}; } return {text:'Reach out to someone who\u2019s drifted quiet \u2014 be their anchor today.', cta:{label:'Open the family', go:"navTo('family')"}}; }
+  if(roleId==='bridge'){ if(sig.far){ return {text:sig.far.name+' is across the distance, thinking of you. Reach across today.', cta:{label:'Visit '+sig.far.name, go:"navTo('across')"}}; } return {text:'A home far away is thinking of you. Reach across the distance.', cta:{label:'Across my world', go:"navTo('across')"}}; }
+  if(roleId==='keeper'){ if(sig.up){ var k=sig.up.days<=0?'today':(sig.up.days===1?'tomorrow':'in '+sig.up.days+' days'); return {text:sig.up.name+'\u2019s birthday is '+k+'. Begin a ritual to honour it.', cta:{label:'Open rituals', go:"navTo('rituals')"}}; } return {text:'Begin a small ritual the whole family can share this week.', cta:{label:'Open rituals', go:"navTo('rituals')"}}; }
+  if(roleId==='witness'){ if(sig.up){ var t=sig.up.days<=0?'today':(sig.up.days===1?'tomorrow':'in '+sig.up.days+' days'); return {text:sig.up.name+'\u2019s big day is '+t+'. Be the first to celebrate them.', cta:{label:'Celebrate '+sig.up.name, go:"navTo('family')"}}; } if(sig.fam&&sig.fam.length){ return {text:'Celebrate '+sig.fam[0].name+' today \u2014 for simply being part of this family.', cta:{label:'Cheer on '+sig.fam[0].name, go:"navTo('family')"}}; } return {text:'Notice someone today, and celebrate them out loud.', cta:{label:'Open the family', go:"navTo('family')"}}; }
+  if(roleId==='glue'){ if(sig.pair&&sig.pair.length>=2){ return {text:'Bring '+sig.pair[0]+' and '+sig.pair[1]+' into one shared moment today.', cta:{label:'Share a moment', go:"navTo('moments')"}}; } return {text:'Bring the family into one shared moment today.', cta:{label:'Share a moment', go:"navTo('moments')"}}; }
+  if(roleId==='spark'){ return {text:'Share the thing that made you smile today \u2014 the family lights up when you do.', cta:{label:'Share a moment', go:"navTo('moments')"}}; }
+  return {text:'Capture one moment from today \u2014 the story only you can tell.', cta:{label:'Share a moment', go:"navTo('moments')"}};
+}
+function jhRoleHeader(ctx, sig){
   var purpose=getFamilyPurpose(ctx); var roleId=getMyRole();
   var html='<section class="jh-rise jh-pp">';
   html+='<div class="jh-pp-star"><div class="jh-pp-row"><span class="jh-pp-label">Our family purpose</span><button class="jh-pp-edit" onclick="openPurposeEdit()" aria-label="Edit purpose">'+jic('feather')+'</button></div><p class="jh-pp-text">\u201c'+escapeHtml(purpose)+'\u201d</p></div>';
   if(roleId){
-    var r=FAMILY_ROLES[roleId];
+    var r=FAMILY_ROLES[roleId]; var inv=roleInvite(roleId,sig);
     html+='<button class="jh-pp-role" onclick="openRolePicker()"><span class="jh-pp-em">'+r.emoji+'</span><span class="jh-pp-rt"><span class="jh-pp-you">You are <b>'+escapeHtml(r.title)+'</b></span><span class="jh-pp-ess">'+escapeHtml(r.essence)+'</span></span><span class="jh-pp-chg">change</span></button>';
-    html+='<div class="jh-pp-invite"><span class="jh-pp-inv-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span><p>'+escapeHtml(r.invite)+'</p></div>';
-    html+='<button class="jh-pp-cta" onclick="'+r.cta.go+'">'+escapeHtml(r.cta.label)+' '+jic('arrow')+'</button>';
+    html+='<div class="jh-pp-invite"><span class="jh-pp-inv-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span><p>'+escapeHtml(inv.text)+'</p></div>';
+    html+='<button class="jh-pp-cta" onclick="'+inv.cta.go+'">'+escapeHtml(inv.cta.label)+' '+jic('arrow')+'</button>';
   } else {
     html+='<div class="jh-pp-claim"><span class="jh-pp-claim-em">\ud83e\udd1d</span><p class="jh-pp-claim-h">Claim your place in the family</p><p class="jh-pp-claim-s">Every family runs on people who know their role. Choose the one that\u2019s most you.</p><button class="jh-pp-cta" onclick="openRolePicker()">Claim my role '+jic('arrow')+'</button></div>';
   }
@@ -3738,7 +3748,14 @@ async function buildHome(){
     '<div class="jh-hd-actions"><button class="jh-gear" onclick="openHomeSettings()" aria-label="Settings">'+jic('settings')+'</button><div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div></div>'+
     '<div class="jh-hd-id"><div class="jh-hd-home"><span class="jh-hd-ic">'+jic('home')+'</span><div><p class="jh-hd-hn">'+escapeHtml(welcome.homeName)+'</p>'+(welcome.city?'<p class="jh-hd-hc">'+escapeHtml(welcome.city)+'</p>':'')+'</div></div>'+
     '<div class="jh-hd-wx">'+jic('sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
-  _lastCtx=ctx; var purposeBand=jhRoleHeader(ctx);
+  _lastCtx=ctx;
+  var _meP=myPhone(), _fam=[];
+  try{ Object.keys(profs).forEach(function(p){ if(p!==_meP && profs[p]){ _fam.push({phone:p,name:((profs[p].name||'Someone').split(' ')[0]||'Someone'),last:profs[p].last_seen||'',dob:profs[p].dob||''}); } }); }catch(e){}
+  var _quiet=null; _fam.forEach(function(x){ if(!_quiet) _quiet=x; else if((x.last||'')<(_quiet.last||'')) _quiet=x; });
+  var _up=null; _fam.forEach(function(x){ if(x.dob){ var _du=_daysUntilBday(x.dob); if(_du!=null&&_du<=30&&(!_up||_du<_up.days)) _up={name:x.name,days:_du}; } });
+  var _far=null; (ctx.bridges||[]).forEach(function(b){ if(!_far&&b._otherName) _far={name:b._otherName}; });
+  var _sig={ fam:_fam, quiet:_quiet, quietDays:(_quiet?_daysSince(_quiet.last):null), up:_up, far:_far, pair:_fam.slice(0,2).map(function(z){return z.name;}) };
+  var purposeBand=jhRoleHeader(ctx,_sig);
 
   /* 2) HERO */
   var heroH='<section class="jh-rise" aria-label="Today">'+todayCard(today)+'</section>';
