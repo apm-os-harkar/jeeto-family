@@ -939,6 +939,11 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 /* Avatar cropper */
 .av-stage{display:flex;justify-content:center;margin:6px 0 14px}
 .av-crop{position:relative;width:260px;height:260px;border-radius:50%;overflow:hidden;background:#1a1330;cursor:grab;box-shadow:0 10px 32px rgba(80,50,20,.22),inset 0 0 0 3px rgba(255,255,255,.7)}
+#screen-design,#designBody{overflow-x:hidden}
+#designBody .jh-wrap{max-width:100%;overflow-x:hidden}
+.dp-plate{max-width:100%;box-sizing:border-box}
+.av-crop{max-width:88vw}
+.jh-zone,.jh-rise{max-width:100%;box-sizing:border-box}
 .av-crop:active{cursor:grabbing}
 .av-img{position:absolute;left:0;top:0;transform-origin:0 0;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .av-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;opacity:.65;font-size:14px}
@@ -2249,7 +2254,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.29.0-sheetclose';
+var JEETO_VERSION='4.30.0-coverlocal';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2588,7 +2593,7 @@ var JHService = {
     var me=myPhone();
     return homes.map(function(o){ var h=o.h, mem=(o.members||[]); var n=mem.length;
       var status='Quiet tonight', kind='memories';
-      return { id:h.id, name:h.household_name, city:h.city||'', status:status, statusKind:kind, style:h.home_style||'apartment', membersHome:n, cover:h.cover_url||'' }; });
+      return { id:h.id, name:h.household_name, city:h.city||'', status:status, statusKind:kind, style:h.home_style||'apartment', membersHome:n, cover:(h.cover_url||_lsGet('jeeto_cover_'+h.id)||'') }; });
   },
   /** Across My World — Skyvos summary, real where tracked, honest placeholders else. */
   async acrossMyWorld(ctx, famPhones){
@@ -4041,7 +4046,8 @@ async function renderDesign(){
     save+footer+'</div>';
   setTimeout(_plateApply,0);
   _avLoaded=false; _avDirty=false; _avS=1; _avX=0; _avY=0; _avFile=null;
-  if(home&&home.cover_url){ setTimeout(function(){ _avRoot=document.getElementById('screen-design'); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; _avLoadImg(home.cover_url,false); var z=_avQ('.av-zoom'); if(z) z.value=1; },40); }
+  var _ecov=(home&&home.cover_url)||_lsGet('jeeto_cover_'+(_designHomeId||'x'));
+  if(_ecov){ setTimeout(function(){ _avRoot=document.getElementById('screen-design'); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; _avLoadImg(_ecov,false); var z=_avQ('.av-zoom'); if(z) z.value=1; },40); }
 }
 async function saveDesign(){
   var name=(document.getElementById('jdName').value||'').trim();
@@ -4053,7 +4059,7 @@ async function saveDesign(){
   catch(e){ toast(humanError(e,'Could not save the name.')); return; }
   // 2) avatar (crop -> blob, fall back to raw file). Upload under the user's OWN folder (proven path), verify DB write.
   var _avMsg='';
-  if(_avDirty){
+  if(_avDirty || _avFile){
     var _blob=null; try{ _blob=await _avCropBlob(); }catch(e){}
     if(!_blob && _avFile){ try{ _blob=await compressHomeCover(_avFile); }catch(e){ _blob=_avFile; } }
     if(_blob){
@@ -4062,9 +4068,9 @@ async function saveDesign(){
         var _up=await sb.storage.from('moments').upload(_p,_blob,{upsert:true,contentType:'image/jpeg'});
         if(_up.error) throw _up.error;
         var _url=sb.storage.from('moments').getPublicUrl(_p).data.publicUrl;
-        var _u2=await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId);
-        if(_u2 && _u2.error) throw _u2.error;
-      }catch(e){ _avMsg=humanError(e,'Avatar upload failed'); console.warn('avatar save',e); }
+        _lsSet('jeeto_cover_'+_designHomeId,_url);   // works locally even if the cover_url column is missing
+        try{ var _u2=await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId); if(_u2&&_u2.error) console.warn('cover_url column missing? run jeeto-home-cover.sql',_u2.error); }catch(e2){ console.warn('cover_url DB write',e2); }
+      }catch(e){ _avMsg=humanError(e,'Photo upload failed'); console.warn('avatar upload',e); }
     } else { _avMsg='Re-pick the photo to set your avatar.'; }
   }
   // 3) door style (always saved on this device; synced when the column exists)
@@ -4191,7 +4197,7 @@ async function renderWorldView(elId, scope){
 
   var central=null, sats=[];
   (ctx.households||[]).forEach(function(x,i){
-    var node={ id:x.h.id, name:x.h.household_name||'Home', city:x.h.city||'', members:(x.members||[]).length, style:x.h.home_style||'apartment', cover:x.h.cover_url||'', mine:true, phones:(x.members||[]).map(function(m){return m.member_phone||m.phone;}).filter(Boolean) };
+    var node={ id:x.h.id, name:x.h.household_name||'Home', city:x.h.city||'', members:(x.members||[]).length, style:x.h.home_style||'apartment', cover:(x.h.cover_url||_lsGet('jeeto_cover_'+x.h.id)||''), mine:true, phones:(x.members||[]).map(function(m){return m.member_phone||m.phone;}).filter(Boolean) };
     if(i===0) central=node; else sats.push(node);
   });
   // connected family homes (bridges) — only in 'Across My World'
@@ -4203,7 +4209,7 @@ async function renderWorldView(elId, scope){
       var hh=hr.data||[];
       var mr=await sb.from('household_members').select('household_id,member_phone').in('household_id',otherIds).eq('status','active');
       var counts={},bphones={}; (mr.data||[]).forEach(function(r){ counts[r.household_id]=(counts[r.household_id]||0)+1; (bphones[r.household_id]=bphones[r.household_id]||[]).push(r.member_phone); });
-      hh.forEach(function(h){ sats.push({ id:h.id, name:h.household_name||'A home', city:h.city||'', members:counts[h.id]||0, style:h.home_style||'apartment', cover:h.cover_url||'', mine:false, phones:(bphones[h.id]||[]) }); });
+      hh.forEach(function(h){ sats.push({ id:h.id, name:h.household_name||'A home', city:h.city||'', members:counts[h.id]||0, style:h.home_style||'apartment', cover:(h.cover_url||_lsGet('jeeto_cover_'+h.id)||''), mine:false, phones:(bphones[h.id]||[]) }); });
     }catch(e){}
   }
 
@@ -4470,7 +4476,7 @@ async function confirmCommit(id,kind){
   renderLoop();
 }
 async function cancelPledge(id){ try{ await sb.from('pledges').delete().eq('id',id); }catch(e){} toast('No worries \u2014 try again anytime.'); renderLoop(); }
-async function uploadPacer(id, file){ var f=await compressHomeCover(file); var path='pacer/'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:false, contentType:'image/jpeg'}); if(up.error) throw up.error; return sb.storage.from('moments').getPublicUrl(path).data.publicUrl; }
+async function uploadPacer(id, file){ var f=await compressHomeCover(file); var path='pacer/'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:false, contentType:'image/jpeg'}); if(up.error) throw up.error; var _hu=sb.storage.from('moments').getPublicUrl(path).data.publicUrl; try{ _lsSet('jeeto_cover_'+id,_hu); }catch(e){} return _hu; }
 function _pacerPick(inp){ var fl=inp.files&&inp.files[0]; if(!fl) return; window.__pacerFile=fl; var pr=document.getElementById('pacerPrev'); var lb=document.getElementById('pacerLbl'); try{ var u=URL.createObjectURL(fl); if(pr){ pr.src=u; pr.style.display='block'; } if(lb) lb.textContent='Change screenshot'; }catch(e){} }
 function openStepConfirm(id, goal){
   var m=document.getElementById('homeModal'); if(!m) return; window.__pacerFile=null;
@@ -5469,7 +5475,7 @@ async function renderHomeDetail(id){
     (iAmHead?act("archiveHome('"+id+"')",'Close this home'):'')+
     '</div>';
   var story=await homeStory(id, h, members, profs, s);
-  var _cov=h.cover_url||'';
+  var _cov=h.cover_url||_lsGet('jeeto_cover_'+h.id)||'';
   var _heroCls=_cov?'hd-hero hd-hero-photo':'hd-hero hd-hero-warm';
   var _heroBg=_cov?(' style="background-image:url('+_cov+')"'):'';
   el.innerHTML='<div class="'+_heroCls+'"'+_heroBg+'><div class="hd-hero-shade"></div>'+
