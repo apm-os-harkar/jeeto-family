@@ -928,19 +928,20 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .ro-mem-cap{display:block;padding:9px 12px;font-size:12px;color:var(--ink2);background:var(--card2,#f6efe4)}
 /* HTML orb constellation */
 .gxh-field{position:absolute;inset:0;overflow:hidden}
-.gxh-star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:gxhtw 3s ease-in-out infinite}
+.gxh-stars{position:absolute;inset:0;transform-origin:center;z-index:0}
+.gxh-star{position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 2px rgba(255,255,255,.6);animation:gxhtw 3s ease-in-out infinite}
 @keyframes gxhtw{0%,100%{opacity:.25}50%{opacity:.85}}
 .gxh-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .gxh-line{stroke:rgba(255,205,130,.34);stroke-width:1;vector-effect:non-scaling-stroke}
 .gxh-line.mine{stroke:rgba(140,200,255,.5)}
 .gxh-pulse{fill:#ffe6a8;filter:drop-shadow(0 0 1.5px rgba(255,220,150,.9))}
 .gxh-orb{position:absolute;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;z-index:2;will-change:left,top}
-.gxh-node{position:relative;width:60px;height:60px;animation:gxhfloat 6.5s ease-in-out infinite}
-.gxh-orb.hero .gxh-node{width:86px;height:86px}
-.gxh-av{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.85);box-shadow:0 6px 20px rgba(0,0,0,.5);background:linear-gradient(135deg,#caa46a,#8a5a2a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px}
+.gxh-node{position:relative;width:32px;height:32px;animation:gxhfloat 6.5s ease-in-out infinite}
+.gxh-orb.hero .gxh-node{width:46px;height:46px}
+.gxh-av{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:1.5px solid rgba(255,255,255,.85);box-shadow:0 4px 14px rgba(0,0,0,.5);background:linear-gradient(135deg,#caa46a,#8a5a2a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
 .gxh-av img{width:100%;height:100%;object-fit:cover}
 .gxh-orb.hero .gxh-av{border-width:3px}
-.gxh-glow{position:absolute;inset:-7px;border-radius:50%;border:2px solid rgba(255,210,140,.16)}
+.gxh-glow{position:absolute;inset:-4px;border-radius:50%;border:1.5px solid rgba(255,210,140,.18)}
 .gxh-nm{font-size:12px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.75);max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gxh-orb.hero .gxh-nm{font-size:14px;font-weight:600}
 .gxh-orb.lvl1 .gxh-node{animation-duration:5s}
@@ -948,7 +949,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gxh-orb.lvl3 .gxh-node{animation-duration:2.4s}
 .gxh-orb.lvl2 .gxh-glow,.gxh-orb.lvl3 .gxh-glow{border-top-color:rgba(255,235,180,.95)}
 .gxh-orb.lvl2 .gxh-glow{animation:gxhsp 8s linear infinite}
-.gxh-orb.lvl3 .gxh-glow{animation:gxhsp 4s linear infinite;inset:-9px;border-color:rgba(255,210,140,.4);border-top-color:rgba(255,240,190,1)}
+.gxh-orb.lvl3 .gxh-glow{animation:gxhsp 4s linear infinite;inset:-6px;border-color:rgba(255,210,140,.4);border-top-color:rgba(255,240,190,1)}
 @keyframes gxhbr{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
 @keyframes gxhsp{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 @keyframes gxhfloat{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
@@ -1518,7 +1519,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.12.0-thread';
+var JEETO_VERSION='4.14.0-avatar';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3243,11 +3244,10 @@ async function renderDesign(){
     '<input class="jd-fi" id="jdCity" value="'+escapeAttr(city)+'" placeholder="Place (e.g. Dwarka)" oninput="document.getElementById(\'jdPlateCity\').textContent=this.value||\'Add a place\'"></div>'+
     '<p class="jd-hint">Shows in your top bar.</p></section>';
 
-  // 2) HOME MODEL
-  var models='<div class="jd-models">'+HOME_STYLES.map(function(o){
-    return '<button type="button" class="jd-model'+(o.id===_designStyle?' on':'')+'" data-style="'+o.id+'" onclick="selDesignStyle(\''+o.id+'\')"><span class="jd-model-art">'+homeArchitecture(o.id,0.85)+'</span><span class="jd-model-l">'+o.label+'</span></button>';
-  }).join('')+'</div>';
-  var model='<section class="jh-rise"><div class="jh-zlabel">Home Model</div>'+models+'<p class="jd-hint">Shows in <b>My World</b>. Selected: <span id="jdModelLabel">'+homeStyleLabel(_designStyle)+'</span></p></section>';
+  // 2) AVATAR
+  var model='<section class="jh-rise"><div class="jh-zlabel">Avatar</div>'+
+    '<label class="hh-cover"><input type="file" accept="image/*" id="jdAvatar" onchange="previewHomeCover(this,\'jdAvatarPrev\')" hidden><div id="jdAvatarPrev" class="hh-cover-prev'+((home&&home.cover_url)?' has':'')+'">'+((home&&home.cover_url)?'<img src="'+escapeAttr(home.cover_url)+'">':'<span>+ Choose your avatar photo</span>')+'</div></label>'+
+    '<p class="jd-hint">This photo becomes your circle in the galaxy (My Family & Across My World).</p></section>';
 
   // 3) FAMILY (adults & kids)
   function isKid(m){ var r=((m.role||m.relation||'')+'').toLowerCase(); return /son|daughter|child|kid|grand/.test(r); }
@@ -3272,7 +3272,8 @@ async function saveDesign(){
   var city=(document.getElementById('jdCity').value||'').trim();
   if(!name){ toast('Give your home a name plate.'); return; }
   if(!_designHomeId){ toast('Create a Home first, then design it.'); navTo('world'); return; }
-  try{ await sb.from('households').update({household_name:name, city:city||null, home_style:_designStyle}).eq('id',_designHomeId); }
+  try{ await sb.from('households').update({household_name:name, city:city||null}).eq('id',_designHomeId);
+    var _af=document.getElementById('jdAvatar'); var _ff=_af&&_af.files&&_af.files[0]; if(_ff){ var _u=await uploadHomeCover(_designHomeId,_ff); await sb.from('households').update({cover_url:_u}).eq('id',_designHomeId); } }
   catch(e){ toast(humanError(e,'Could not save your home.')); return; }
   toast('Your home is set \u2728');
   try{ renderHome(); }catch(e){}
@@ -3485,21 +3486,21 @@ async function renderWorldView(elId, scope){
 
 /* ===== JeetoGalaxy — reliable HTML/CSS orb constellation (no WebGL) ===== */
 var JeetoGalaxy=(function(){
-  var host=null, active=false, _homes=[], _across=false, raf=null, sats=[], heroEl=null, t0=0;
-  function dispose(){ active=false; if(raf){ cancelAnimationFrame(raf); raf=null; } if(host){ try{ host.innerHTML=''; }catch(e){} } host=null; sats=[]; heroEl=null; }
+  var host=null, active=false, _homes=[], _across=false, raf=null, sats=[], heroEl=null, starLayer=null, t0=0;
+  function dispose(){ active=false; if(raf){ cancelAnimationFrame(raf); raf=null; } if(host){ try{ host.innerHTML=''; }catch(e){} } host=null; sats=[]; heroEl=null; starLayer=null; }
   function lvlOf(a){ a=a||0; return a<=0?0:(a<2?1:(a<5?2:3)); }
   function orbHtml(h,i,hero){ var lvl=lvlOf(h.act); var photo=h.photo; var initial=escapeHtml(((h.name||'?')[0]||'?').toUpperCase()); var av=photo?'<img src="'+escapeAttr(photo)+'" alt="">':initial;
-    return '<button class="gxh-orb'+(hero?' hero':'')+' lvl'+lvl+'" data-i="'+i+'" style="left:50%;top:50%" onclick="JeetoGalaxy.tap('+i+')"><span class="gxh-node" style="animation-delay:'+(Math.random()*5).toFixed(1)+'s"><span class="gxh-glow"></span><span class="gxh-av">'+av+'</span></span><span class="gxh-nm">'+escapeHtml(h.name||'Home')+'</span></button>'; }
+    return '<button class="gxh-orb'+(hero?' hero':'')+' lvl'+lvl+'" data-i="'+i+'" style="left:50%;top:50%" onclick="JeetoGalaxy.tap('+i+')"><span class="gxh-node" style="animation-delay:'+(Math.random()*5).toFixed(1)+'s"><span class="gxh-glow"></span><span class="gxh-av">'+av+'</span></span></button>'; }
   function init(hostEl,data){
     dispose(); host=hostEl; if(!host) return; active=true; _homes=(data&&data.homes)||[]; _across=!!(data&&data.landscape);
     if(!_homes.length){ host.innerHTML='<div class="gx-fallback">No homes yet \u2014 add one to see your world.</div>'; return; }
     var n=_homes.length;
-    var stars=''; for(var s=0;s<55;s++){ stars+='<i class="gxh-star" style="left:'+(Math.random()*100).toFixed(1)+'%;top:'+(Math.random()*100).toFixed(1)+'%;animation-delay:'+(Math.random()*3).toFixed(1)+'s"></i>'; }
+    var stars=''; for(var s=0;s<90;s++){ var sz=(0.6+Math.random()*2.2), op=(0.25+(sz/2.8)*0.6); stars+='<i class="gxh-star" style="left:'+(Math.random()*100).toFixed(1)+'%;top:'+(Math.random()*100).toFixed(1)+'%;width:'+sz.toFixed(1)+'px;height:'+sz.toFixed(1)+'px;opacity:'+op.toFixed(2)+';animation-delay:'+(Math.random()*3).toFixed(1)+'s"></i>'; }
     var lines=''; for(var i=1;i<n;i++){ var mine=_homes[i].mine?' mine':''; lines+='<line class="gxh-line'+mine+'" data-i="'+i+'" x1="50" y1="50" x2="50" y2="50"/><circle class="gxh-pulse" data-i="'+i+'" r="0.9" cx="50" cy="50"/>'; }
     var orbs=''; for(var k=0;k<n;k++){ orbs+=orbHtml(_homes[k],k,k===0); }
-    host.innerHTML='<div class="gxh-field">'+stars+'<svg class="gxh-lines" viewBox="0 0 100 100" preserveAspectRatio="none">'+lines+'</svg>'+orbs+'</div>';
+    host.innerHTML='<div class="gxh-field"><div class="gxh-stars">'+stars+'</div>'+'<svg class="gxh-lines" viewBox="0 0 100 100" preserveAspectRatio="none">'+lines+'</svg>'+orbs+'</div>';
     // wire orbit params
-    var orbEls=host.querySelectorAll('.gxh-orb'); heroEl=orbEls[0];
+    var orbEls=host.querySelectorAll('.gxh-orb'); heroEl=orbEls[0]; starLayer=host.querySelector('.gxh-stars');
     sats=[];
     for(var j=1;j<n;j++){
       var el=host.querySelector('.gxh-orb[data-i="'+j+'"]');
@@ -3519,10 +3520,13 @@ var JeetoGalaxy=(function(){
     if(!active||!host){ return; }
     raf=requestAnimationFrame(loop);
     var t=(performance.now()-t0)/1000;
+    if(starLayer){ starLayer.style.transform='rotate('+(t*0.7).toFixed(2)+'deg) scale('+(1.04+0.05*Math.sin(t*0.16)).toFixed(3)+')'; }
     for(var i=0;i<sats.length;i++){
       var sx=sats[i], ang=sx.base + t*sx.spd;
       var x=50+Math.cos(ang)*sx.rX, y=50+Math.sin(ang)*sx.rY;
-      if(sx.el){ sx.el.style.left=x.toFixed(2)+'%'; sx.el.style.top=y.toFixed(2)+'%'; }
+      var depth=(Math.sin(ang)*0.5+0.5);            // 0 = far/back, 1 = near/front
+      var sc=(0.72+depth*0.42).toFixed(3), op=(0.62+depth*0.38).toFixed(2);
+      if(sx.el){ sx.el.style.left=x.toFixed(2)+'%'; sx.el.style.top=y.toFixed(2)+'%'; sx.el.style.transform='translate(-50%,-50%) scale('+sc+')'; sx.el.style.opacity=op; sx.el.style.zIndex=String(Math.round(2+depth*10)); }
       if(sx.ln){ sx.ln.setAttribute('x2',x.toFixed(2)); sx.ln.setAttribute('y2',y.toFixed(2)); var op=(0.3+Math.min(sx.link,5)*0.12).toFixed(2); sx.ln.setAttribute('stroke-opacity',op); sx.ln.setAttribute('stroke-width',(0.8+Math.min(sx.link,5)*0.25).toFixed(2)); }
       if(sx.pu){ var p=((t*sx.pspd)+sx.pph)%1; var px=50+(x-50)*p, py=50+(y-50)*p; sx.pu.setAttribute('cx',px.toFixed(2)); sx.pu.setAttribute('cy',py.toFixed(2)); sx.pu.setAttribute('r',(0.7+Math.min(sx.link,5)*0.22).toFixed(2)); sx.pu.setAttribute('opacity',(sx.link>0?0.9:0).toFixed(2)); }
     }
