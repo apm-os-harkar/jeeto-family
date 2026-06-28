@@ -883,6 +883,34 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gx-screen{position:relative;width:100%;height:70vh;min-height:480px;border-radius:26px;overflow:hidden;background:radial-gradient(ellipse at 50% 26%,#241a4d 0%,#140f2e 52%,#08060f 100%);box-shadow:0 18px 50px rgba(20,12,40,.4)}
 .gx-host{position:absolute;inset:0;z-index:0}
 .gx-host canvas{display:block;touch-action:none}
+/* Purpose & Role header */
+.jh-pp{background:linear-gradient(165deg,#fff6e8 0%,#fdeede 55%,#fbe7d2 100%);border:1px solid #f0dcc0;border-radius:24px;padding:20px;box-shadow:0 2px 14px rgba(160,100,40,.10)}
+.jh-pp-row{display:flex;align-items:center;justify-content:space-between}
+.jh-pp-label{font-size:10.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#b07a32}
+.jh-pp-edit{background:none;border:none;color:#b07a32;cursor:pointer;padding:4px;opacity:.7}.jh-pp-edit svg{width:15px;height:15px}
+.jh-pp-text{margin:7px 0 0;font-family:var(--font-display,var(--jh-serif));font-size:17.5px;line-height:1.5;color:#5a3d1c;font-style:italic}
+.jh-pp-role{display:flex;align-items:center;gap:13px;width:100%;text-align:left;margin-top:16px;padding:13px;border:none;border-radius:18px;background:rgba(255,255,255,.66);cursor:pointer}
+.jh-pp-em{font-size:30px;line-height:1;flex-shrink:0}
+.jh-pp-rt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.jh-pp-you{font-size:15.5px;color:var(--ink);font-weight:500}.jh-pp-you b{font-family:var(--font-display,var(--jh-serif));font-weight:700}
+.jh-pp-ess{font-size:12.5px;color:var(--ink3);line-height:1.4}
+.jh-pp-chg{font-size:11px;color:#b07a32;font-weight:600;flex-shrink:0;align-self:flex-start}
+.jh-pp-invite{display:flex;align-items:flex-start;gap:11px;margin-top:13px;padding:0 3px}
+.jh-pp-inv-orb .sky-orb{width:30px;height:30px;flex-shrink:0}
+.jh-pp-invite p{margin:0;font-size:14px;line-height:1.5;color:#6a4a26}
+.jh-pp-cta{width:100%;margin-top:15px;padding:13px;border:none;border-radius:14px;background:linear-gradient(135deg,#E8A317,#d98a2b);color:#fff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 6px 18px rgba(217,138,43,.32)}
+.jh-pp-cta svg{width:17px;height:17px}
+.jh-pp-claim{text-align:center;margin-top:14px;padding:16px 8px 4px}
+.jh-pp-claim-em{font-size:32px}
+.jh-pp-claim-h{margin:8px 0 4px;font-family:var(--font-display,var(--jh-serif));font-size:18px;color:#5a3d1c}
+.jh-pp-claim-s{margin:0 0 4px;font-size:13px;line-height:1.5;color:var(--ink3)}
+.rl-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.rl-card{display:flex;align-items:center;gap:13px;text-align:left;padding:14px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer}
+.rl-card.on{border-color:var(--saffron,#E8A317);background:#fff7ea}
+.rl-em{font-size:26px;flex-shrink:0}
+.rl-b{display:flex;flex-direction:column;gap:3px}
+.rl-t{font-family:var(--font-display,var(--jh-serif));font-size:16px;font-weight:700;color:var(--ink)}
+.rl-e{font-size:12.5px;color:var(--ink3);line-height:1.4}
 /* HTML orb constellation */
 .gxh-field{position:absolute;inset:0;overflow:hidden}
 .gxh-star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:gxhtw 3s ease-in-out infinite}
@@ -1471,7 +1499,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.1.0-orbs';
+var JEETO_VERSION='4.2.0-purpose';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3618,6 +3646,62 @@ async function renderLoop(){
     '<section class="jh-rise"><div class="jh-zlabel">The Loop</div>'+feedHtml+'</section></div>';
 }
 
+var _lastCtx=null;
+/* ===== Purpose & Role header — shared purpose + a dignified role + a reason to show up ===== */
+var FAMILY_ROLES={
+  storykeeper:{emoji:'\ud83d\udcd6',title:'The Storykeeper',essence:'You turn ordinary days into memories we keep forever.',invite:'Capture one moment from today \u2014 the family is waiting for the story only you can tell.',cta:{label:'Share a moment',go:"navTo('moments')"}},
+  anchor:{emoji:'\u2693',title:'The Anchor',essence:'You keep everyone grounded, safe, and held.',invite:'Someone has been quiet. Reach out \u2014 they\u2019re waiting for their anchor.',cta:{label:'Open the family',go:"navTo('family')"}},
+  spark:{emoji:'\u2728',title:'The Spark',essence:'You bring the laughter, the warmth, the light.',invite:'Share the thing that made you smile today. The family lights up when you do.',cta:{label:'Share a moment',go:"navTo('moments')"}},
+  bridge:{emoji:'\ud83c\udf09',title:'The Bridge',essence:'You connect the ones who live far apart.',invite:'A home far away is thinking of you. Reach across the distance today.',cta:{label:'Across my world',go:"navTo('across')"}},
+  keeper:{emoji:'\ud83d\udd6f\ufe0f',title:'The Keeper of Traditions',essence:'You hold the rituals that make us who we are.',invite:'Begin a small ritual the whole family can share this week.',cta:{label:'Open rituals',go:"navTo('rituals')"}},
+  witness:{emoji:'\ud83d\udc4f',title:'The Witness',essence:'You notice everyone, and you celebrate them.',invite:'Someone did something worth celebrating. Be the one who sees it.',cta:{label:'Open the family',go:"navTo('family')"}},
+  glue:{emoji:'\ud83e\uddf6',title:'The Glue',essence:'You quietly hold us all together.',invite:'Bring the family into one shared moment today.',cta:{label:'Share a moment',go:"navTo('moments')"}}
+};
+var PURPOSE_DEFAULT='Across every distance, we stay one \u2014 sharing our days, holding our memories, showing up for each other.';
+function _lsGet(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
+function _lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function getMyRole(){ var r=(ME&&ME.family_role)||_lsGet('jeeto_role'); return (r&&FAMILY_ROLES[r])?r:''; }
+function getFamilyPurpose(ctx){ var h=(ctx&&ctx.households&&ctx.households[0]&&ctx.households[0].h)||null; var p=(h&&h.purpose)||_lsGet('jeeto_purpose'); return p||PURPOSE_DEFAULT; }
+function jhRoleHeader(ctx){
+  var purpose=getFamilyPurpose(ctx); var roleId=getMyRole();
+  var html='<section class="jh-rise jh-pp">';
+  html+='<div class="jh-pp-star"><div class="jh-pp-row"><span class="jh-pp-label">Our family purpose</span><button class="jh-pp-edit" onclick="openPurposeEdit()" aria-label="Edit purpose">'+jic('feather')+'</button></div><p class="jh-pp-text">\u201c'+escapeHtml(purpose)+'\u201d</p></div>';
+  if(roleId){
+    var r=FAMILY_ROLES[roleId];
+    html+='<button class="jh-pp-role" onclick="openRolePicker()"><span class="jh-pp-em">'+r.emoji+'</span><span class="jh-pp-rt"><span class="jh-pp-you">You are <b>'+escapeHtml(r.title)+'</b></span><span class="jh-pp-ess">'+escapeHtml(r.essence)+'</span></span><span class="jh-pp-chg">change</span></button>';
+    html+='<div class="jh-pp-invite"><span class="jh-pp-inv-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span><p>'+escapeHtml(r.invite)+'</p></div>';
+    html+='<button class="jh-pp-cta" onclick="'+r.cta.go+'">'+escapeHtml(r.cta.label)+' '+jic('arrow')+'</button>';
+  } else {
+    html+='<div class="jh-pp-claim"><span class="jh-pp-claim-em">\ud83e\udd1d</span><p class="jh-pp-claim-h">Claim your place in the family</p><p class="jh-pp-claim-s">Every family runs on people who know their role. Choose the one that\u2019s most you.</p><button class="jh-pp-cta" onclick="openRolePicker()">Claim my role '+jic('arrow')+'</button></div>';
+  }
+  html+='</section>';
+  return html;
+}
+function openRolePicker(){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  var cur=getMyRole();
+  var cards=Object.keys(FAMILY_ROLES).map(function(id){ var r=FAMILY_ROLES[id]; return '<button class="rl-card'+(cur===id?' on':'')+'" onclick="claimRole(\''+id+'\')"><span class="rl-em">'+r.emoji+'</span><span class="rl-b"><span class="rl-t">'+escapeHtml(r.title)+'</span><span class="rl-e">'+escapeHtml(r.essence)+'</span></span></button>'; }).join('');
+  m.innerHTML='<div class="modal-card" style="max-height:88vh;overflow:auto"><div class="modal-grab"></div><h3 class="lp-sheet-h">Your role in the family</h3><p class="lp-sheet-p">A role gives you a reason to show up \u2014 and dignity in how you do. Pick the one that feels like you.</p><div class="rl-list">'+cards+'</div></div>';
+  m.classList.add('show');
+}
+async function claimRole(id){
+  if(!FAMILY_ROLES[id]) return; _lsSet('jeeto_role',id); if(ME) ME.family_role=id;
+  try{ await sb.from('profiles').update({family_role:id}).eq('phone',myPhone()); }catch(e){}
+  closeHomeModal(); toast(FAMILY_ROLES[id].emoji+' You are '+FAMILY_ROLES[id].title); try{ buildHome(); }catch(e){}
+}
+function openPurposeEdit(){
+  var m=document.getElementById('homeModal'); if(!m) return;
+  var cur=getFamilyPurpose(_lastCtx);
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><h3 class="lp-sheet-h">Our family purpose</h3><p class="lp-sheet-p">The shared reason your family is here. One line everyone can feel.</p><textarea class="fi" id="ppText" rows="3" style="resize:none">'+escapeHtml(cur)+'</textarea><button class="btn" onclick="savePurpose()" style="margin-top:12px">Save our purpose</button></div>';
+  m.classList.add('show');
+}
+async function savePurpose(){
+  var t=((document.getElementById('ppText')||{}).value||'').trim(); if(!t) return; _lsSet('jeeto_purpose',t);
+  var hid=(_lastCtx&&_lastCtx.households&&_lastCtx.households[0]&&_lastCtx.households[0].h.id)||null;
+  if(hid){ try{ await sb.from('households').update({purpose:t}).eq('id',hid); if(_lastCtx.households[0].h) _lastCtx.households[0].h.purpose=t; }catch(e){} }
+  closeHomeModal(); toast('Purpose saved \u2728'); try{ buildHome(); }catch(e){}
+}
+
 function _jhReadImg(file){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){ var img=new Image(); img.onload=function(){res(img);}; img.onerror=rej; img.src=fr.result; }; fr.onerror=rej; fr.readAsDataURL(file); }); }
 async function compressHomeCover(file){ try{ var img=await _jhReadImg(file); var max=1280,w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } } var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); var blob=await new Promise(function(r){ c.toBlob(r,'image/jpeg',0.82); }); return blob||file; }catch(e){ return file; } }
 async function uploadHomeCover(id, file){ var f=await compressHomeCover(file); var path='home-covers/'+id+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(path, f, {upsert:false, contentType:'image/jpeg'}); if(up.error) throw up.error; return sb.storage.from('moments').getPublicUrl(path).data.publicUrl; }
@@ -3654,6 +3738,7 @@ async function buildHome(){
     '<div class="jh-hd-actions"><button class="jh-gear" onclick="openHomeSettings()" aria-label="Settings">'+jic('settings')+'</button><div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div></div>'+
     '<div class="jh-hd-id"><div class="jh-hd-home"><span class="jh-hd-ic">'+jic('home')+'</span><div><p class="jh-hd-hn">'+escapeHtml(welcome.homeName)+'</p>'+(welcome.city?'<p class="jh-hd-hc">'+escapeHtml(welcome.city)+'</p>':'')+'</div></div>'+
     '<div class="jh-hd-wx">'+jic('sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
+  _lastCtx=ctx; var purposeBand=jhRoleHeader(ctx);
 
   /* 2) HERO */
   var heroH='<section class="jh-rise" aria-label="Today">'+todayCard(today)+'</section>';
@@ -3705,7 +3790,7 @@ async function buildHome(){
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
   var zLow='<div class="jh-zone"><div class="jh-zlabel">Your World</div>'+skyH+wrH+awH+'</div>';
   var footer='<footer class="jh-footer"><p>However far you wander, the light stays on.</p></footer>';
-  body.innerHTML=moodBg+'<div class="jh-wrap">'+header+zTop+zMid+zLow+footer+'</div>'+'<button class="jh-skyfab" onclick="openSkyvosBubble()" aria-label="Skyvos">'+skyOrb({mood:'purple',sparkle:true})+'</button>';
+  body.innerHTML=moodBg+'<div class="jh-wrap">'+header+purposeBand+zTop+zMid+zLow+footer+'</div>'+'<button class="jh-skyfab" onclick="openSkyvosBubble()" aria-label="Skyvos">'+skyOrb({mood:'purple',sparkle:true})+'</button>';
 }
 function qa(ic,label,fn){ return '<div class="qa" onclick="'+fn+'"><div class="qi">'+ic+'</div><div class="ql">'+label+'</div></div>'; }
 function goAddFamily(){ navTo('family'); setTimeout(focusAddMember, 350); }
