@@ -2275,7 +2275,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.33.0-buildstamp';
+var JEETO_VERSION='4.34.0-phototap';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -6186,7 +6186,7 @@ function renderMomentFeed(){
     var imgs=[];
     list.forEach(function(x){ (x.media||[]).forEach(function(md){ if(md.media_url && (md.media_type==='image'||md.media_type==='video')) imgs.push({url:md.media_url,id:x.m.id,vid:md.media_type==='video',title:x.m.title||''}); }); });
     if(!imgs.length){ box.innerHTML=_mvToggle+'<div class="empty"><span class="big">📷</span><div class="e1">No photos in this circle yet</div><div class="e2">Photos you capture appear here as thumbnails. Voice & text moments live in Timeline.</div></div>'; return; }
-    var grid='<div class="mg-grid">'+imgs.map(function(im){ return '<button class="mg-cell" onclick="reliveMoment(\''+im.id+'\')">'+(im.vid?'<span class="mg-vid">▶</span>':'')+'<img loading="lazy" decoding="async" src="'+escapeAttr(im.url)+'" alt="'+escapeAttr(im.title)+'"></button>'; }).join('')+'</div>';
+    var grid='<div class="mg-grid">'+imgs.map(function(im){ return '<button class="mg-cell" onclick="'+(im.vid?('reliveMoment(\''+im.id+'\')'):('openPhotoZoom(\''+escapeAttr(im.url)+'\')'))+'">'+(im.vid?'<span class="mg-vid">▶</span>':'')+'<img loading="lazy" decoding="async" src="'+escapeAttr(im.url)+'" alt="'+escapeAttr(im.title)+'"></button>'; }).join('')+'</div>';
     box.innerHTML=_mvToggle+grid; return;
   }
   var order=['Today','This Week','This Month','This Year','Past Years'], groups={};
@@ -6199,7 +6199,7 @@ function momentCard(x){
   var img=x.media.filter(function(md){return md.media_type==='image';})[0];
   var other=x.media.filter(function(md){return md.media_type!=='image';});
   var mediaHtml='';
-  if(img){ mediaHtml='<div class="media"><img loading="lazy" decoding="async" src="'+escapeAttr(img.media_url)+'" alt=""></div>'; }
+  if(img){ mediaHtml='<div class="media"><img loading="lazy" decoding="async" src="'+escapeAttr(img.media_url)+'" alt="" style="cursor:zoom-in" onclick="openPhotoZoom(\''+escapeAttr(img.media_url)+'\')"></div>'; }
   else if(other.length){ mediaHtml='<div class="media">'+other.map(function(md){ var ic=md.media_type==='video'?'🎬':md.media_type==='voice'?'🎙️':'📄'; return '<a class="filechip" href="'+escapeAttr(md.media_url)+'" target="_blank" rel="noopener">'+ic+' '+escapeHtml(md.media_type)+'</a>'; }).join('')+'</div>'; }
   var meta='';
   if(x.people.length) meta+='<span class="pill">👥 '+escapeHtml(x.people.slice(0,3).join(', '))+(x.people.length>3?' +'+(x.people.length-3):'')+'</span>';
