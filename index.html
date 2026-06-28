@@ -6,7 +6,7 @@
 <title>Jeeto — Connecting Generations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Geist:wght@400;500;600;700&family=Cinzel:wght@500;600;700&family=Playfair+Display:wght@500;600;700&family=Bebas+Neue&family=Oswald:wght@500;600;700&family=Lora:wght@500;600&family=Pacifico&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -941,6 +941,20 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .pp-photo-wrap{position:relative;display:inline-block;cursor:pointer}
 .pp-photo-cam{position:absolute;right:6px;bottom:6px;width:30px;height:30px;border-radius:50%;background:var(--saffron,#E8A317);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .pp-photo-cam svg{width:16px;height:16px}
+/* Nameplate door designer */
+.dp-plate{border-radius:18px;padding:30px 22px;text-align:center;background:linear-gradient(135deg,#FBEFD8,#F1D9B4);box-shadow:0 12px 34px rgba(160,110,40,.22),inset 0 0 0 2px rgba(255,255,255,.16);margin-bottom:14px;overflow:hidden}
+.dp-name{font-family:'Fraunces',serif;font-weight:600;line-height:1.04;color:#5A3A18;font-size:30px;word-break:break-word}
+.dp-city{margin-top:6px;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#9A6B33;font-weight:600}
+.dp-sub{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3,#9a8f80);margin:14px 2px 8px}
+.dp-sw-row{display:flex;gap:10px;flex-wrap:wrap}
+.dp-sw{width:42px;height:42px;border-radius:12px;border:2px solid var(--line);cursor:pointer;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:transform .12s}
+.dp-sw.sel{border-color:var(--saffron,#E8A317);box-shadow:0 0 0 3px rgba(232,163,23,.3);transform:scale(1.06)}
+.dp-fonts{display:flex;gap:8px;flex-wrap:wrap}
+.dp-font{padding:10px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:17px;cursor:pointer;line-height:1}
+.dp-font.sel{border-color:var(--saffron,#E8A317);background:rgba(232,163,23,.1);color:var(--ink)}
+.dp-size-seg{display:flex;gap:8px}
+.dp-size{flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-weight:700;cursor:pointer}
+.dp-size.sel{border-color:var(--saffron,#E8A317);background:rgba(232,163,23,.12)}
 .gxh-star{position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 2px rgba(255,255,255,.6);animation:gxhtw 3s ease-in-out infinite}
 @keyframes gxhtw{0%,100%{opacity:.25}50%{opacity:.85}}
 .gxh-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -1531,7 +1545,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.16.0-avatar';
+var JEETO_VERSION='4.17.0-door';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3230,56 +3244,91 @@ function openSkyvosBubble(){
 }
 var _designStyle='apartment', _designHomeId=null;
 function selDesignStyle(id){ _designStyle=id; var els=document.querySelectorAll('.jd-model'); for(var i=0;i<els.length;i++){ els[i].classList.toggle('on', els[i].getAttribute('data-style')===id); } var lbl=document.getElementById('jdModelLabel'); if(lbl) lbl.textContent=homeStyleLabel(id); }
+/* ===== Nameplate (door) designer: palette + font + size ===== */
+var PLATE_THEMES=[
+ {id:'saffron',name:'Saffron',bg:'linear-gradient(135deg,#FBEFD8,#F1D9B4)',ink:'#5A3A18',sub:'#9A6B33',edge:'rgba(160,110,40,.22)'},
+ {id:'brass',  name:'Brass',  bg:'linear-gradient(135deg,#EBCD82,#B5832B)',ink:'#3A2A08',sub:'#6E5018',edge:'rgba(120,80,10,.38)'},
+ {id:'walnut', name:'Walnut', bg:'linear-gradient(135deg,#6E4A2E,#46291A)',ink:'#F6E7D4',sub:'#CBA886',edge:'rgba(0,0,0,.45)'},
+ {id:'slate',  name:'Slate',  bg:'linear-gradient(135deg,#3B4350,#222831)',ink:'#F3F5F8',sub:'#AEB7C4',edge:'rgba(0,0,0,.5)'},
+ {id:'indigo', name:'Indigo', bg:'linear-gradient(135deg,#4C50A0,#2A2D64)',ink:'#EFEFFB',sub:'#BBBEEC',edge:'rgba(0,0,0,.4)'},
+ {id:'rose',   name:'Rosewood',bg:'linear-gradient(135deg,#C56A78,#8C3A4D)',ink:'#FCEEF1',sub:'#F1C8D1',edge:'rgba(0,0,0,.35)'},
+ {id:'marble', name:'Marble', bg:'linear-gradient(135deg,#F5F5F3,#D9DADF)',ink:'#2A2A30',sub:'#6A6B73',edge:'rgba(0,0,0,.16)'},
+ {id:'pine',   name:'Pine',   bg:'linear-gradient(135deg,#2F5D4A,#1D3B30)',ink:'#EAF5EF',sub:'#A7D1BF',edge:'rgba(0,0,0,.4)'}
+];
+var PLATE_FONTS=[
+ {id:'fraunces',name:'Fraunces',css:"'Fraunces',serif"},
+ {id:'cinzel',  name:'Cinzel',  css:"'Cinzel',serif"},
+ {id:'playfair',name:'Playfair', css:"'Playfair Display',serif"},
+ {id:'bebas',   name:'Bebas',   css:"'Bebas Neue',sans-serif"},
+ {id:'oswald',  name:'Oswald',  css:"'Oswald',sans-serif"},
+ {id:'lora',    name:'Lora',    css:"'Lora',serif"},
+ {id:'pacifico',name:'Pacifico',css:"'Pacifico',cursive"},
+ {id:'geist',   name:'Geist',   css:"'Geist',sans-serif"}
+];
+var PLATE_SIZES=[{id:'s',name:'S',scale:0.82},{id:'m',name:'M',scale:1},{id:'l',name:'L',scale:1.22},{id:'xl',name:'XL',scale:1.46}];
+var _plate={theme:'saffron',font:'fraunces',size:'m'}, _plateDirty=false;
+function _pf(arr,id){ for(var i=0;i<arr.length;i++){ if(arr[i].id===id) return arr[i]; } return arr[0]; }
+function _plateApply(){
+  var T=_pf(PLATE_THEMES,_plate.theme), F=_pf(PLATE_FONTS,_plate.font), S=_pf(PLATE_SIZES,_plate.size);
+  var pl=document.getElementById('dpPlate'); if(pl){ pl.style.background=T.bg; pl.style.boxShadow='0 12px 34px '+T.edge+', inset 0 0 0 2px rgba(255,255,255,.16)'; }
+  var n=document.getElementById('dpName'); if(n){ n.style.fontFamily=F.css; n.style.color=T.ink; n.style.fontSize=(30*S.scale).toFixed(1)+'px'; n.style.letterSpacing=(F.id==='bebas'||F.id==='oswald')?'1px':'-.2px'; }
+  var c=document.getElementById('dpCity'); if(c){ c.style.color=T.sub; c.style.fontFamily=F.css; }
+  var root=document.getElementById('screen-design'); if(!root) return;
+  var a=root.querySelectorAll('[data-pt]'); for(var i=0;i<a.length;i++){ a[i].classList.toggle('sel', a[i].getAttribute('data-pt')===_plate.theme); }
+  var b=root.querySelectorAll('[data-pf]'); for(var j=0;j<b.length;j++){ b[j].classList.toggle('sel', b[j].getAttribute('data-pf')===_plate.font); }
+  var d=root.querySelectorAll('[data-pz]'); for(var k=0;k<d.length;k++){ d[k].classList.toggle('sel', d[k].getAttribute('data-pz')===_plate.size); }
+}
+function _plateSet(kind,val){ _plate[kind]=val; _plateDirty=true; _plateApply(); }
+function _plateText(which,v){ var e=document.getElementById(which==='name'?'dpName':'dpCity'); if(e) e.textContent=v||(which==='name'?'Your Home':'Add a place'); }
+
 async function renderDesign(){
   var el=document.getElementById('designBody'); if(!el) return;
   el.innerHTML='<div class="jh-wrap"><div class="sk sk-card"></div></div>';
   if(!ME){ try{ ME=await fetchProfile(myPhone()); }catch(e){} }
   var ctx=await myCircleContext();
   var home=(ctx.households&&ctx.households[0]&&ctx.households[0].h)||null;
-  var members=(ctx.households&&ctx.households[0]&&ctx.households[0].members)||[];
   _designHomeId = home?home.id:null;
-  _designStyle = (home&&home.home_style)||'apartment';
   var nm=(home&&home.household_name)|| (((ME&&ME.name||'').split(' ')[0])||'Your')+'\u2019s';
   var city=(home&&home.city)||'';
 
-  // profiles for family roster
-  var phones=members.map(function(m){ return m.member_phone||m.phone; }).filter(Boolean);
-  var profs={}; try{ profs=await fetchProfiles(phones); }catch(e){}
+  // init plate style from household / local / defaults
+  _plate={theme:'saffron',font:'fraunces',size:'m'}; _plateDirty=false;
+  try{ var raw=(home&&home.plate_style)||_lsGet('jeeto_plate_'+(_designHomeId||'x')); if(raw){ var o=JSON.parse(raw); if(o&&o.theme){ _plate={theme:o.theme||'saffron',font:o.font||'fraunces',size:o.size||'m'}; } } }catch(e){}
 
-  // header
   var header='<header class="jh-rise"><div class="jh-hd-top"><div><p class="jh-hd-grt">Design your home</p><h1 class="jh-hd-nm">Make it yours</h1></div></div></header>';
 
-  // 1) NAME PLATE
+  // 1) NAME PLATE preview + fields
   var plate='<section class="jh-rise"><div class="jh-zlabel">Name Plate</div>'+
-    '<div class="jd-plate"><div class="jd-plate-name" id="jdPlateName">'+escapeHtml(nm)+'</div><div class="jd-plate-city" id="jdPlateCity">'+escapeHtml(city||'Add a place')+'</div></div>'+
-    '<div class="jd-fields"><input class="jd-fi" id="jdName" value="'+escapeAttr(nm)+'" placeholder="Family name (e.g. Harkar\u2019s)" oninput="document.getElementById(\'jdPlateName\').textContent=this.value||\'Your Home\'">'+
-    '<input class="jd-fi" id="jdCity" value="'+escapeAttr(city)+'" placeholder="Place (e.g. Dwarka)" oninput="document.getElementById(\'jdPlateCity\').textContent=this.value||\'Add a place\'"></div>'+
+    '<div class="dp-plate" id="dpPlate"><div class="dp-name" id="dpName">'+escapeHtml(nm)+'</div><div class="dp-city" id="dpCity">'+escapeHtml(city||'Add a place')+'</div></div>'+
+    '<div class="jd-fields"><input class="jd-fi" id="jdName" value="'+escapeAttr(nm)+'" placeholder="Family name (e.g. Harkar\u2019s)" oninput="_plateText(\'name\',this.value)">'+
+    '<input class="jd-fi" id="jdCity" value="'+escapeAttr(city)+'" placeholder="Place (e.g. Dwarka)" oninput="_plateText(\'city\',this.value)"></div>'+
     '<p class="jd-hint">Shows in your top bar.</p></section>';
 
-  // 2) AVATAR
+  // 2) DOOR STYLE: colour + font + size
+  var sw=PLATE_THEMES.map(function(t){ return '<button class="dp-sw" data-pt="'+t.id+'" style="background:'+t.bg+'" onclick="_plateSet(\'theme\',\''+t.id+'\')" title="'+t.name+'"></button>'; }).join('');
+  var fo=PLATE_FONTS.map(function(z){ return '<button class="dp-font" data-pf="'+z.id+'" style="font-family:'+z.css+'" onclick="_plateSet(\'font\',\''+z.id+'\')">'+z.name+'</button>'; }).join('');
+  var si=PLATE_SIZES.map(function(z){ return '<button class="dp-size" data-pz="'+z.id+'" onclick="_plateSet(\'size\',\''+z.id+'\')">'+z.name+'</button>'; }).join('');
+  var doorStyle='<section class="jh-rise"><div class="jh-zlabel">Door Style</div>'+
+    '<div class="dp-sub">Colour</div><div class="dp-sw-row">'+sw+'</div>'+
+    '<div class="dp-sub">Font</div><div class="dp-fonts">'+fo+'</div>'+
+    '<div class="dp-sub">Size</div><div class="dp-size-seg">'+si+'</div></section>';
+
+  // 3) AVATAR (adjust tools)
   var model='<section class="jh-rise"><div class="jh-zlabel">Avatar</div>'+
     '<div class="av-stage"><div class="av-crop" id="avCrop" onpointerdown="_avDown(event)" style="touch-action:none"><img id="avImg" class="av-img" alt="" style="display:none"><div id="avEmpty" class="av-empty">Tap \u201cChoose photo\u201d</div></div></div>'+
     '<input type="range" class="av-zoom" id="avZoom" min="1" max="3" step="0.01" value="1" oninput="_avZoom(this)">'+
     '<label class="av-pick"><input type="file" accept="image/*" id="jdAvatar" onchange="_avPick(this)" hidden>'+jic('camera')+' Choose photo</label>'+
     '<p class="jd-hint">Drag to position, slide to zoom \u2014 this circle is exactly your avatar in the galaxy.</p></section>';
 
-  // 3) FAMILY (adults & kids)
-  function isKid(m){ var r=((m.role||m.relation||'')+'').toLowerCase(); return /son|daughter|child|kid|grand/.test(r); }
-  function av(m){ var p=profs[m.member_phone||m.phone]||{}; var name=p.name||m.name||'?'; return '<div class="jd-person"><span class="jd-person-av">'+(p.avatar_url?'<img src="'+escapeAttr(p.avatar_url)+'">':escapeHtml((name[0]||'?').toUpperCase()))+'</span><span class="jd-person-n">'+escapeHtml((name||'').split(' ')[0])+'</span></div>'; }
-  var adults=members.filter(function(m){return !isKid(m);}), kids=members.filter(isKid);
-  var famHtml='<section class="jh-rise"><div class="jh-zlabel">Your Family</div>';
-  famHtml+='<div class="jd-fam-grp"><div class="jd-fam-h">Adults</div><div class="jd-fam-row">'+(adults.length?adults.map(av).join(''):'<span class="jd-fam-empty">No adults yet</span>')+'<button class="jd-add" onclick="goAddFamily()">+</button></div></div>';
-  famHtml+='<div class="jd-fam-grp"><div class="jd-fam-h">Kids</div><div class="jd-fam-row">'+(kids.length?kids.map(av).join(''):'<span class="jd-fam-empty">No kids added</span>')+'<button class="jd-add" onclick="goAddFamily()">+</button></div></div></section>';
-
-  // save
   var save='<section class="jh-rise"><button class="btn" onclick="saveDesign()">Save my home</button></section>';
   var footer='<footer class="jh-footer"><p>A house becomes a home in the details.</p></footer>';
 
   el.innerHTML='<div class="jh-wrap">'+header+
     '<div class="jh-zone">'+plate+'</div>'+
+    '<div class="jh-zone">'+doorStyle+'</div>'+
     '<div class="jh-zone">'+model+'</div>'+
-    '<div class="jh-zone">'+famHtml+'</div>'+
     save+footer+'</div>';
+  setTimeout(_plateApply,0);
   _avLoaded=false; _avDirty=false; _avS=1; _avX=0; _avY=0;
   if(home&&home.cover_url){ setTimeout(function(){ _avRoot=document.getElementById('screen-design'); var ph=_avQ('.av-empty'); if(ph) ph.style.display='none'; _avLoadImg(home.cover_url,false); var z=_avQ('.av-zoom'); if(z) z.value=1; },40); }
 }
@@ -3291,6 +3340,7 @@ async function saveDesign(){
   try{ await sb.from('households').update({household_name:name, city:city||null}).eq('id',_designHomeId);
     if(_avDirty){ var _b=await _avCropBlob(); if(_b){ var _p='home-covers/'+_designHomeId+'-'+Date.now()+'.jpg'; var _up=await sb.storage.from('moments').upload(_p,_b,{contentType:'image/jpeg'}); if(!_up.error){ var _url=sb.storage.from('moments').getPublicUrl(_p).data.publicUrl; await sb.from('households').update({cover_url:_url}).eq('id',_designHomeId); } } } }
   catch(e){ toast(humanError(e,'Could not save your home.')); return; }
+  try{ var _ps=JSON.stringify(_plate||{}); _lsSet('jeeto_plate_'+_designHomeId,_ps); await sb.from('households').update({plate_style:_ps}).eq('id',_designHomeId); }catch(e){}
   toast('Your home is set \u2728');
   try{ renderHome(); }catch(e){}
   navTo('home');
