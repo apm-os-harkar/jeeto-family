@@ -966,6 +966,11 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .heart-myask{background:#FFF6F9;border:1px solid #F3D9E6;border-radius:16px;padding:16px}
 .heart-place{display:flex;align-items:center;justify-content:center;gap:8px}
 .heart-place svg{width:18px;height:18px}
+.heart-story{background:var(--jh-card);border:1px solid var(--jh-border);border-radius:16px;padding:14px;margin-top:10px}
+.heart-letter{background:var(--jh-card);border:1px solid var(--jh-border);border-radius:16px;padding:14px;margin-top:10px}
+.heart-letter.arrived{background:#FFF7E9;border-color:#F0D9A8}
+.heart-letter.sealed{opacity:.85}
+#stRecBtn.rec-on{background:#E03A7A;color:#fff}
 .hs-tog{display:flex;align-items:flex-start;gap:10px;margin:0 0 16px;font-weight:700;font-size:14px;color:var(--ink);cursor:pointer;line-height:1.35}
 .hs-tog input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#7C3AED}
 .fi-err-msg{display:none;color:#E03A7A;font-size:12.5px;font-weight:700;margin:0 2px 12px}
@@ -2310,7 +2315,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.40.0-quietask';
+var JEETO_VERSION='4.41.0-heartfull';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3196,7 +3201,28 @@ async function renderHeart(){
   var list='';
   if(others.length){ list='<section class="jh-rise"><div class="jh-zlabel">From your family</div>'+others.map(function(e){ return '<div class="heart-answer"><div class="heart-ahead"><b>'+escapeHtml(e.author_name||'Someone')+'</b><span class="heart-scopetag">'+_heartScopeLabel(e.scope)+'</span></div><p class="heart-body">'+escapeHtml(e.body)+'</p></div>'; }).join('')+'</section>'; }
   else if(mine.length){ list='<section class="jh-rise heart-empty"><p>You\u2019re the first to open your heart today. As your family answers, their words will gather here.</p></section>'; }
-  box.innerHTML='<div class="jh-wrap">'+header+myAskHtml+asksHtml+ask+composer+list+placeAsk+'</div>';
+  // ---- Stories (past) ----
+  var stories=[];
+  try{ var rs=await sb.from('heart_stories').select('*').order('created_at',{ascending:false}); stories=rs.data||[]; }catch(e){}
+  try{ var lcs=JSON.parse(_lsGet('jeeto_heart_stories')||'[]'); lcs.forEach(function(x){ if(!stories.some(function(y){ return y.id===x.id || (y.author_phone===x.author_phone && y.created_at===x.created_at); })) stories.push(x); }); }catch(e){}
+  stories=stories.filter(function(x){ return x.author_phone===sd.me || (x.scope==='family'&&sd.fam[x.author_phone]) || (x.scope==='home'&&sd.hhIds.indexOf(x.household_id)>=0); });
+  var storiesHtml='<section class="jh-rise"><div class="jh-zlabel">Family stories</div>'+
+    (stories.length?stories.map(function(x){ return '<div class="heart-story"><div class="heart-ahead"><b>'+escapeHtml(x.title||'A story')+'</b><span class="heart-scopetag">'+escapeHtml((x.author_name||'').split(' ')[0])+'</span></div>'+(x.body?'<p class="heart-body" style="margin-top:6px">'+escapeHtml(x.body)+'</p>':'')+(x.audio_url?'<audio controls preload="none" src="'+escapeAttr(x.audio_url)+'" style="width:100%;margin-top:8px"></audio>':'')+'</div>'; }).join(''):'<p class="heart-empty" style="text-align:left;padding:4px 2px">No stories yet. Ask an elder to tell one \u2014 the family keeps it forever.</p>')+
+    '<button class="btn btn-soft heart-place" style="margin-top:12px" onclick="openHeartStory()">'+jic('feather')+' Tell a story</button></section>';
+  // ---- Letters (future) ----
+  var letters=[];
+  try{ var rl=await sb.from('heart_letters').select('*').order('deliver_on',{ascending:true}); letters=rl.data||[]; }catch(e){}
+  try{ var lcl=JSON.parse(_lsGet('jeeto_heart_letters')||'[]'); lcl.forEach(function(x){ if(!letters.some(function(y){ return y.id===x.id || (y.author_phone===x.author_phone && y.created_at===x.created_at); })) letters.push(x); }); }catch(e){}
+  var _tk=_heartDateKey();
+  var arrived=letters.filter(function(x){ return x.to_phone===sd.me && x.deliver_on && String(x.deliver_on).slice(0,10)<=_tk; });
+  var waiting=letters.filter(function(x){ return x.to_phone===sd.me && x.deliver_on && String(x.deliver_on).slice(0,10)>_tk; });
+  var mySealed=letters.filter(function(x){ return x.author_phone===sd.me; });
+  var lettersHtml='<section class="jh-rise"><div class="jh-zlabel">Letters to the future</div>'+
+    arrived.map(function(x){ return '<div class="heart-letter arrived"><div class="heart-needtop">'+jic('sparkles')+'<b>A letter has arrived for you</b></div><p class="heart-body" style="margin-top:6px">From '+escapeHtml(x.author_name||'someone who loves you')+'</p><button class="btn" style="margin-top:10px" onclick="openLetter(\''+escapeAttr(x.id||'')+'\')">Open it</button></div>'; }).join('')+
+    waiting.map(function(x){ return '<div class="heart-letter sealed"><div class="heart-needtop">'+jic('sparkles')+'<b>A sealed letter awaits you</b></div><p class="heart-body" style="margin-top:6px">Opens on '+_fmtDate(x.deliver_on)+'</p></div>'; }).join('')+
+    (mySealed.length?('<div class="heart-lbl" style="margin-top:12px">Letters you sealed</div>'+mySealed.map(function(x){ return '<div class="heart-letter"><b>'+escapeHtml(x.title||'A letter')+'</b><p class="heart-body" style="margin-top:4px">To '+escapeHtml(x.to_name||'the future')+' \u00b7 opens '+_fmtDate(x.deliver_on)+'</p></div>'; }).join('')):'')+
+    '<button class="btn btn-soft heart-place" style="margin-top:12px" onclick="openHeartLetter()">'+jic('feather')+' Write a letter to the future</button></section>';
+  box.innerHTML='<div class="jh-wrap">'+header+myAskHtml+asksHtml+ask+composer+list+storiesHtml+lettersHtml+placeAsk+'</div>';
 }
 async function submitHeartAnswer(){
   var ta=document.getElementById('heartInput'); var t=((ta&&ta.value)||'').trim();
@@ -3238,6 +3264,71 @@ async function withdrawHeartAsk(id){
   try{ var k='jeeto_heart_asks'; var arr=JSON.parse(_lsGet(k)||'[]').filter(function(a){ return a.id!==id; }); _lsSet(k,JSON.stringify(arr)); }catch(e){}
   toast('Withdrawn'); renderHeart();
 }
+/* ===== THE HEART · helpers + Stories (past) + Letters (future) ===== */
+function _fmtDate(d){ try{ var dt=new Date(d); if(isNaN(dt)) return String(d||''); return dt.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return String(d||''); } }
+async function _heartPeople(){ var me=myPhone(), seen={}, out=[];
+  try{ var ctx=await myCircleContext(); (ctx.households||[]).forEach(function(h){ (h.members||[]).forEach(function(m){ var p=(m&&m.phone)||''; var n=(m&&m.name)||''; if(p&&p!==me&&!seen[p]){ seen[p]=1; out.push({phone:p,name:n||p}); } }); }); }catch(e){}
+  try{ var rels=await loadRelationships(); rels.forEach(function(c){ var v=relView(c,me); if(v&&v.other&&!seen[v.other]){ seen[v.other]=1; var nm=(v.name)||(window.__nameByPhone&&window.__nameByPhone[v.other])||v.other; out.push({phone:v.other,name:nm}); } }); }catch(e){}
+  return out; }
+/* ---- Stories ---- */
+var _recMR=null,_recChunks=[],_recBlob=null,_recURL='';
+var HEART_STORY_PROMPTS=['Tell us about the house you grew up in.','How did you and your partner meet?','A lesson your parents gave you.','The day a child was born.','A time the family came through something hard.','Your happiest memory with us.'];
+function _heartStoryPick(p){ var t=document.getElementById('stTitle'); if(t&&!t.value) t.value=p; }
+async function _heartRecStart(){ try{ var stream=await navigator.mediaDevices.getUserMedia({audio:true}); _recChunks=[]; _recBlob=null; _recMR=new MediaRecorder(stream); _recMR.ondataavailable=function(e){ if(e.data&&e.data.size) _recChunks.push(e.data); }; _recMR.onstop=function(){ _recBlob=new Blob(_recChunks,{type:(_recChunks[0]&&_recChunks[0].type)||'audio/webm'}); _recURL=URL.createObjectURL(_recBlob); var pv=document.getElementById('stPreview'); if(pv) pv.innerHTML='<audio controls src="'+_recURL+'" style="width:100%"></audio>'; try{ stream.getTracks().forEach(function(t){ t.stop(); }); }catch(_){} var b=document.getElementById('stRecBtn'); if(b){ b.textContent='\ud83c\udf99 Re-record'; b.classList.remove('rec-on'); } }; _recMR.start(); var b=document.getElementById('stRecBtn'); if(b){ b.textContent='\u23f9 Stop'; b.classList.add('rec-on'); } }catch(e){ toast('Allow mic access to record your voice.'); } }
+function _heartRecToggle(){ if(_recMR && _recMR.state==='recording'){ try{ _recMR.stop(); }catch(e){} } else { _heartRecStart(); } }
+function openHeartStory(){ var m=document.getElementById('homeModal'); if(!m) return; _recBlob=null;_recURL='';_recChunks=[];_heartScope='family';
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:4px">\ud83d\udcd6 Tell a story</div>'+
+    '<p style="text-align:center;color:var(--ink2);font-size:13px;margin-bottom:12px">A memory the family keeps forever. Speak it or write it.</p>'+
+    '<div class="field-label">Need a spark?</div><div class="heart-scoperow" style="flex-wrap:wrap;margin-bottom:8px">'+HEART_STORY_PROMPTS.slice(0,4).map(function(p){ return '<button type="button" class="heart-scope" style="flex:auto" onclick="_heartStoryPick(\''+escapeAttr(p)+'\')">'+escapeHtml(p.split(' ').slice(0,3).join(' '))+'\u2026</button>'; }).join('')+'</div>'+
+    '<div class="field-label">Title</div><input class="fi" id="stTitle" placeholder="Give your story a name" style="margin-bottom:10px">'+
+    '<div class="field-label">Write it (optional)</div><textarea class="fi" id="stBody" rows="4" placeholder="Tell it in your words\u2026" style="min-height:100px;margin-bottom:10px"></textarea>'+
+    '<div class="field-label">\u2026 or record your voice</div><button type="button" class="btn btn-soft" id="stRecBtn" onclick="_heartRecToggle()">\ud83c\udf99 Record</button><div id="stPreview" style="margin-top:10px"></div>'+
+    '<div class="field-label" style="margin-top:12px">Who should keep it?</div><div class="heart-scoperow">'+['family|Whole family','home|This home'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
+    '<button class="btn" style="margin-top:14px" onclick="submitHeartStory()">Keep this story \u2764</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show'); }
+async function submitHeartStory(){ var title=((document.getElementById('stTitle')||{}).value||'').trim(); var body=((document.getElementById('stBody')||{}).value||'').trim();
+  if(!title){ toast('Give your story a title.'); return; }
+  if(!body && !_recBlob){ toast('Write it or record it first.'); return; }
+  var me=myPhone(); var nm=(ME&&ME.name)||'You'; var scope=(_heartScope==='home')?'home':'family'; var hid=null;
+  if(scope==='home'){ try{ var ctx=await myCircleContext(); hid=(ctx.households&&ctx.households[0]&&ctx.households[0].h&&ctx.households[0].h.id)||null; }catch(e){} if(!hid) scope='family'; }
+  var audio_url=null;
+  if(_recBlob){ try{ var ext=(_recBlob.type.indexOf('mp4')>=0)?'mp4':'webm'; var p=me+'/story-'+Date.now()+'.'+ext; var up=await sb.storage.from('moments').upload(p,_recBlob,{upsert:true,contentType:_recBlob.type||'audio/webm'}); if(up.error) throw up.error; audio_url=sb.storage.from('moments').getPublicUrl(p).data.publicUrl; }catch(e){ console.warn('story audio upload',e); } }
+  var row={ id:'sty_'+Date.now(), author_phone:me, author_name:nm, title:title, body:body, audio_url:audio_url, scope:scope, household_id:hid, created_at:new Date().toISOString() };
+  try{ var ins=await sb.from('heart_stories').insert({author_phone:me,author_name:nm,title:title,body:body,audio_url:audio_url,scope:scope,household_id:hid}); if(ins&&ins.error) throw ins.error; }catch(e){ console.warn('story insert (run jeeto-heart-stories.sql?)',e); }
+  try{ var k='jeeto_heart_stories'; var arr=JSON.parse(_lsGet(k)||'[]'); arr.push(row); _lsSet(k,JSON.stringify(arr)); }catch(e){}
+  closeHomeModal(); toast('Story kept forever \u2764'); navTo('heart'); }
+/* ---- Letters ---- */
+async function openHeartLetter(){ var m=document.getElementById('homeModal'); if(!m) return; var ppl=await _heartPeople();
+  var opts='<option value="">\u2014 choose \u2014</option>'+ppl.map(function(p){ return '<option value="'+escapeAttr(p.phone)+'|'+escapeAttr(p.name)+'">'+escapeHtml(p.name)+'</option>'; }).join('');
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:4px">\u2709\ufe0f A letter to the future</div>'+
+    '<p style="text-align:center;color:var(--ink2);font-size:13px;margin-bottom:14px">Seal a message to be opened on a future day. Anticipation is its own kind of love.</p>'+
+    '<div class="field-label">To someone in your family</div><select class="fi" id="ltTo" style="margin-bottom:10px">'+opts+'</select>'+
+    '<div class="field-label">\u2026 or a name (e.g. a future grandchild)</div><input class="fi" id="ltToName" placeholder="Name" style="margin-bottom:10px">'+
+    '<div class="field-label">Title</div><input class="fi" id="ltTitle" placeholder="e.g. On your 18th birthday" style="margin-bottom:10px">'+
+    '<div class="field-label">Your letter</div><textarea class="fi" id="ltBody" rows="5" placeholder="Write from the heart\u2026" style="min-height:120px;margin-bottom:10px"></textarea>'+
+    '<div class="field-label">Open on</div><input class="fi" id="ltDate" type="date" style="margin-bottom:14px">'+
+    '<button class="btn" onclick="submitHeartLetter()">Seal it \ud83d\udd12</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show'); }
+async function submitHeartLetter(){ var sel=((document.getElementById('ltTo')||{}).value||''); var toName=((document.getElementById('ltToName')||{}).value||'').trim();
+  var toPhone=null, toN=toName; if(sel){ var parts=sel.split('|'); toPhone=parts[0]; toN=toName||parts[1]; }
+  var title=((document.getElementById('ltTitle')||{}).value||'').trim(); var body=((document.getElementById('ltBody')||{}).value||'').trim(); var date=((document.getElementById('ltDate')||{}).value||'');
+  if(!body){ toast('Write your letter first \u2709\ufe0f'); return; }
+  if(!date){ toast('Pick when it should open.'); return; }
+  if(date<=_heartDateKey()){ toast('Choose a future date.'); return; }
+  if(!toN) toN='the future';
+  var me=myPhone(); var nm=(ME&&ME.name)||'You';
+  var row={ id:'let_'+Date.now(), author_phone:me, author_name:nm, to_phone:toPhone, to_name:toN, title:title, body:body.slice(0,4000), deliver_on:date, opened:false, created_at:new Date().toISOString() };
+  try{ var ins=await sb.from('heart_letters').insert({author_phone:me,author_name:nm,to_phone:toPhone,to_name:toN,title:title,body:row.body,deliver_on:date,opened:false}); if(ins&&ins.error) throw ins.error; }catch(e){ console.warn('letter insert (run jeeto-heart-letters.sql?)',e); }
+  try{ var k='jeeto_heart_letters'; var arr=JSON.parse(_lsGet(k)||'[]'); arr.push(row); _lsSet(k,JSON.stringify(arr)); }catch(e){}
+  closeHomeModal(); toast('Sealed \ud83d\udd12 Opens on '+_fmtDate(date)); navTo('heart'); }
+async function openLetter(id){ var L=null;
+  try{ var r=await sb.from('heart_letters').select('*').eq('id',id).maybeSingle(); L=r.data; }catch(e){}
+  if(!L){ try{ var arr=JSON.parse(_lsGet('jeeto_heart_letters')||'[]'); L=arr.filter(function(x){ return x.id===id; })[0]; }catch(e){} }
+  if(!L){ toast('Letter not found.'); return; }
+  var m=document.getElementById('homeModal'); if(!m) return;
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:4px">A letter for you</div><p style="text-align:center;color:var(--ink2);font-size:13px;margin-bottom:14px">Written '+_fmtDate(L.created_at)+' by '+escapeHtml(L.author_name||'someone who loves you')+'</p><h3 style="margin:0 0 8px">'+escapeHtml(L.title||'')+'</h3><p class="heart-body">'+escapeHtml(L.body||'')+'</p><div style="height:14px"></div><button class="btn" onclick="closeHomeModal()">Close</button></div>';
+  m.classList.add('show');
+  try{ if(String(id).indexOf('let_')!==0) await sb.from('heart_letters').update({opened:true}).eq('id',id); }catch(e){} }
 async function renderRituals(){
   var box=document.getElementById('ritualsBody'); if(!box) return;
   box.innerHTML='<div class="sk sk-card"></div><div class="sk sk-card"></div>';
