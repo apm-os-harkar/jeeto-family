@@ -942,6 +942,17 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .mv-toggle button{flex:1;padding:10px;border:1px solid var(--line);border-radius:13px;background:var(--card);font-family:inherit;font-weight:800;font-size:13px;color:var(--ink2);cursor:pointer}
 .mv-toggle button.on{background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border-color:transparent}
 .mg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+
+.hs-tog{display:flex;align-items:flex-start;gap:10px;margin:0 0 16px;font-weight:700;font-size:14px;color:var(--ink);cursor:pointer;line-height:1.35}
+.hs-tog input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#7C3AED}
+.fi-err-msg{display:none;color:#E03A7A;font-size:12.5px;font-weight:700;margin:0 2px 12px}
+.fi.fi-bad{border-color:#E03A7A !important;box-shadow:0 0 0 3px rgba(224,58,122,.15)}
+.gv-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.jd-zlabel2{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--jh-muted-fg);margin:14px 0 2px}
+.gv-chip{padding:8px 14px;border-radius:20px;border:1px solid var(--jh-border);background:var(--jh-card);font-family:inherit;font-weight:700;font-size:13px;color:var(--jh-fg);cursor:pointer}
+.gv-chip.on{background:#7C3AED;color:#fff;border-color:transparent}
+.gv-prev{padding:8px 14px;border-radius:20px;border:1px solid #7C3AED;background:transparent;color:#7C3AED;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer}
+.jh-sky-hear{margin-left:8px;border:none;background:rgba(124,58,237,.12);color:#7C3AED;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px;vertical-align:middle}
 .build-stamp{position:fixed;left:8px;bottom:78px;z-index:400;font-size:10px;font-weight:800;letter-spacing:.3px;color:rgba(40,24,38,.5);background:rgba(255,255,255,.72);padding:3px 8px;border-radius:9px;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .pz{position:fixed;inset:0;z-index:300;background:rgba(8,5,12,.95);display:flex;flex-direction:column;touch-action:none}
 .pz-x{position:absolute;top:14px;right:14px;z-index:5;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;border:none;font-size:18px;cursor:pointer}
@@ -2275,7 +2286,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.35.0-imageshare';
+var JEETO_VERSION='4.38.0-greeting';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2446,6 +2457,7 @@ function dismissSplash(){ var s=document.getElementById('splash'); if(!s) return
 async function init(){
   ensureSB();
   try{ var _bs=document.getElementById('buildStamp'); if(_bs) _bs.textContent='LIVE v'+JEETO_VERSION; }catch(e){}
+  try{ if('speechSynthesis' in window){ _loadVoices(); window.speechSynthesis.onvoiceschanged=_loadVoices; } }catch(e){}
   try{ setTimeout(dismissSplash, 1950); }catch(e){}
   var fr=document.getElementById('frRel'); if(fr) fr.innerHTML=relOptions('');
   var phone=myPhone();
@@ -4044,8 +4056,9 @@ function openSkyvosBubble(){
   var sky=window.__jhSky||{line:'I\u2019m here, quietly watching over your home.'};
   var m=document.getElementById('homeModal'); if(!m) return;
   var cta=(sky.cta&&sky.cta.fn)?'<button class="btn" onclick="closeHomeModal();'+sky.cta.fn+'">'+escapeHtml(sky.cta.label||'Open')+'</button><div style="height:8px"></div>':'';
-  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="skyb-head">'+skyOrb({mood:'purple',sparkle:true})+'<div><div class="skyb-name">Skyvos</div><div class="skyb-sub">watching over your home</div></div></div><p class="skyb-line">'+escapeHtml(sky.line)+'</p>'+cta+'<button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="skyb-head">'+skyOrb({mood:'purple',sparkle:true})+'<div><div class="skyb-name">'+_G()+'</div><div class="skyb-sub">watching over your home</div></div></div><p class="skyb-line">'+escapeHtml(sky.line)+'</p><button class="btn btn-soft" style="margin-bottom:8px" onclick="guardianSpeak(\''+escapeAttr(sky.line)+'\')">\ud83d\udd0a Hear '+_G()+'</button>'+cta+'<button class="btn btn-soft" onclick="closeHomeModal()">Close</button></div>';
   m.classList.add('show');
+  try{ guardianSpeak(sky.line); }catch(e){}
 }
 var _designStyle='apartment', _designHomeId=null;
 function selDesignStyle(id){ _designStyle=id; var els=document.querySelectorAll('.jd-model'); for(var i=0;i<els.length;i++){ els[i].classList.toggle('on', els[i].getAttribute('data-style')===id); } var lbl=document.getElementById('jdModelLabel'); if(lbl) lbl.textContent=homeStyleLabel(id); }
@@ -4092,7 +4105,7 @@ async function renderDesign(){
   if(!ME){ try{ ME=await fetchProfile(myPhone()); }catch(e){} }
   var ctx=await myCircleContext();
   var home=(ctx.households&&ctx.households[0]&&ctx.households[0].h)||null;
-  _designHomeId = home?home.id:null; __guardian=guardianName(ctx);
+  _designHomeId = home?home.id:null; __guardian=guardianName(ctx); __gvoice=guardianVoice(ctx);
   var nm=(home&&home.household_name)|| (((ME&&ME.name||'').split(' ')[0])||'Your')+'\u2019s';
   var city=(home&&home.city)||'';
 
@@ -4126,10 +4139,12 @@ async function renderDesign(){
     '<p class="jd-hint">Drag to position, slide to zoom \u2014 this circle is exactly your avatar in the galaxy.</p></section>';
 
   var _gv=(home&&home.guardian_name)||_lsGet('jeeto_guardian_'+(_designHomeId||'x'))||_lsGet('jeeto_guardian')||'';
+  __gvoice=_lsGet('jeeto_gvoice_'+(_designHomeId||'x'))||_lsGet('jeeto_gvoice')||'warm';
   var guardianSec='<section class="jh-rise"><div class="jh-zlabel">Your Guardian</div>'+
     '<div class="gd-row"><span class="gd-orb">'+skyOrb({mood:'purple',sparkle:true})+'</span>'+
     '<input class="jd-fi" id="jdGuardian" value="'+escapeAttr(_gv)+'" placeholder="Skyvos" maxlength="24" oninput="_gdPrev(this.value)"></div>'+
-    '<p class="jd-hint">Name your home\u2019s AI family member \u2014 shown as <b id="gdPrevName">'+escapeHtml(_gv||'Skyvos')+'</b> across your home. Leave blank for Skyvos.</p></section>';
+    '<p class="jd-hint">Name your home\u2019s AI family member \u2014 shown as <b id="gdPrevName">'+escapeHtml(_gv||'Skyvos')+'</b> across your home. Leave blank for Skyvos.</p>'+
+    '<div class="jd-zlabel2">Voice</div><div class="gv-row" id="gdVoice">'+GUARD_VOICES.map(function(gv){ return '<button type="button" class="gv-chip'+(__gvoice===gv.id?' on':'')+'" data-v="'+gv.id+'" onclick="_gdVoiceSet(\''+gv.id+'\')">'+escapeHtml(gv.name)+'</button>'; }).join('')+'<button type="button" class="gv-prev" onclick="_gdVoicePreview()">\ud83d\udd0a Hear</button></div></section>';
 
   var save='<section class="jh-rise"><button class="btn" onclick="saveDesign()">Save my home</button></section>';
   var footer='<footer class="jh-footer"><p>A house becomes a home in the details.</p></footer>';
@@ -4173,6 +4188,7 @@ async function saveDesign(){
   // guardian name (per home)
   var _gn=((document.getElementById('jdGuardian')||{}).value||'').trim().slice(0,24);
   try{ _lsSet('jeeto_guardian_'+_designHomeId,_gn); _lsSet('jeeto_guardian',_gn); }catch(e){}
+  try{ _lsSet('jeeto_gvoice_'+_designHomeId,__gvoice); _lsSet('jeeto_gvoice',__gvoice); }catch(e){}
   try{ await sb.from('households').update({guardian_name:_gn||null}).eq('id',_designHomeId); }catch(e){}
   __guardian=_gn||'Skyvos';
   try{ var _ps=JSON.stringify(_plate||{}); _lsSet('jeeto_plate_'+_designHomeId,_ps); }catch(e){}
@@ -4646,6 +4662,31 @@ var __guardian='Skyvos';
 function guardianName(ctx){ var h=(ctx&&ctx.households&&ctx.households[0]&&ctx.households[0].h)||null; var g=(h&&h.guardian_name)|| _lsGet('jeeto_guardian_'+((h&&h.id)||'x')) || _lsGet('jeeto_guardian') || 'Skyvos'; g=String(g||'Skyvos').trim().slice(0,24); return g||'Skyvos'; }
 function _G(){ return escapeHtml(__guardian||'Skyvos'); }
 function _gdPrev(v){ var e=document.getElementById('gdPrevName'); if(e) e.textContent=(String(v||'').trim().slice(0,24))||'Skyvos'; }
+/* ===== Guardian voice (browser speech — free, offline, no API) ===== */
+var GUARD_VOICES=[{id:'warm',name:'Warm',rate:0.97,pitch:1.05},{id:'gentle',name:'Gentle',rate:0.9,pitch:1.14},{id:'bright',name:'Bright',rate:1.06,pitch:1.2},{id:'deep',name:'Deep',rate:0.92,pitch:0.82}];
+var __gvoice='warm', _gVoiceObj=null;
+function _loadVoices(){ try{ if(!('speechSynthesis' in window)) return; _gVoiceObj=_pickBaseVoice(); }catch(e){} }
+function _pickBaseVoice(){ try{ var vs=window.speechSynthesis.getVoices()||[]; if(!vs.length) return null; var pref=['en-in','en-gb','en-au','en-us','en']; for(var p=0;p<pref.length;p++){ for(var i=0;i<vs.length;i++){ if((vs[i].lang||'').toLowerCase().indexOf(pref[p])===0) return vs[i]; } } return vs[0]; }catch(e){ return null; } }
+function guardianVoice(ctx){ var h=(ctx&&ctx.households&&ctx.households[0]&&ctx.households[0].h)||null; var v=_lsGet('jeeto_gvoice_'+((h&&h.id)||'x'))||_lsGet('jeeto_gvoice')||'warm'; return v; }
+function _gVal(id){ for(var i=0;i<GUARD_VOICES.length;i++){ if(GUARD_VOICES[i].id===id) return GUARD_VOICES[i]; } return GUARD_VOICES[0]; }
+function _gStripEmoji(t){ return String(t||'').replace(/[\u2190-\u21FF\u2300-\u27BF\u2B00-\u2BFF\uFE0F\uD83C-\uDBFF\uDC00-\uDFFF]/g,'').replace(/\s+/g,' ').trim(); }
+function guardianSpeak(text, voiceId){
+  try{
+    if(!('speechSynthesis' in window)){ toast('Voice isn\u2019t supported on this device.'); return; }
+    var ss=window.speechSynthesis; ss.cancel();
+    var clean=_gStripEmoji(text); if(!clean) return;
+    var u=new SpeechSynthesisUtterance(clean);
+    var v=_gVoiceObj||_pickBaseVoice(); if(v){ u.voice=v; u.lang=v.lang||'en-IN'; } else { u.lang='en-IN'; }
+    var per=_gVal(voiceId||__gvoice||'warm'); u.rate=per.rate; u.pitch=per.pitch; u.volume=1;
+    ss.speak(u);
+  }catch(e){}
+}
+function _gdVoiceSet(id){ __gvoice=id; var chips=document.querySelectorAll('#gdVoice .gv-chip'); for(var i=0;i<chips.length;i++){ chips[i].classList.toggle('on', chips[i].getAttribute('data-v')===id); } guardianSpeak('Hi, I\u2019m '+((document.getElementById('jdGuardian')||{}).value||'Skyvos')+'. I\u2019m here, watching over your home.', id); }
+function _gdVoicePreview(){ guardianSpeak('Hi, I\u2019m '+((document.getElementById('jdGuardian')||{}).value||'Skyvos')+'. I\u2019ll keep your family close.', __gvoice); }
+var _greeted=false, _greetWired=false;
+function _meFirst(){ try{ var u=(typeof ME!=='undefined'&&ME)||{}; var x=((u.name||'').split(' ')[0])||''; return x?(x.charAt(0).toUpperCase()+x.slice(1)):''; }catch(e){ return ''; } }
+function guardianGreet(){ if(_greeted) return; if(_lsGet('jeeto_greet_off')==='1') return; if(!('speechSynthesis' in window)) return; var nm=_meFirst(); if(!nm) return; _greeted=true; try{ var h=new Date().getHours(); var g=h<5?'Still up':h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night'; guardianSpeak(g+', '+nm+'. Welcome home.'); }catch(e){} }
+function _wireGreet(){ try{ if(_greetWired||_greeted) return; if(_lsGet('jeeto_greet_off')==='1') return; _greetWired=true; document.addEventListener('pointerdown', guardianGreet, {once:true}); }catch(e){} }
 window.__nameByPhone=window.__nameByPhone||{};
 function _idxNames(profs){ if(!profs) return; window.__nameByPhone=window.__nameByPhone||{}; Object.keys(profs).forEach(function(p){ if(profs[p]&&profs[p].name) window.__nameByPhone[p]=profs[p].name; }); }
 function reachP(phone){ reachOut(phone, (window.__nameByPhone&&window.__nameByPhone[phone])||''); }
@@ -4842,7 +4883,7 @@ async function buildHome(){
     '<div class="jh-hd-actions"><button class="jh-gear" onclick="openHomeSettings()" aria-label="Settings">'+jic('settings')+'</button><div class="jh-pill">'+jic('flame')+'<span>'+escapeHtml(welcome.mood.label)+'</span></div></div></div>'+
     '<div class="jh-hd-id">'+_np+
     '<div class="jh-hd-wx">'+jic(welcome.night?'moon':'sun')+'<span>'+escapeHtml(welcome.time)+'</span></div></div></header>';
-  _lastCtx=ctx; __guardian=guardianName(ctx);
+  _lastCtx=ctx; __guardian=guardianName(ctx); __gvoice=guardianVoice(ctx); _wireGreet();
   var _meP=myPhone(), _fam=[];
   try{ Object.keys(profs).forEach(function(p){ if(p!==_meP && profs[p]){ _fam.push({phone:p,name:((profs[p].name||'Someone').split(' ')[0]||'Someone'),last:profs[p].last_seen||'',dob:profs[p].dob||''}); } }); }catch(e){}
   var _quiet=null; _fam.forEach(function(x){ if(!_quiet) _quiet=x; else if((x.last||'')<(_quiet.last||'')) _quiet=x; });
@@ -4876,7 +4917,7 @@ async function buildHome(){
     (note.fromSkyvos?'<p class="jh-note-sky">'+jic('sparkles')+'Written by '+_G()+', because no one left a note today</p>':'')+'</div></section>';
 
   /* 6) SKYVOS SUGGESTS */
-  var skyH='<section class="jh-rise" aria-label="Tonight, Skyvos suggests"><div class="jh-sky"><div class="jh-sky-k">'+jic('sparkles')+'Tonight \u00b7 '+_G()+' Suggests</div><p class="jh-sky-b">'+escapeHtml(skyvos.line)+'</p><button class="jh-sky-btn" onclick="'+skyvos.cta.fn+'">'+escapeHtml(skyvos.cta.label)+jic2('arrow','')+'</button></div></section>';
+  var skyH='<section class="jh-rise" aria-label="Tonight, Skyvos suggests"><div class="jh-sky"><div class="jh-sky-k">'+jic('sparkles')+'Tonight \u00b7 '+_G()+' Suggests<button class="jh-sky-hear" onclick="guardianSpeak(\''+escapeAttr(skyvos.line)+'\')" aria-label="Hear">\ud83d\udd0a</button></div><p class="jh-sky-b">'+escapeHtml(skyvos.line)+'</p><button class="jh-sky-btn" onclick="'+skyvos.cta.fn+'">'+escapeHtml(skyvos.cta.label)+jic2('arrow','')+'</button></div></section>';
 
   /* 7) WEEKLY REFLECTION */
   var wrStats=reflection.stats.map(function(s){ return '<div class="jh-wr-stat"><span class="jh-wr-si">'+jic(s.icon)+'</span><p class="jh-wr-sv">'+escapeHtml(s.value)+'</p><p class="jh-wr-sl">'+escapeHtml(s.label)+'</p></div>'; }).join('');
@@ -5093,6 +5134,7 @@ function openHomeSettings(){
   m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:2px">⚙️ Home Settings</div>'+
     '<div style="text-align:center;font-size:11px;color:var(--ink3);font-weight:700;margin-bottom:16px">Jeeto OS v'+JEETO_VERSION+' · build '+JEETO_BUILD+'</div>'+
     '<div class="field-label">Greeting line (optional)</div><input class="fi" id="hsGreet" value="'+escapeAttr(g)+'" placeholder="Welcome home ❤️" style="margin-bottom:14px">'+
+    '<label class="hs-tog"><input type="checkbox" id="hsGreetVoice" '+(_lsGet('jeeto_greet_off')==='1'?'':'checked')+' onchange="_lsSet(\'jeeto_greet_off\', this.checked?\'0\':\'1\'); if(this.checked){_greeted=false;_greetWired=false;_wireGreet();}"><span>Guardian voice greeting when you open the app</span></label>'+
     '<div class="field-label">Accent</div><div class="circle-opts">'+opt('rani','Rani Pink','#E03A7A')+opt('violet','Violet','#7C3AED')+opt('leaf','Leaf Green','#2BA84A')+'</div>'+
     '<button class="btn" onclick="saveHomeSettings()">Save</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   m.classList.add('show');
@@ -6280,8 +6322,9 @@ function buildCaptureModal(){
     '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">❤️ Capture a Moment</div>'+
     '<div class="field-label">Photos, video, voice or documents</div>'+
     '<div class="cap-files" id="capFiles"></div>'+
-    '<div class="field-label" style="margin-top:14px">Moment title</div>'+
-    '<input class="fi" id="capTitle" placeholder="e.g. Sunday Lunch" style="margin-bottom:13px">'+
+    '<div class="field-label" style="margin-top:14px">Moment title <span style="color:#E03A7A">*</span></div>'+
+    '<input class="fi" id="capTitle" placeholder="e.g. Sunday Lunch" oninput="_capClearErr()" style="margin-bottom:6px">'+
+    '<div id="capTitleErr" class="fi-err-msg">Please give your moment a title to save it.</div>'+
     '<div class="field-label">What made this moment special?</div>'+
     '<textarea class="fi" id="capDesc" rows="5" placeholder="Describe what happened…" style="margin-bottom:13px;resize:vertical;min-height:120px;line-height:1.5"></textarea>'+
     '<div class="field-label">When did it happen?</div>'+
@@ -6324,9 +6367,11 @@ function pickCircle(c){
       : '<div class="muted" style="font-size:13px;margin-bottom:10px">Build a Bridge first to use this circle.</div>';
   } else { extra.innerHTML=''; }
 }
+function _capTitleError(){ var i=document.getElementById('capTitle'), e=document.getElementById('capTitleErr'); if(i){ i.classList.add('fi-bad'); try{ i.focus(); i.scrollIntoView({block:'center',behavior:'smooth'}); }catch(_){} } if(e) e.style.display='block'; toast('Add a title for your moment \u2728'); }
+function _capClearErr(){ var i=document.getElementById('capTitle'), e=document.getElementById('capTitleErr'); if(i) i.classList.remove('fi-bad'); if(e) e.style.display='none'; }
 async function submitMoment(){
   var title=(document.getElementById('capTitle').value||'').trim();
-  if(!title){ toast('Give your Moment a title.'); return; }
+  if(!title){ _capTitleError(); return; }
   if(!CAP.type){ toast('Choose a Moment circle.'); return; }
   var desc=(document.getElementById('capDesc').value||'').trim();
   var date=(document.getElementById('capDate').value||'')||null;
