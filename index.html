@@ -943,6 +943,29 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .mv-toggle button.on{background:linear-gradient(135deg,var(--saffron),var(--rani));color:#fff;border-color:transparent}
 .mg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
 
+.heart-ask{background:linear-gradient(135deg,#FFF1F5,#FBE9FF);border:1px solid #F3D9E6;border-radius:20px;padding:18px}
+.heart-asktop{display:flex;align-items:center;gap:10px}
+.heart-asktop .sky-orb{width:34px;height:34px;flex:none}
+.heart-askwho{font-weight:800;font-size:13px;color:#9B3B6E;flex:1}
+.heart-hear{border:none;background:rgba(155,59,110,.12);color:#9B3B6E;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:13px}
+.heart-q{font-family:var(--jh-serif,Georgia,serif);font-size:21px;line-height:1.35;color:var(--jh-fg);margin:12px 2px 0}
+.heart-scoperow{display:flex;gap:8px;margin:12px 0}
+.heart-scope{flex:1;padding:10px 6px;border-radius:13px;border:1px solid var(--jh-border);background:var(--jh-card);font-family:inherit;font-weight:700;font-size:12.5px;color:var(--jh-fg);cursor:pointer}
+.heart-scope.on{background:#9B3B6E;color:#fff;border-color:transparent}
+.heart-answer{background:var(--jh-card);border:1px solid var(--jh-border);border-radius:16px;padding:14px;margin-top:10px}
+.heart-ahead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.heart-scopetag{display:inline-block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#9B3B6E;background:rgba(155,59,110,.1);padding:3px 8px;border-radius:8px}
+.heart-body{font-size:15px;line-height:1.5;color:var(--jh-fg);white-space:pre-wrap}
+.heart-mine{background:var(--jh-card);border:1px solid var(--jh-border);border-radius:16px;padding:16px}
+.heart-lbl{color:var(--jh-muted-fg);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.heart-empty{text-align:center;color:var(--jh-muted-fg);font-size:14px;padding:8px 4px}
+.heart-need{background:#FFF6F9;border:1px solid #F3D9E6;border-radius:16px;padding:16px;margin-top:10px}
+.heart-needtop{display:flex;align-items:center;gap:8px;color:#9B3B6E;font-weight:800}
+.heart-needtop svg{width:18px;height:18px}
+.heart-needmsg{font-size:16px;line-height:1.4;color:var(--jh-fg);margin-top:8px;font-weight:600}
+.heart-myask{background:#FFF6F9;border:1px solid #F3D9E6;border-radius:16px;padding:16px}
+.heart-place{display:flex;align-items:center;justify-content:center;gap:8px}
+.heart-place svg{width:18px;height:18px}
 .hs-tog{display:flex;align-items:flex-start;gap:10px;margin:0 0 16px;font-weight:700;font-size:14px;color:var(--ink);cursor:pointer;line-height:1.35}
 .hs-tog input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#7C3AED}
 .fi-err-msg{display:none;color:#E03A7A;font-size:12.5px;font-weight:700;margin:0 2px 12px}
@@ -1431,6 +1454,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <!-- HOME -->
   <section class="screen has-nav" id="screen-home"><div class="jh" id="homeBody"></div></section>
   <section class="screen has-nav" id="screen-design"><div class="jh" id="designBody"></div></section>
+  <section class="screen has-nav" id="screen-heart"><div class="jh" id="heartBody"></div></section>
   <section class="screen has-nav" id="screen-myworld"><div class="jh" id="myWorldBody"></div></section>
   <section class="screen has-nav" id="screen-across"><div class="jh" id="acrossBody"></div></section>
   <section class="screen has-nav" id="screen-loop"><div class="jh" id="loopBody"></div></section>
@@ -2286,7 +2310,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.38.0-greeting';
+var JEETO_VERSION='4.40.0-quietask';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3087,6 +3111,133 @@ function ritualPicks(ctx){
 /* ---------- dashboard ---------- */
 var RTAB='active';
 function ritualTab(t){ RTAB=t; renderRituals(); }
+/* ===== THE HEART — prompted vulnerability, witnessed by family (Aron "36 questions", family-flavored) ===== */
+var HEART_Q=[
+ "What's a small thing someone here did that you never thanked them for?",
+ "When did you last feel truly proud of someone in this family?",
+ "What's a memory of us that always makes you smile?",
+ "Who in this family do you wish you talked to more \u2014 and why?",
+ "What's something you're going through that you haven't told us?",
+ "What did home smell like when you were a child?",
+ "What's a quality you got from your mother or father?",
+ "When did you last feel really seen by someone here?",
+ "What's a worry you quietly carry for the people you love?",
+ "What's something you want this family to never forget?",
+ "Who taught you what love looks like?",
+ "What's a moment you wish you could live again with us?",
+ "What do you find hard to say out loud to the people here?",
+ "What's the bravest thing someone in this family has done?",
+ "What tradition do you hope we keep forever?",
+ "When were you most afraid, and who helped you through it?",
+ "What's something you're grateful for today, however small?",
+ "What do you hope the youngest of us remembers about you?",
+ "In what way has this family changed you?",
+ "Who do you miss right now?",
+ "What's a dream you've never told anyone here?",
+ "What does 'family' mean to you, in one honest sentence?",
+ "When did someone here forgive you \u2014 and how did it feel?",
+ "What song, smell, or place brings us back to you?",
+ "What would you want to say to us if you couldn't tomorrow?",
+ "What's something kind someone did that you still remember?",
+ "Where do you feel most at home, and who is there?",
+ "What part of yourself do you hide from us \u2014 and wish you didn't?",
+ "What's a lesson an elder gave you that you live by?",
+ "What do you love about this family that you rarely say?"
+];
+var _heartScope='family';
+function _heartDayIndex(){ return Math.floor(Date.now()/86400000); }
+function heartQuestionToday(){ return HEART_Q[_heartDayIndex()%HEART_Q.length]; }
+function heartQKey(){ return 'q'+(_heartDayIndex()%HEART_Q.length); }
+function _heartDateKey(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+function _heartScopeLabel(sc){ return sc==='home'?'This home':(sc==='private'?'Just me':'Whole family'); }
+function _heartScopeSet(sc){ _heartScope=sc; var c=document.querySelectorAll('.heart-scope'); for(var i=0;i<c.length;i++) c[i].classList.toggle('on', c[i].getAttribute('data-s')===sc); }
+async function _heartScopeData(){
+  var me=myPhone(); var fam={}; fam[me]=1; var hhIds=[];
+  try{ var ctx=await myCircleContext(); hhIds=(ctx.hhIds||[]).slice();
+    (ctx.households||[]).forEach(function(h){ (h.members||[]).forEach(function(m){ var p=(m&&(m.phone||m))||''; if(typeof p==='string'&&p) fam[p]=1; }); });
+  }catch(e){}
+  try{ var rels=await loadRelationships(); rels.forEach(function(c){ var v=relView(c,me); if(v&&v.other) fam[v.other]=1; }); }catch(e){}
+  return { me:me, fam:fam, hhIds:hhIds };
+}
+async function renderHeart(){
+  var box=document.getElementById('heartBody'); if(!box) return;
+  box.innerHTML='<div class="jh-wrap"><div class="sk sk-card"></div></div>';
+  if(!ME) ME=await fetchProfile(myPhone());
+  var q=heartQuestionToday(), qd=_heartDateKey();
+  var sd=await _heartScopeData();
+  var entries=[];
+  try{ var r=await sb.from('heart_entries').select('*').eq('qdate',qd).order('created_at',{ascending:true}); entries=r.data||[]; }catch(e){ console.warn('heart load (run jeeto-heart.sql?)',e); }
+  try{ var lc=JSON.parse(_lsGet('jeeto_heart_'+qd)||'[]'); lc.forEach(function(e){ if(!entries.some(function(x){ return x.author_phone===e.author_phone && x.body===e.body; })) entries.push(e); }); }catch(e){}
+  var vis=entries.filter(function(e){ return e.author_phone===sd.me || (e.scope==='family'&&sd.fam[e.author_phone]) || (e.scope==='home'&&sd.hhIds.indexOf(e.household_id)>=0); });
+  var mine=vis.filter(function(e){ return e.author_phone===sd.me; });
+  var others=vis.filter(function(e){ return e.author_phone!==sd.me; });
+  // quiet asks (the 'need' mode)
+  var asks=[];
+  try{ var ra=await sb.from('heart_asks').select('*').order('created_at',{ascending:false}); asks=ra.data||[]; }catch(e){}
+  try{ var lca=JSON.parse(_lsGet('jeeto_heart_asks')||'[]'); lca.forEach(function(a){ if(!asks.some(function(x){ return x.id===a.id || (x.author_phone===a.author_phone && x.created_at===a.created_at); })) asks.push(a); }); }catch(e){}
+  var _cut=Date.now()-7*86400000;
+  asks=asks.filter(function(a){ var t=a.created_at?Date.parse(a.created_at):Date.now(); if(t<_cut) return false; return a.author_phone===sd.me || (a.scope==='family'&&sd.fam[a.author_phone]) || (a.scope==='home'&&sd.hhIds.indexOf(a.household_id)>=0); });
+  var myAsk=asks.filter(function(a){ return a.author_phone===sd.me; })[0];
+  var otherAsks=asks.filter(function(a){ return a.author_phone!==sd.me; });
+  var myAskHtml = myAsk ? ('<section class="jh-rise heart-myask"><div class="heart-lbl">Your quiet ask is out there</div><p class="heart-needmsg">'+escapeHtml(_heartAskMsg(myAsk))+'</p><span class="heart-scopetag">Seen by '+_heartScopeLabel(myAsk.scope)+'</span><div><button class="btn btn-soft" style="margin-top:12px" onclick="withdrawHeartAsk(\''+escapeAttr(myAsk.id||'')+'\')">Withdraw</button></div></section>') : '';
+  var asksHtml = otherAsks.length ? ('<section class="jh-rise">'+otherAsks.map(function(a){ return '<div class="heart-need"><div class="heart-needtop">'+jic('heart')+'<b>'+escapeHtml(a.author_name||'Someone')+'</b></div><p class="heart-needmsg">'+escapeHtml(_heartAskMsg(a))+'</p>'+(a.note?'<p class="heart-body" style="margin-top:6px">'+escapeHtml(a.note)+'</p>':'')+'<button class="btn" onclick="reachOut(\''+escapeAttr(a.author_phone)+'\',\''+escapeAttr(a.author_name||'')+'\')">Reach out to '+escapeHtml((a.author_name||'them').split(' ')[0])+'</button></div>'; }).join('')+'</section>') : '';
+  var placeAsk = myAsk ? '' : ('<section class="jh-rise"><button class="btn btn-soft heart-place" onclick="openHeartAsk()">'+jic('heart')+' I could use a little closeness</button></section>');
+  var header='<header class="jh-rise"><div class="jh-hd-top"><div><p class="jh-hd-grt">The Heart</p><h1 class="jh-hd-name">Where we open up</h1></div></div></header>';
+  var ask='<section class="jh-rise heart-ask"><div class="heart-asktop">'+skyOrb({mood:'purple',sparkle:true})+'<div class="heart-askwho">'+_G()+' asks the family</div><button class="heart-hear" onclick="guardianSpeak(\''+escapeAttr(q)+'\')" aria-label="Hear">\ud83d\udd0a</button></div><p class="heart-q">'+escapeHtml(q)+'</p></section>';
+  var composer;
+  if(!mine.length){
+    composer='<section class="jh-rise"><textarea class="fi" id="heartInput" rows="4" placeholder="Answer gently\u2026 there is no wrong answer" oninput="var e=document.getElementById(\'heartErr\');if(e)e.style.display=\'none\';this.classList.remove(\'fi-bad\')" style="min-height:110px;resize:vertical"></textarea>'+
+      '<div id="heartErr" class="fi-err-msg">Write a little something to share.</div>'+
+      '<div class="heart-scoperow">'+['family|Whole family','home|This home','private|Just me'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
+      '<button class="btn" onclick="submitHeartAnswer()">Share with the Heart \u2764</button></section>';
+  } else {
+    composer='<section class="jh-rise heart-mine"><div class="heart-lbl">You opened up</div><p class="heart-body">'+escapeHtml(mine[0].body)+'</p><span class="heart-scopetag">'+_heartScopeLabel(mine[0].scope)+'</span></section>';
+  }
+  var list='';
+  if(others.length){ list='<section class="jh-rise"><div class="jh-zlabel">From your family</div>'+others.map(function(e){ return '<div class="heart-answer"><div class="heart-ahead"><b>'+escapeHtml(e.author_name||'Someone')+'</b><span class="heart-scopetag">'+_heartScopeLabel(e.scope)+'</span></div><p class="heart-body">'+escapeHtml(e.body)+'</p></div>'; }).join('')+'</section>'; }
+  else if(mine.length){ list='<section class="jh-rise heart-empty"><p>You\u2019re the first to open your heart today. As your family answers, their words will gather here.</p></section>'; }
+  box.innerHTML='<div class="jh-wrap">'+header+myAskHtml+asksHtml+ask+composer+list+placeAsk+'</div>';
+}
+async function submitHeartAnswer(){
+  var ta=document.getElementById('heartInput'); var t=((ta&&ta.value)||'').trim();
+  if(!t){ var e=document.getElementById('heartErr'); if(e) e.style.display='block'; if(ta) ta.classList.add('fi-bad'); toast('Write a little something \u2764'); return; }
+  var me=myPhone(); var nm=(ME&&ME.name)||'You'; var scope=_heartScope||'family'; var hid=null;
+  if(scope==='home'){ try{ var ctx=await myCircleContext(); hid=(ctx.households&&ctx.households[0]&&ctx.households[0].h&&ctx.households[0].h.id)||null; }catch(e){} if(!hid) scope='family'; }
+  var qd=_heartDateKey();
+  var row={ question_key:heartQKey(), qdate:qd, author_phone:me, author_name:nm, body:t.slice(0,1000), scope:scope, household_id:hid };
+  try{ var ins=await sb.from('heart_entries').insert(row); if(ins&&ins.error) throw ins.error; }catch(e){ console.warn('heart insert (run jeeto-heart.sql?)',e); }
+  try{ var k='jeeto_heart_'+qd; var arr=JSON.parse(_lsGet(k)||'[]'); arr.push(row); _lsSet(k,JSON.stringify(arr)); }catch(e){}
+  toast('Shared with the Heart \u2764'); renderHeart();
+}
+var _askKind='call';
+function _heartAskMsg(a){ var m={call:'I could use a call this week.',hello:'A hello from you would mean a lot right now.',quiet:'I\u2019m having a quiet week \u2014 thinking of you all.',checkin:'Could someone check in on me?',miss:'I just miss everyone.'}; return m[a.kind]||a.note||'I could use a little closeness.'; }
+function _askKindSet(k){ _askKind=k; var c=document.querySelectorAll('#heartAskKinds .heart-scope'); for(var i=0;i<c.length;i++) c[i].classList.toggle('on', c[i].getAttribute('data-k')===k); var p=document.getElementById('heartAskPrev'); if(p) p.textContent=_heartAskMsg({kind:k}); }
+function openHeartAsk(){
+  var m=document.getElementById('homeModal'); if(!m) return; _askKind='call'; _heartScope='family';
+  var kinds=[['call','A call'],['hello','A hello'],['quiet','Quiet week'],['checkin','Check in'],['miss','Miss you all']];
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:4px">\ud83e\udec2 A quiet ask</div>'+
+    '<p style="text-align:center;color:var(--ink2);font-size:13px;margin-bottom:14px">Let your family know you\u2019d love to feel close. No alarm, no pressure \u2014 just an open door.</p>'+
+    '<div class="field-label">What would help?</div><div class="heart-scoperow" id="heartAskKinds" style="flex-wrap:wrap">'+kinds.map(function(k){ return '<button type="button" class="heart-scope'+(_askKind===k[0]?' on':'')+'" data-k="'+k[0]+'" onclick="_askKindSet(\''+k[0]+'\')">'+k[1]+'</button>'; }).join('')+'</div>'+
+    '<p id="heartAskPrev" class="heart-needmsg" style="margin:8px 2px 12px">'+_heartAskMsg({kind:'call'})+'</p>'+
+    '<div class="field-label">Add a word (optional)</div><input class="fi" id="heartAskNote" maxlength="140" placeholder="Anything you want to say\u2026" style="margin-bottom:14px">'+
+    '<div class="field-label">Who should see this?</div><div class="heart-scoperow">'+['family|Whole family','home|This home'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
+    '<button class="btn" style="margin-top:14px" onclick="submitHeartAsk()">Send quietly</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+async function submitHeartAsk(){
+  var note=((document.getElementById('heartAskNote')||{}).value||'').trim().slice(0,140);
+  var me=myPhone(); var nm=(ME&&ME.name)||'You'; var scope=(_heartScope==='home')?'home':'family'; var hid=null;
+  if(scope==='home'){ try{ var ctx=await myCircleContext(); hid=(ctx.households&&ctx.households[0]&&ctx.households[0].h&&ctx.households[0].h.id)||null; }catch(e){} if(!hid) scope='family'; }
+  var row={ id:'ask_'+Date.now(), author_phone:me, author_name:nm, kind:_askKind, note:note, scope:scope, household_id:hid, created_at:new Date().toISOString() };
+  try{ var ins=await sb.from('heart_asks').insert({author_phone:me,author_name:nm,kind:_askKind,note:note,scope:scope,household_id:hid}); if(ins&&ins.error) throw ins.error; }catch(e){ console.warn('heart_ask insert (run jeeto-heart-asks.sql?)',e); }
+  try{ var k='jeeto_heart_asks'; var arr=JSON.parse(_lsGet(k)||'[]'); arr.push(row); _lsSet(k,JSON.stringify(arr)); }catch(e){}
+  closeHomeModal(); toast('Your family will see you reached out \ud83e\udec2'); navTo('heart');
+}
+async function withdrawHeartAsk(id){
+  try{ if(id && String(id).indexOf('ask_')!==0) await sb.from('heart_asks').delete().eq('id',id); }catch(e){}
+  try{ var k='jeeto_heart_asks'; var arr=JSON.parse(_lsGet(k)||'[]').filter(function(a){ return a.id!==id; }); _lsSet(k,JSON.stringify(arr)); }catch(e){}
+  toast('Withdrawn'); renderHeart();
+}
 async function renderRituals(){
   var box=document.getElementById('ritualsBody'); if(!box) return;
   box.innerHTML='<div class="sk sk-card"></div><div class="sk sk-card"></div>';
@@ -4936,7 +5087,7 @@ async function buildHome(){
   var awH='<section class="jh-rise" aria-label="Across my world"><button class="jh-aw-teaser" onclick="navTo(\'across\')"><span class="jh-aw-teaser-ic">'+jic('sparkles')+'</span><span class="jh-aw-teaser-t"><b>Across My World</b><span>Your whole family, across every home</span></span><span class="jh-aw-teaser-go">'+jic('chev')+'</span></button></section>';
 
   window.__jhSky=skyvos; window.__jhToday=today;
-  var tiles=[ {ic:'palette',label:'Design',fn:"navTo('design')"}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')"}, {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
+  var tiles=[ {ic:'heart',label:'The Heart',fn:"navTo('heart')"}, {ic:'palette',label:'Design',fn:"navTo('design')"}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')"}, {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
   var exploreH='<section class="jh-rise" aria-label="Explore">'+st('Explore')+'<div class="jh-grid4">'+tiles.map(function(t){ return '<button class="jh-tile" onclick="'+t.fn+'"><span class="jh-tile-ic">'+jic(t.ic)+'</span><span class="jh-tile-l">'+t.label+'</span></button>'; }).join('')+'</div></section>';
     var zTop='<div class="jh-zone"><div class="jh-zlabel">Right Now</div>'+heroH+exploreH+'</div>';
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
@@ -6913,7 +7064,7 @@ function searchGraph(){
 /* ---------- nav ---------- */
 function navTo(tab){
   try{ if(typeof JeetoGalaxy!=='undefined'&&JeetoGalaxy.isActive&&JeetoGalaxy.isActive()&&tab!=='world'&&tab!=='across') JeetoGalaxy.dispose(); }catch(e){}
-  var map={ home:'screen-home', festivals:'screen-festivals', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across', loop:'screen-loop' };
+  var map={ home:'screen-home', festivals:'screen-festivals', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across', loop:'screen-loop', heart:'screen-heart' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -6932,6 +7083,7 @@ function navTo(tab){
   if(tab==='loop') renderLoop();
   if(tab==='homes') renderHomes();
   if(tab==='design') renderDesign();
+  if(tab==='heart') renderHeart();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
