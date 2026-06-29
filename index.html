@@ -966,10 +966,53 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .heart-myask{background:#FFF6F9;border:1px solid #F3D9E6;border-radius:16px;padding:16px}
 .heart-place{display:flex;align-items:center;justify-content:center;gap:8px}
 .heart-place svg{width:18px;height:18px}
+/* ===== THE HEART — warm & sacred (candlelit altar) ===== */
+#screen-heart .heart-ask{background:radial-gradient(125% 120% at 50% -12%, #5C1836 0%, #3A0F22 55%, #2C0E20 100%);border:1px solid rgba(232,201,122,.34);box-shadow:0 16px 46px rgba(48,12,30,.42), inset 0 1px 0 rgba(255,255,255,.06);position:relative;overflow:hidden}
+#screen-heart .heart-ask::before{content:'';position:absolute;left:50%;top:-55%;width:78%;height:135%;transform:translateX(-50%);background:radial-gradient(closest-side, rgba(232,201,122,.30), rgba(232,201,122,0) 72%);pointer-events:none}
+#screen-heart .heart-asktop{position:relative;z-index:1}
+#screen-heart .heart-askwho{color:#E8C97A;letter-spacing:.4px}
+#screen-heart .heart-hear{background:rgba(232,201,122,.16);color:#F0D79A}
+#screen-heart .heart-q{color:#FBEFD8;font-size:23px;line-height:1.4;position:relative;z-index:1;text-shadow:0 1px 12px rgba(0,0,0,.28)}
+#screen-heart .heart-scope{background:#fff;border:1px solid #EAD9C7;color:#7A1F47}
+#screen-heart .heart-scope.on{background:linear-gradient(135deg,#9B2D5E,#C2185B);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(155,45,94,.32), 0 0 0 2px rgba(217,164,65,.55)}
+#screen-heart .btn{background:linear-gradient(135deg,#B3215A 0%,#E0631F 100%);box-shadow:0 8px 22px rgba(179,33,90,.28)}
+#screen-heart .btn-soft{background:#FFF1F4;color:#9B2D5E;border:1px solid #F0D9DF}
+#screen-heart .btn-soft svg{color:#9B2D5E}
+#screen-heart .jh-zlabel{color:#B07A2E;letter-spacing:1.4px}
+#screen-heart .jh-hd-grt{color:#B07A2E}
+#screen-heart .heart-answer,#screen-heart .heart-mine,#screen-heart .heart-story,#screen-heart .heart-letter{border-color:#EEDFCB}
+#screen-heart .heart-scopetag{color:#B07A2E;background:rgba(176,122,46,.1)}
+
 .heart-story{background:var(--jh-card);border:1px solid var(--jh-border);border-radius:16px;padding:14px;margin-top:10px}
 .heart-letter{background:var(--jh-card);border:1px solid var(--jh-border);border-radius:16px;padding:14px;margin-top:10px}
 .heart-letter.arrived{background:#FFF7E9;border-color:#F0D9A8}
 .heart-letter.sealed{opacity:.85}
+/* ===== THE HEART · warm & sacred (deep rose · gold · candlelit) ===== */
+.jh-tile-ic{transition:transform .15s ease}
+.jh-tile:active .jh-tile-ic{transform:scale(.92)}
+#screen-heart .jh-hd-grt{color:#B23A5E;font-weight:800;letter-spacing:.16em;text-transform:uppercase;font-size:12px}
+#screen-heart .jh-hd-name{color:#7A1F3D}
+#screen-heart .jh-zlabel{color:#9B6A1E;letter-spacing:.12em;border-top:1px solid rgba(224,179,74,.4);padding-top:14px;margin-top:4px}
+.heart-ask{position:relative;overflow:hidden;background:radial-gradient(135% 100% at 14% -12%, #5C1836 0%, #2C0E20 74%);border:1px solid rgba(224,179,74,.5);border-radius:22px;padding:20px 20px 22px;box-shadow:0 20px 48px rgba(44,14,32,.42)}
+.heart-ask::before{content:"";position:absolute;left:-14%;top:-46%;width:62%;height:130%;background:radial-gradient(circle at 50% 50%, rgba(224,179,74,.36), transparent 66%);pointer-events:none}
+.heart-asktop{position:relative}
+.heart-askwho{color:#EAC76E;font-weight:800;letter-spacing:.02em}
+.heart-hear{background:rgba(224,179,74,.2);color:#EAC76E}
+.heart-q{position:relative;color:#FFF6EE;font-family:var(--jh-serif,Georgia,serif);font-size:23px;line-height:1.35;text-shadow:0 1px 14px rgba(0,0,0,.32)}
+.heart-scope{border:1.5px solid rgba(122,31,61,.22);background:#fff;color:#7A1F3D;font-weight:800}
+.heart-scope.on{background:linear-gradient(135deg,#9B2C4E,#7A1F3D);color:#fff;border-color:transparent;box-shadow:inset 0 0 0 1.5px rgba(224,179,74,.7),0 7px 16px rgba(122,31,61,.32)}
+#screen-heart .btn{background:linear-gradient(135deg,#E0631F 0%,#B23A5E 55%,#7A1F3D 100%);box-shadow:0 10px 24px rgba(160,40,70,.3)}
+#screen-heart .btn-soft{background:#FBEFE6;color:#7A1F3D;border:1px solid #F0D9C0}
+#screen-heart .heart-place{color:#7A1F3D}
+.heart-answer,.heart-story,.heart-letter,.heart-mine{background:#FFF8F2;border:1px solid #F0DBC4}
+.heart-letter.arrived{background:#FFF3DD;border-color:#EAC98A}
+.heart-need,.heart-myask{background:#FFF3EC;border:1px solid #F0DBC4}
+.heart-needtop{color:#B23A5E}
+.heart-needmsg{color:#5A1733}
+.heart-scopetag{color:#9B6A1E;background:rgba(224,179,74,.18)}
+.heart-lbl{color:#B23A5E}
+.heart-empty{color:#9A7B62}
+
 #stRecBtn.rec-on{background:#E03A7A;color:#fff}
 .hs-tog{display:flex;align-items:flex-start;gap:10px;margin:0 0 16px;font-weight:700;font-size:14px;color:var(--ink);cursor:pointer;line-height:1.35}
 .hs-tog input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#7C3AED}
@@ -982,6 +1025,11 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .gv-prev{padding:8px 14px;border-radius:20px;border:1px solid #7C3AED;background:transparent;color:#7C3AED;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer}
 .jh-sky-hear{margin-left:8px;border:none;background:rgba(124,58,237,.12);color:#7C3AED;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px;vertical-align:middle}
 .build-stamp{position:fixed;left:8px;bottom:78px;z-index:400;font-size:10px;font-weight:800;letter-spacing:.3px;color:rgba(40,24,38,.5);background:rgba(255,255,255,.72);padding:3px 8px;border-radius:9px;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.sheet-x{position:sticky;top:6px;float:right;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.07);border:none;font-size:15px;color:var(--ink2,#777);cursor:pointer;z-index:6}
+.cap-cam{border-color:var(--leaf,#2BA84A);background:#EAF7EE;color:var(--leaf,#2BA84A)}
+.pz-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:none;font-size:24px;line-height:1;cursor:pointer;z-index:4}
+.pz-prev{left:10px}.pz-next{right:10px}
+.pz-count{position:absolute;top:14px;left:50%;transform:translateX(-50%);color:#fff;font-size:13px;font-weight:700;background:rgba(0,0,0,.4);padding:4px 12px;border-radius:20px;z-index:4}
 .pz{position:fixed;inset:0;z-index:300;background:rgba(8,5,12,.95);display:flex;flex-direction:column;touch-action:none}
 .pz-x{position:absolute;top:14px;right:14px;z-index:5;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;border:none;font-size:18px;cursor:pointer}
 .pz-stage{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -2315,7 +2363,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.41.0-heartfull';
+var JEETO_VERSION='4.43.0-heartsacred';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -4235,21 +4283,27 @@ function _pzCss(id){ for(var i=0;i<PZ_FILTERS.length;i++){ if(PZ_FILTERS[i].id==
 function _pzFilterBtns(){ return PZ_FILTERS.map(function(fl){ return '<button class="pz-fl'+(_pz.filter===fl.id?' on':'')+'" onclick="_pzSetFilter(\''+fl.id+'\')">'+escapeHtml(fl.name)+'</button>'; }).join(''); }
 function _pzSetFilter(id){ _pz.filter=id; var im=document.getElementById('pzImg'); if(im) im.style.filter=_pzCss(id); var fb=document.getElementById('pzFilters'); if(fb) fb.innerHTML=_pzFilterBtns(); }
 function _pzApply(){ var im=document.getElementById('pzImg'); if(im) im.style.transform='translate('+_pz.vx.toFixed(1)+'px,'+_pz.vy.toFixed(1)+'px) scale('+_pz.vs.toFixed(3)+')'; }
-function _pzDown(e){ _pz.ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; var ks=Object.keys(_pz.ptrs); if(ks.length===1){ _pz.last={x:e.clientX,y:e.clientY}; _pz.pinch=null; } else if(ks.length===2){ var a=_pz.ptrs[ks[0]],b=_pz.ptrs[ks[1]]; _pz.pinch={d:Math.hypot(a.x-b.x,a.y-b.y),s:_pz.vs}; } }
-function _pzMove(e){ if(!_pz.ptrs[e.pointerId]) return; _pz.ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; var ks=Object.keys(_pz.ptrs); if(ks.length>=2&&_pz.pinch){ var a=_pz.ptrs[ks[0]],b=_pz.ptrs[ks[1]]; var d=Math.hypot(a.x-b.x,a.y-b.y); _pz.vs=Math.max(1,Math.min(5,_pz.pinch.s*(d/_pz.pinch.d))); if(_pz.vs<=1){_pz.vx=0;_pz.vy=0;} _pzApply(); } else if(ks.length===1&&_pz.last&&_pz.vs>1){ _pz.vx+=(e.clientX-_pz.last.x); _pz.vy+=(e.clientY-_pz.last.y); _pz.last={x:e.clientX,y:e.clientY}; _pzApply(); } }
-function _pzUp(e){ delete _pz.ptrs[e.pointerId]; var ks=Object.keys(_pz.ptrs); if(ks.length<2) _pz.pinch=null; if(ks.length===1){ _pz.last={x:_pz.ptrs[ks[0]].x,y:_pz.ptrs[ks[0]].y}; } if(ks.length===0&&_pz.vs<=1){ _pz.vx=0;_pz.vy=0; _pzApply(); } }
+function _pzDown(e){ _pz.ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; var ks=Object.keys(_pz.ptrs); if(ks.length===1){ _pz.last={x:e.clientX,y:e.clientY}; _pz.sx=e.clientX; _pz.sy=e.clientY; _pz.lastX=e.clientX; _pz.pinch=null; } else if(ks.length===2){ var a=_pz.ptrs[ks[0]],b=_pz.ptrs[ks[1]]; _pz.pinch={d:Math.hypot(a.x-b.x,a.y-b.y),s:_pz.vs}; } }
+function _pzMove(e){ if(!_pz.ptrs[e.pointerId]) return; _pz.ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; _pz.lastX=e.clientX; var ks=Object.keys(_pz.ptrs); if(ks.length>=2&&_pz.pinch){ var a=_pz.ptrs[ks[0]],b=_pz.ptrs[ks[1]]; var d=Math.hypot(a.x-b.x,a.y-b.y); _pz.vs=Math.max(1,Math.min(5,_pz.pinch.s*(d/_pz.pinch.d))); if(_pz.vs<=1){_pz.vx=0;_pz.vy=0;} _pzApply(); } else if(ks.length===1&&_pz.last&&_pz.vs>1){ _pz.vx+=(e.clientX-_pz.last.x); _pz.vy+=(e.clientY-_pz.last.y); _pz.last={x:e.clientX,y:e.clientY}; _pzApply(); } }
+function _pzUp(e){ var wasX=_pz.lastX, startX=_pz.sx; delete _pz.ptrs[e.pointerId]; var ks=Object.keys(_pz.ptrs); if(ks.length<2) _pz.pinch=null; if(ks.length===1){ _pz.last={x:_pz.ptrs[ks[0]].x,y:_pz.ptrs[ks[0]].y}; }
+  if(ks.length===0){
+    if(_pz.vs<=1 && _pz.list && _pz.list.length>1){ var dx=wasX-startX; if(Math.abs(dx)>55){ _pzGo(dx>0?-1:1); return; } }
+    if(_pz.vs<=1){ _pz.vx=0;_pz.vy=0; _pzApply(); }
+  }
+}
 function _pzWheel(e){ _pz.vs=Math.max(1,Math.min(5,_pz.vs*(1-(e.deltaY||0)*0.0015))); if(_pz.vs<=1){_pz.vx=0;_pz.vy=0;} _pzApply(); if(e.cancelable)e.preventDefault(); }
 function _pzDbl(){ if(_pz.vs>1){ _pz.vs=1;_pz.vx=0;_pz.vy=0; } else { _pz.vs=2.5; } _pzApply(); }
-function openPhotoZoom(src){
+function openPhotoZoom(src, list, idx){
   if(!src) return;
-  _pz={src:src,filter:'none',vx:0,vy:0,vs:1,ptrs:{},pinch:null,last:null};
+  _pz={src:src,filter:'none',vx:0,vy:0,vs:1,ptrs:{},pinch:null,last:null,sx:0,lastX:0,list:((list&&list.length)?list:[src]),idx:(typeof idx==='number'?idx:0)};
   var ov=document.getElementById('pzOverlay'); if(ov) ov.remove();
   var icShare='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>';
   var icWa='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6 0-1.2.6-1.8.9-2.1.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.1.1.3 0 .5l-.4.5-.3.3c-.1.1-.3.3-.1.5.1.3.7 1.1 1.5 1.8 1 .9 1.8 1.1 2.1 1.3.2.1.4.1.5-.1l.6-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.3.1.5-.1 1z"/></svg>';
   var icDl='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
   ov=document.createElement('div'); ov.id='pzOverlay'; ov.className='pz';
   ov.innerHTML='<button class="pz-x" onclick="closePhotoZoom()" aria-label="Close">\u2715</button>'+
-    '<div class="pz-stage" id="pzStage"><img id="pzImg" src="'+escapeAttr(src)+'" alt="" draggable="false"></div>'+
+    '<div class="pz-stage" id="pzStage"><img id="pzImg" src="'+escapeAttr(src)+'" alt="" draggable="false">'+
+      ((_pz.list.length>1)?('<button class="pz-nav pz-prev" onclick="_pzGo(-1)" aria-label="Previous">\u2039</button><button class="pz-nav pz-next" onclick="_pzGo(1)" aria-label="Next">\u203a</button><div class="pz-count" id="pzCount">'+(_pz.idx+1)+' / '+_pz.list.length+'</div>'):'')+'</div>'+
     '<div class="pz-filters" id="pzFilters">'+_pzFilterBtns()+'</div>'+
     '<div class="pz-actions">'+
       '<button class="pz-act pz-share" onclick="_pzShare()">'+icWa+'Send photo</button>'+
@@ -4263,6 +4317,8 @@ function openPhotoZoom(src){
   _pzApply();
 }
 function closePhotoZoom(){ var ov=document.getElementById('pzOverlay'); if(ov) ov.remove(); }
+function _pzGo(delta){ if(!_pz.list||_pz.list.length<2) return; var n=_pz.idx+delta; if(n<0)n=0; if(n>_pz.list.length-1)n=_pz.list.length-1; if(n===_pz.idx) return; _pz.idx=n; _pz.src=_pz.list[n]; _pz.filter='none'; _pz.vx=0;_pz.vy=0;_pz.vs=1; var im=document.getElementById('pzImg'); if(im){ im.src=_pz.src; im.style.filter='none'; } var fb=document.getElementById('pzFilters'); if(fb) fb.innerHTML=_pzFilterBtns(); var c=document.getElementById('pzCount'); if(c) c.textContent=(_pz.idx+1)+' / '+_pz.list.length; _pzApply(); }
+function _pzOpenAt(i){ var L=window._MG||[]; if(!L.length) return; openPhotoZoom(L[i]||L[0], L, i); }
 async function _pzFile(){
   // fetch the real bytes (public bucket sends CORS), apply the chosen filter if any, return a real File
   var resp=await fetch(_pz.src,{mode:'cors'}); var raw=await resp.blob();
@@ -5178,8 +5234,8 @@ async function buildHome(){
   var awH='<section class="jh-rise" aria-label="Across my world"><button class="jh-aw-teaser" onclick="navTo(\'across\')"><span class="jh-aw-teaser-ic">'+jic('sparkles')+'</span><span class="jh-aw-teaser-t"><b>Across My World</b><span>Your whole family, across every home</span></span><span class="jh-aw-teaser-go">'+jic('chev')+'</span></button></section>';
 
   window.__jhSky=skyvos; window.__jhToday=today;
-  var tiles=[ {ic:'heart',label:'The Heart',fn:"navTo('heart')"}, {ic:'palette',label:'Design',fn:"navTo('design')"}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')"}, {ic:'tree',label:'Family Tree',fn:"navTo('family')"}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')"}, {ic:'trophy',label:'Arena',fn:"navTo('live')"}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')"}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')"}, {ic:'target',label:'Quests',fn:"navTo('quests')"}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')"}, {ic:'history',label:'Memories',fn:"navTo('timemachine')"}, {ic:'activity',label:'Life',fn:"navTo('life')"} ];
-  var exploreH='<section class="jh-rise" aria-label="Explore">'+st('Explore')+'<div class="jh-grid4">'+tiles.map(function(t){ return '<button class="jh-tile" onclick="'+t.fn+'"><span class="jh-tile-ic">'+jic(t.ic)+'</span><span class="jh-tile-l">'+t.label+'</span></button>'; }).join('')+'</div></section>';
+  var tiles=[ {ic:'heart',label:'The Heart',fn:"navTo('heart')",c:'#C2305A'}, {ic:'palette',label:'Design',fn:"navTo('design')",c:'#7C3AED'}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')",c:'#E0631F'}, {ic:'tree',label:'Family Tree',fn:"navTo('family')",c:'#3E8C73'}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')",c:'#4F8EF7'}, {ic:'trophy',label:'Arena',fn:"navTo('live')",c:'#D4A24E'}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')",c:'#C2410C'}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')",c:'#D7263D'}, {ic:'target',label:'Quests',fn:"navTo('quests')",c:'#0F9E8E'}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')",c:'#5B5BD6'}, {ic:'history',label:'Memories',fn:"navTo('timemachine')",c:'#A0683A'}, {ic:'activity',label:'Life',fn:"navTo('life')",c:'#E0457B'} ];
+  var exploreH='<section class="jh-rise" aria-label="Explore">'+st('Explore')+'<div class="jh-grid4">'+tiles.map(function(t){ return '<button class="jh-tile" onclick="'+t.fn+'"><span class="jh-tile-ic" style="color:'+t.c+';background:'+t.c+'1f;border-color:'+t.c+'33;box-shadow:0 6px 16px '+t.c+'26">'+jic(t.ic)+'</span><span class="jh-tile-l">'+t.label+'</span></button>'; }).join('')+'</div></section>';
     var zTop='<div class="jh-zone"><div class="jh-zlabel">Right Now</div>'+heroH+exploreH+'</div>';
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
   var zLow='<div class="jh-zone"><div class="jh-zlabel">Your World</div>'+skyH+wrH+awH+'</div>';
@@ -6485,7 +6541,8 @@ function renderMomentFeed(){
     var imgs=[];
     list.forEach(function(x){ (x.media||[]).forEach(function(md){ if(md.media_url && (md.media_type==='image'||md.media_type==='video')) imgs.push({url:md.media_url,id:x.m.id,vid:md.media_type==='video',title:x.m.title||''}); }); });
     if(!imgs.length){ box.innerHTML=_mvToggle+'<div class="empty"><span class="big">📷</span><div class="e1">No photos in this circle yet</div><div class="e2">Photos you capture appear here as thumbnails. Voice & text moments live in Timeline.</div></div>'; return; }
-    var grid='<div class="mg-grid">'+imgs.map(function(im){ return '<button class="mg-cell" onclick="'+(im.vid?('reliveMoment(\''+im.id+'\')'):('openPhotoZoom(\''+escapeAttr(im.url)+'\')'))+'">'+(im.vid?'<span class="mg-vid">▶</span>':'')+'<img loading="lazy" decoding="async" src="'+escapeAttr(im.url)+'" alt="'+escapeAttr(im.title)+'"></button>'; }).join('')+'</div>';
+    var _imgUrls=imgs.filter(function(im){ return !im.vid; }).map(function(im){ return im.url; }); window._MG=_imgUrls;
+    var grid='<div class="mg-grid">'+imgs.map(function(im){ var oc=im.vid?('reliveMoment(\''+im.id+'\')'):('_pzOpenAt('+_imgUrls.indexOf(im.url)+')'); return '<button class="mg-cell" onclick="'+oc+'">'+(im.vid?'<span class="mg-vid">▶</span>':'')+'<img loading="lazy" decoding="async" src="'+escapeAttr(im.url)+'" alt="'+escapeAttr(im.title)+'"></button>'; }).join('')+'</div>';
     box.innerHTML=_mvToggle+grid; return;
   }
   var order=['Today','This Week','This Month','This Year','Past Years'], groups={};
@@ -6560,7 +6617,7 @@ function buildCaptureModal(){
   var circles=[['private','👤','My Moment','Visible only to me'],['household','🏠','Home Moment','Your home only'],['family','❤️','Family Moment','Your whole family'],['bridge','🌉','Bridge Moment','Connected bridge households']];
   var copts=circles.map(function(c){ return '<div class="circle-opt" data-c="'+c[0]+'" onclick="pickCircle(\''+c[0]+'\')"><span class="ce">'+c[1]+'</span><span style="flex:1">'+c[2]+'<span class="cd">'+c[3]+'</span></span><span class="cradio">○</span></div>'; }).join('');
   var m=document.getElementById('momentModal');
-  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto"><div class="modal-grab"></div>'+
+  m.innerHTML='<div class="modal-card" style="max-height:90vh;overflow:auto;position:relative"><div class="modal-grab"></div><button class="sheet-x" onclick="closeMomentModal()" aria-label="Close">\u2715</button>'+
     '<div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:14px">❤️ Capture a Moment</div>'+
     '<div class="field-label">Photos, video, voice or documents</div>'+
     '<div class="cap-files" id="capFiles"></div>'+
@@ -6592,7 +6649,9 @@ function renderCapFiles(){
     var ic=mediaKind(f)==='video'?'🎬':mediaKind(f)==='voice'?'🎙️':'📄';
     return '<div class="cap-thumb doc" onclick="capRemove('+i+')" title="Remove">'+ic+'</div>';
   }).join('');
-  box.innerHTML=thumbs+'<label class="cap-add">＋<input type="file" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx" style="display:none" onchange="capAddFiles(event)"></label>';
+  box.innerHTML=thumbs+
+    '<label class="cap-add cap-cam" title="Camera"><input type="file" accept="image/*" capture="environment" style="display:none" onchange="capAddFiles(event)">\ud83d\udcf7</label>'+
+    '<label class="cap-add cap-lib" title="Photo library & files"><input type="file" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx" style="display:none" onchange="capAddFiles(event)">\ud83d\uddbc\ufe0f</label>';
 }
 function pickCircle(c){
   CAP.type=c;
