@@ -2435,7 +2435,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.68.0-aartivoice';
+var JEETO_VERSION='4.70.0-cardfit2';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -3819,12 +3819,12 @@ function _renderNoteCanvas(note){
   x.fillStyle='#B8862E'; x.font='700 26px Georgia,serif'; x.fillText(DY[d.getDay()]+'   \u00b7   '+d.getDate()+' '+MO[d.getMonth()]+' '+d.getFullYear(),W/2,266);
   x.strokeStyle='rgba(194,144,31,.35)'; x.lineWidth=1.5; x.beginPath(); x.moveTo(W/2-64,294); x.lineTo(W/2+64,294); x.stroke();
   var maxW=W-240, content=[];
-  if(note.dev){ note.dev.split('<br>').forEach(function(seg){ x.font='600 52px "Noto Serif Devanagari",Georgia,serif'; _wrapTxt(x,seg,maxW).forEach(function(l){ content.push({t:l,font:'600 52px "Noto Serif Devanagari",Georgia,serif',fill:'#7A3E63',adv:80}); }); }); content.push({gap:38}); }
+  if(note.dev){ note.dev.split('<br>').forEach(function(seg){ var sz=52; x.font='600 '+sz+'px sans-serif'; while(x.measureText(seg).width>(W-260) && sz>30){ sz-=2; x.font='600 '+sz+'px sans-serif'; } content.push({t:seg,font:'600 '+sz+'px sans-serif',fill:'#7A3E63',adv:Math.round(sz*1.55)}); }); content.push({gap:36}); }
   x.font='italic 500 54px Georgia,serif'; _wrapTxt(x,note.en,maxW).forEach(function(l){ content.push({t:l,font:'italic 500 54px Georgia,serif',fill:'#574431',adv:78}); });
   content.push({gap:32}); content.push({t:'\u2014 '+(note.src||'').toUpperCase(),font:'700 30px Georgia,serif',fill:'#C2901F',adv:44});
   var total=0; content.forEach(function(it){ total+=it.gap||it.adv; });
   var top=372, bottom=1120, cy=Math.max(top,(top+bottom)/2-total/2);
-  content.forEach(function(it){ if(it.gap){ cy+=it.gap; return; } x.font=it.font; x.fillStyle=it.fill; x.fillText(it.t,W/2,cy); cy+=it.adv; });
+  content.forEach(function(it){ if(it.gap){ cy+=it.gap; return; } x.font=it.font; x.fillStyle=it.fill; x.fillText(it.t,W/2,cy,W-200); cy+=it.adv; });
   x.fillStyle='rgba(122,82,48,.72)'; x.font='700 36px Georgia,serif'; x.fillText('🪔 Jeeto',W/2,H-150);
   x.fillStyle='rgba(122,82,48,.45)'; x.font='400 24px Georgia,serif'; x.fillText('a quiet place for family \u00b7 jeeto-families.pages.dev',W/2,H-110);
   return c;
