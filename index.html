@@ -989,7 +989,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .circ-me>span{margin-top:4px;font-size:10px}
 .circ-ring.dim{opacity:.3;filter:saturate(.6)}
 .circ-ring.pop{transform:translate(-50%,-50%) scale(1.04)}
-.circ-ripple{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;border:2px solid #C2185B;opacity:0;pointer-events:none}
+.circ-ripple{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(194,24,91,.5);opacity:0;pointer-events:none;animation:circrad 6.6s ease-out infinite}.circ-ripple.r2{animation-delay:2.2s;border-color:rgba(224,99,31,.45)}.circ-ripple.r3{animation-delay:4.4s;border-color:rgba(231,166,75,.55)}.circ-glow{position:absolute;left:50%;top:50%;width:210px;height:210px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(224,90,142,.30),rgba(194,24,91,.10) 38%,rgba(194,24,91,0) 70%);animation:circhalo 6.6s ease-in-out infinite}@keyframes circrad{0%{width:78px;height:78px;opacity:0}10%{opacity:.55}100%{width:300px;height:300px;opacity:0}}@keyframes circhalo{0%,100%{opacity:.6;width:190px;height:190px}50%{opacity:1;width:232px;height:232px}}@media (prefers-reduced-motion:reduce){.circ-ripple{animation:none;opacity:.28}.circ-glow{animation:none;opacity:.7}}
 @keyframes circrip{0%{width:88px;height:88px;opacity:.5}100%{width:340px;height:340px;opacity:0}}
 .circ-ripple.go{animation:circrip 2.4s ease-out infinite}
 .circ-chips{display:flex;gap:7px;margin:8px auto 0;justify-content:center;flex-wrap:wrap}
@@ -2434,7 +2434,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.56.0-circlediag';
+var JEETO_VERSION='4.58.0-radiate';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -3485,8 +3485,8 @@ function renderCircles(){
   var box=document.getElementById('circlesBody'); if(!box) return;
   var ini=((ME&&ME.name&&ME.name[0])||'·').toUpperCase();
   box.innerHTML='<div class="jh-wrap circ-wrap">'+
-    '<header class="jh-rise" style="text-align:center"><p class="jh-hd-grt">How Jeeto holds you</p><h1 class="jh-hd-name">Your Circles</h1><p class="circ-sub">Everything you share lives in one of four circles. You always choose how far it travels.</p></header>'+
-    '<div class="circ-stage" id="circStage"><div class="circ-ripple" id="circRip"></div>'+
+    ''+
+    '<div class="circ-stage" id="circStage"><div class="circ-glow"></div><div class="circ-ripple r1"></div><div class="circ-ripple r2"></div><div class="circ-ripple r3"></div>'+
       '<div class="circ-ring circ-world" data-k="world" onclick="_circPick(\'world\')"><span>World</span></div>'+
       '<div class="circ-ring circ-family" data-k="family" onclick="_circPick(\'family\')"><span>Family</span></div>'+
       '<div class="circ-ring circ-home" data-k="home" onclick="_circPick(\'home\')"><span>Home</span></div>'+
@@ -3631,6 +3631,45 @@ async function _circDiag(){
     var meU=ME||{}; var head='<p class="muted" style="font-size:13px;line-height:1.5">My login number: <b>+91 '+escapeHtml(ctx.me||'—')+'</b><br>My profile name: <b>'+escapeHtml(meU.name||'—')+'</b>'+(meU.avatar_url?' · 📷 photo set':' · no photo')+'<br>Ring people: <b>'+phones.length+'</b> · profiles found: <b>'+resolved+'</b></p>';
     jSheet('🔍 Circle diagnostic', head+(rows||'<p class="muted">No household members or connections found on your rings.</p>'));
   }catch(e){ toast('Diagnostic failed: '+((e&&e.message)||e)); }
+}
+async function openGhostCleanup(){
+  var box=document.getElementById('homeModal'); if(!box) return;
+  jSheet('🧹 Ghost connections', '<div class="sk sk-card"></div>');
+  var bodyEl=document.querySelector('#homeModal .jsheet-body');
+  try{
+    var me=myPhone();
+    var rels=await loadRelationships();
+    var others=rels.map(function(c){ return relView(c,me).other; });
+    var profs=await fetchProfiles(others);
+    var ghosts=rels.map(function(c){ var v=relView(c,me); return {id:v.id, phone:v.other, rel:v.rel}; }).filter(function(g){ return !profs[g.phone]; });
+    window.__ghosts=ghosts;
+    var html;
+    if(!ghosts.length){
+      html='<div class="empty"><span class="big">✅</span><div class="e1">No ghost connections</div><div class="e2">Every connection points to a real profile. Nothing to clean up.</div></div>';
+    } else {
+      html='<p class="muted" style="font-size:13px;margin:2px 2px 12px;line-height:1.5">These connections point to numbers with <b>no profile</b> — usually leftovers from the old login system. Removing them clears the bare-number dots from your circles. They are hidden, not erased — you can always reconnect.</p>';
+      html+=ghosts.map(function(g){ return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.08)"><div style="flex:1;min-width:0"><div style="font-weight:700">+91 '+escapeHtml(g.phone)+'</div><div class="muted" style="font-size:12px">'+escapeHtml(g.rel||'family')+' · no profile</div></div><button class="btn btn-ghost btn-sm" onclick="_ghostRemove(\''+escapeAttr(g.id)+'\')">Remove</button></div>'; }).join('');
+      html+='<button class="btn" style="margin-top:14px;background:#9A2B2B;color:#fff" onclick="_ghostRemoveAll()">Remove all '+ghosts.length+' ghost'+(ghosts.length>1?'s':'')+'</button>';
+    }
+    if(bodyEl) bodyEl.innerHTML=html; else jSheet('🧹 Ghost connections', html);
+  }catch(e){ if(bodyEl) bodyEl.innerHTML='<p class="muted">Scan failed: '+escapeHtml(((e&&e.message)||'')+'')+'</p>'; }
+}
+async function _ghostRemove(relId){
+  try{ if(ensureSB()){ var r=await sb.from('relationships').update({status:'removed'}).eq('id',relId); if(r&&r.error) throw r.error; } }
+  catch(e){ toast(humanError(e,'Could not remove that connection.')); return; }
+  toast('Ghost connection removed');
+  try{ if(document.getElementById('circlesBody')) renderCircles(); }catch(_){}
+  try{ renderFamily(); }catch(_){}
+  openGhostCleanup();
+}
+async function _ghostRemoveAll(){
+  var gs=(window.__ghosts||[]).slice(); if(!gs.length) return;
+  var ok=0;
+  for(var i=0;i<gs.length;i++){ try{ var r=await sb.from('relationships').update({status:'removed'}).eq('id',gs[i].id); if(!(r&&r.error)) ok++; }catch(e){} }
+  toast('Removed '+ok+' ghost connection'+(ok===1?'':'s'));
+  try{ if(document.getElementById('circlesBody')) renderCircles(); }catch(_){}
+  try{ renderFamily(); }catch(_){}
+  openGhostCleanup();
 }
 async function renderRituals(){
   var box=document.getElementById('ritualsBody'); if(!box) return;
@@ -5690,6 +5729,7 @@ function openHomeSettings(){
     '<label class="hs-tog"><input type="checkbox" id="hsGreetVoice" '+(_lsGet('jeeto_greet_off')==='1'?'':'checked')+' onchange="_lsSet(\'jeeto_greet_off\', this.checked?\'0\':\'1\'); if(this.checked){_greeted=false;_greetWired=false;_wireGreet();}"><span>Guardian voice greeting when you open the app</span></label>'+
     '<div class="field-label">Accent</div><div class="circle-opts">'+opt('rani','Rani Pink','#E03A7A')+opt('violet','Violet','#7C3AED')+opt('leaf','Leaf Green','#2BA84A')+'</div>'+
     '<button class="btn btn-soft" onclick="_circDiag()">🔍 Circle diagnostic</button><div style="height:8px"></div>'+
+    '<button class="btn btn-soft" onclick="openGhostCleanup()">🧹 Clean up ghost connections</button><div style="height:8px"></div>'+
     '<button class="btn" onclick="saveHomeSettings()">Save</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   m.classList.add('show');
 }
