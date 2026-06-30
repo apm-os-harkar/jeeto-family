@@ -2435,7 +2435,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.71.0-devwrap';
+var JEETO_VERSION='4.72.0-cardcenter';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -3824,7 +3824,7 @@ function _renderNoteCanvas(note){
   x.font='italic 500 54px Georgia,serif'; _wrapTxt(x,note.en,maxW).forEach(function(l){ content.push({t:l,font:'italic 500 54px Georgia,serif',fill:'#574431',adv:78}); });
   content.push({gap:32}); content.push({t:'\u2014 '+(note.src||'').toUpperCase(),font:'700 30px Georgia,serif',fill:'#C2901F',adv:44});
   var total=0; content.forEach(function(it){ total+=it.gap||it.adv; });
-  var top=372, bottom=1120, cy=Math.max(top,(top+bottom)/2-total/2);
+  var top=300, bottom=1150, cy=Math.max(top,(top+bottom)/2-total/2);
   content.forEach(function(it){ if(it.gap){ cy+=it.gap; return; } x.font=it.font; x.fillStyle=it.fill; x.fillText(it.t,W/2,cy,W-200); cy+=it.adv; });
   x.fillStyle='rgba(122,82,48,.72)'; x.font='700 36px Georgia,serif'; x.fillText('🪔 Jeeto',W/2,H-150);
   x.fillStyle='rgba(122,82,48,.45)'; x.font='400 24px Georgia,serif'; x.fillText('a quiet place for family \u00b7 jeeto-families.pages.dev',W/2,H-110);
