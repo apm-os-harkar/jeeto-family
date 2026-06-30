@@ -978,13 +978,13 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .found-after{color:var(--jh-muted-fg);font-size:12px;margin-top:12px}
 .circ-wrap{padding-bottom:30px}
 .circ-sub{color:var(--jh-muted-fg);font-size:14px;line-height:1.5;margin:6px auto 0;max-width:300px}
-.circ-stage{position:relative;width:320px;height:320px;max-width:86vw;margin:14px auto 6px}
+.circ-stage{position:relative;width:300px;height:300px;margin:16px auto 8px;overflow:visible}
 .circ-ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:flex-start;justify-content:center;transition:all .5s cubic-bezier(.2,.7,.3,1);cursor:pointer}
 .circ-ring>span{margin-top:9px;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.28)}
-.circ-world{width:320px;height:320px;max-width:86vw;background:radial-gradient(circle,rgba(79,142,247,.10),rgba(79,142,247,.18));border:2px solid #4F8EF7}
-.circ-family{width:240px;height:240px;max-width:66vw;background:radial-gradient(circle,rgba(62,140,115,.12),rgba(62,140,115,.22));border:2px solid #3E8C73}
-.circ-home{width:160px;height:160px;max-width:46vw;background:radial-gradient(circle,rgba(224,99,31,.14),rgba(224,99,31,.26));border:2px solid #E0631F}
-.circ-me{width:88px;height:88px;background:radial-gradient(circle at 35% 30%,#E05A8E,#C2185B);border:none;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(194,24,91,.42)}
+.circ-world{width:300px;height:300px;background:radial-gradient(circle,rgba(79,142,247,.10),rgba(79,142,247,.18));border:2px solid #4F8EF7}
+.circ-family{width:220px;height:220px;background:radial-gradient(circle,rgba(62,140,115,.12),rgba(62,140,115,.22));border:2px solid #3E8C73}
+.circ-home{width:140px;height:140px;background:radial-gradient(circle,rgba(224,99,31,.14),rgba(224,99,31,.26));border:2px solid #E0631F}
+.circ-me{width:80px;height:80px;background:radial-gradient(circle at 35% 30%,#E05A8E,#C2185B);border:none;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(194,24,91,.42)}
 .circ-me .circ-face{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:#C2185B;font-size:18px;font-family:var(--jh-serif,inherit)}
 .circ-me>span{margin-top:4px;font-size:10px}
 .circ-ring.dim{opacity:.3;filter:saturate(.6)}
@@ -1004,6 +1004,11 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .circ-share{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:var(--jh-fg)}
 .circ-si{width:22px;text-align:center;flex:none}
 .circ-legend{font-size:11.5px;color:var(--jh-muted-fg);text-align:center;margin-top:14px;line-height:1.5}
+.cperson{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;transform-origin:center;pointer-events:none;transition:opacity .4s}
+.cav{width:30px;height:30px;border-radius:50%;background:#fff;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--jh-fg);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.cav img{width:100%;height:100%;object-fit:cover}
+.cav-more{background:#f1ece4;color:var(--jh-muted-fg);font-size:10px}
+.cperson.dim{opacity:.18}
 .rl-sum{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .rl-sum-nm{font-family:'Baloo 2',inherit;font-size:18px;font-weight:800;color:var(--ink,#2A1B12)}
 .rl-sum-meta{margin-top:5px;color:var(--ink2,#7A6A76);font-size:13px}
@@ -2407,7 +2412,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.48.0-foundfamily';
+var JEETO_VERSION='4.50.0-movecircle';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -3448,6 +3453,7 @@ var CIRC_DATA={
 };
 function _circPick(k){ var d=CIRC_DATA[k]; if(!d) return;
   var rings=document.querySelectorAll('#circStage .circ-ring'); for(var i=0;i<rings.length;i++){ rings[i].classList.remove('dim','pop'); if(rings[i].getAttribute('data-k')!==k) rings[i].classList.add('dim'); else rings[i].classList.add('pop'); }
+  var ppl=document.querySelectorAll('#circStage .cperson'); for(var q=0;q<ppl.length;q++){ ppl[q].classList.toggle('dim', ppl[q].getAttribute('data-k')!==k); }
   var chips=document.querySelectorAll('#circChips .circ-chip'); for(var j=0;j<chips.length;j++){ var on=chips[j].getAttribute('data-k')===k; chips[j].classList.toggle('on',on); chips[j].style.background=on?d.c:'#fff'; chips[j].style.color=on?'#fff':''; }
   var det=document.getElementById('circDetail'); if(det) det.innerHTML='<div class="circ-dh"><span class="circ-dot" style="background:'+d.c+'22;color:'+d.c+'">'+d.ic+'</span><b style="color:'+d.c+'">'+d.name+'</b></div><p class="circ-tag">'+d.tag+'</p><div class="circ-shares">'+d.shares.map(function(sh){ var p=sh.indexOf(' '); return '<div class="circ-share"><span class="circ-si">'+sh.slice(0,p)+'</span><span>'+sh.slice(p+1)+'</span></div>'; }).join('')+'</div>';
 }
@@ -3467,7 +3473,32 @@ function renderCircles(){
     '<div class="circ-detail" id="circDetail"></div>'+
     '<div class="circ-legend">Tap a ring to see what’s shared there. The further out, the more people see it — and it’s always your choice.</div>'+
   '</div>';
-  _circPick('me'); _circRipple();
+  _circPick('me'); _circRipple(); _circLoadPeople();
+}
+function _circDots(k, people, R, color){
+  var stage=document.getElementById('circStage'); if(!stage) return;
+  var seen={}; people=people.filter(function(p){ if(!p||!p.name) return false; if(seen[p.name]) return false; seen[p.name]=1; return true; });
+  var max=10, extra=0; if(people.length>max){ extra=people.length-(max-1); people=people.slice(0,max-1); }
+  var c=people.length+(extra?1:0); if(!c) return;
+  var off=({home:0,family:18,world:36})[k]||0;
+  var old=stage.querySelectorAll('.cperson[data-k="'+k+'"]'); for(var j=0;j<old.length;j++) old[j].remove();
+  var frag='';
+  for(var i=0;i<people.length;i++){ var ang=off + i*(360/c); var p=people[i]; var inner=p.av?('<img src="'+escapeAttr(p.av)+'">'):escapeHtml((p.name[0]||'?').toUpperCase()); frag+='<div class="cperson" data-k="'+k+'" title="'+escapeAttr(p.name)+'" style="transform:rotate('+ang+'deg) translateY(-'+R+'px)"><div class="cav" style="transform:rotate('+(-ang)+'deg);border-color:'+color+'">'+inner+'</div></div>'; }
+  if(extra){ var ang2=off + people.length*(360/c); frag+='<div class="cperson" data-k="'+k+'" style="transform:rotate('+ang2+'deg) translateY(-'+R+'px)"><div class="cav cav-more" style="transform:rotate('+(-ang2)+'deg);border-color:'+color+'">+'+extra+'</div></div>'; }
+  stage.insertAdjacentHTML('beforeend', frag);
+  try{ var sel=document.querySelector('#circChips .circ-chip.on'); var ck=sel?sel.getAttribute('data-k'):'me'; var dd=stage.querySelectorAll('.cperson[data-k="'+k+'"]'); for(var z=0;z<dd.length;z++){ dd[z].classList.toggle('dim', k!==ck); } }catch(e){}
+}
+async function _circLoadPeople(){
+  try{
+    var ctx=await myCircleContext();
+    var homeP=[]; (ctx.households||[]).forEach(function(hh){ (hh.members||[]).forEach(function(p){ if(p && p.phone!==ctx.me) homeP.push({name:p.name||p.phone, av:p.avatar_url}); }); });
+    var fphones=ctx.conns||[]; var fmap={}; try{ fmap=await fetchProfiles(fphones); }catch(e){}
+    var fam=fphones.map(function(ph){ var p=fmap[ph]||{}; return {name:p.name||ph, av:p.avatar_url}; });
+    var world=(ctx.bridges||[]).map(function(b){ return {name:b._otherName||'A family', av:null}; });
+    _circDots('home', homeP, 70, '#E0631F');
+    _circDots('family', fam, 110, '#3E8C73');
+    _circDots('world', world, 150, '#4F8EF7');
+  }catch(e){}
 }
 async function renderRituals(){
   var box=document.getElementById('ritualsBody'); if(!box) return;
@@ -6772,6 +6803,7 @@ function celebrateMoment(type){
 function momentMenu(id){
   var m=document.getElementById('momentModal');
   m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:18px;margin-bottom:14px">Manage Moment</div>'+
+    '<button class="btn btn-soft" onclick="moveMomentPicker(\''+id+'\')">🔀 Move to another circle</button><div style="height:8px"></div>'+
     '<button class="btn btn-soft" onclick="archiveMoment(\''+id+'\')">🗂️ Archive · 30-day recovery</button>'+
     '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeMomentModal()">Cancel</button></div>';
   m.classList.add('show');
@@ -6781,6 +6813,36 @@ async function archiveMoment(id){
   var r=await sb.from('moments').update({ status:'archived', archived_at:new Date().toISOString() }).eq('id',id);
   if(r.error){ toast('Could not archive.'); return; }
   closeMomentModal(); toast('Moment archived 🗂️'); MCACHE={}; renderMoments(); loadDashboard();
+}
+var _MOVE_TYPES={me:'private',home:'household',family:'family',world:'bridge'};
+var _MOVE_RANK={private:0,household:1,family:2,bridge:3};
+var _MOVE_LABEL={me:'Me',home:'Home',family:'Family',world:'World'};
+var _MOVE_EMO={me:'💛',home:'🏡',family:'🌳',world:'🌍'};
+function moveMomentPicker(id){
+  var m=document.getElementById('momentModal'); if(!m) return;
+  var opts=[['me','💛','Me','Only you'],['home','🏡','Home','The people you live with'],['family','🌳','Family','All your relatives'],['world','🌍','World','Bridged families']];
+  m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:18px;margin-bottom:4px">Move this moment</div><p style="text-align:center;color:var(--ink2);font-size:13px;margin:0 0 14px">Choose which circle can see it</p>'+opts.map(function(o){ return '<button class="btn btn-soft" style="text-align:left;display:flex;gap:12px;align-items:center;margin-bottom:8px" onclick="moveMoment(\''+id+'\',\''+o[0]+'\')"><span style="font-size:20px">'+o[1]+'</span><span><b>'+o[2]+'</b><div style="font-size:12px;color:var(--ink2)">'+o[3]+'</div></span></button>'; }).join('')+'<button class="btn btn-soft" onclick="closeMomentModal()">Cancel</button></div>';
+  m.classList.add('show');
+}
+async function moveMoment(id, ringKey){
+  if(!ensureSB()) return;
+  var newType=_MOVE_TYPES[ringKey]; if(!newType) return;
+  var cur=null; try{ cur=(await sb.from('moments').select('id,created_by,moment_type').eq('id',id).maybeSingle()).data; }catch(e){}
+  if(!cur){ toast('Could not load this moment.'); return; }
+  if(cur.created_by!==myPhone()){ toast('Only the person who shared it can move it.'); return; }
+  if(cur.moment_type===newType){ closeMomentModal(); toast('Already in '+_MOVE_LABEL[ringKey]+'.'); return; }
+  var ctx=await myCircleContext();
+  if(newType==='household' && !(ctx.hhIds&&ctx.hhIds.length)){ toast('You have no Home set up yet.'); return; }
+  if(newType==='bridge' && !(ctx.brIds&&ctx.brIds.length)){ toast('You have no World bridges yet.'); return; }
+  var widening=(_MOVE_RANK[newType]>_MOVE_RANK[cur.moment_type]);
+  if(widening){ var who=({household:'your household',family:'your whole family',bridge:'bridged families'})[newType]||'more people'; if(!confirm('This moment will now be visible to '+who+'. Move it?')) return; }
+  var up=await sb.from('moments').update({moment_type:newType}).eq('id',id);
+  if(up.error){ toast('Could not move it.'); return; }
+  try{ await sb.from('moment_households').delete().eq('moment_id',id); }catch(e){}
+  try{ await sb.from('moment_bridges').delete().eq('moment_id',id); }catch(e){}
+  if(newType==='household'){ try{ await sb.from('moment_households').insert({moment_id:id, household_id:ctx.hhIds[0]}); }catch(e){} }
+  if(newType==='bridge'){ for(var i=0;i<ctx.brIds.length;i++){ try{ await sb.from('moment_bridges').insert({moment_id:id, bridge_id:ctx.brIds[i]}); }catch(e){} } }
+  closeMomentModal(); toast('Moved to '+_MOVE_LABEL[ringKey]+' '+_MOVE_EMO[ringKey]); MCACHE={}; try{ renderMoments(); }catch(e){} try{ loadDashboard(); }catch(e){}
 }
 async function openArchived(){
   if(!ensureSB()) return;
