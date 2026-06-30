@@ -992,7 +992,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .circ-ripple{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(194,24,91,.5);opacity:0;pointer-events:none;animation:circrad 6.6s ease-out infinite}.circ-ripple.r2{animation-delay:2.2s;border-color:rgba(224,99,31,.45)}.circ-ripple.r3{animation-delay:4.4s;border-color:rgba(231,166,75,.55)}.circ-glow{position:absolute;left:50%;top:50%;width:210px;height:210px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(224,90,142,.30),rgba(194,24,91,.10) 38%,rgba(194,24,91,0) 70%);animation:circhalo 6.6s ease-in-out infinite}@keyframes circrad{0%{width:78px;height:78px;opacity:0}10%{opacity:.55}100%{width:300px;height:300px;opacity:0}}@keyframes circhalo{0%,100%{opacity:.6;width:190px;height:190px}50%{opacity:1;width:232px;height:232px}}@media (prefers-reduced-motion:reduce){.circ-ripple{animation:none;opacity:.28}.circ-glow{animation:none;opacity:.7}}
 @keyframes circrip{0%{width:88px;height:88px;opacity:.5}100%{width:340px;height:340px;opacity:0}}
 .circ-ripple.go{animation:circrip 2.4s ease-out infinite}
-.circ-shloka{text-align:center;margin:8px auto 4px;max-width:340px;padding:0 14px}.cs-om{font-size:25px;color:#C99A2E;margin-bottom:2px;font-family:var(--jh-serif,serif);text-shadow:0 1px 10px rgba(201,154,46,.22)}.cs-dev{font-family:var(--jh-serif,'Mukta',serif);font-size:15px;line-height:1.95;color:#7A3E63;letter-spacing:.2px}.cs-mean{font-size:11.5px;line-height:1.5;color:var(--jh-muted-fg);font-style:italic;margin-top:6px}.cs-mean span{font-style:normal;color:#C99A2E;font-weight:700;letter-spacing:.4px;white-space:nowrap}.cs-om-btn{margin-top:11px;display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(201,154,46,.42);background:rgba(201,154,46,.07);color:#9A6B1E;border-radius:999px;padding:7px 16px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:.25s}.cs-om-btn.on{background:rgba(201,154,46,.16);border-color:rgba(201,154,46,.72);color:#7A4E12}
+.circ-shloka{text-align:center;margin:8px auto 4px;max-width:340px;padding:0 14px}.cs-om{font-size:25px;color:#C99A2E;margin-bottom:2px;font-family:var(--jh-serif,serif);text-shadow:0 1px 10px rgba(201,154,46,.22)}.cs-dev{font-family:var(--jh-serif,'Mukta',serif);font-size:15px;line-height:1.95;color:#7A3E63;letter-spacing:.2px}.cs-mean{font-size:11.5px;line-height:1.5;color:var(--jh-muted-fg);font-style:italic;margin-top:6px}.cs-mean span{font-style:normal;color:#C99A2E;font-weight:700;letter-spacing:.4px;white-space:nowrap}.cs-om-btn{margin-top:11px;display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(201,154,46,.42);background:rgba(201,154,46,.07);color:#9A6B1E;border-radius:999px;padding:7px 16px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:.25s}.cs-om-btn.on{background:rgba(201,154,46,.16);border-color:rgba(201,154,46,.72);color:#7A4E12}.cs-sounds{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:11px}.cs-snd{border:1px solid rgba(201,154,46,.4);background:rgba(201,154,46,.06);color:#9A6B1E;border-radius:999px;padding:7px 14px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:.2s}.cs-snd.on{background:rgba(201,154,46,.18);border-color:rgba(201,154,46,.75);color:#7A4E12}
 .circ-chips{display:flex;gap:7px;margin:8px auto 0;justify-content:center;flex-wrap:wrap}
 .circ-chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--jh-border);background:#fff;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;color:var(--jh-muted-fg)}
 .circ-chip.on{border-color:transparent}
@@ -2435,7 +2435,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.62.0-tanpura';
+var JEETO_VERSION='4.64.0-sounds';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -2597,7 +2597,7 @@ function closeCelebrate(){ document.getElementById('celebrate').classList.remove
 var _scrHist=[], _navingBack=false;
 function _navBack(){ var prev=_scrHist.length?_scrHist.pop():''; if(!prev||prev==='screen-home'){ navTo('home'); return; } _navingBack=true; showScreen(prev); _navingBack=false; }
 function showScreen(id){
-  try{ if(typeof _circOmStop==='function') _circOmStop(); }catch(e){}
+  try{ if(typeof _circSoundStop==='function') _circSoundStop(); }catch(e){}
   var _curEl=document.querySelector('.screen.active'); var _curId=_curEl?_curEl.id:'';
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
@@ -3487,7 +3487,7 @@ function renderCircles(){
   var box=document.getElementById('circlesBody'); if(!box) return;
   var ini=((ME&&ME.name&&ME.name[0])||'·').toUpperCase();
   box.innerHTML='<div class="jh-wrap circ-wrap">'+
-    '<div class="circ-shloka"><div class="cs-om">ॐ</div><div class="cs-dev">अहमात्मा गुडाकेश सर्वभूताशयस्थितः।<br>अहमादिश्च मध्यं च भूतानामन्त एव च॥</div><div class="cs-mean">“I am the Self seated in the heart of all — the beginning, the middle, and the end.” <span>· Gītā 10.20</span></div><button class="cs-om-btn" id="omToggle" onclick="_circOmToggle()">🪔 <span id="omLbl">Play Om</span></button></div>'+
+    '<div class="circ-shloka"><div class="cs-om">ॐ</div><div class="cs-dev">अहमात्मा गुडाकेश सर्वभूताशयस्थितः।<br>अहमादिश्च मध्यं च भूतानामन्त एव च॥</div><div class="cs-mean">“I am the Self seated in the heart of all — the beginning, the middle, and the end.” <span>· Gītā 10.20</span></div><div class="cs-sounds"><button class="cs-snd" onclick="_circSound(\'tanpura\',this)">Tanpura</button><button class="cs-snd" onclick="_circSound(\'bowl\',this)">Bowl</button><button class="cs-snd" onclick="_circSound(\'rain\',this)">Rain</button><button class="cs-snd" onclick="_circSound(\'waves\',this)">Waves</button></div></div>'+
     '<div class="circ-stage" id="circStage"><div class="circ-glow"></div><div class="circ-ripple r1"></div><div class="circ-ripple r2"></div><div class="circ-ripple r3"></div>'+
       '<div class="circ-ring circ-world" data-k="world" onclick="_circPick(\'world\')"><span>World</span></div>'+
       '<div class="circ-ring circ-family" data-k="family" onclick="_circPick(\'family\')"><span>Family</span></div>'+
@@ -3542,7 +3542,7 @@ function _workStatusMeta(k){ for(var i=0;i<WORK_STATUS.length;i++){ if(WORK_STAT
 function workHas(u){ u=u||{}; return !!((u.work_role&&u.work_role.trim())||(u.work_org&&u.work_org.trim())||u.work_status||(u.work_story&&u.work_story.trim())||(u.work_skills&&u.work_skills.trim())); }
 function workLine(u){ u=u||{}; var bits=[]; if(u.work_role) bits.push(u.work_role); if(u.work_org) bits.push(u.work_org); if(bits.length) return bits.join(' · '); var m=_workStatusMeta(u.work_status); return m?m[2]:''; }
 function _workSkillChips(s){ if(!s) return ''; var arr=s.split(',').map(function(x){return x.trim();}).filter(Boolean).slice(0,12); if(!arr.length) return ''; return '<div class="work-skills">'+arr.map(function(t){ return '<span class="work-chip">'+escapeHtml(t)+'</span>'; }).join('')+'</div>'; }
-function workCardHtml(u){ u=u||{}; if(!workHas(u)) return ''; var m=_workStatusMeta(u.work_status); var head=u.work_role?escapeHtml(u.work_role):''; var sub=u.work_org?escapeHtml(u.work_org):''; var pill=m?'<span class="work-pill">'+m[1]+' '+escapeHtml(m[2])+'</span>':''; return '<div class="work-card"><div class="work-h"><span class="work-ic">💼</span><div style="flex:1;min-width:0"><div class="work-role">'+(head||'Their work')+'</div>'+(sub?'<div class="work-org">'+sub+'</div>':'')+'</div>'+pill+'</div>'+(u.work_story?'<div class="work-story">'+escapeHtml(u.work_story)+'</div>':'')+_workSkillChips(u.work_skills)+'</div>'; }
+function workCardHtml(u){ u=u||{}; if(!workHas(u)) return ''; var m=_workStatusMeta(u.work_status); var head=u.work_role?escapeHtml(u.work_role):''; var sub=u.work_org?escapeHtml(u.work_org):''; var pill=m?'<span class="work-pill">'+m[1]+' '+escapeHtml(m[2])+'</span>':''; return '<div class="work-card"><div class="work-h"><span class="work-ic">💼</span><div style="flex:1;min-width:0"><div class="work-role">'+(head||'Their work')+'</div>'+(sub?'<div class="work-org">'+sub+'</div>':'')+'</div>'+pill+'</div>'+(u.work_story?'<div class="work-story">'+escapeHtml(u.work_story)+'</div>':'')+(u.work_audio?'<div style="margin-top:9px"><audio controls src="'+escapeAttr(u.work_audio)+'" style="width:100%;height:36px"></audio></div>':'')+_workSkillChips(u.work_skills)+'</div>'; }
 function _workAv(u){ u=u||{}; return '<span class="work-av">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':escapeHtml(((u.name||'?')[0]||'?').toUpperCase()))+'</span>'; }
 
 function _workCanEdit(u){ u=u||{}; return (u.phone&&u.phone===myPhone()) || u.life_status==='legacy'; }
@@ -3555,19 +3555,46 @@ async function openWorkView(phone, name){
     : '<p class="muted" style="margin-top:12px;font-size:12.5px;text-align:center">Only '+escapeHtml(((u.name||name||'they')+'').split(' ')[0])+' can edit this record.</p>';
   jSheet('💼 '+escapeHtml(u.name||name||'Work & Craft'), card+btn);
 }
+var _wkMR=null,_wkChunks=[],_wkBlob=null,_wkURL='',_wkRecT0=0,_wkRecTimer=null;
+async function _wkRecToggle(){
+  var btn=document.getElementById('wkRecBtn');
+  if(_wkMR && _wkMR.state==='recording'){ try{_wkMR.stop();}catch(e){} return; }
+  try{
+    var stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    _wkChunks=[]; _wkBlob=null;
+    _wkMR=new MediaRecorder(stream);
+    _wkMR.ondataavailable=function(e){ if(e.data&&e.data.size) _wkChunks.push(e.data); };
+    _wkMR.onstop=function(){
+      _wkBlob=new Blob(_wkChunks,{type:(_wkChunks[0]&&_wkChunks[0].type)||'audio/webm'});
+      _wkURL=URL.createObjectURL(_wkBlob);
+      var pv=document.getElementById('wkRecPreview'); if(pv) pv.innerHTML='<audio controls src="'+_wkURL+'" style="width:100%"></audio>';
+      try{ stream.getTracks().forEach(function(t){t.stop();}); }catch(_){}
+      if(_wkRecTimer){ clearInterval(_wkRecTimer); _wkRecTimer=null; } var tt=document.getElementById('wkRecTime'); if(tt) tt.textContent='Recorded ✓';
+      var b=document.getElementById('wkRecBtn'); if(b){ b.textContent='🎙️ Re-record voice'; b.classList.remove('rec-on'); }
+    };
+    _wkMR.start();
+    if(btn){ btn.textContent='⏹ Stop'; btn.classList.add('rec-on'); }
+    _wkRecT0=Date.now();
+    _wkRecTimer=setInterval(function(){ var tt=document.getElementById('wkRecTime'); if(tt){ var sec=Math.floor((Date.now()-_wkRecT0)/1000); tt.textContent='● '+Math.floor(sec/60)+':'+('0'+(sec%60)).slice(-2); } },500);
+  }catch(e){ toast('Allow mic access to record.'); }
+}
 async function openWorkEdit(phone, name, isSelf){
   phone=phone||myPhone(); var u={};
   try{ u=(phone===myPhone()&&ME)?ME:((await fetchProfile(phone))||{}); }catch(e){}
   if(!u.phone) u.phone=phone; isSelf=(phone===myPhone());
   if(!_workCanEdit(u)){ toast('Only they can edit their own work record.'); return; }
-  window.__workEdit={ phone:phone, isSelf:isSelf, legacy:(u.life_status==='legacy') };
+  window.__workEdit={ phone:phone, isSelf:isSelf, legacy:(u.life_status==='legacy'), audio:(u.work_audio||null) };
+  _wkBlob=null; _wkURL=''; _wkChunks=[];
   var statusChips=WORK_STATUS.map(function(o){ return '<button type="button" class="schip'+(u.work_status===o[0]?' on':'')+'" data-ws="'+o[0]+'" onclick="_workPickStatus(this)">'+o[1]+' '+o[2]+'</button>'; }).join('');
   var who=isSelf?'your':(escapeHtml(((name||'their').split(' ')[0]))+'’s');
   var html='<p class="muted" style="margin:2px 2px 14px;font-size:13px">A family record of '+who+' work and craft. Kept as memory for the whole family — never shown to strangers, never a network.</p>'+
     '<div class="field-label">What '+(isSelf?'you do':'they do')+'</div><input class="fi" id="wkRole" maxlength="80" placeholder="e.g. Civil Engineer, Welder, Teacher" value="'+escapeAttr(u.work_role||'')+'">'+
     '<div class="field-label" style="margin-top:12px">Where / their business <span class="muted">(optional)</span></div><input class="fi" id="wkOrg" maxlength="90" placeholder="e.g. Auxilink Projects, or the family fabrication shop" value="'+escapeAttr(u.work_org||'')+'">'+
     '<div class="field-label" style="margin-top:14px">Stage</div><div class="schips" id="wkStatus">'+statusChips+'</div>'+
-    '<div class="field-label" style="margin-top:14px">The craft / story <span class="muted">(optional)</span></div><textarea class="fi" id="wkStory" rows="3" maxlength="500" placeholder="The trade, the years, what they are known for. Especially worth recording for elders.">'+escapeHtml(u.work_story||'')+'</textarea>'+
+    '<div class="field-label" style="margin-top:14px">The craft / story <span class="muted">(optional)</span></div><textarea class="fi" id="wkStory" rows="6" maxlength="1500" style="min-height:130px;line-height:1.55;resize:vertical" placeholder="The trade, the years, what they are known for. Edit this anytime as the work changes.">'+escapeHtml(u.work_story||'')+'</textarea>'+
+    '<div class="field-label" style="margin-top:14px">Or record the story in their voice</div>'+
+    '<button type="button" class="btn btn-soft" id="wkRecBtn" onclick="_wkRecToggle()">🎙️ '+(u.work_audio?'Re-record voice':'Record voice')+'</button> <span id="wkRecTime" class="muted" style="font-size:12px"></span>'+
+    '<div id="wkRecPreview" style="margin-top:8px">'+(u.work_audio?('<audio controls src="'+escapeAttr(u.work_audio)+'" style="width:100%"></audio>'):'')+'</div>'+
     '<div class="field-label" style="margin-top:12px">Family can ask '+(isSelf?'you':'them')+' about <span class="muted">(comma separated)</span></div><input class="fi" id="wkSkills" maxlength="160" placeholder="e.g. taxes, college admissions, home loans" value="'+escapeAttr(u.work_skills||'')+'">'+
     '<button class="btn glow" style="margin-top:16px" onclick="saveWorkRecord()">Save record</button>';
   jSheet('💼 Work & Craft', html);
@@ -3579,7 +3606,11 @@ async function saveWorkRecord(){
   var g=function(id){ var el=document.getElementById(id); return el?(el.value||'').trim():''; };
   var sel=document.querySelector('#wkStatus .schip.on'); var status=sel?sel.getAttribute('data-ws'):'';
   var patch={ work_role:g('wkRole')||null, work_org:g('wkOrg')||null, work_status:status||null, work_story:g('wkStory')||null, work_skills:g('wkSkills')||null };
+  var audioUrl=(e.audio||null);
+  if(_wkBlob){ try{ var meph=myPhone(); var ext=(_wkBlob.type.indexOf('mp4')>=0)?'mp4':'webm'; var ap=meph+'/work-'+phone+'-'+Date.now()+'.'+ext; var aup=await sb.storage.from('moments').upload(ap,_wkBlob,{upsert:true,contentType:_wkBlob.type||'audio/webm'}); if(aup.error) throw aup.error; audioUrl=sb.storage.from('moments').getPublicUrl(ap).data.publicUrl; }catch(ae){ toast('Voice upload failed — saving the rest.'); } }
+  patch.work_audio=audioUrl;
   try{ if(ensureSB()) { var r=await sb.from('profiles').update(patch).eq('phone',phone); if(r&&r.error) throw r.error; } }catch(err){ toast(humanError(err,'Could not save — run the Work SQL in Supabase first.')); return; }
+  _wkBlob=null;
   if(e.isSelf&&ME){ for(var k in patch) ME[k]=patch[k]; }
   try{ logLife(phone,'work_record','Work & craft recorded', workLine(patch)||null, '💼'); }catch(_){}
   toast('Work & craft saved 💼'); try{ closeHomeModal(); }catch(_){}
@@ -3673,59 +3704,65 @@ async function _ghostRemoveAll(){
   try{ renderFamily(); }catch(_){}
   openGhostCleanup();
 }
-var _circDrone=null,_circActx=null,_circTimer=null;
-function _omImpulse(ctx,dur,decay){
-  var rate=ctx.sampleRate, len=Math.floor(rate*dur), buf=ctx.createBuffer(2,len,rate);
-  for(var ch=0;ch<2;ch++){ var d=buf.getChannelData(ch); for(var i=0;i<len;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay); } }
-  return buf;
+var _circActx=null,_circMaster=null,_circTimer=null,_circNodes=null,_circCur=null;
+function _omImpulse(ctx,dur,decay){ var rate=ctx.sampleRate, len=Math.floor(rate*dur), buf=ctx.createBuffer(2,len,rate); for(var ch=0;ch<2;ch++){ var d=buf.getChannelData(ch); for(var i=0;i<len;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay); } } return buf; }
+function _noiseBuf(ctx,sec){ var len=Math.floor(ctx.sampleRate*sec), b=ctx.createBuffer(1,len,ctx.sampleRate), d=b.getChannelData(0); for(var i=0;i<len;i++) d[i]=Math.random()*2-1; return b; }
+function _revBus(ctx,master,mix,dur,decay){ try{ var conv=ctx.createConvolver(); conv.buffer=_omImpulse(ctx,dur,decay); var wet=ctx.createGain(); wet.gain.value=mix; master.connect(conv); conv.connect(wet); wet.connect(ctx.destination); }catch(e){} }
+function _sndTanpura(ctx,master){
+  _revBus(ctx,master,0.34,2.4,2.4);
+  var Sa=196.0, pattern=[Sa*0.75,Sa,Sa,Sa*0.5], idx=0;
+  function pluck(freq,t){ var harm=[1,2,3,4,5,6], amp=[0.42,0.24,0.16,0.11,0.07,0.05]; var g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.4,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+3.5); var lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(3400,t); lp.frequency.exponentialRampToValueAtTime(850,t+2.4); g.connect(lp); lp.connect(master); for(var h=0;h<harm.length;h++){ for(var v=0;v<2;v++){ var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=freq*harm[h]*(v===0?1:1.0025); var hg=ctx.createGain(); hg.gain.value=amp[h]*(v===0?1:0.5); o.connect(hg); hg.connect(g); o.start(t); o.stop(t+3.7); } } }
+  var fire=function(){ try{ pluck(pattern[idx%pattern.length],ctx.currentTime+0.03); idx++; }catch(e){} };
+  fire(); _circTimer=setInterval(fire,1450);
 }
-function _omPluck(ctx,dest,freq,t){
-  var harm=[1,2,3,4,5,6], amp=[0.42,0.24,0.16,0.11,0.07,0.05];
-  var g=ctx.createGain();
-  g.gain.setValueAtTime(0.0001,t);
-  g.gain.exponentialRampToValueAtTime(0.4,t+0.012);
-  g.gain.exponentialRampToValueAtTime(0.0001,t+3.5);
-  var lp=ctx.createBiquadFilter(); lp.type='lowpass';
-  lp.frequency.setValueAtTime(3400,t); lp.frequency.exponentialRampToValueAtTime(850,t+2.4);
-  g.connect(lp); lp.connect(dest);
-  for(var h=0;h<harm.length;h++){
-    for(var v=0;v<2;v++){
-      var o=ctx.createOscillator(); o.type='sine';
-      o.frequency.value=freq*harm[h]*(v===0?1:1.0025);
-      var hg=ctx.createGain(); hg.gain.value=amp[h]*(v===0?1:0.5);
-      o.connect(hg); hg.connect(g); o.start(t); o.stop(t+3.7);
-    }
-  }
+function _sndBowl(ctx,master){
+  _revBus(ctx,master,0.45,3.6,2.2);
+  function strike(t){ var parts=[1,2.76,5.40,8.93], amp=[0.5,0.3,0.17,0.09], base=208+(Math.random()*6-3); for(var i=0;i<parts.length;i++){ for(var v=0;v<2;v++){ var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=base*parts[i]*(v?1.004:1); var g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(amp[i]*(v?0.6:1),t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+7); o.connect(g); g.connect(master); o.start(t); o.stop(t+7.2); } } }
+  strike(ctx.currentTime+0.05); _circTimer=setInterval(function(){ strike(ctx.currentTime+0.05); },9000);
 }
-function _circOmToggle(){
-  var lbl=document.getElementById('omLbl'), btn=document.getElementById('omToggle');
-  if(!_circDrone){
-    try{
-      _circActx=new (window.AudioContext||window.webkitAudioContext)();
-      try{ var _ub=_circActx.createBuffer(1,1,22050); var _us=_circActx.createBufferSource(); _us.buffer=_ub; _us.connect(_circActx.destination); _us.start(0); }catch(_e){}
-      if(_circActx.resume) _circActx.resume();
-      var ctx=_circActx;
-      var master=ctx.createGain(); master.gain.value=0.0001;
-      var dry=ctx.createGain(); dry.gain.value=0.78; master.connect(dry); dry.connect(ctx.destination);
-      try{ var conv=ctx.createConvolver(); conv.buffer=_omImpulse(ctx,2.4,2.4); var wet=ctx.createGain(); wet.gain.value=0.34; master.connect(conv); conv.connect(wet); wet.connect(ctx.destination); }catch(_r){}
-      master.gain.setTargetAtTime(0.55,ctx.currentTime,0.9);
-      var Sa=196.00, pattern=[Sa*0.75, Sa, Sa, Sa*0.5];
-      var idx=0;
-      var fire=function(){ try{ _omPluck(ctx,master,pattern[idx%pattern.length],ctx.currentTime+0.03); idx++; }catch(e){} };
-      fire();
-      _circTimer=setInterval(fire,1450);
-      _circDrone={master:master};
-      if(lbl) lbl.textContent='Pause Om'; if(btn) btn.classList.add('on');
-      setTimeout(function(){ try{ if(_circActx && _circActx.state!=='running'){ toast('If silent: flip the side mute switch & raise media volume.'); } }catch(_){} },800);
-    }catch(e){ try{toast('Audio not available on this device.');}catch(_){} }
-  } else { _circOmStop(); }
+function _sndRain(ctx,master){
+  var src=ctx.createBufferSource(); src.buffer=_noiseBuf(ctx,2); src.loop=true;
+  var hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=480;
+  var lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=7200;
+  var g=ctx.createGain(); g.gain.value=0.5;
+  src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(master); src.start();
+  _circNodes=[src];
 }
-function _circOmStop(){
+function _sndWaves(ctx,master){
+  var src=ctx.createBufferSource(); src.buffer=_noiseBuf(ctx,3); src.loop=true;
+  var lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=820;
+  var g=ctx.createGain(); g.gain.value=0.16;
+  src.connect(lp); lp.connect(g); g.connect(master);
+  var lfo=ctx.createOscillator(); lfo.frequency.value=0.12; var lg=ctx.createGain(); lg.gain.value=0.16; lfo.connect(lg); lg.connect(g.gain); lfo.start();
+  var lfo2=ctx.createOscillator(); lfo2.frequency.value=0.09; var lg2=ctx.createGain(); lg2.gain.value=420; lfo2.connect(lg2); lg2.connect(lp.frequency); lfo2.start();
+  src.start(); _circNodes=[src,lfo,lfo2];
+}
+function _circSound(kind,btn){
+  if(_circCur===kind){ _circSoundStop(); return; }
+  _circSoundStop();
+  try{
+    _circActx=new (window.AudioContext||window.webkitAudioContext)();
+    try{ var _ub=_circActx.createBuffer(1,1,22050); var _us=_circActx.createBufferSource(); _us.buffer=_ub; _us.connect(_circActx.destination); _us.start(0); }catch(_e){}
+    if(_circActx.resume) _circActx.resume();
+    var ctx=_circActx; var master=ctx.createGain(); master.gain.value=0.0001; master.connect(ctx.destination); _circMaster=master;
+    if(kind==='tanpura') _sndTanpura(ctx,master);
+    else if(kind==='bowl') _sndBowl(ctx,master);
+    else if(kind==='rain') _sndRain(ctx,master);
+    else if(kind==='waves') _sndWaves(ctx,master);
+    var lvl=(kind==='rain')?0.5:0.55;
+    master.gain.setTargetAtTime(lvl,ctx.currentTime,0.9);
+    _circCur=kind;
+    try{ var cs=document.querySelectorAll('.cs-snd'); for(var i=0;i<cs.length;i++) cs[i].classList.remove('on'); }catch(_){}
+    if(btn) btn.classList.add('on');
+    setTimeout(function(){ try{ if(_circActx && _circActx.state!=='running'){ toast('If silent: flip the side mute switch & raise media volume.'); } }catch(_){} },800);
+  }catch(e){ try{toast('Audio not available on this device.');}catch(_){} }
+}
+function _circSoundStop(){
   if(_circTimer){ clearInterval(_circTimer); _circTimer=null; }
-  if(_circDrone&&_circActx){ try{ _circDrone.master.gain.setTargetAtTime(0,_circActx.currentTime,0.6); var ax=_circActx; setTimeout(function(){ try{ ax.close(); }catch(e){} },3000); }catch(e){} }
-  _circDrone=null; _circActx=null;
-  var lbl=document.getElementById('omLbl'), btn=document.getElementById('omToggle');
-  if(lbl) lbl.textContent='Play Om'; if(btn) btn.classList.remove('on');
+  if(_circNodes){ for(var i=0;i<_circNodes.length;i++){ try{ _circNodes[i].stop(); }catch(e){} } _circNodes=null; }
+  if(_circMaster&&_circActx){ try{ _circMaster.gain.setTargetAtTime(0,_circActx.currentTime,0.5); var ax=_circActx; setTimeout(function(){ try{ ax.close(); }catch(e){} },2600); }catch(e){} }
+  _circActx=null; _circMaster=null; _circCur=null;
+  try{ var cs=document.querySelectorAll('.cs-snd'); for(var i=0;i<cs.length;i++) cs[i].classList.remove('on'); }catch(e){}
 }
 async function renderRituals(){
   var box=document.getElementById('ritualsBody'); if(!box) return;
@@ -5809,7 +5846,7 @@ function relView(c, me){
   var aIsMe=c.person_a_phone===me;
   return { id:c.id, aIsMe:aIsMe, other: aIsMe?c.person_b_phone:c.person_a_phone, rel: aIsMe?c.relation_a_to_b:c.relation_b_to_a, relStatus:(c.rel_status||'active'), since: c.created_at };
 }
-async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender,life_status,work_role,work_org,work_status,work_story,work_skills').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
+async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender,life_status,work_role,work_org,work_status,work_story,work_skills,work_audio').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
 
 /* ============================================================
    RELATIONSHIP ENGINE — public API
