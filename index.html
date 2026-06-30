@@ -966,6 +966,44 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .heart-myask{background:#FFF6F9;border:1px solid #F3D9E6;border-radius:16px;padding:16px}
 .heart-place{display:flex;align-items:center;justify-content:center;gap:8px}
 .heart-place svg{width:18px;height:18px}
+.found-wrap{text-align:center;padding-top:30px}
+.found-burst{font-size:40px}
+.found-h{font-family:var(--jh-serif,Georgia,serif);font-size:28px;font-weight:600;margin:6px 0 8px;color:var(--jh-fg)}
+.found-sub{color:var(--jh-muted-fg);font-size:15px;line-height:1.5;margin:0 auto 18px;max-width:300px}
+.found-row{display:flex;align-items:center;gap:12px;text-align:left;background:var(--jh-card);border:1px solid var(--jh-border);border-radius:16px;padding:14px;margin:0 auto 10px;max-width:360px}
+.found-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#E0631F,#C2185B);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+.found-rel{color:var(--jh-muted-fg);font-size:13px;margin-top:2px}
+.found-trust{display:flex;gap:8px;justify-content:center;font-size:12.5px;color:#2f7d3a;background:#F3FBF4;border:1px solid #D9EFDD;border-radius:12px;padding:11px;margin:14px auto 16px;max-width:360px;line-height:1.4}
+.found-btn{max-width:360px;margin:0 auto;display:block}
+.found-after{color:var(--jh-muted-fg);font-size:12px;margin-top:12px}
+.circ-wrap{padding-bottom:30px}
+.circ-sub{color:var(--jh-muted-fg);font-size:14px;line-height:1.5;margin:6px auto 0;max-width:300px}
+.circ-stage{position:relative;width:320px;height:320px;max-width:86vw;margin:14px auto 6px}
+.circ-ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:flex-start;justify-content:center;transition:all .5s cubic-bezier(.2,.7,.3,1);cursor:pointer}
+.circ-ring>span{margin-top:9px;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.28)}
+.circ-world{width:320px;height:320px;max-width:86vw;background:radial-gradient(circle,rgba(79,142,247,.10),rgba(79,142,247,.18));border:2px solid #4F8EF7}
+.circ-family{width:240px;height:240px;max-width:66vw;background:radial-gradient(circle,rgba(62,140,115,.12),rgba(62,140,115,.22));border:2px solid #3E8C73}
+.circ-home{width:160px;height:160px;max-width:46vw;background:radial-gradient(circle,rgba(224,99,31,.14),rgba(224,99,31,.26));border:2px solid #E0631F}
+.circ-me{width:88px;height:88px;background:radial-gradient(circle at 35% 30%,#E05A8E,#C2185B);border:none;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(194,24,91,.42)}
+.circ-me .circ-face{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;color:#C2185B;font-size:18px;font-family:var(--jh-serif,inherit)}
+.circ-me>span{margin-top:4px;font-size:10px}
+.circ-ring.dim{opacity:.3;filter:saturate(.6)}
+.circ-ring.pop{transform:translate(-50%,-50%) scale(1.04)}
+.circ-ripple{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;border:2px solid #C2185B;opacity:0;pointer-events:none}
+@keyframes circrip{0%{width:88px;height:88px;opacity:.5}100%{width:340px;height:340px;opacity:0}}
+.circ-ripple.go{animation:circrip 2.4s ease-out infinite}
+.circ-chips{display:flex;gap:7px;margin:8px auto 0;justify-content:center;flex-wrap:wrap}
+.circ-chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--jh-border);background:#fff;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;color:var(--jh-muted-fg)}
+.circ-chip.on{border-color:transparent}
+.circ-detail{background:var(--jh-card);border:1px solid var(--jh-border);border-radius:18px;padding:18px;margin-top:14px;box-shadow:0 6px 20px rgba(0,0,0,.05)}
+.circ-dh{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.circ-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.circ-dh b{font-family:var(--jh-serif,inherit);font-size:20px;font-weight:600}
+.circ-tag{margin:0 0 10px;font-size:14px;line-height:1.5;color:var(--jh-muted-fg)}
+.circ-shares{display:flex;flex-direction:column;gap:7px}
+.circ-share{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:var(--jh-fg)}
+.circ-si{width:22px;text-align:center;flex:none}
+.circ-legend{font-size:11.5px;color:var(--jh-muted-fg);text-align:center;margin-top:14px;line-height:1.5}
 .rl-sum{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .rl-sum-nm{font-family:'Baloo 2',inherit;font-size:18px;font-weight:800;color:var(--ink,#2A1B12)}
 .rl-sum-meta{margin-top:5px;color:var(--ink2,#7A6A76);font-size:13px}
@@ -1524,6 +1562,8 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <section class="screen has-nav" id="screen-home"><div class="jh" id="homeBody"></div></section>
   <section class="screen has-nav" id="screen-design"><div class="jh" id="designBody"></div></section>
   <section class="screen has-nav" id="screen-heart"><div class="jh" id="heartBody"></div></section>
+  <section class="screen has-nav" id="screen-circles"><div class="jh" id="circlesBody"></div></section>
+  <section class="screen" id="screen-found"><div class="jh" id="foundBody"></div></section>
   <section class="screen has-nav" id="screen-myworld"><div class="jh" id="myWorldBody"></div></section>
   <section class="screen has-nav" id="screen-across"><div class="jh" id="acrossBody"></div></section>
   <section class="screen has-nav" id="screen-loop"><div class="jh" id="loopBody"></div></section>
@@ -1545,10 +1585,10 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <button class="btn glow" onclick="openCapture()">＋ Capture a Moment</button>
     <div id="onThisDay" style="margin-top:18px"></div>
     <div class="mtabs" id="mtabs">
-      <button data-circle="private" class="on" onclick="setCircle('private')">👤<span>My</span></button>
+      <button data-circle="private" class="on" onclick="setCircle('private')">👤<span>Me</span></button>
       <button data-circle="household" onclick="setCircle('household')">🏠<span>Home</span></button>
       <button data-circle="family" onclick="setCircle('family')">❤️<span>Family</span></button>
-      <button data-circle="bridge" onclick="setCircle('bridge')">🌉<span>Bridge</span></button>
+      <button data-circle="bridge" onclick="setCircle('bridge')">🌉<span>World</span></button>
     </div>
     <input class="fi" id="momentSearch" placeholder="Search this circle…" oninput="renderMomentFeed()" style="margin:4px 0 14px">
     <div id="momentFeed"></div>
@@ -2367,7 +2407,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.46.0-reldash';
+var JEETO_VERSION='4.48.0-foundfamily';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2570,9 +2610,22 @@ async function submitOtp(){
   if(code!==MOCK_OTP){ document.getElementById('otpErr').textContent='Incorrect code. Try 123456.'; clearOtp(); var f=document.querySelector('.otp-box'); if(f) f.focus(); return; }
   setMyPhone(TMP_PHONE); ME=await fetchProfile(TMP_PHONE);
   if(ME===undefined){ ME=await fetchProfile(TMP_PHONE); }   // one retry on a transient load error
-  if(ME && ME.name){ await renderHome(); navTo('home'); } else { showScreen('screen-profile'); }
+  if(ME && ME.name){ await renderHome(); navTo('home'); } else { await _onboardRoute(); }
 }
 
+async function _onboardRoute(){
+  var pend=[]; try{ pend=await loadPendingRequests(); }catch(e){ pend=[]; }
+  if(pend && pend.length){ try{ await renderFound(pend); }catch(e){} showScreen('screen-found'); }
+  else { showScreen('screen-profile'); }
+}
+async function renderFound(pend){
+  var box=document.getElementById('foundBody'); if(!box) return;
+  var names={};
+  for(var i=0;i<pend.length;i++){ try{ var p=await fetchProfile(pend[i].sender_phone); names[pend[i].sender_phone]=(p&&p.name)||pend[i].sender_phone; }catch(e){ names[pend[i].sender_phone]=pend[i].sender_phone; } }
+  var first=pend[0]; var firstName=names[first.sender_phone];
+  var list=pend.map(function(r){ var nm=names[r.sender_phone]; return '<div class="found-row"><div class="found-av">'+escapeHtml((nm[0]||'?').toUpperCase())+'</div><div><b>'+escapeHtml(nm)+'</b><div class="found-rel">added you as their '+escapeHtml(r.relationship||'family')+'</div></div></div>'; }).join('');
+  box.innerHTML='<div class="jh-wrap found-wrap"><div class="found-burst">✨</div><h1 class="found-h">We found your family</h1><p class="found-sub">'+escapeHtml(firstName)+(pend.length>1?(' and '+(pend.length-1)+' more have'):' has')+' been waiting to welcome you.</p>'+list+'<div class="found-trust">🔒 You see this only because they added your number — no one can search for you.</div><button class="btn found-btn" onclick="showScreen(\'screen-profile\')">Join them — set up my profile →</button><p class="found-after">You’ll confirm each connection in Relationships after.</p></div>';
+}
 /* ---------- profile setup ---------- */
 var _gender='', _photo='';
 function pickGender(g){ _gender=g; var c=document.querySelectorAll('#pfGender .chip'); for(var i=0;i<c.length;i++) c[i].classList.toggle('on', c[i].getAttribute('data-g')===g); }
@@ -3211,7 +3264,7 @@ function _heartDayIndex(){ return Math.floor(Date.now()/86400000); }
 function heartQuestionToday(){ return HEART_Q[_heartDayIndex()%HEART_Q.length]; }
 function heartQKey(){ return 'q'+(_heartDayIndex()%HEART_Q.length); }
 function _heartDateKey(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
-function _heartScopeLabel(sc){ return sc==='home'?'This home':(sc==='private'?'Just me':'Whole family'); }
+function _heartScopeLabel(sc){ return sc==='home'?'Home':(sc==='private'?'Me':'Family'); }
 function _heartScopeSet(sc){ _heartScope=sc; var c=document.querySelectorAll('.heart-scope'); for(var i=0;i<c.length;i++) c[i].classList.toggle('on', c[i].getAttribute('data-s')===sc); }
 async function _heartScopeData(){
   var me=myPhone(); var fam={}; fam[me]=1; var hhIds=[];
@@ -3250,7 +3303,7 @@ async function renderHeart(){
   if(!mine.length){
     composer='<section class="jh-rise"><textarea class="fi" id="heartInput" rows="4" placeholder="Answer gently\u2026 there is no wrong answer" oninput="var e=document.getElementById(\'heartErr\');if(e)e.style.display=\'none\';this.classList.remove(\'fi-bad\')" style="min-height:110px;resize:vertical"></textarea>'+
       '<div id="heartErr" class="fi-err-msg">Write a little something to share.</div>'+
-      '<div class="heart-scoperow">'+['family|Whole family','home|This home','private|Just me'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
+      '<div class="heart-scoperow">'+['family|Family','home|Home','private|Me'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
       '<button class="btn" onclick="submitHeartAnswer()">Share with the Heart \u2764</button></section>';
   } else {
     composer='<section class="jh-rise heart-mine"><div class="heart-lbl">You opened up</div><p class="heart-body">'+escapeHtml(mine[0].body)+'</p><span class="heart-scopetag">'+_heartScopeLabel(mine[0].scope)+'</span></section>';
@@ -3303,7 +3356,7 @@ function openHeartAsk(){
     '<div class="field-label">What would help?</div><div class="heart-scoperow" id="heartAskKinds" style="flex-wrap:wrap">'+kinds.map(function(k){ return '<button type="button" class="heart-scope'+(_askKind===k[0]?' on':'')+'" data-k="'+k[0]+'" onclick="_askKindSet(\''+k[0]+'\')">'+k[1]+'</button>'; }).join('')+'</div>'+
     '<p id="heartAskPrev" class="heart-needmsg" style="margin:8px 2px 12px">'+_heartAskMsg({kind:'call'})+'</p>'+
     '<div class="field-label">Add a word (optional)</div><input class="fi" id="heartAskNote" maxlength="140" placeholder="Anything you want to say\u2026" style="margin-bottom:14px">'+
-    '<div class="field-label">Who should see this?</div><div class="heart-scoperow">'+['family|Whole family','home|This home'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
+    '<div class="field-label">Who should see this?</div><div class="heart-scoperow">'+['family|Family','home|Home'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
     '<button class="btn" style="margin-top:14px" onclick="submitHeartAsk()">Send quietly</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   m.classList.add('show');
 }
@@ -3340,7 +3393,7 @@ function openHeartStory(){ var m=document.getElementById('homeModal'); if(!m) re
     '<div class="field-label">Title</div><input class="fi" id="stTitle" placeholder="Give your story a name" style="margin-bottom:10px">'+
     '<div class="field-label">Write it (optional)</div><textarea class="fi" id="stBody" rows="4" placeholder="Tell it in your words\u2026" style="min-height:100px;margin-bottom:10px"></textarea>'+
     '<div class="field-label">\u2026 or record your voice</div><button type="button" class="btn btn-soft" id="stRecBtn" onclick="_heartRecToggle()">\ud83c\udf99 Record</button><div id="stPreview" style="margin-top:10px"></div>'+
-    '<div class="field-label" style="margin-top:12px">Who should keep it?</div><div class="heart-scoperow">'+['family|Whole family','home|This home'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
+    '<div class="field-label" style="margin-top:12px">Who should keep it?</div><div class="heart-scoperow">'+['family|Family','home|Home'].map(function(p){ var a=p.split('|'); return '<button type="button" class="heart-scope'+(_heartScope===a[0]?' on':'')+'" data-s="'+a[0]+'" onclick="_heartScopeSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
     '<button class="btn" style="margin-top:14px" onclick="submitHeartStory()">Keep this story \u2764</button><div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Cancel</button></div>';
   m.classList.add('show'); }
 async function submitHeartStory(){ var title=((document.getElementById('stTitle')||{}).value||'').trim(); var body=((document.getElementById('stBody')||{}).value||'').trim();
@@ -3386,6 +3439,36 @@ async function openLetter(id){ var L=null;
   m.innerHTML='<div class="modal-card"><div class="modal-grab"></div><div class="modal-q" style="text-align:center;font-size:20px;margin-bottom:4px">A letter for you</div><p style="text-align:center;color:var(--ink2);font-size:13px;margin-bottom:14px">Written '+_fmtDate(L.created_at)+' by '+escapeHtml(L.author_name||'someone who loves you')+'</p><h3 style="margin:0 0 8px">'+escapeHtml(L.title||'')+'</h3><p class="heart-body">'+escapeHtml(L.body||'')+'</p><div style="height:14px"></div><button class="btn" onclick="closeHomeModal()">Close</button></div>';
   m.classList.add('show');
   try{ if(String(id).indexOf('let_')!==0) await sb.from('heart_letters').update({opened:true}).eq('id',id); }catch(e){} }
+/* ===== YOUR CIRCLES — Me / Home / Family / World ===== */
+var CIRC_DATA={
+ me:{ic:'💛',c:'#C2185B',name:'Me',tag:'Just you. Your private corner.',shares:['🔒 Only you can see this','📓 Private notes, drafts, your own moments','💭 A safe place to keep things for yourself']},
+ home:{ic:'🏡',c:'#E0631F',name:'Home',tag:'The people you live with.',shares:['👪 Shared with your household only','🍲 Everyday moments, home life','🗓️ Plans & memories under one roof']},
+ family:{ic:'🌳',c:'#3E8C73',name:'Family',tag:'All your relatives, near and far.',shares:['🌳 Everyone in your family sees it','📸 Celebrations, stories, the family album','❤️ The Heart’s tender questions & answers']},
+ world:{ic:'🌍',c:'#4F8EF7',name:'World',tag:'Bridges to other families.',shares:['🌉 Shared across connected families','🤝 In-laws, friends’ families, the wider circle','✨ Never strangers — only bridges you build']}
+};
+function _circPick(k){ var d=CIRC_DATA[k]; if(!d) return;
+  var rings=document.querySelectorAll('#circStage .circ-ring'); for(var i=0;i<rings.length;i++){ rings[i].classList.remove('dim','pop'); if(rings[i].getAttribute('data-k')!==k) rings[i].classList.add('dim'); else rings[i].classList.add('pop'); }
+  var chips=document.querySelectorAll('#circChips .circ-chip'); for(var j=0;j<chips.length;j++){ var on=chips[j].getAttribute('data-k')===k; chips[j].classList.toggle('on',on); chips[j].style.background=on?d.c:'#fff'; chips[j].style.color=on?'#fff':''; }
+  var det=document.getElementById('circDetail'); if(det) det.innerHTML='<div class="circ-dh"><span class="circ-dot" style="background:'+d.c+'22;color:'+d.c+'">'+d.ic+'</span><b style="color:'+d.c+'">'+d.name+'</b></div><p class="circ-tag">'+d.tag+'</p><div class="circ-shares">'+d.shares.map(function(sh){ var p=sh.indexOf(' '); return '<div class="circ-share"><span class="circ-si">'+sh.slice(0,p)+'</span><span>'+sh.slice(p+1)+'</span></div>'; }).join('')+'</div>';
+}
+function _circRipple(){ var r=document.getElementById('circRip'); if(!r) return; r.classList.remove('go'); void r.offsetWidth; r.classList.add('go'); }
+function renderCircles(){
+  var box=document.getElementById('circlesBody'); if(!box) return;
+  var ini=((ME&&ME.name&&ME.name[0])||'·').toUpperCase();
+  box.innerHTML='<div class="jh-wrap circ-wrap">'+
+    '<header class="jh-rise" style="text-align:center"><p class="jh-hd-grt">How Jeeto holds you</p><h1 class="jh-hd-name">Your Circles</h1><p class="circ-sub">Everything you share lives in one of four circles. You always choose how far it travels.</p></header>'+
+    '<div class="circ-stage" id="circStage"><div class="circ-ripple" id="circRip"></div>'+
+      '<div class="circ-ring circ-world" data-k="world" onclick="_circPick(\'world\')"><span>World</span></div>'+
+      '<div class="circ-ring circ-family" data-k="family" onclick="_circPick(\'family\')"><span>Family</span></div>'+
+      '<div class="circ-ring circ-home" data-k="home" onclick="_circPick(\'home\')"><span>Home</span></div>'+
+      '<div class="circ-ring circ-me" data-k="me" onclick="_circPick(\'me\')"><div class="circ-face">'+ini+'</div><span>Me</span></div>'+
+    '</div>'+
+    '<div class="circ-chips" id="circChips">'+['me|💛 Me','home|🏡 Home','family|🌳 Family','world|🌍 World'].map(function(p){ var a=p.split('|'); return '<button class="circ-chip" data-k="'+a[0]+'" onclick="_circPick(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>'+
+    '<div class="circ-detail" id="circDetail"></div>'+
+    '<div class="circ-legend">Tap a ring to see what’s shared there. The further out, the more people see it — and it’s always your choice.</div>'+
+  '</div>';
+  _circPick('me'); _circRipple();
+}
 async function renderRituals(){
   var box=document.getElementById('ritualsBody'); if(!box) return;
   box.innerHTML='<div class="sk sk-card"></div><div class="sk sk-card"></div>';
@@ -5243,7 +5326,7 @@ async function buildHome(){
   var awH='<section class="jh-rise" aria-label="Across my world"><button class="jh-aw-teaser" onclick="navTo(\'across\')"><span class="jh-aw-teaser-ic">'+jic('sparkles')+'</span><span class="jh-aw-teaser-t"><b>Across My World</b><span>Your whole family, across every home</span></span><span class="jh-aw-teaser-go">'+jic('chev')+'</span></button></section>';
 
   window.__jhSky=skyvos; window.__jhToday=today;
-  var tiles=[ {ic:'heart',label:'The Heart',fn:"navTo('heart')",c:'#C2305A'}, {ic:'palette',label:'Design',fn:"navTo('design')",c:'#7C3AED'}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')",c:'#E0631F'}, {ic:'tree',label:'Family Tree',fn:"navTo('family')",c:'#3E8C73'}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')",c:'#4F8EF7'}, {ic:'trophy',label:'Arena',fn:"navTo('live')",c:'#D4A24E'}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')",c:'#C2410C'}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')",c:'#D7263D'}, {ic:'target',label:'Quests',fn:"navTo('quests')",c:'#0F9E8E'}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')",c:'#5B5BD6'}, {ic:'history',label:'Memories',fn:"navTo('timemachine')",c:'#A0683A'}, {ic:'activity',label:'Life',fn:"navTo('life')",c:'#E0457B'} ];
+  var tiles=[ {ic:'heart',label:'The Heart',fn:"navTo('heart')",c:'#C2305A'}, {ic:'target',label:'Your Circles',fn:"navTo('circles')",c:'#0F9E8E'}, {ic:'palette',label:'Design',fn:"navTo('design')",c:'#7C3AED'}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')",c:'#E0631F'}, {ic:'tree',label:'Family Tree',fn:"navTo('family')",c:'#3E8C73'}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')",c:'#4F8EF7'}, {ic:'trophy',label:'Arena',fn:"navTo('live')",c:'#D4A24E'}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')",c:'#C2410C'}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')",c:'#D7263D'}, {ic:'target',label:'Quests',fn:"navTo('quests')",c:'#0F9E8E'}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')",c:'#5B5BD6'}, {ic:'history',label:'Memories',fn:"navTo('timemachine')",c:'#A0683A'}, {ic:'activity',label:'Life',fn:"navTo('life')",c:'#E0457B'} ];
   var exploreH='<section class="jh-rise" aria-label="Explore">'+st('Explore')+'<div class="jh-grid4">'+tiles.map(function(t){ return '<button class="jh-tile" onclick="'+t.fn+'"><span class="jh-tile-ic" style="color:'+t.c+';background:'+t.c+'1f;border-color:'+t.c+'33;box-shadow:0 6px 16px '+t.c+'26">'+jic(t.ic)+'</span><span class="jh-tile-l">'+t.label+'</span></button>'; }).join('')+'</div></section>';
     var zTop='<div class="jh-zone"><div class="jh-zlabel">Right Now</div>'+heroH+exploreH+'</div>';
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
@@ -7184,7 +7267,7 @@ function searchGraph(){
 /* ---------- nav ---------- */
 function navTo(tab){
   try{ if(typeof JeetoGalaxy!=='undefined'&&JeetoGalaxy.isActive&&JeetoGalaxy.isActive()&&tab!=='world'&&tab!=='across') JeetoGalaxy.dispose(); }catch(e){}
-  var map={ home:'screen-home', festivals:'screen-festivals', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across', loop:'screen-loop', heart:'screen-heart' };
+  var map={ home:'screen-home', festivals:'screen-festivals', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across', loop:'screen-loop', heart:'screen-heart', circles:'screen-circles' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -7204,6 +7287,7 @@ function navTo(tab){
   if(tab==='homes') renderHomes();
   if(tab==='design') renderDesign();
   if(tab==='heart') renderHeart();
+  if(tab==='circles') renderCircles();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
