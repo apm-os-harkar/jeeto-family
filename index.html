@@ -2439,7 +2439,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.79.1-diag';
+var JEETO_VERSION='4.79.2-resilient';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -4231,8 +4231,14 @@ function _boardMsgsHtml(rows, me){
 }
 async function _boardSend(text){
   text=(text||'').trim(); if(!text) return; if(!ensureSB()){ toast('Offline.'); return; }
-  try{ var me=myPhone(); var r=await sb.from('family_messages').insert({by_phone:me, by_name:(ME&&ME.name)||'Me', text:text, scope:_boardScope}); if(r&&r.error) throw r.error; var inp=document.getElementById('boardInput'); if(inp) inp.value=''; _boardLoad(false); }
-  catch(e){ var em=(e&&(e.message||e.code||e.details))||'unknown'; toast('Send failed: '+String(em)); }
+  var me=myPhone(), base={by_phone:me, by_name:(ME&&ME.name)||'Me', text:text};
+  try{
+    var r=await sb.from('family_messages').insert(Object.assign({scope:_boardScope}, base)); if(r&&r.error) throw r.error;
+  }catch(e){
+    try{ var r2=await sb.from('family_messages').insert(base); if(r2&&r2.error) throw r2.error; }
+    catch(e2){ var em=(e2&&(e2.message||e2.code||e2.details))||'unknown'; toast('Send failed: '+String(em)); return; }
+  }
+  var inp=document.getElementById('boardInput'); if(inp) inp.value=''; _boardLoad(false);
 }
 function _boardSendInput(){ var inp=document.getElementById('boardInput'); _boardSend(inp?inp.value:''); }
 function _boardGreet(g){ _boardSend(g); }
