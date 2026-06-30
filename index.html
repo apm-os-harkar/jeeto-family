@@ -2435,7 +2435,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.60.0-omaudible';
+var JEETO_VERSION='4.62.0-tanpura';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -3673,26 +3673,56 @@ async function _ghostRemoveAll(){
   try{ renderFamily(); }catch(_){}
   openGhostCleanup();
 }
-var _circDrone=null,_circActx=null;
+var _circDrone=null,_circActx=null,_circTimer=null;
+function _omImpulse(ctx,dur,decay){
+  var rate=ctx.sampleRate, len=Math.floor(rate*dur), buf=ctx.createBuffer(2,len,rate);
+  for(var ch=0;ch<2;ch++){ var d=buf.getChannelData(ch); for(var i=0;i<len;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay); } }
+  return buf;
+}
+function _omPluck(ctx,dest,freq,t){
+  var harm=[1,2,3,4,5,6], amp=[0.42,0.24,0.16,0.11,0.07,0.05];
+  var g=ctx.createGain();
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(0.4,t+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+3.5);
+  var lp=ctx.createBiquadFilter(); lp.type='lowpass';
+  lp.frequency.setValueAtTime(3400,t); lp.frequency.exponentialRampToValueAtTime(850,t+2.4);
+  g.connect(lp); lp.connect(dest);
+  for(var h=0;h<harm.length;h++){
+    for(var v=0;v<2;v++){
+      var o=ctx.createOscillator(); o.type='sine';
+      o.frequency.value=freq*harm[h]*(v===0?1:1.0025);
+      var hg=ctx.createGain(); hg.gain.value=amp[h]*(v===0?1:0.5);
+      o.connect(hg); hg.connect(g); o.start(t); o.stop(t+3.7);
+    }
+  }
+}
 function _circOmToggle(){
   var lbl=document.getElementById('omLbl'), btn=document.getElementById('omToggle');
   if(!_circDrone){
     try{
       _circActx=new (window.AudioContext||window.webkitAudioContext)();
+      try{ var _ub=_circActx.createBuffer(1,1,22050); var _us=_circActx.createBufferSource(); _us.buffer=_ub; _us.connect(_circActx.destination); _us.start(0); }catch(_e){}
       if(_circActx.resume) _circActx.resume();
-      var master=_circActx.createGain(); master.gain.value=0.0001;
-      var lp=_circActx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1500; lp.Q.value=0.4;
-      master.connect(lp); lp.connect(_circActx.destination);
-      var tones=[136.1,272.2,408.3,544.4,273.0], gains=[0.14,0.36,0.22,0.13,0.17], nodes=[];
-      for(var i=0;i<tones.length;i++){ var o=_circActx.createOscillator(); o.type='sine'; o.frequency.value=tones[i]; var g=_circActx.createGain(); g.gain.value=gains[i]; o.connect(g); g.connect(master); o.start(); nodes.push(o); }
-      master.gain.setTargetAtTime(0.34,_circActx.currentTime,0.7);
-      _circDrone={nodes:nodes,master:master};
+      var ctx=_circActx;
+      var master=ctx.createGain(); master.gain.value=0.0001;
+      var dry=ctx.createGain(); dry.gain.value=0.78; master.connect(dry); dry.connect(ctx.destination);
+      try{ var conv=ctx.createConvolver(); conv.buffer=_omImpulse(ctx,2.4,2.4); var wet=ctx.createGain(); wet.gain.value=0.34; master.connect(conv); conv.connect(wet); wet.connect(ctx.destination); }catch(_r){}
+      master.gain.setTargetAtTime(0.55,ctx.currentTime,0.9);
+      var Sa=196.00, pattern=[Sa*0.75, Sa, Sa, Sa*0.5];
+      var idx=0;
+      var fire=function(){ try{ _omPluck(ctx,master,pattern[idx%pattern.length],ctx.currentTime+0.03); idx++; }catch(e){} };
+      fire();
+      _circTimer=setInterval(fire,1450);
+      _circDrone={master:master};
       if(lbl) lbl.textContent='Pause Om'; if(btn) btn.classList.add('on');
+      setTimeout(function(){ try{ if(_circActx && _circActx.state!=='running'){ toast('If silent: flip the side mute switch & raise media volume.'); } }catch(_){} },800);
     }catch(e){ try{toast('Audio not available on this device.');}catch(_){} }
   } else { _circOmStop(); }
 }
 function _circOmStop(){
-  if(_circDrone&&_circActx){ try{ _circDrone.master.gain.setTargetAtTime(0,_circActx.currentTime,0.4); var ns=_circDrone.nodes, ax=_circActx; setTimeout(function(){ try{ ns.forEach(function(n){n.stop();}); ax.close(); }catch(e){} },1100); }catch(e){} }
+  if(_circTimer){ clearInterval(_circTimer); _circTimer=null; }
+  if(_circDrone&&_circActx){ try{ _circDrone.master.gain.setTargetAtTime(0,_circActx.currentTime,0.6); var ax=_circActx; setTimeout(function(){ try{ ax.close(); }catch(e){} },3000); }catch(e){} }
   _circDrone=null; _circActx=null;
   var lbl=document.getElementById('omLbl'), btn=document.getElementById('omToggle');
   if(lbl) lbl.textContent='Play Om'; if(btn) btn.classList.remove('on');
