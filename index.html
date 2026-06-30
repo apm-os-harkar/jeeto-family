@@ -1009,6 +1009,27 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .cav img{width:100%;height:100%;object-fit:cover}
 .cav-more{background:#f1ece4;color:var(--jh-muted-fg);font-size:10px}
 .cperson.dim{opacity:.18}
+.work-card{background:var(--jh-card,#fff);border:1px solid var(--jh-border,rgba(120,90,60,.16));border-radius:14px;padding:13px 14px;margin:8px 0}
+.work-h{display:flex;align-items:flex-start;gap:10px}
+.work-ic{font-size:20px;line-height:1.1}
+.work-role{font-weight:800;font-size:15px;color:var(--jh-fg,#2A2A2A)}
+.work-org{font-size:12.5px;color:var(--jh-muted-fg,#7A6A76);margin-top:2px}
+.work-pill{flex:none;font-size:11px;font-weight:700;color:#4C5A3A;background:rgba(91,107,74,.12);border:1px solid rgba(91,107,74,.26);border-radius:999px;padding:3px 9px;white-space:nowrap}
+.work-story{margin-top:9px;font-size:13.5px;line-height:1.55;color:var(--jh-fg,#3A3A3A);white-space:pre-wrap}
+.work-skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.work-chip{font-size:11.5px;font-weight:600;color:#7C3AED;background:rgba(124,58,237,.10);border:1px solid rgba(124,58,237,.22);border-radius:999px;padding:3px 9px}
+.work-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.work-list.dim{opacity:.82}
+.work-row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--jh-card,#fff);border:1px solid var(--jh-border,rgba(120,90,60,.16));border-radius:13px;padding:10px 12px;cursor:pointer;font:inherit;transition:transform .12s}
+.work-row:active{transform:scale(.99)}
+.work-av{width:38px;height:38px;flex:none;border-radius:50%;background:#EFE7DC;display:flex;align-items:center;justify-content:center;font-weight:800;color:#7C5A3A;overflow:hidden}
+.work-av img{width:100%;height:100%;object-fit:cover}
+.work-row-b{flex:1;min-width:0;display:flex;flex-direction:column}
+.work-row-n{font-weight:800;font-size:14.5px;color:var(--jh-fg,#2A2A2A)}
+.work-row-l{font-size:12.5px;color:var(--jh-muted-fg,#7A6A76);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.work-row-go{flex:none;color:var(--jh-muted-fg,#B7A99B);display:flex;font-size:18px}
+.work-row-go svg{width:18px;height:18px}
+.pp-work{font-size:12.5px;color:var(--jh-muted-fg,#7A6A76);margin:6px 0 2px;font-weight:600}
 .rl-sum{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .rl-sum-nm{font-family:'Baloo 2',inherit;font-size:18px;font-weight:800;color:var(--ink,#2A1B12)}
 .rl-sum-meta{margin-top:5px;color:var(--ink2,#7A6A76);font-size:13px}
@@ -1568,6 +1589,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
   <section class="screen has-nav" id="screen-design"><div class="jh" id="designBody"></div></section>
   <section class="screen has-nav" id="screen-heart"><div class="jh" id="heartBody"></div></section>
   <section class="screen has-nav" id="screen-circles"><div class="jh" id="circlesBody"></div></section>
+  <section class="screen has-nav" id="screen-familywork"><div class="jh" id="familyWorkBody"></div></section>
   <section class="screen" id="screen-found"><div class="jh" id="foundBody"></div></section>
   <section class="screen has-nav" id="screen-myworld"><div class="jh" id="myWorldBody"></div></section>
   <section class="screen has-nav" id="screen-across"><div class="jh" id="acrossBody"></div></section>
@@ -2412,7 +2434,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.51.0-faces';
+var JEETO_VERSION='4.53.0-workself';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -2667,6 +2689,7 @@ function countUp(el, to){
    (presentation only; auth/Supabase/routing/Skyvos untouched)
    ============================================================ */
 var JH_ICONS={
+  briefcase:'<rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
   home:'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
   heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
   images:'<path d="M18 22H4a2 2 0 0 1-2-2V6"/><path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18"/><circle cx="12" cy="8" r="2"/><rect width="16" height="16" x="6" y="2" rx="2"/>',
@@ -3499,6 +3522,98 @@ async function _circLoadPeople(){
     _circDots('family', fam, 110, '#3E8C73');
     _circDots('world', world, 150, '#4F8EF7');
   }catch(e){}
+}
+/* ============================================================
+   FAMILY PROFESSIONAL RECORD — work & craft as MEMORY, not a network.
+   Profession lives ON a person (profiles.work_*), never as an audience.
+   No new circle. Viewable by family, recordable for elders.
+   ============================================================ */
+var WORK_STATUS=[
+ ['working','💼','Working'],
+ ['business','🏪','Runs a business'],
+ ['studying','📚','Studying'],
+ ['homemaker','🏡','Homemaker'],
+ ['retired','🌅','Retired'],
+ ['looking','🔎','Exploring']
+];
+function _workStatusMeta(k){ for(var i=0;i<WORK_STATUS.length;i++){ if(WORK_STATUS[i][0]===k) return WORK_STATUS[i]; } return null; }
+function workHas(u){ u=u||{}; return !!((u.work_role&&u.work_role.trim())||(u.work_org&&u.work_org.trim())||u.work_status||(u.work_story&&u.work_story.trim())||(u.work_skills&&u.work_skills.trim())); }
+function workLine(u){ u=u||{}; var bits=[]; if(u.work_role) bits.push(u.work_role); if(u.work_org) bits.push(u.work_org); if(bits.length) return bits.join(' · '); var m=_workStatusMeta(u.work_status); return m?m[2]:''; }
+function _workSkillChips(s){ if(!s) return ''; var arr=s.split(',').map(function(x){return x.trim();}).filter(Boolean).slice(0,12); if(!arr.length) return ''; return '<div class="work-skills">'+arr.map(function(t){ return '<span class="work-chip">'+escapeHtml(t)+'</span>'; }).join('')+'</div>'; }
+function workCardHtml(u){ u=u||{}; if(!workHas(u)) return ''; var m=_workStatusMeta(u.work_status); var head=u.work_role?escapeHtml(u.work_role):''; var sub=u.work_org?escapeHtml(u.work_org):''; var pill=m?'<span class="work-pill">'+m[1]+' '+escapeHtml(m[2])+'</span>':''; return '<div class="work-card"><div class="work-h"><span class="work-ic">💼</span><div style="flex:1;min-width:0"><div class="work-role">'+(head||'Their work')+'</div>'+(sub?'<div class="work-org">'+sub+'</div>':'')+'</div>'+pill+'</div>'+(u.work_story?'<div class="work-story">'+escapeHtml(u.work_story)+'</div>':'')+_workSkillChips(u.work_skills)+'</div>'; }
+function _workAv(u){ u=u||{}; return '<span class="work-av">'+(u.avatar_url?'<img src="'+escapeAttr(u.avatar_url)+'">':escapeHtml(((u.name||'?')[0]||'?').toUpperCase()))+'</span>'; }
+
+function _workCanEdit(u){ u=u||{}; return (u.phone&&u.phone===myPhone()) || u.life_status==='legacy'; }
+async function openWorkView(phone, name){
+  var u={}; try{ u=(phone===myPhone()&&ME)?ME:((await fetchProfile(phone))||{}); }catch(e){}
+  if(!u.phone) u.phone=phone;
+  var can=_workCanEdit(u);
+  var card=workHas(u)?workCardHtml(u):'<div class="empty"><span class="big">💼</span><div class="e1">No record yet</div></div>';
+  var btn = can ? '<button class="btn glow" style="margin-top:14px" onclick="openWorkEdit(\''+escapeAttr(u.phone)+'\',\''+escapeAttr(u.name||name||'')+'\','+(u.phone===myPhone()?'true':'false')+')">'+(workHas(u)?'✏️ Edit record':(u.life_status==='legacy'?'🕊️ Record their trade':'💼 Add record'))+'</button>'
+    : '<p class="muted" style="margin-top:12px;font-size:12.5px;text-align:center">Only '+escapeHtml(((u.name||name||'they')+'').split(' ')[0])+' can edit this record.</p>';
+  jSheet('💼 '+escapeHtml(u.name||name||'Work & Craft'), card+btn);
+}
+async function openWorkEdit(phone, name, isSelf){
+  phone=phone||myPhone(); var u={};
+  try{ u=(phone===myPhone()&&ME)?ME:((await fetchProfile(phone))||{}); }catch(e){}
+  if(!u.phone) u.phone=phone; isSelf=(phone===myPhone());
+  if(!_workCanEdit(u)){ toast('Only they can edit their own work record.'); return; }
+  window.__workEdit={ phone:phone, isSelf:isSelf, legacy:(u.life_status==='legacy') };
+  var statusChips=WORK_STATUS.map(function(o){ return '<button type="button" class="schip'+(u.work_status===o[0]?' on':'')+'" data-ws="'+o[0]+'" onclick="_workPickStatus(this)">'+o[1]+' '+o[2]+'</button>'; }).join('');
+  var who=isSelf?'your':(escapeHtml(((name||'their').split(' ')[0]))+'’s');
+  var html='<p class="muted" style="margin:2px 2px 14px;font-size:13px">A family record of '+who+' work and craft. Kept as memory for the whole family — never shown to strangers, never a network.</p>'+
+    '<div class="field-label">What '+(isSelf?'you do':'they do')+'</div><input class="fi" id="wkRole" maxlength="80" placeholder="e.g. Civil Engineer, Welder, Teacher" value="'+escapeAttr(u.work_role||'')+'">'+
+    '<div class="field-label" style="margin-top:12px">Where / their business <span class="muted">(optional)</span></div><input class="fi" id="wkOrg" maxlength="90" placeholder="e.g. Auxilink Projects, or the family fabrication shop" value="'+escapeAttr(u.work_org||'')+'">'+
+    '<div class="field-label" style="margin-top:14px">Stage</div><div class="schips" id="wkStatus">'+statusChips+'</div>'+
+    '<div class="field-label" style="margin-top:14px">The craft / story <span class="muted">(optional)</span></div><textarea class="fi" id="wkStory" rows="3" maxlength="500" placeholder="The trade, the years, what they are known for. Especially worth recording for elders.">'+escapeHtml(u.work_story||'')+'</textarea>'+
+    '<div class="field-label" style="margin-top:12px">Family can ask '+(isSelf?'you':'them')+' about <span class="muted">(comma separated)</span></div><input class="fi" id="wkSkills" maxlength="160" placeholder="e.g. taxes, college admissions, home loans" value="'+escapeAttr(u.work_skills||'')+'">'+
+    '<button class="btn glow" style="margin-top:16px" onclick="saveWorkRecord()">Save record</button>';
+  jSheet('💼 Work & Craft', html);
+}
+function _workPickStatus(btn){ var box=btn.parentNode; var bs=box.querySelectorAll('.schip'); for(var i=0;i<bs.length;i++) bs[i].classList.remove('on'); btn.classList.add('on'); }
+async function saveWorkRecord(){
+  var e=window.__workEdit||{}; var phone=e.phone||myPhone(); if(!phone){ toast('No member.'); return; }
+  if(!e.isSelf && !e.legacy){ toast('Only they can edit their own work record.'); return; }
+  var g=function(id){ var el=document.getElementById(id); return el?(el.value||'').trim():''; };
+  var sel=document.querySelector('#wkStatus .schip.on'); var status=sel?sel.getAttribute('data-ws'):'';
+  var patch={ work_role:g('wkRole')||null, work_org:g('wkOrg')||null, work_status:status||null, work_story:g('wkStory')||null, work_skills:g('wkSkills')||null };
+  try{ if(ensureSB()) { var r=await sb.from('profiles').update(patch).eq('phone',phone); if(r&&r.error) throw r.error; } }catch(err){ toast(humanError(err,'Could not save — run the Work SQL in Supabase first.')); return; }
+  if(e.isSelf&&ME){ for(var k in patch) ME[k]=patch[k]; }
+  try{ logLife(phone,'work_record','Work & craft recorded', workLine(patch)||null, '💼'); }catch(_){}
+  toast('Work & craft saved 💼'); try{ closeHomeModal(); }catch(_){}
+  try{ if(document.getElementById('familyWorkBody')) renderFamilyWork(); }catch(_){}
+  try{ if(window.__relEdit&&window.__relEdit.id) buildRelManage(window.__relEdit.id); }catch(_){}
+  try{ if(e.isSelf&&document.getElementById('passportBody')) renderPassport(); }catch(_){}
+}
+
+async function renderFamilyWork(){
+  var box=document.getElementById('familyWorkBody'); if(!box) return;
+  box.innerHTML='<div class="sk sk-card"></div><div class="sk sk-card"></div>';
+  var me=myPhone(); if(!ME) ME=await fetchProfile(me);
+  var ctx=await myCircleContext();
+  var pset={}; if(me) pset[me]=1; (ctx.conns||[]).forEach(function(p){ if(p) pset[p]=1; });
+  (ctx.households||[]).forEach(function(hh){ (hh.members||[]).forEach(function(m){ if(m&&m.phone) pset[m.phone]=1; }); });
+  var list=Object.keys(pset);
+  var profs=await fetchProfiles(list);
+  if(ME&&me){ var base=profs[me]||{}; var merged={}; for(var bk in base) merged[bk]=base[bk]; for(var mk in ME) merged[mk]=ME[mk]; profs[me]=merged; }
+  var people=list.map(function(p){ var u=profs[p]||{phone:p}; if(!u.phone) u.phone=p; return u; });
+  var withRec=people.filter(function(u){ return workHas(u); }).sort(function(a,b){ return ((a.name||'')+'').localeCompare((b.name||'')+''); });
+  var legacyTodo=people.filter(function(u){ return !workHas(u) && u.life_status==='legacy'; });
+  var meHas=workHas(profs[me]||{});
+
+  var head='<div class="jh-wrap"><header class="jh-rise" style="text-align:center"><p class="jh-hd-grt">The family at work</p><h1 class="jh-hd-name">Work &amp; Craft</h1><p class="circ-sub">What each person does, the trades they carry, and the skills the family can lean on. Memory — never a network.</p></header>';
+  var body='';
+  if(withRec.length){
+    body+='<div class="work-list">'+withRec.map(function(u){ var isMe=u.phone===me; var nm=isMe?'You':(u.name||u.phone); return '<button class="work-row" onclick="openWorkView(\''+escapeAttr(u.phone)+'\',\''+escapeAttr(u.name||'')+'\')">'+_workAv(u)+'<span class="work-row-b"><span class="work-row-n">'+escapeHtml(nm)+'</span><span class="work-row-l">'+escapeHtml(workLine(u)||'—')+'</span></span><span class="work-row-go">'+jic('chev')+'</span></button>'; }).join('')+'</div>';
+  } else {
+    body+='<div class="empty"><span class="big">💼</span><div class="e1">No work recorded yet</div><div class="e2">Start with your own — then record the elders’ trades before those stories fade.</div></div>';
+  }
+  body+='<button class="btn '+(meHas?'btn-soft':'glow')+'" style="margin-top:14px" onclick="openWorkEdit(\''+escapeAttr(me||'')+'\',\''+escapeAttr((ME&&ME.name)||'')+'\',true)">'+(meHas?'✏️ Edit your work & craft':'💼 Add your own work & craft')+'</button>';
+  if(legacyTodo.length){
+    body+='<div class="home-sec" style="margin-top:20px">🕊️ Honor an elder’s trade</div><p class="muted" style="font-size:12px;margin:2px 2px 8px">These cherished members can no longer record their own — keep their craft in the family memory.</p><div class="work-list">'+legacyTodo.map(function(u){ return '<button class="work-row" onclick="openWorkEdit(\''+escapeAttr(u.phone)+'\',\''+escapeAttr(u.name||'')+'\',false)">'+_workAv(u)+'<span class="work-row-b"><span class="work-row-n">'+escapeHtml(u.name||u.phone)+'</span><span class="work-row-l muted">Record their trade</span></span><span class="work-row-go">＋</span></button>'; }).join('')+'</div>';
+  }
+  body+=skyvosMini('A grandfather’s trade is family history. Record it while it can still be told in his own words.');
+  box.innerHTML=head+body+'</div>';
 }
 async function renderRituals(){
   var box=document.getElementById('ritualsBody'); if(!box) return;
@@ -5357,7 +5472,7 @@ async function buildHome(){
   var awH='<section class="jh-rise" aria-label="Across my world"><button class="jh-aw-teaser" onclick="navTo(\'across\')"><span class="jh-aw-teaser-ic">'+jic('sparkles')+'</span><span class="jh-aw-teaser-t"><b>Across My World</b><span>Your whole family, across every home</span></span><span class="jh-aw-teaser-go">'+jic('chev')+'</span></button></section>';
 
   window.__jhSky=skyvos; window.__jhToday=today;
-  var tiles=[ {ic:'heart',label:'The Heart',fn:"navTo('heart')",c:'#C2305A'}, {ic:'target',label:'Your Circles',fn:"navTo('circles')",c:'#0F9E8E'}, {ic:'palette',label:'Design',fn:"navTo('design')",c:'#7C3AED'}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')",c:'#E0631F'}, {ic:'tree',label:'Family Tree',fn:"navTo('family')",c:'#3E8C73'}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')",c:'#4F8EF7'}, {ic:'trophy',label:'Arena',fn:"navTo('live')",c:'#D4A24E'}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')",c:'#C2410C'}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')",c:'#D7263D'}, {ic:'target',label:'Quests',fn:"navTo('quests')",c:'#0F9E8E'}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')",c:'#5B5BD6'}, {ic:'history',label:'Memories',fn:"navTo('timemachine')",c:'#A0683A'}, {ic:'activity',label:'Life',fn:"navTo('life')",c:'#E0457B'} ];
+  var tiles=[ {ic:'heart',label:'The Heart',fn:"navTo('heart')",c:'#C2305A'}, {ic:'target',label:'Your Circles',fn:"navTo('circles')",c:'#0F9E8E'}, {ic:'palette',label:'Design',fn:"navTo('design')",c:'#7C3AED'}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')",c:'#E0631F'}, {ic:'tree',label:'Family Tree',fn:"navTo('family')",c:'#3E8C73'}, {ic:'briefcase',label:'Work & Craft',fn:"navTo('familywork')",c:'#5B6B4A'}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')",c:'#4F8EF7'}, {ic:'trophy',label:'Arena',fn:"navTo('live')",c:'#D4A24E'}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')",c:'#C2410C'}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')",c:'#D7263D'}, {ic:'target',label:'Quests',fn:"navTo('quests')",c:'#0F9E8E'}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')",c:'#5B5BD6'}, {ic:'history',label:'Memories',fn:"navTo('timemachine')",c:'#A0683A'}, {ic:'activity',label:'Life',fn:"navTo('life')",c:'#E0457B'} ];
   var exploreH='<section class="jh-rise" aria-label="Explore">'+st('Explore')+'<div class="jh-grid4">'+tiles.map(function(t){ return '<button class="jh-tile" onclick="'+t.fn+'"><span class="jh-tile-ic" style="color:'+t.c+';background:'+t.c+'1f;border-color:'+t.c+'33;box-shadow:0 6px 16px '+t.c+'26">'+jic(t.ic)+'</span><span class="jh-tile-l">'+t.label+'</span></button>'; }).join('')+'</div></section>';
     var zTop='<div class="jh-zone"><div class="jh-zlabel">Right Now</div>'+heroH+exploreH+'</div>';
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
@@ -5580,7 +5695,7 @@ function relView(c, me){
   var aIsMe=c.person_a_phone===me;
   return { id:c.id, aIsMe:aIsMe, other: aIsMe?c.person_b_phone:c.person_a_phone, rel: aIsMe?c.relation_a_to_b:c.relation_b_to_a, relStatus:(c.rel_status||'active'), since: c.created_at };
 }
-async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender,life_status').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
+async function fetchProfiles(phones){ var map={}; phones=phones.filter(function(p,i){ return p && phones.indexOf(p)===i; }); if(!phones.length || !ensureSB()) return map; try{ var r=await sb.from('profiles').select('phone,name,avatar_url,gender,life_status,work_role,work_org,work_status,work_story,work_skills').in('phone',phones); (r.data||[]).forEach(function(p){ map[p.phone]=p; }); }catch(e){} return map; }
 
 /* ============================================================
    RELATIONSHIP ENGINE — public API
@@ -6210,6 +6325,7 @@ async function buildRelManage(relId){
     '<div class="field-label" style="margin-top:18px">Relationship status</div><div class="schips">'+relStatusChips+'</div>'+
     '<div class="field-label" style="margin-top:18px">This person’s life status</div><div class="schips">'+lifeChips+'</div>'+
     '<p class="muted" style="font-size:12px;margin:8px 2px 0">Marking someone 🕊️ Legacy keeps them forever in your tree, relationships and Time Machine — never removed.</p>'+
+    '<div class="field-label" style="margin-top:18px">Work & craft</div>'+(workHas(u)?workCardHtml(u):'<p class="muted" style="font-size:12.5px;margin:2px 2px 8px">Not recorded yet.</p>')+(u.life_status==='legacy'?'<button class="btn btn-soft" onclick="openWorkEdit(\''+escapeAttr(v.other)+'\',\''+escapeAttr(u.name||v.other)+'\',false)">🕊️ Record their trade</button>':'<p class="muted" style="font-size:11.5px;margin:2px 2px 0">Only they can edit this — it appears here when they add it.</p>')+
     '<div style="height:16px"></div><button class="btn btn-ghost" onclick="viewLifeHistory(\''+escapeAttr(v.other)+'\',\''+escapeAttr(u.name||v.other)+'\')">📖 View life history</button>'+
     '<div style="height:8px"></div><button class="btn btn-soft" onclick="closeHomeModal()">Done</button>';
 }
@@ -6913,6 +7029,7 @@ async function renderPassport(){
     '<div class="pp-top">❤️ JEETO PASSPORT</div>'+ photo +
     '<div class="pp-name">'+escapeHtml(u.name||'—')+'</div>'+
     '<div class="pp-handle">@'+escapeHtml(pass?pass.passport_handle:'')+'</div>'+
+    (workLine(u)?'<div class="pp-work">💼 '+escapeHtml(workLine(u))+'</div>':'')+
     '<div class="pp-numwrap"><span class="pp-num">'+escapeHtml(pass?pass.jeeto_number:'JEETO')+'</span></div>'+
     '<div class="pp-badges"><span class="pp-badge">✅ Verified Member</span><span class="pp-badge">'+tier.e+' '+tier.name+'</span></div>'+
     '<div class="pp-since">Member since '+sinceTxt+' · '+years+(years===1?' year':' years')+' in Jeeto</div>'+
@@ -6931,6 +7048,7 @@ async function renderPassport(){
 
   html+='<div class="pp-actions">'+
     '<div class="pp-act" onclick="openEditProfile()">✏️ Edit My Life</div>'+
+    '<div class="pp-act" onclick="openWorkEdit(myPhone(),(ME&&ME.name)||\'\',true)">💼 Work & Craft</div>'+
     '<div class="pp-act" onclick="sharePassport()">🔗 Share Passport</div>'+
     '<div class="pp-act" onclick="navTo(\'family\')">❤️ My Relationships</div>'+
     '<div class="pp-act" onclick="navTo(\'family\')">🏡 My Homes</div>'+
@@ -7329,7 +7447,7 @@ function searchGraph(){
 /* ---------- nav ---------- */
 function navTo(tab){
   try{ if(typeof JeetoGalaxy!=='undefined'&&JeetoGalaxy.isActive&&JeetoGalaxy.isActive()&&tab!=='world'&&tab!=='across') JeetoGalaxy.dispose(); }catch(e){}
-  var map={ home:'screen-home', festivals:'screen-festivals', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across', loop:'screen-loop', heart:'screen-heart', circles:'screen-circles' };
+  var map={ home:'screen-home', festivals:'screen-festivals', family:'screen-family', moments:'screen-moments', life:'screen-life', bridge:'screen-bridge', profile:'screen-profileTab', graph:'screen-graph', calendar:'screen-calendar', quests:'screen-quests', rituals:'screen-rituals', live:'screen-live', timemachine:'screen-timemachine', world:'screen-myworld', homes:'screen-homes', homedetail:'screen-homedetail', design:'screen-design', across:'screen-across', loop:'screen-loop', heart:'screen-heart', circles:'screen-circles', familywork:'screen-familywork' };
   showScreen(map[tab]||'screen-home');
   if(tab==='home') renderHome();
   if(tab==='family') renderFamily();
@@ -7350,6 +7468,7 @@ function navTo(tab){
   if(tab==='design') renderDesign();
   if(tab==='heart') renderHeart();
   if(tab==='circles') renderCircles();
+  if(tab==='familywork') renderFamilyWork();
   var btns=document.querySelectorAll('#bottomNav button');
   for(var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab')===tab);
 }
