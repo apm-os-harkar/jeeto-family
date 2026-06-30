@@ -966,6 +966,22 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .heart-myask{background:#FFF6F9;border:1px solid #F3D9E6;border-radius:16px;padding:16px}
 .heart-place{display:flex;align-items:center;justify-content:center;gap:8px}
 .heart-place svg{width:18px;height:18px}
+.rl-sum{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.rl-sum-nm{font-family:'Baloo 2',inherit;font-size:18px;font-weight:800;color:var(--ink,#2A1B12)}
+.rl-sum-meta{margin-top:5px;color:var(--ink2,#7A6A76);font-size:13px}
+.rl-welcome{margin-bottom:16px}
+.rl-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.rl-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:16px;border-radius:16px;border:1px solid var(--line,#F4ECE1);background:#fff;cursor:pointer;font-family:inherit;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.rl-tile:active{transform:scale(.98)}
+.rl-tile-ic{font-size:24px}
+.rl-tile-l{font-weight:800;font-size:15px;color:var(--ink,#2A1B12)}
+.rl-tile-c{position:absolute;top:12px;right:12px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#E03A7A;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.jsheet{max-height:88vh;overflow:auto;position:relative;padding-top:0}
+.jsheet-head{position:sticky;top:0;background:#fff;z-index:6;display:flex;align-items:center;gap:10px;padding:14px 2px 12px;border-bottom:1px solid var(--line,#F4ECE1);margin-bottom:14px}
+.jsheet-x{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.06);border:none;font-size:15px;color:var(--ink2,#7A6A76);cursor:pointer;flex:none}
+.jsheet-title{font-weight:800;font-size:17px;font-family:'Baloo 2',inherit}
+.nav-back{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:12px;z-index:260;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid var(--jh-border);font-size:22px;line-height:1;color:var(--jh-fg);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,0,0,.14)}
+.heart-back{width:40px;height:40px;border-radius:50%;background:var(--jh-card);border:1px solid var(--jh-border);font-size:22px;line-height:1;color:var(--jh-fg);cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 /* ===== THE HEART — warm & sacred (candlelit altar) ===== */
 #screen-heart .heart-ask{background:radial-gradient(125% 120% at 50% -12%, #5C1836 0%, #3A0F22 55%, #2C0E20 100%);border:1px solid rgba(232,201,122,.34);box-shadow:0 16px 46px rgba(48,12,30,.42), inset 0 1px 0 rgba(255,255,255,.06);position:relative;overflow:hidden}
 #screen-heart .heart-ask::before{content:'';position:absolute;left:50%;top:-55%;width:78%;height:135%;transform:translateX(-50%);background:radial-gradient(closest-side, rgba(232,201,122,.30), rgba(232,201,122,0) 72%);pointer-events:none}
@@ -1519,20 +1535,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
     <div class="h1" style="margin-bottom:4px">❤️ Relationships</div>
     <p class="muted" style="font-size:13px;margin:0 2px 14px">The people you love, one relationship at a time.</p>
 
-    <!-- 1) Welcome someone -->
-    <div class="pcard" style="margin-bottom:2px">
-      <div class="sec-head" style="margin:0 0 12px"><span class="si">❤️</span><span class="st">Welcome someone</span></div>
-      <input class="fi" id="frPhone" inputmode="numeric" maxlength="10" placeholder="Their phone number" aria-label="Their phone number" style="margin-bottom:11px" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
-      <div class="field-label">Who is this person to you?</div>
-      <select class="fi" id="frRel" aria-label="Relationship" style="margin-bottom:11px"><option value="">Choose relationship…</option></select>
-      <input class="fi" id="frMsg" value="Hi, I would love to connect with you on Jeeto Family." style="margin-bottom:12px">
-      <button class="btn" id="frBtn" onclick="sendRequest()">Welcome them ❤️</button>
-    </div>
-
     <div id="famBody"></div>
-    <div class="skyvos-mini"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">Add only the people you know directly. I quietly understand the rest of your family from there.</span></div>
-    <div style="margin-top:6px"><button class="btn btn-soft" onclick="navTo('rituals')">🕯️ Our Family Rituals</button></div>
-    <div style="margin-top:8px"><button class="btn btn-soft" onclick="navTo('graph')">🕸 See your Relationship Graph</button></div>
   </section>
 
   <section class="screen has-nav" id="screen-moments">
@@ -2340,6 +2343,7 @@ var KashEngine=(function(){
   <div class="modal" id="graphModal"></div>
   <div class="modal" id="homeModal" onclick="if(event.target===this)closeHomeModal()"></div>
   <div id="buildStamp" class="build-stamp"></div>
+  <button id="navBack" class="nav-back" onclick="_navBack()" aria-label="Back" style="display:none">‹</button>
   <div class="celebrate" id="celebrate"></div>
 </div>
 
@@ -2363,7 +2367,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.43.0-heartsacred';
+var JEETO_VERSION='4.46.0-reldash';
 var JEETO_BUILD='2026.06.27';
 
 /* ============================================================
@@ -2522,11 +2526,16 @@ function celebrate(plus){
 function closeCelebrate(){ document.getElementById('celebrate').classList.remove('show'); }
 
 /* ---------- routing ---------- */
+var _scrHist=[], _navingBack=false;
+function _navBack(){ var prev=_scrHist.length?_scrHist.pop():''; if(!prev||prev==='screen-home'){ navTo('home'); return; } _navingBack=true; showScreen(prev); _navingBack=false; }
 function showScreen(id){
+  var _curEl=document.querySelector('.screen.active'); var _curId=_curEl?_curEl.id:'';
   var s=document.querySelectorAll('.screen'); for(var i=0;i<s.length;i++) s[i].classList.remove('active');
   var el=document.getElementById(id); if(el) el.classList.add('active');
+  if(!_navingBack && _curId && _curId!==id && _curId!=='screen-otp' && _curId!=='screen-profile'){ _scrHist.push(_curId); if(_scrHist.length>25) _scrHist.shift(); }
   var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail','screen-design','screen-myworld','screen-across','screen-loop','screen-festivals'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
+  var _nb=document.getElementById('navBack'); if(_nb){ _nb.style.display=(id==='screen-home'||id==='screen-otp'||id==='screen-profile')?'none':'flex'; }
   try{ paintNavIcons(); }catch(e){}
   try{ window.scrollTo(0,0); }catch(e){}
 }
@@ -5485,6 +5494,7 @@ async function sendRequest(){
   document.getElementById('frPhone').value=''; document.getElementById('frRel').value='';
   document.getElementById('frMsg').value='Hi, I would love to connect with you on Jeeto Family.';
   toast('Request sent ❤️');
+  try{ closeHomeModal(); }catch(e){}
   renderFamily();
 }
 
@@ -5546,72 +5556,32 @@ async function renderFamily(){
   var myHHids=households.map(function(x){return x.h.id;});
   var allBridges=await loadBridges(myHHids);
   var bridgesByHH={}; allBridges.forEach(function(b){ (bridgesByHH[b._mine]=bridgesByHH[b._mine]||[]).push(b); });
-  var html='';
-
-  /* 1) Family Status */
-  html+='<div class="pcard" style="display:flex;align-items:center;gap:14px;margin-bottom:18px">'+
-    avHtml(me)+
-    '<div style="flex:1;min-width:0"><div class="nm" style="font-family:\'Baloo 2\';font-size:18px;font-weight:800">'+escapeHtml(myFirst)+'\'s Family</div>'+
-    '<div class="meta" style="margin-top:5px"><span>👥 '+n+(n===1?' member':' members')+'</span> &nbsp; <span>'+t.e+' '+t.name+' · ⭐ '+strength+'</span></div></div>'+
-    '<div class="fp-add" onclick="focusAddMember()">＋ Add</div></div>';
-
-  /* 2) Connected Members */
-  html+='<div class="sec-head"><span class="si">👥</span><span class="st">Connected members</span>'+(n?'<span class="sc">'+n+'</span>':'')+'</div>';
-  if(!n){
-    html+='<div class="empty"><span class="big">🌱</span><div class="e1">Every Relationship begins with one hello.</div><div class="e3" style="margin-top:10px">Add someone you love ❤️</div></div>';
-  } else rels.forEach(function(c){
-    var v=relView(c,me);
-    html+='<div class="pcard"><div class="fcard">'+avHtml(v.other)+
-      '<div class="info"><div class="nm">'+escapeHtml(nm(v.other))+lifeBadge(profs[v.other])+'</div>'+
-      '<div style="margin-top:5px"><span class="rl-pill">'+escapeHtml(v.rel||'family')+'</span>'+relStatusBadge(v.relStatus)+'</div>'+
-      '<div class="meta"><span>🗓️ '+escapeHtml(fmtJoined(v.since))+'</span><span>📞 +91 '+escapeHtml(v.other)+'</span></div>'+
-      '<button class="btn btn-sm" style="margin-top:10px;margin-right:6px" onclick="reachP(\''+v.other+'\')">\ud83d\udcac Reach out</button>'+
-      '<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="openRelManage(\''+v.id+'\')">⚙️ Manage</button>'+
-      '</div></div></div>';
-  });
-
-  /* 3) Pending Requests (for you) */
-  html+='<div class="sec-head"><span class="si">📥</span><span class="st">Pending requests</span>'+(incoming.length?'<span class="sc">'+incoming.length+'</span>':'')+'</div>';
-  if(!incoming.length){
-    html+='<div class="empty"><span class="big">📭</span><div class="e1">No one is waiting right now</div><div class="e2">When someone welcomes you into their family, you\u2019ll see them here.</div></div>';
-  } else incoming.forEach(function(x){
-    var pr=pronoun(profs[x.sender_phone] && profs[x.sender_phone].gender);
-    html+='<div class="pcard"><div class="rq">'+avHtml(x.sender_phone)+
-      '<div style="flex:1;min-width:0"><div class="nm">'+escapeHtml(nm(x.sender_phone))+'</div>'+
-      '<div class="ph">+91 '+escapeHtml(x.sender_phone)+'</div>'+
-      '<div style="margin-top:8px"><span class="rl-pill">'+pr.p+' '+pr.v+' you are '+pr.pos+' '+escapeHtml(x.relationship||'family')+'</span></div>'+
-      '<div class="row"><button class="btn btn-sm" onclick="openReview(\''+x.id+'\',\''+x.sender_phone+'\',\''+escapeAttr(x.relationship||'')+'\')">Review</button>'+
-      '<button class="btn btn-sm btn-ghost" onclick="rejectRequest(\''+x.id+'\')">Decline</button></div>'+
-      '</div></div></div>';
-  });
-
-  /* 4) Requests Sent */
-  html+='<div class="sec-head"><span class="si">📤</span><span class="st">Requests sent</span>'+(sent.length?'<span class="sc">'+sent.length+'</span>':'')+'</div>';
-  if(!sent.length){
-    html+='<div class="empty"><span class="big">✉️</span><div class="e1">Your story is just beginning</div><div class="e2">Welcome someone above to send your first invitation.</div></div>';
-  } else sent.forEach(function(x){
-    var st=x.status;
-    var badge = st==='accepted' ? '<span class="badge b-accepted">🟢 Connected</span>' : st==='rejected' ? '<span class="badge b-rejected">🔴 Declined</span>' : '<span class="badge b-pending">🟡 Waiting</span>';
-    html+='<div class="pcard sent"><div class="top">'+avHtml(x.receiver_phone,'av-lg')+
-      '<div style="flex:1;min-width:0"><div class="nm">'+escapeHtml(nm(x.receiver_phone))+'</div><div style="margin-top:3px"><span class="rl-pill">'+escapeHtml(x.relationship||'family')+'</span></div></div>'+badge+'</div>'+
-      '<div class="steps"><div class="step"><span class="dot">✓</span> Request sent</div>'+
-      (st==='pending'?'<div class="step wait"><span class="dot">⏳</span> Waiting for acceptance — relationship is created once they accept.</div>':'')+
-      (st==='accepted'?'<div class="step"><span class="dot">✓</span> Connected — they are now part of your family.</div>':'')+
-      '</div></div>';
-  });
-
-  /* 5) Family Tree — generated automatically from relationships */
-  html+='<div class="sec-head"><span class="si">🌳</span><span class="st">Family tree</span></div>';
-  html+=generateFamilyTree(me, rels, profs);
-
-  /* 6) Household */
-  html+='<div class="sec-head"><span class="si">🏡</span><span class="st">My Homes</span>'+(households.length?'<span class="sc">'+households.length+'</span>':'')+'</div>';
-  html+=householdHtml(households, bridgesByHH);
-
+  window.__relData={me:me,incoming:incoming,sent:sent,rels:rels,profs:profs,households:households,bridgesByHH:bridgesByHH};
+  function _t(ic,label,cnt,fn){ var c=((cnt||cnt===0)&&cnt!=='')?'<span class="rl-tile-c">'+cnt+'</span>':''; return '<button class="rl-tile" onclick="'+fn+'"><span class="rl-tile-ic">'+ic+'</span><span class="rl-tile-l">'+label+'</span>'+c+'</button>'; }
+  var html='<div class="pcard rl-sum">'+avHtml(me)+'<div style="flex:1;min-width:0"><div class="rl-sum-nm">'+escapeHtml(myFirst)+'\'s Family</div><div class="rl-sum-meta">👥 '+n+(n===1?' member':' members')+' · '+t.e+' '+t.name+' · ⭐ '+strength+'</div></div></div>';
+  html+='<button class="btn rl-welcome" onclick="relWelcomeSheet()">❤️ Welcome someone</button>';
+  html+='<div class="rl-tiles">'+
+    _t('👥','Connected',n,'relConnectedSheet()')+
+    _t('📤','Sent',sent.length,'relSentSheet()')+
+    _t('📥','Pending',incoming.length,'relPendingSheet()')+
+    _t('🌳','Family tree','',"navTo('graph')")+
+    _t('🏡','My Homes',households.length,'relHomesSheet()')+
+    _t('🕯️','Rituals','',"navTo('rituals')")+
+  '</div>';
+  html+='<div class="skyvos-mini" style="margin-top:16px"><div class="sky-orb sky-orb-sm"><span class="sky-core"></span></div><span style="flex:1;min-width:0">Add only the people you know directly. I quietly understand the rest of your family from there.</span></div>';
   box.innerHTML=html;
-  requestAnimationFrame(function(){ requestAnimationFrame(drawTreeLines); });
 }
 
+/* ===== Relationships sheets (standard close-X on top) ===== */
+function _relNm(p){ var pr=(window.__relData&&window.__relData.profs)||{}; return (pr[p]&&pr[p].name)||p; }
+function _relAvHtml(p,cls){ var pr=(window.__relData&&window.__relData.profs)||{}; var a=pr[p]&&pr[p].avatar_url; return '<div class="'+(cls||'av-lg')+'">'+(a?'<img src="'+a+'">':escapeHtml((_relNm(p)[0]||'?').toUpperCase()))+'</div>'; }
+function jSheet(title, html){ var m=document.getElementById('homeModal'); if(!m) return; m.innerHTML='<div class="modal-card jsheet"><div class="jsheet-head"><button class="jsheet-x" onclick="closeHomeModal()" aria-label="Close">✕</button><div class="jsheet-title">'+title+'</div></div><div class="jsheet-body">'+html+'</div></div>'; m.classList.add('show'); }
+function relWelcomeSheet(){ jSheet('❤️ Welcome someone', '<input class="fi" id="frPhone" inputmode="numeric" maxlength="10" placeholder="Their phone number" style="margin-bottom:11px">'+'<div class="field-label">Who is this person to you?</div>'+'<select class="fi" id="frRel" style="margin-bottom:11px">'+relOptions('')+'</select>'+'<input class="fi" id="frMsg" value="Hi, I would love to connect with you on Jeeto Family." style="margin-bottom:12px">'+'<button class="btn" id="frBtn" onclick="sendRequest()">Welcome them ❤️</button>'); }
+function relConnectedSheet(){ var d=window.__relData||{}; var rels=d.rels||[], me=d.me; if(!rels.length){ jSheet('👥 Connected', '<div class="empty"><span class="big">🌱</span><div class="e1">No one connected yet.</div></div>'); return; } var html=rels.map(function(c){ var v=relView(c,me); return '<div class="pcard"><div class="fcard">'+_relAvHtml(v.other)+'<div class="info"><div class="nm">'+escapeHtml(_relNm(v.other))+'</div><div style="margin-top:5px"><span class="rl-pill">'+escapeHtml(v.rel||'family')+'</span></div><div class="meta"><span>📞 +91 '+escapeHtml(v.other)+'</span></div><button class="btn btn-sm" style="margin-top:10px;margin-right:6px" onclick="reachP(\''+v.other+'\')">💬 Reach out</button><button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="openRelManage(\''+v.id+'\')">⚙️ Manage</button></div></div></div>'; }).join(''); jSheet('👥 Connected members', html); }
+function relPendingSheet(){ var d=window.__relData||{}; var incoming=d.incoming||[]; if(!incoming.length){ jSheet('📥 Pending', '<div class="empty"><span class="big">📭</span><div class="e1">No one is waiting right now</div><div class="e2">When someone welcomes you into their family, you’ll see them here.</div></div>'); return; } var html=incoming.map(function(x){ var pr=pronoun((d.profs[x.sender_phone]||{}).gender); return '<div class="pcard"><div class="rq">'+_relAvHtml(x.sender_phone)+'<div style="flex:1;min-width:0"><div class="nm">'+escapeHtml(_relNm(x.sender_phone))+'</div><div class="ph">+91 '+escapeHtml(x.sender_phone)+'</div><div style="margin-top:8px"><span class="rl-pill">'+pr.p+' '+pr.v+' you are '+pr.pos+' '+escapeHtml(x.relationship||'family')+'</span></div><div class="row"><button class="btn btn-sm" onclick="openReview(\''+x.id+'\',\''+x.sender_phone+'\',\''+escapeAttr(x.relationship||'')+'\')">Review</button><button class="btn btn-sm btn-ghost" onclick="rejectRequest(\''+x.id+'\')">Decline</button></div></div></div></div>'; }).join(''); jSheet('📥 Pending requests', html); }
+function relSentSheet(){ var d=window.__relData||{}; var sent=d.sent||[]; if(!sent.length){ jSheet('📤 Sent', '<div class="empty"><span class="big">✉️</span><div class="e1">Your story is just beginning</div><div class="e2">Welcome someone to send your first invitation.</div></div>'); return; } var html=sent.map(function(x){ var st=x.status; var badge= st==='accepted'?'<span class="badge b-accepted">🟢 Connected</span>': st==='rejected'?'<span class="badge b-rejected">🔴 Declined</span>':'<span class="badge b-pending">🟡 Waiting</span>'; var inv = st==='pending' ? '<button class="btn btn-sm" style="margin-top:10px" onclick="relInvite(\''+x.receiver_phone+'\')">📲 Invite on WhatsApp</button>' : ''; return '<div class="pcard"><div class="top">'+_relAvHtml(x.receiver_phone,'av-lg')+'<div style="flex:1;min-width:0"><div class="nm">'+escapeHtml(_relNm(x.receiver_phone))+'</div><div style="margin-top:3px"><span class="rl-pill">'+escapeHtml(x.relationship||'family')+'</span> '+badge+'</div>'+(st==='pending'?'<div class="meta" style="margin-top:6px">⏳ They’ll connect once they join Jeeto & accept.</div>':'')+inv+'</div></div></div>'; }).join(''); jSheet('📤 Requests sent', html); }
+function relHomesSheet(){ var d=window.__relData||{}; jSheet('🏡 My Homes', householdHtml(d.households||[], d.bridgesByHH||{})); }
+function relInvite(phone){ var msg='Hi 💛 I added you to our family on Jeeto — a private space for just us (no ads, no strangers). Join me here: https://jeeto-families.pages.dev'; try{ window.open('https://wa.me/91'+phone+'?text='+encodeURIComponent(msg),'_blank'); }catch(e){ toast('Could not open WhatsApp.'); } }
 /* ---------- review modal ---------- */
 function openReview(id, senderPhone, senderRel){
   REVIEW={ id:id, sender:senderPhone, rel:senderRel };
