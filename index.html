@@ -992,7 +992,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .circ-ripple{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(194,24,91,.5);opacity:0;pointer-events:none;animation:circrad 6.6s ease-out infinite}.circ-ripple.r2{animation-delay:2.2s;border-color:rgba(224,99,31,.45)}.circ-ripple.r3{animation-delay:4.4s;border-color:rgba(231,166,75,.55)}.circ-glow{position:absolute;left:50%;top:50%;width:210px;height:210px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(224,90,142,.30),rgba(194,24,91,.10) 38%,rgba(194,24,91,0) 70%);animation:circhalo 6.6s ease-in-out infinite}@keyframes circrad{0%{width:78px;height:78px;opacity:0}10%{opacity:.55}100%{width:300px;height:300px;opacity:0}}@keyframes circhalo{0%,100%{opacity:.6;width:190px;height:190px}50%{opacity:1;width:232px;height:232px}}@media (prefers-reduced-motion:reduce){.circ-ripple{animation:none;opacity:.28}.circ-glow{animation:none;opacity:.7}}
 @keyframes circrip{0%{width:88px;height:88px;opacity:.5}100%{width:340px;height:340px;opacity:0}}
 .circ-ripple.go{animation:circrip 2.4s ease-out infinite}
-.circ-shloka{text-align:center;margin:8px auto 4px;max-width:340px;padding:0 14px}.cs-om{font-size:25px;color:#C99A2E;margin-bottom:2px;font-family:var(--jh-serif,serif);text-shadow:0 1px 10px rgba(201,154,46,.22)}.cs-dev{font-family:var(--jh-serif,'Mukta',serif);font-size:15px;line-height:1.95;color:#7A3E63;letter-spacing:.2px}.cs-mean{font-size:11.5px;line-height:1.5;color:var(--jh-muted-fg);font-style:italic;margin-top:6px}.cs-mean span{font-style:normal;color:#C99A2E;font-weight:700;letter-spacing:.4px;white-space:nowrap}.cs-om-btn{margin-top:11px;display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(201,154,46,.42);background:rgba(201,154,46,.07);color:#9A6B1E;border-radius:999px;padding:7px 16px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:.25s}.cs-om-btn.on{background:rgba(201,154,46,.16);border-color:rgba(201,154,46,.72);color:#7A4E12}.cs-sounds{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:11px}.cs-snd{border:1px solid rgba(201,154,46,.4);background:rgba(201,154,46,.06);color:#9A6B1E;border-radius:999px;padding:7px 14px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:.2s}.cs-snd.on{background:rgba(201,154,46,.18);border-color:rgba(201,154,46,.75);color:#7A4E12}
+.circ-shloka{text-align:center;margin:8px auto 4px;max-width:340px;padding:0 14px}.cs-om{font-size:25px;color:#C99A2E;margin-bottom:2px;font-family:var(--jh-serif,serif);text-shadow:0 1px 10px rgba(201,154,46,.22)}.cs-dev{font-family:var(--jh-serif,'Mukta',serif);font-size:15px;line-height:1.95;color:#7A3E63;letter-spacing:.2px}.cs-mean{font-size:11.5px;line-height:1.5;color:var(--jh-muted-fg);font-style:italic;margin-top:6px}.cs-mean span{font-style:normal;color:#C99A2E;font-weight:700;letter-spacing:.4px;white-space:nowrap}.cs-om-btn{margin-top:11px;display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(201,154,46,.42);background:rgba(201,154,46,.07);color:#9A6B1E;border-radius:999px;padding:7px 16px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:.25s}.cs-om-btn.on{background:rgba(201,154,46,.16);border-color:rgba(201,154,46,.72);color:#7A4E12}.cs-sounds{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:11px}.cs-snd{border:1px solid rgba(201,154,46,.4);background:rgba(201,154,46,.06);color:#9A6B1E;border-radius:999px;padding:7px 14px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:.2s}.cs-snd.on{background:rgba(201,154,46,.18);border-color:rgba(201,154,46,.75);color:#7A4E12}.cs-actions{display:flex;gap:8px;justify-content:center;margin-top:10px}.cs-act{border:1px solid rgba(194,144,31,.45);background:rgba(194,144,31,.08);color:#8A5E12;border-radius:999px;padding:7px 16px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:.2s}.cs-act:active{transform:scale(.97)}
 .circ-chips{display:flex;gap:7px;margin:8px auto 0;justify-content:center;flex-wrap:wrap}
 .circ-chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--jh-border);background:#fff;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;color:var(--jh-muted-fg)}
 .circ-chip.on{border-color:transparent}
@@ -2435,7 +2435,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.64.0-sounds';
+var JEETO_VERSION='4.65.0-dailynote';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -3486,8 +3486,9 @@ function _circRipple(){ var r=document.getElementById('circRip'); if(!r) return;
 function renderCircles(){
   var box=document.getElementById('circlesBody'); if(!box) return;
   var ini=((ME&&ME.name&&ME.name[0])||'·').toUpperCase();
+  var _tn=(typeof _todayNote==='function')?_todayNote():{dev:'',en:'',src:''};
   box.innerHTML='<div class="jh-wrap circ-wrap">'+
-    '<div class="circ-shloka"><div class="cs-om">ॐ</div><div class="cs-dev">अहमात्मा गुडाकेश सर्वभूताशयस्थितः।<br>अहमादिश्च मध्यं च भूतानामन्त एव च॥</div><div class="cs-mean">“I am the Self seated in the heart of all — the beginning, the middle, and the end.” <span>· Gītā 10.20</span></div><div class="cs-sounds"><button class="cs-snd" onclick="_circSound(\'tanpura\',this)">Tanpura</button><button class="cs-snd" onclick="_circSound(\'bowl\',this)">Bowl</button><button class="cs-snd" onclick="_circSound(\'rain\',this)">Rain</button><button class="cs-snd" onclick="_circSound(\'waves\',this)">Waves</button></div></div>'+
+    '<div class="circ-shloka"><div class="cs-om">ॐ</div>'+(_tn.dev?'<div class="cs-dev">'+_tn.dev+'</div>':'')+'<div class="cs-mean">'+escapeHtml(_tn.en)+' <span>· '+escapeHtml(_tn.src)+'</span></div><div class="cs-actions"><button class="cs-act" onclick="_noteShare()">📤 Share</button><button class="cs-act" onclick="_noteDownload()">⬇ Save</button></div><div class="cs-sounds"><button class="cs-snd" onclick="_circSound(\'tanpura\',this)">Tanpura</button><button class="cs-snd" onclick="_circSound(\'bowl\',this)">Bowl</button><button class="cs-snd" onclick="_circSound(\'rain\',this)">Rain</button><button class="cs-snd" onclick="_circSound(\'waves\',this)">Waves</button></div></div>'+
     '<div class="circ-stage" id="circStage"><div class="circ-glow"></div><div class="circ-ripple r1"></div><div class="circ-ripple r2"></div><div class="circ-ripple r3"></div>'+
       '<div class="circ-ring circ-world" data-k="world" onclick="_circPick(\'world\')"><span>World</span></div>'+
       '<div class="circ-ring circ-family" data-k="family" onclick="_circPick(\'family\')"><span>Family</span></div>'+
@@ -3763,6 +3764,84 @@ function _circSoundStop(){
   if(_circMaster&&_circActx){ try{ _circMaster.gain.setTargetAtTime(0,_circActx.currentTime,0.5); var ax=_circActx; setTimeout(function(){ try{ ax.close(); }catch(e){} },2600); }catch(e){} }
   _circActx=null; _circMaster=null; _circCur=null;
   try{ var cs=document.querySelectorAll('.cs-snd'); for(var i=0;i<cs.length;i++) cs[i].classList.remove('on'); }catch(e){}
+}
+/* ============================================================
+   TODAY'S NOTE — a fresh meditative note each day (day-of-year),
+   fully offline. Clean shareable card rendered to PNG via canvas.
+   ============================================================ */
+var DAILY_NOTES=[
+ {dev:'अहमात्मा गुडाकेश सर्वभूताशयस्थितः।<br>अहमादिश्च मध्यं च भूतानामन्त एव च॥', en:'I am the Self seated in the heart of all — the beginning, the middle, and the end.', src:'Bhagavad Gītā 10.20'},
+ {dev:'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।', en:'Your right is to the work alone, never to its fruits.', src:'Bhagavad Gītā 2.47'},
+ {dev:'उद्धरेदात्मनात्मानं नात्मानमवसादयेत्।', en:'Lift yourself by your own self; do not let yourself sink.', src:'Bhagavad Gītā 6.5'},
+ {dev:'असतो मा सद्गमय। तमसो मा ज्योतिर्गमय।', en:'Lead me from the unreal to the real, from darkness to light.', src:'Bṛhadāraṇyaka Upaniṣad'},
+ {dev:'सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः।', en:'May all be happy, may all be free from illness.', src:'Vedic prayer'},
+ {dev:'मातृदेवो भव। पितृदेवो भव।', en:'Revere your mother as the divine. Revere your father as the divine.', src:'Taittirīya Upaniṣad'},
+ {dev:'वसुधैव कुटुम्बकम्।', en:'The whole world is one family.', src:'Mahā Upaniṣad'},
+ {dev:'ईशावास्यमिदं सर्वं यत्किञ्च जगत्यां जगत्।', en:'All this, whatever moves in this world, is pervaded by the Divine.', src:'Īśa Upaniṣad'},
+ {dev:'यो मां पश्यति सर्वत्र सर्वं च मयि पश्यति।', en:'One who sees Me everywhere, and sees everything in Me, is never lost.', src:'Bhagavad Gītā 6.30'},
+ {dev:'तत्त्वमसि।', en:'That thou art. The divine you seek is already within you.', src:'Chāndogya Upaniṣad'},
+ {dev:'ॐ शान्तिः शान्तिः शान्तिः।', en:'Peace in the body, peace in the mind, peace in all that surrounds us.', src:'Vedic invocation'},
+ {dev:'अतिथिदेवो भव।', en:'Treat the guest as the divine. Every doorway is a chance for grace.', src:'Taittirīya Upaniṣad'},
+
+ {dev:'', en:'Call the one you keep meaning to call. The line is still open.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Your grandmother\u2019s hands are in the food you cook. Nothing is ever truly lost.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Bless your children today \u2014 not for what they achieve, but for who they are.', src:'A Jeeto blessing'},
+ {dev:'', en:'You are the centre of a circle that loves you. Sit in it for a moment.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'The elders are the roots. Water them with a phone call.', src:'A Jeeto blessing'},
+ {dev:'', en:'A family that remembers together, stays together.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Forgive one small thing today. The heart makes room again.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Say the kind thing now. Today is the only day you are sure of.', src:'A Jeeto blessing'},
+ {dev:'', en:'Rest is not idleness. A still pond reflects the whole sky.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Teach a child one word in your mother tongue today.', src:'A Jeeto blessing'},
+ {dev:'', en:'The voice you record today will be a treasure your grandchildren replay.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Begin the day with one deep breath and one grateful thought.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Light one diya, however small. Light spreads on its own.', src:'A Jeeto blessing'},
+ {dev:'', en:'You carry three generations inside you. Walk gently \u2014 you carry a crowd of love.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Ask an elder for one story you have never heard. It will outlive you both.', src:'A Jeeto blessing'},
+ {dev:'', en:'Peace at home is the highest wealth. Tend it like a garden.', src:'Aaj ka Vichaar'},
+ {dev:'', en:'Let the first message you send today be a blessing, not a demand.', src:'A Jeeto blessing'},
+ {dev:'', en:'Whatever the day brings, you are held by those who came before you.', src:'Aaj ka Vichaar'}
+];
+function _todayNote(){ var n=new Date(); var st=new Date(n.getFullYear(),0,0); var doy=Math.floor((n-st)/86400000); return DAILY_NOTES[((doy%DAILY_NOTES.length)+DAILY_NOTES.length)%DAILY_NOTES.length]; }
+
+function _rrect(x,X,Y,W,H,R){ x.beginPath(); x.moveTo(X+R,Y); x.arcTo(X+W,Y,X+W,Y+H,R); x.arcTo(X+W,Y+H,X,Y+H,R); x.arcTo(X,Y+H,X,Y,R); x.arcTo(X,Y,X+W,Y,R); x.closePath(); }
+function _wrapTxt(x,text,maxW){ var w=(text||'').split(' '), lines=[], cur=''; for(var i=0;i<w.length;i++){ var t=cur?cur+' '+w[i]:w[i]; if(x.measureText(t).width>maxW && cur){ lines.push(cur); cur=w[i]; } else cur=t; } if(cur) lines.push(cur); return lines; }
+function _renderNoteCanvas(note){
+  var W=1080,H=1350, c=document.createElement('canvas'); c.width=W; c.height=H; var x=c.getContext('2d');
+  var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#FCF6EA'); g.addColorStop(.58,'#F4E7CD'); g.addColorStop(1,'#EAD6A4'); x.fillStyle=g; x.fillRect(0,0,W,H);
+  var rg=x.createRadialGradient(W/2,H*0.30,30,W/2,H*0.30,560); rg.addColorStop(0,'rgba(224,169,59,.20)'); rg.addColorStop(1,'rgba(224,169,59,0)'); x.fillStyle=rg; x.fillRect(0,0,W,H);
+  x.strokeStyle='rgba(194,144,31,.5)'; x.lineWidth=3; _rrect(x,48,48,W-96,H-96,30); x.stroke();
+  x.strokeStyle='rgba(194,144,31,.25)'; x.lineWidth=1.5; _rrect(x,66,66,W-132,H-132,22); x.stroke();
+  x.textAlign='center';
+  x.fillStyle='#C2901F'; x.font='700 112px Georgia,"Noto Serif Devanagari",serif'; x.fillText('ॐ',W/2,252);
+  // build centred content block
+  var content=[];
+  if(note.dev){ (note.dev.split('<br>')).forEach(function(d){ content.push({t:d,font:'600 56px "Noto Serif Devanagari",Georgia,serif',fill:'#7A3E63',adv:86}); }); content.push({gap:34}); }
+  x.font='italic 500 54px Georgia,serif'; _wrapTxt(x,note.en,W-260).forEach(function(l){ content.push({t:l,font:'italic 500 54px Georgia,serif',fill:'#574431',adv:76}); });
+  content.push({gap:30});
+  content.push({t:'\u2014 '+(note.src||'').toUpperCase(),font:'700 30px Georgia,serif',fill:'#C2901F',adv:44});
+  var total=0; content.forEach(function(it){ total+=it.gap||it.adv; });
+  var top=360, bottom=1150, cy=Math.max(top,(top+bottom)/2-total/2);
+  content.forEach(function(it){ if(it.gap){ cy+=it.gap; return; } x.font=it.font; x.fillStyle=it.fill; x.fillText(it.t,W/2,cy); cy+=it.adv; });
+  x.fillStyle='rgba(122,82,48,.72)'; x.font='700 36px Georgia,serif'; x.fillText('🪔 Jeeto',W/2,H-148);
+  x.fillStyle='rgba(122,82,48,.45)'; x.font='400 24px Georgia,serif'; x.fillText('a quiet place for family · jeeto-families.pages.dev',W/2,H-108);
+  return c;
+}
+function _dlCanvas(c,name){ try{ c.toBlob(function(b){ if(!b){ toast('Could not create image.'); return; } var u=URL.createObjectURL(b); var a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ try{document.body.removeChild(a); URL.revokeObjectURL(u);}catch(_){} },900); },'image/png'); }catch(e){ toast('Could not create image.'); } }
+function _noteDownload(){ try{ var c=_renderNoteCanvas(_todayNote()); _dlCanvas(c,'jeeto-note-'+Date.now()+'.png'); toast('Saved to your photos ✨'); }catch(e){ toast('Could not save.'); } }
+function _noteShare(){
+  try{
+    var c=_renderNoteCanvas(_todayNote());
+    if(!c.toBlob){ _noteDownload(); return; }
+    c.toBlob(function(b){
+      if(!b){ toast('Could not create image.'); return; }
+      try{
+        var file=new File([b],'jeeto-note.png',{type:'image/png'});
+        if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file]}).catch(function(){}); }
+        else { _dlCanvas(c,'jeeto-note-'+Date.now()+'.png'); toast('Saved — forward it from your gallery.'); }
+      }catch(e){ _dlCanvas(c,'jeeto-note-'+Date.now()+'.png'); }
+    },'image/png');
+  }catch(e){ toast('Could not share.'); }
 }
 async function renderRituals(){
   var box=document.getElementById('ritualsBody'); if(!box) return;
