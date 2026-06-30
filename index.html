@@ -2439,7 +2439,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.79.3-jeetochat';
+var JEETO_VERSION='4.79.4-chatfix';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -2608,7 +2608,7 @@ function showScreen(id){
   if(!_navingBack && _curId && _curId!==id && _curId!=='screen-otp' && _curId!=='screen-profile'){ _scrHist.push(_curId); if(_scrHist.length>25) _scrHist.shift(); }
   var main=['screen-home','screen-family','screen-moments','screen-life','screen-bridge','screen-profileTab','screen-homes','screen-homedetail','screen-design','screen-myworld','screen-across','screen-loop','screen-festivals'];
   document.getElementById('bottomNav').classList.toggle('hide', main.indexOf(id)===-1);
-  var _nb=document.getElementById('navBack'); if(_nb){ _nb.style.display=(id==='screen-home'||id==='screen-otp'||id==='screen-profile')?'none':'flex'; }
+  var _nb=document.getElementById('navBack'); if(_nb){ _nb.style.display=(id==='screen-home'||id==='screen-otp'||id==='screen-profile'||id==='screen-board')?'none':'flex'; }
   try{ paintNavIcons(); }catch(e){}
   try{ window.scrollTo(0,0); }catch(e){}
 }
