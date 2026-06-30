@@ -83,8 +83,8 @@
     <div class="row"><label>Signature</label><input id="sign" value="— Dadu, 1978" oninput="render()"></div>
 
     <div class="btns">
-      <button class="btn still" onclick="downloadStill()">⬇ Save still</button>
-      <button class="btn reel" id="reelBtn" onclick="downloadReel()">🎬 Save Reel video</button>
+      <button class="btn still" onclick="downloadStill()">📲 Save / Post still</button>
+      <button class="btn reel" id="reelBtn" onclick="downloadReel()">🎬 Save / Post Reel</button>
     </div>
 
     <div class="skyvos">
@@ -94,7 +94,7 @@
       <button class="copy" onclick="copyCap(this)">Copy caption</button>
     </div>
 
-    <div class="note">This is a preview. In Jeeto, the photo, the line and the voice come straight from your family — Skyvos drafts the post, you tweak and share. Video saves as a real file you can upload to Reels/Stories.</div>
+    <div class="note">This is a preview. In Jeeto, the photo, the line and the voice come straight from your family — Skyvos drafts the post, you tweak and share. Save opens your phone’s share sheet — pick <b>Save to Photos</b> or post straight to <b>Instagram / WhatsApp</b>.</div>
   </div>
 
 <script>
@@ -202,10 +202,11 @@ function loadPhoto(e){
 }
 
 function dl(blob,name){ var u=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u);},900); }
+function shareFile(file,blob,name){ try{ if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file],title:'Jeeto'}).catch(function(){}); return; } }catch(e){} try{ var u=URL.createObjectURL(blob); window.open(u,'_blank'); setTimeout(function(){URL.revokeObjectURL(u);},4000); }catch(e){ dl(blob,name); } }
 
 function downloadStill(){
   var keep=mode; mode='still'; render(4);
-  cv.toBlob(function(b){ if(b) dl(b,'jeeto-still.png'); mode=keep; if(mode==='reel'){start=performance.now();} }, 'image/png');
+  cv.toBlob(function(b){ mode=keep; if(mode==='reel'){start=performance.now();} if(!b){ alert('Could not create image.'); return; } var file=new File([b],'jeeto-post.png',{type:'image/png'}); shareFile(file,b,'jeeto-post.png'); }, 'image/png');
 }
 
 function downloadReel(){
@@ -217,7 +218,7 @@ function downloadReel(){
   var stream=cv.captureStream(30);
   var rec; try{ rec=new MediaRecorder(stream, mime?{mimeType:mime,videoBitsPerSecond:9000000}:undefined); }catch(e){ alert('Recording not supported here.'); return; }
   var chunks=[]; rec.ondataavailable=function(e){ if(e.data&&e.data.size) chunks.push(e.data); };
-  rec.onstop=function(){ var ext=(mime.indexOf('mp4')>=0)?'mp4':'webm'; dl(new Blob(chunks,{type:mime||'video/webm'}),'jeeto-reel.'+ext); document.getElementById('rec').classList.remove('on'); btn.disabled=false; btn.textContent='🎬 Save Reel video'; };
+  rec.onstop=function(){ var ext=(mime.indexOf('mp4')>=0)?'mp4':'webm'; var blob=new Blob(chunks,{type:mime||'video/webm'}); var file=new File([blob],'jeeto-reel.'+ext,{type:blob.type||'video/webm'}); shareFile(file,blob,'jeeto-reel.'+ext); document.getElementById('rec').classList.remove('on'); btn.disabled=false; btn.textContent='🎬 Save / Post Reel'; };
   start=performance.now(); rec.start();
   document.getElementById('rec').classList.add('on'); btn.disabled=true; btn.textContent='Recording… 6s';
   setTimeout(function(){ try{ rec.stop(); }catch(e){} }, 6200);
