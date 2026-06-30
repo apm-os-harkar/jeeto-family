@@ -2434,7 +2434,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.53.0-workself';
+var JEETO_VERSION='4.54.0-avatarpersist';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -5365,7 +5365,7 @@ async function saveProfilePhoto(){
   if(!_avDirty){ closeHomeModal(); return; }
   _avRoot=document.querySelector('#homeModal .modal-card');
   var b=await _avCropBlob(); if(!b){ toast('Could not save the photo \u2014 try choosing it again.'); return; }
-  try{ var p='avatars/'+myPhone()+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(p,b,{contentType:'image/jpeg'}); if(up.error) throw up.error; var url=sb.storage.from('moments').getPublicUrl(p).data.publicUrl; await sb.from('profiles').update({avatar_url:url}).eq('phone',myPhone()); if(ME) ME.avatar_url=url; }
+  try{ var p='avatars/'+myPhone()+'-'+Date.now()+'.jpg'; var up=await sb.storage.from('moments').upload(p,b,{contentType:'image/jpeg'}); if(up.error) throw up.error; var url=sb.storage.from('moments').getPublicUrl(p).data.publicUrl; var r=await sb.from('profiles').update({avatar_url:url}).eq('phone',myPhone()).select('phone'); if(r.error) throw r.error; if(!r.data||!r.data.length) throw new Error('Photo uploaded, but your profile row did not update, so family on other phones cannot see it. Make sure your profile is saved first.'); if(ME) ME.avatar_url=url; }
   catch(e){ toast(humanError(e,'Could not save the photo.')); return; }
   closeHomeModal(); toast('Profile photo updated \u2728'); try{ renderPassport(); }catch(e){}
 }
