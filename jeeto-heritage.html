@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jeeto Heritage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#12122A; --night2:#1A1A38; --raise:#212145;
+  --saffron:#F2A93B; --kong:#E8C25A; --chinar:#C6482B;
+  --snow:#F3EEE4; --mist:#A7A4C6; --line:rgba(243,238,228,.10);
+  --thread:linear-gradient(180deg,var(--kong),var(--chinar));
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--night);color:var(--snow);
+  font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden}
+.app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;
+  background:radial-gradient(120% 60% at 50% -10%, #23234c 0%, var(--night) 55%)}
+.wrap{padding:0 20px calc(40px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;margin:0;letter-spacing:-.01em}
+.dev{font-family:'Noto Serif Devanagari','Fraunces',serif}
+.eyebrow{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--saffron);font-weight:600}
+.muted{color:var(--mist)}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+.top{display:flex;align-items:center;justify-content:space-between;padding:calc(16px + env(safe-area-inset-top)) 20px 10px}
+.brand{display:flex;align-items:center;gap:9px;font-family:'Fraunces';font-weight:600;font-size:18px}
+.brand .leaf{width:26px;height:26px;filter:drop-shadow(0 2px 6px rgba(198,72,43,.5))}
+.top .date{font-size:12px;color:var(--mist);text-align:right;line-height:1.35}
+
+/* ---------- setup ---------- */
+.setup{padding-top:6px}
+.setup .big{font-size:34px;line-height:1.08;margin-top:10px}
+.setup .lead{color:var(--mist);font-size:15px;line-height:1.55;margin-top:12px;max-width:34ch}
+.hgrid{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.hopt{display:flex;align-items:center;gap:14px;background:var(--night2);border:1px solid var(--line);
+  border-radius:18px;padding:15px 16px;text-align:left;transition:border-color .15s,background .15s}
+.hopt.on{border-color:rgba(242,169,59,.6);background:rgba(242,169,59,.08)}
+.hopt .em{width:40px;height:40px;flex:none;border-radius:12px;background:var(--raise);display:flex;align-items:center;justify-content:center;font-size:20px}
+.hopt .t{font-family:'Fraunces';font-weight:600;font-size:17px}
+.hopt .meta{color:var(--mist);font-size:12px;margin-top:2px}
+.hopt .tick{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;color:#1a1024;font-size:13px;font-weight:800}
+.hopt.on .tick{background:var(--saffron);border-color:var(--saffron)}
+.continue{position:sticky;bottom:0;padding:16px 0 calc(18px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,var(--night) 30%)}
+.continue button{width:100%;background:linear-gradient(100deg,var(--saffron),var(--chinar));color:#1a1024;
+  font-weight:700;font-size:16px;padding:16px;border-radius:16px;box-shadow:0 14px 30px -12px rgba(242,169,59,.6)}
+.continue button:disabled{opacity:.4;box-shadow:none}
+
+/* ---------- home card ---------- */
+.card{position:relative;margin-top:8px;border-radius:28px;overflow:hidden;
+  background:linear-gradient(155deg,#241f3f 0%, #1a1636 60%, #2a1a2e 100%);
+  border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+.card .glow{position:absolute;inset:0;background:radial-gradient(60% 55% at 78% 12%, rgba(242,169,59,.30), transparent 70%);pointer-events:none}
+.card .motif{position:absolute;top:20px;right:22px;font-size:42px;opacity:.92;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+.card .inner{position:relative;padding:26px 24px 28px}
+.today-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--kong);font-weight:600}
+.today-tag .dot{width:6px;height:6px;border-radius:50%;background:var(--saffron);box-shadow:0 0 10px 2px rgba(242,169,59,.7);animation:pulse 2.6s infinite}
+@keyframes pulse{0%,100%{opacity:.55;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+.fest{font-size:44px;line-height:1.02;margin:14px 0 4px;font-weight:600}
+.fest .dev{font-size:30px;display:block;color:var(--kong);font-weight:500;margin-top:8px}
+.fest-en{color:var(--mist);font-size:15px}
+.pack-tag{display:inline-block;margin-top:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--saffron);font-weight:600}
+.greet{margin-top:16px;font-family:'Fraunces';font-size:20px;font-weight:500}
+.line{margin-top:6px;color:var(--mist);font-size:15px;line-height:1.5;max-width:32ch}
+.cta{margin-top:22px;display:inline-flex;align-items:center;gap:10px;background:linear-gradient(100deg,var(--saffron),var(--chinar));color:#1a1024;font-weight:700;font-size:15px;padding:14px 22px;border-radius:999px;box-shadow:0 14px 30px -12px rgba(242,169,59,.6);transition:transform .15s}
+.cta:active{transform:scale(.97)}
+
+.also{margin-top:16px}
+.also .h{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist);font-weight:600;margin-bottom:8px}
+.alsochip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--night2);border-radius:999px;padding:9px 14px;font-size:13px;margin:0 8px 8px 0}
+.alsochip b{font-family:'Fraunces';color:var(--kong);font-weight:600}
+
+.jantri{display:flex;gap:8px;margin:22px 0 6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.jantri::-webkit-scrollbar{display:none}
+.jchip{flex:none;border:1px solid var(--line);background:var(--night2);color:var(--mist);padding:9px 15px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
+.jchip.on{background:rgba(242,169,59,.14);border-color:rgba(242,169,59,.5);color:var(--kong)}
+.jchip.add{color:var(--saffron);border-style:dashed}
+
+.sec{margin-top:34px}
+.sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+.sec-h h2{font-size:23px;font-weight:600}
+.sec-h .n{font-family:'Fraunces';color:var(--chinar);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+
+.rows{display:flex;flex-direction:column;gap:1px;border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.row{background:var(--night2);padding:17px 18px;display:flex;gap:14px;align-items:flex-start}
+.row .k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--saffron);font-weight:600;min-width:82px;padding-top:2px}
+.row .v{font-size:15px;line-height:1.55;color:var(--snow);flex:1}
+.row .v .sub{color:var(--mist);font-size:13.5px;display:block;margin-top:3px}
+
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.tile{background:var(--night2);border:1px solid var(--line);border-radius:20px;padding:18px;min-height:104px;display:flex;flex-direction:column;justify-content:space-between}
+.tile .ic{font-size:22px}
+.tile .lab{font-family:'Fraunces';font-size:16px;font-weight:600}
+.tile .cap{color:var(--mist);font-size:12.5px;margin-top:3px}
+.tile.full{grid-column:1/3;flex-direction:row;align-items:center;gap:14px}
+.tile.full .play{width:46px;height:46px;flex:none;border-radius:50%;background:linear-gradient(120deg,var(--saffron),var(--chinar));display:flex;align-items:center;justify-content:center;color:#1a1024;font-size:18px}
+
+.thread{position:relative;margin-top:16px;padding-left:34px}
+.thread:before{content:"";position:absolute;left:11px;top:6px;bottom:26px;width:2px;background:var(--thread);border-radius:2px;opacity:.85}
+.node{position:relative;padding:0 0 26px}
+.node .dot{position:absolute;left:-34px;top:2px;width:24px;height:24px;border-radius:50%;background:var(--night);border:2px solid var(--saffron);display:flex;align-items:center;justify-content:center}
+.node .dot:after{content:"";width:9px;height:9px;border-radius:50%;background:var(--saffron);box-shadow:0 0 10px 2px rgba(242,169,59,.6)}
+.node .yr{font-family:'Fraunces';font-size:19px;font-weight:600;color:var(--kong)}
+.node .who{font-size:13px;color:var(--mist);margin-top:1px}
+.node .body{margin-top:9px;background:var(--night2);border:1px solid var(--line);border-radius:16px;padding:14px 15px;font-size:14.5px;line-height:1.55}
+.node .body .ph{height:120px;border-radius:12px;margin-top:11px;background:linear-gradient(135deg,#2a2450,#3a2340);display:flex;align-items:center;justify-content:center;color:var(--mist);font-size:12px;border:1px dashed rgba(243,238,228,.18)}
+.thread-cta{margin-left:34px}
+.addbtn{display:inline-flex;align-items:center;gap:9px;border:1px dashed rgba(242,169,59,.5);color:var(--kong);padding:12px 18px;border-radius:999px;font-weight:600;font-size:14px;background:rgba(242,169,59,.06)}
+
+.comm{background:var(--night2);border:1px solid var(--line);border-radius:22px;padding:20px;margin-top:14px}
+.comm .h{font-family:'Fraunces';font-size:18px;font-weight:600}
+.comm p{color:var(--mist);font-size:14px;line-height:1.55;margin:8px 0 0}
+.pillrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pill{border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:12.5px;color:var(--snow);background:var(--raise)}
+
+.words{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.word{border:1px solid var(--line);background:var(--night2);border-radius:14px;padding:11px 15px;font-size:14px}
+.word b{font-family:'Fraunces';font-weight:600;color:var(--kong)}
+.word span{color:var(--mist);font-size:12px;margin-left:6px}
+
+.ask{margin-top:14px;background:linear-gradient(150deg,#211b3d,#2a1a2e);border:1px solid var(--line);border-radius:22px;padding:20px}
+.ask .h{display:flex;align-items:center;gap:9px;font-family:'Fraunces';font-size:18px;font-weight:600}
+.ask .sug{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ask .sug button{border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-size:12.5px;color:var(--snow);background:var(--night2);text-align:left}
+.ask .field{display:flex;gap:9px;margin-top:14px}
+.ask input{flex:1;background:var(--night);border:1px solid var(--line);border-radius:14px;padding:13px 15px;color:var(--snow);font-family:inherit;font-size:14px}
+.ask .go{width:48px;border-radius:14px;background:linear-gradient(120deg,var(--saffron),var(--chinar));color:#1a1024;font-size:18px;font-weight:700}
+.answer{margin-top:14px;font-size:14.5px;line-height:1.6;white-space:pre-wrap;display:none}
+.answer.show{display:block}
+
+.scrim{position:fixed;inset:0;background:rgba(8,8,20,.66);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .28s;z-index:40}
+.scrim.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:480px;margin:0 auto;background:var(--night2);border-radius:26px 26px 0 0;border:1px solid var(--line);border-bottom:none;transform:translateY(102%);transition:transform .34s cubic-bezier(.2,.8,.2,1);padding:22px 22px calc(30px + env(safe-area-inset-bottom));max-height:82vh;overflow:auto}
+.sheet.show{transform:translateY(0)}
+.sheet .x{position:absolute;top:16px;right:18px;width:34px;height:34px;border-radius:50%;background:var(--raise);color:var(--snow);font-size:16px}
+.sheet .term{font-family:'Fraunces';font-size:34px;font-weight:600;color:var(--kong)}
+.sheet .roman{color:var(--mist);font-size:15px;margin-top:2px}
+.sheet .say{margin-top:14px;display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:999px;padding:10px 16px;font-size:13px;color:var(--kong);background:rgba(242,169,59,.07)}
+.sheet .defrow{margin-top:18px}
+.sheet .defrow .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--saffron);font-weight:600}
+.sheet .defrow .v{margin-top:5px;font-size:15px;line-height:1.6}
+
+.foot{margin-top:40px;text-align:center;color:var(--mist);font-size:11.5px;line-height:1.7}
+.foot b{color:var(--saffron)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+.rise{opacity:0;transform:translateY(14px);animation:rise .6s forwards}
+.rise.d1{animation-delay:.05s}.rise.d2{animation-delay:.12s}.rise.d3{animation-delay:.2s}
+@keyframes rise{to{opacity:1;transform:none}}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="top">
+    <div class="brand">
+      <svg class="leaf" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path d="M24 3c2 6 6 8 11 8-3 3-3 6-1 10 4-1 7 0 9 3-5 1-7 4-7 9-4-2-7-1-10 2-1-4-3-6-7-6 2-4 1-7-2-10 5 0 9-2 8-16Z" fill="url(#lg)"/>
+        <path d="M24 44V20" stroke="#8a5a3a" stroke-width="2.4" stroke-linecap="round"/>
+        <defs><linearGradient id="lg" x1="8" y1="6" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#E8C25A"/><stop offset="1" stop-color="#C6482B"/></linearGradient></defs>
+      </svg>
+      Jeeto <span style="color:var(--saffron);font-size:12px;letter-spacing:.2em;margin-left:-2px;align-self:center">HERITAGE</span>
+    </div>
+    <div class="date" id="topDate">—</div>
+  </div>
+
+  <!-- ===================== SETUP ===================== -->
+  <div id="setup" class="wrap setup">
+    <span class="eyebrow">Jeeto Heritage</span>
+    <h1 class="big">Whose traditions<br>shall we open?</h1>
+    <div class="lead">Pick a heritage to explore. Jeeto keeps a separate living world for each — its festivals, calendar, words and your family's memories. You can switch anytime.</div>
+    <div class="hgrid" id="hgrid"></div>
+  </div>
+
+  <!-- ===================== HOME ===================== -->
+  <div id="home" class="wrap hidden">
+    <div class="card rise">
+      <div class="glow"></div>
+      <div class="motif" id="hMotif">🪔</div>
+      <div class="inner">
+        <span class="today-tag"><span class="dot"></span> Today</span>
+        <h1 class="fest" id="hFest">—<span class="dev" id="hFestDev"></span></h1>
+        <div class="fest-en" id="hFestEn"></div>
+        <div class="pack-tag" id="hPackTag"></div>
+        <div class="greet" id="hGreet">Good morning.</div>
+        <div class="line" id="hLine"></div>
+        <button class="cta" id="hCta">Explore today's traditions <span style="font-size:18px">→</span></button>
+      </div>
+    </div>
+
+    <div class="also hidden" id="alsoWrap">
+      <div class="h">Also today, across your heritages</div>
+      <div id="alsoChips"></div>
+    </div>
+
+    <div class="jantri rise d1" id="jantri"></div>
+    <div class="muted" style="font-size:12.5px;margin-top:4px" id="jantriNote"></div>
+
+    <div class="sec rise d2">
+      <div class="sec-h"><h2>The words of today</h2></div>
+      <div class="muted" style="font-size:14px;margin-top:-6px;line-height:1.5">Every heritage word is alive. Tap to hear it, and learn where it comes from.</div>
+      <div class="words" id="homeWords"></div>
+    </div>
+
+    <div class="sec rise d3">
+      <div class="ask">
+        <div class="h">✦ Ask Skyvos</div>
+        <div class="muted" style="font-size:13.5px;margin-top:7px;line-height:1.5">Your family's guide to every tradition. Ask anything, in any language.</div>
+        <div class="sug" id="askSug"></div>
+        <div class="field"><input id="askIn" placeholder="Ask about today…" onkeydown="if(event.key==='Enter')askGo()"><button class="go" onclick="askGo()">→</button></div>
+        <div class="answer" id="askAns"></div>
+      </div>
+    </div>
+
+    <div class="foot">A living heritage engine, not a calendar. Curated preview — real dates come from each tradition's <b>calendar adapter</b>; depth grows with your community.</div>
+  </div>
+
+  <!-- ===================== TODAY ===================== -->
+  <div id="today" class="wrap hidden"></div>
+
+</div>
+
+<!-- ===================== DICTIONARY SHEET ===================== -->
+<div class="scrim" id="scrim" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <button class="x" onclick="closeSheet()">✕</button>
+  <div class="term" id="tTerm">—</div>
+  <div class="roman" id="tRoman"></div>
+  <button class="say" id="tSay">🔊 Hear pronunciation</button>
+  <div class="defrow"><div class="k">Meaning</div><div class="v" id="tMean"></div></div>
+  <div class="defrow"><div class="k">Origin</div><div class="v" id="tOrigin"></div></div>
+  <div class="defrow" id="tRootRow"><div class="k">Sanskrit root</div><div class="v" id="tRoot"></div></div>
+  <div class="defrow"><div class="k">In our family</div><div class="v muted" id="tFam">No family memory uses this word yet. Be the first to record one.</div></div>
+</div>
+
+<script>
+/* ================= HERITAGE PACKS (framework) ================= */
+var PACKS={
+  kashmiri:{label:'Kashmiri Pandit',type:'Community · Kashmir',cal:'Kashmiri lunisolar (KashEngine)',accent:['#F2A93B','#C6482B'],em:'🏔️',motif:'🪔',today:'navreh',
+    words:['navreh','herath','doon','nechipatra','okdoh','dasham'],
+    fests:{navreh:{local:'नवरेह्',roman:'Navreh',en:'Kashmiri New Year',sub:'first of Chaitra',line:'Today your family begins a new year. The old almanac closes; a fresh one opens.',
+      meaning:'The Kashmiri lunisolar new year. Families greet the first day by looking upon a thaal of auspicious things at dawn — a promise of a full, fortunate year.',
+      significance:'It renews the household almanac (nechipatra) and ties the family to Sharika Devi of Hari Parbat.',
+      ritual:'At first light the eldest reveals the thaal — rice, curd, a coin, a pen, a mirror, walnuts, bread, spring flowers and the new almanac — to be the first sight of the year.',
+      prayer:'A remembrance to Sharika Bhagwati (kept as a family voice recording).',
+      food:'Walnuts (doon), roth, rice and curd.',dress:'New clothes for every member.',song:'Navreh vatsun'}}},
+  punjabi:{label:'Punjabi',type:'Region · Punjab',cal:'Nanakshahi / Bikrami',accent:['#F6A21E','#C0271D'],em:'🌾',motif:'🌾',today:'baisakhi',words:[],
+    fests:{baisakhi:{local:'ਵਿਸਾਖੀ',roman:'Baisakhi',en:'Harvest & the founding of the Khalsa',sub:'Vaisakh',line:'Today the fields turn gold and the community remembers its founding.',
+      meaning:'The spring harvest and the day the Khalsa was founded — thanksgiving and belonging in one.',
+      ritual:'Gurdwara in the morning, Nagar Kirtan through the streets, and bhangra as the drums start.',
+      food:'Langar, kada prasad and the first of the new grain.',dress:'Bright new clothes.',song:'Boliyan'}}},
+  tamil:{label:'Tamil',type:'Region · Tamil Nadu',cal:'Tamil Panchangam',accent:['#E8A93A','#B21E3B'],em:'🛕',motif:'🌅',today:'pongal',words:[],
+    fests:{pongal:{local:'பொங்கல்',roman:'Pongal',en:'Harvest thanksgiving',sub:'Thai',line:'Today the pot boils over — and so, may your year.',
+      meaning:'A four-day thanksgiving to the sun and the land for the harvest.',
+      ritual:'New rice is boiled in a clay pot until it spills over, facing the rising sun, to the call of “Pongalo Pongal”.',
+      food:'Sweet pongal, sugarcane, the fresh crop.',dress:'New clothes.',song:'Villuppattu'}}},
+  bengali:{label:'Bengali',type:'Region · Bengal',cal:'Bengali Panjika',accent:['#E4A11B','#C1121F'],em:'🎶',motif:'🌸',today:'poila',words:[],
+    fests:{poila:{local:'পয়লা বৈশাখ',roman:'Poila Boishakh',en:'Bengali New Year',sub:'Boishakh',line:'Today a clean ledger opens and the city walks out to greet the dawn.',
+      meaning:'The first day of the Bengali year — new beginnings in home, shop and song.',
+      ritual:'Halkhata (the new account book) is opened, and prabhat pheri processions welcome the morning.',
+      food:'Sweets, panta bhat, ilish.',dress:'Red-and-white new clothes.',song:'Esho he Boishakh (as a family recording)'}}},
+  gujarati:{label:'Gujarati',type:'Region · Gujarat',cal:'Vikram Samvat',accent:['#F0A93A','#B5232E'],em:'🪩',motif:'🪔',today:'navratri',words:[],
+    fests:{navratri:{local:'નવરાત્રી',roman:'Navratri',en:'Nine nights of the Goddess',sub:'Ashwin',line:'Tonight the circle forms again around the lamp.',
+      meaning:'Nine nights honouring the divine feminine, danced out as Garba around the garbo lamp.',
+      ritual:'Garba and dandiya-raas each night, circling the flame.',food:'Fasting foods by day, feasting by night.',dress:'Mirror-work chaniya choli.',song:'Garba'}}},
+  sikh:{label:'Sikh',type:'Religion',cal:'Nanakshahi',accent:['#EBA92E','#2C6E8F'],em:'🪯',motif:'🪯',today:'gurpurab',words:[],
+    fests:{gurpurab:{local:'ਗੁਰਪੁਰਬ',roman:'Gurpurab',en:'Birth of Guru Nanak',sub:'Kartik',line:'Today the sangat gathers in light and langar.',
+      meaning:'The birth anniversary of Guru Nanak Dev Ji.',
+      ritual:'Akhand Path, Nagar Kirtan and langar open to all.',food:'Langar and kada prasad.',dress:'New clothes; heads covered.',song:'Shabad Kirtan'}}}
+};
+var PACK_ORDER=['kashmiri','punjabi','tamil','bengali','gujarati','sikh'];
+
+var TERMS={
+  navreh:{term:'नवरेह्',roman:'Navreh',say:'Nav-reh',mean:'The Kashmiri lunisolar new year — the first day of the bright fortnight of Chaitra.',origin:'Kashmiri, from the valley\u2019s older new-year observance.',root:'नव (nava, “new”)'},
+  herath:{term:'हेरथ',roman:'Herath',say:'Hay-rath',mean:'The Kashmiri Pandit observance of Maha Shivratri — the community\u2019s greatest festival.',origin:'Kashmiri, contracted from Har-ratri, the night of Har (Shiva).',root:'हर-रात्रि (Hara-rātri)'},
+  nechipatra:{term:'नेचिपत्र',roman:'Nechipatra',say:'Nech-i-patra',mean:'The household almanac renewed at Navreh — the year\u2019s auspicious days, read first thing.',origin:'Kashmiri almanac tradition.',root:'पत्र (patra, “leaf/document”)'},
+  doon:{term:'डून',roman:'Doon',say:'Doon',mean:'Walnut — offered and eaten at Navreh and Herath; a symbol of the valley itself.',origin:'Kashmiri.',root:''},
+  okdoh:{term:'अकडोह',roman:'Okdoh',say:'Ok-doh',mean:'First. The opening ordinal of the traditional count.',origin:'Kashmiri numeral series.',root:'एक (eka, “one”)'},
+  dasham:{term:'दशम',roman:'Dasham',say:'Da-sham',mean:'Tenth — closing the ordinal count.',origin:'Kashmiri numeral series.',root:'दश (daśa, “ten”)'}
+};
+
+var FAMILY_THREAD=[
+  {yr:'1995',who:'Your grandmother',body:'Set the very first celebration you remember — the light caught the morning.',ph:'Photo'},
+  {yr:'2003',who:'Your mother',body:'Wrote the family recipe onto the back of the old almanac. Still used today.',ph:null},
+  {yr:'2016',who:'Your father',body:'Recorded himself singing. Two minutes, kept forever.',ph:'Voice · 2:04'},
+  {yr:'2025',who:'The children',body:'Painted the day for the family board.',ph:'Artwork'}
+];
+
+/* ================= household state ================= */
+var HH={current:null,custom:null};
+
+function el(id){return document.getElementById(id)}
+function renderDate(){var d=new Date();el('topDate').innerHTML=d.toLocaleDateString('en-IN',{weekday:'long'})+'<br>'+d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}
+
+/* ================= setup ================= */
+function renderSetup(){
+  var html=PACK_ORDER.map(function(id){var p=PACKS[id];
+    return '<button class="hopt" data-id="'+id+'" onclick="chooseHeritage(\''+id+'\')"><div class="em">'+p.em+'</div>'
+      +'<div><div class="t">'+p.label+'</div><div class="meta">'+p.type+'</div></div><div class="tick" style="border:none;color:var(--saffron);font-size:20px">›</div></button>';
+  }).join('');
+  html+='<button class="hopt" data-id="custom" onclick="chooseHeritage(\'custom\')"><div class="em">✨</div>'
+    +'<div><div class="t">Custom family heritage</div><div class="meta">Define your own days &amp; traditions</div></div><div class="tick" style="border:none;color:var(--saffron);font-size:20px">›</div></button>';
+  el('hgrid').innerHTML=html;
+}
+function chooseHeritage(id){
+  HH.current=id;
+  if(id!=='custom'&&PACKS[id]) applyAccent(PACKS[id].accent);
+  if(id==='custom'){ el('setup').classList.add('hidden'); renderToday('custom',null); return; }
+  el('setup').classList.add('hidden'); el('home').classList.remove('hidden');
+  renderHome(); window.scrollTo(0,0);
+}
+function applyAccent(a){ if(!a) return; document.documentElement.style.setProperty('--saffron',a[0]); document.documentElement.style.setProperty('--chinar',a[1]); }
+
+/* ================= home ================= */
+function primaryFest(){ if(HH.current==='custom'||!PACKS[HH.current]) return null; var p=PACKS[HH.current]; return {pack:p,slug:p.today,f:p.fests[p.today]}; }
+function renderHome(){
+  var pf=primaryFest();
+  if(!pf){ renderToday('custom',null); return; }
+  var f=pf.f;
+  el('hMotif').textContent=pf.pack.motif;
+  el('hFest').innerHTML=f.roman+'<span class="dev">'+(f.local||'')+'</span>';
+  el('hFestEn').textContent=f.en;
+  el('hPackTag').textContent=pf.pack.label;
+  el('hGreet').textContent='Good morning, Sunil.';
+  el('hLine').textContent=f.line;
+  el('hCta').innerHTML='Explore today\u2019s traditions <span style="font-size:18px">→</span>';
+  el('hCta').onclick=function(){renderToday(HH.current,pf.slug)};
+  el('alsoWrap').classList.add('hidden');
+  renderSwitch(); renderHomeWords(); renderAskSug();
+}
+function changeHeritage(){ el('home').classList.add('hidden'); el('today').classList.add('hidden'); el('setup').classList.remove('hidden'); window.scrollTo(0,0); }
+function renderSwitch(){
+  var p=PACKS[HH.current];
+  el('jantri').innerHTML='<button class="jchip on">'+(p?p.label:(HH.custom||'Custom'))+'</button>'
+    +'<button class="jchip add" onclick="changeHeritage()">⇄ Change heritage</button>';
+  el('jantriNote').innerHTML=p?('Reading the <span style="color:var(--kong)">'+p.cal+'</span>. Switching shows only that heritage.'):'Custom heritage — your own days.';
+}
+function renderHomeWords(){
+  var p=PACKS[HH.current]; var keys=(p&&p.words&&p.words.length)?p.words:['navreh','herath','doon','okdoh'];
+  el('homeWords').innerHTML=keys.map(function(k){var w=TERMS[k];if(!w)return '';return '<button class="word" onclick="openTerm(\''+k+'\')"><b>'+w.roman+'</b><span>'+w.term+'</span></button>';}).join('')
+    + (((!p||!p.words||!p.words.length))?'<div class="muted" style="font-size:12.5px;margin-top:8px">Dictionary for '+(p?p.label:'this heritage')+' grows as your community adds its words.</div>':'');
+}
+function renderAskSug(){
+  var p=PACKS[HH.current]; var f=p&&p.fests[p.today];
+  var qs=f?['Why is '+f.roman+' celebrated?','Explain for a 7-year-old','Bataao Hindi mein','What food do we make?']:['How do I add my family\u2019s day?','Explain for a 7-year-old'];
+  el('askSug').innerHTML=qs.map(function(q){return '<button onclick="el(\'askIn\').value=this.textContent;askGo()">'+q+'</button>';}).join('');
+}
+
+/* ================= today (dynamic) ================= */
+function renderToday(packId,slug){
+  var host=el('today'); var p=PACKS[packId];
+  if(!p||!slug){
+    host.innerHTML='<button class="jchip" style="margin-top:6px" onclick="changeHeritage()">‹ Heritages</button>'
+      +'<div class="sec" style="margin-top:18px"><span class="eyebrow">Custom heritage</span>'
+      +'<h1 class="fest" style="font-size:34px;margin-top:12px">'+(HH.custom||'Your family\u2019s days')+'</h1>'
+      +'<div class="fest-en">Define the days that matter to your family</div></div>'
+      +'<div class="comm" style="margin-top:24px"><div class="h">Add your first tradition</div><p>Name the day, when it falls, what you do, the food, the song. Skyvos helps you write it, and every year your family\u2019s memories attach to it — building a heritage no pack could.</p><div class="thread-cta" style="margin-left:0;margin-top:14px"><button class="addbtn">＋ Add a family day</button></div></div>';
+    show('today'); return;
+  }
+  var f=p.fests[slug];
+  var h='<button class="jchip" style="margin-top:6px" onclick="backHome()">‹ Back</button>';
+  h+='<div class="sec" style="margin-top:18px"><span class="eyebrow">'+p.label+' · Today</span>'
+    +'<h1 class="fest" style="font-size:38px;margin-top:12px">'+f.roman+'<span class="dev">'+(f.local||'')+'</span></h1>'
+    +'<div class="fest-en">'+f.en+(f.sub?' · '+f.sub:'')+'</div></div>';
+  // meaning
+  var m1='';
+  if(f.meaning) m1+=rowHtml('Meaning',f.meaning);
+  if(f.significance) m1+=rowHtml('Significance',f.significance);
+  if(m1) h+=secHtml('01','What it means',m1);
+  // marking
+  var m2='';
+  if(f.ritual) m2+=rowHtml('Ritual',f.ritual);
+  if(f.prayer) m2+=rowHtml('Prayer',f.prayer);
+  if(f.food) m2+=rowHtml('Food',f.food);
+  if(f.dress) m2+=rowHtml('Dress',f.dress);
+  if(m2) h+=secHtml('02','How we mark it',m2);
+  // songs/voices
+  h+='<div class="sec"><div class="sec-h"><span class="n">03</span><h2>Songs &amp; voices</h2></div><div class="tiles">'
+    +'<div class="tile full"><div class="play">▶</div><div><div class="lab">'+(f.song||'Family song')+'</div><div class="cap">In the family\u2019s voice — record an elder, kept forever.</div></div></div>'
+    +'<div class="tile"><div class="ic">📖</div><div><div class="lab">The story</div><div class="cap">Told the way your family tells it.</div></div></div>'
+    +'<div class="tile"><div class="ic">🎥</div><div><div class="lab">Last year</div><div class="cap">Watch the celebration.</div></div></div></div></div>';
+  // family thread (signature)
+  h+='<div class="sec"><div class="sec-h"><span class="n">04</span><h2>Today in our family</h2></div>'
+    +'<div class="muted" style="font-size:14px;margin-top:-6px;line-height:1.5">One thread of light through the years. This is the heart of Jeeto.</div>'
+    +'<div class="thread">'+FAMILY_THREAD.map(function(n){return '<div class="node"><div class="dot"></div><div class="yr">'+n.yr+'</div><div class="who">'+n.who+'</div><div class="body">'+n.body+(n.ph?'<div class="ph">'+n.ph+'</div>':'')+'</div></div>';}).join('')+'</div>'
+    +'<div class="thread-cta"><button class="addbtn">＋ Add this year\u2019s memory</button></div></div>';
+  // community
+  h+='<div class="sec"><div class="sec-h"><span class="n">05</span><h2>Today in our community</h2></div>'
+    +'<div class="comm"><div class="h">Families are celebrating right now</div><p>Photos, recipes and stories from other '+p.label+' families — shared by consent, never open search. Events near you surface here.</p>'
+    +'<div class="pillrow"><span class="pill">📷 Family photos</span><span class="pill">🍚 Recipes</span><span class="pill">📍 Nearby events</span></div></div></div>';
+  // words
+  if(p.words&&p.words.length){
+    h+='<div class="sec"><div class="sec-h"><span class="n">06</span><h2>Explore the words</h2></div><div class="words">'
+      +p.words.map(function(k){var w=TERMS[k];if(!w)return '';return '<button class="word" onclick="openTerm(\''+k+'\')"><b>'+w.roman+'</b><span>'+w.term+'</span></button>';}).join('')+'</div></div>';
+  }
+  h+='<div class="foot">'+p.label+' content is a respectful draft for preview — validated with community elders, enriched by Skyvos, and grown by your family before launch.</div>';
+  host.innerHTML=h; show('today');
+}
+function rowHtml(k,v){return '<div class="row"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';}
+function secHtml(n,title,rows){return '<div class="sec"><div class="sec-h"><span class="n">'+n+'</span><h2>'+title+'</h2></div><div class="rows">'+rows+'</div></div>';}
+function show(id){['setup','home','today'].forEach(function(s){el(s).classList.add('hidden')});el(id).classList.remove('hidden');window.scrollTo(0,0);}
+function backHome(){ show('home'); }
+
+/* ================= dictionary ================= */
+function openTerm(k){var w=TERMS[k];if(!w)return;el('tTerm').textContent=w.term;el('tRoman').textContent=w.roman+'  ·  '+w.say;el('tMean').textContent=w.mean;el('tOrigin').textContent=w.origin;
+  if(w.root){el('tRootRow').style.display='';el('tRoot').textContent=w.root}else{el('tRootRow').style.display='none'}
+  el('tSay').onclick=function(){speak(w.say)};el('scrim').classList.add('show');el('sheet').classList.add('show');}
+function closeSheet(){el('scrim').classList.remove('show');el('sheet').classList.remove('show')}
+function speak(t){try{if(!window.speechSynthesis)return;var u=new SpeechSynthesisUtterance(t);u.rate=.85;var v=speechSynthesis.getVoices().filter(function(x){return /hi|IN/i.test(x.lang)})[0];if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+
+/* ================= Skyvos ================= */
+async function askGo(){var q=el('askIn').value.trim();if(!q)return;var box=el('askAns');box.classList.add('show');box.textContent='Skyvos is thinking…';
+  try{var r=await fetch('/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'heritage',pack:HH.current,q:q})});if(!r.ok)throw 0;var d=await r.json();box.textContent=(d&&(d.text||d.answer))||'—';}
+  catch(e){box.textContent='Skyvos isn\u2019t connected in this preview. In the app it answers live — in Kashmiri, Hindi or English, at any depth — powered by your ANTHROPIC_API_KEY.';}}
+
+/* ================= init ================= */
+renderDate(); renderSetup();
+</script>
+</body>
+</html>
