@@ -1451,7 +1451,7 @@ input.fi:focus,select.fi:focus{border-color:var(--rani);box-shadow:0 0 0 4px rgb
 .jh-zlabel{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:var(--jh-muted-fg);opacity:.6;margin-bottom:-6px}
 .jh-footer{padding:34px 0 6px;text-align:center;border-top:1px solid var(--jh-border);margin-top:2px}
 .jh-footer p{margin:0 auto;max-width:18rem;font-family:var(--jh-serif);font-size:15px;font-style:italic;line-height:1.55;color:var(--jh-muted-fg)}
-.jh-grid4{display:flex;gap:14px;overflow-x:auto;margin:0 -20px;padding:2px 20px 6px;scrollbar-width:none}
+.jh-grid4{display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);gap:16px 16px;overflow-x:auto;margin:0 -20px;padding:2px 20px 10px;scrollbar-width:none}
 .jh-grid4::-webkit-scrollbar{display:none}
 .jh-tile{flex-shrink:0;width:62px}
 .jh-tile{display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:none;cursor:pointer;font-family:inherit;padding:0}
@@ -2439,7 +2439,7 @@ var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null;
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.80.0-heritage';
+var JEETO_VERSION='4.80.1-uifix';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -6141,10 +6141,10 @@ async function buildHome(){
   window.__jhSky=skyvos; window.__jhToday=today;
   var tiles=[ {ic:'heart',label:'The Heart',fn:"navTo('heart')",c:'#C2305A'}, {ic:'target',label:'Your Circles',fn:"navTo('circles')",c:'#0F9E8E'}, {ic:'globe',label:'Heritage',fn:"_openHeritage()",c:'#D98324'}, {ic:'video',label:'Studio',fn:"_openStudio()",c:'#E8472B'}, {ic:'mic',label:'Ask an Elder',fn:"navTo('askelder')",c:'#C2901F'}, {ic:'users',label:'Cousins',fn:"navTo('cousins')",c:'#7C3AED'}, {ic:'feather',label:'Treasures',fn:"navTo('treasures')",c:'#C2901F'}, {ic:'chat',label:'Jeeto Chat',fn:"navTo('board')",c:'#1F6E5A'}, {ic:'palette',label:'Design',fn:"navTo('design')",c:'#7C3AED'}, {ic:'sparkles',label:'Family Loop',fn:"navTo('loop')",c:'#E0631F'}, {ic:'tree',label:'Family Tree',fn:"navTo('family')",c:'#3E8C73'}, {ic:'briefcase',label:'Work & Craft',fn:"navTo('familywork')",c:'#5B6B4A'}, {ic:'waypoints',label:'Bridges',fn:"navTo('bridge')",c:'#4F8EF7'}, {ic:'trophy',label:'Arena',fn:"navTo('live')",c:'#D4A24E'}, {ic:'repeat',label:'Rituals',fn:"navTo('rituals')",c:'#C2410C'}, {ic:'flame',label:'Festivals',fn:"navTo('festivals')",c:'#D7263D'}, {ic:'target',label:'Quests',fn:"navTo('quests')",c:'#0F9E8E'}, {ic:'calendar',label:'Calendar',fn:"navTo('calendar')",c:'#5B5BD6'}, {ic:'history',label:'Memories',fn:"navTo('timemachine')",c:'#A0683A'}, {ic:'activity',label:'Life',fn:"navTo('life')",c:'#E0457B'} ];
   var exploreH='<section class="jh-rise" aria-label="Explore">'+st('Explore')+'<div class="jh-grid4">'+tiles.map(function(t){ return '<button class="jh-tile" onclick="'+t.fn+'"><span class="jh-tile-ic" style="color:'+t.c+';background:'+t.c+'1f;border-color:'+t.c+'33;box-shadow:0 6px 16px '+t.c+'26">'+jic(t.ic)+'</span><span class="jh-tile-l">'+t.label+'</span></button>'; }).join('')+'</div></section>';
-  var chatH='<section class="jh-rise" aria-label="Jeeto Chat" style="margin-top:14px"><button onclick="navTo(\'board\')" style="width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:linear-gradient(120deg,#1F6E5A,#2E9E7E);border:none;border-radius:20px;padding:17px 18px;box-shadow:0 14px 30px -14px rgba(31,110,90,.6);cursor:pointer"><span style="width:46px;height:46px;flex:none;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#fff">'+jic('chat')+'</span><span style="flex:1;min-width:0;color:#fff"><b style="display:block;font-size:17px;font-weight:800;line-height:1.2">Jeeto Chat</b><span style="font-size:13px;opacity:.92">Your whole family in one place · Home · Family · World</span></span><span style="color:rgba(255,255,255,.9);flex:none">'+jic('chev')+'</span></button></section>';
+  var chatH='<section class="jh-rise" aria-label="Jeeto Chat" style="margin-top:14px"><button onclick="navTo(\'board\')" style="width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:linear-gradient(120deg,#1F6E5A,#2E9E7E);border:none;border-radius:20px;padding:17px 18px;box-shadow:0 14px 30px -14px rgba(31,110,90,.6);cursor:pointer"><span style="width:48px;height:48px;flex:none;border-radius:14px;background:rgba(255,255,255,.20);display:flex;align-items:center;justify-content:center;font-size:26px">💬</span><span style="flex:1;min-width:0;color:#fff"><b style="display:block;font-size:17px;font-weight:800;line-height:1.2">Jeeto Chat</b><span style="font-size:13px;opacity:.92">Your whole family in one place · Home · Family · World</span></span><span style="color:rgba(255,255,255,.9);flex:none">'+jic('chev')+'</span></button></section>';
     var zTop='<div class="jh-zone"><div class="jh-zlabel">Right Now</div>'+heroH+chatH+exploreH+'</div>';
   var zMid='<div class="jh-zone"><div class="jh-zlabel">Today</div>'+momentsH+noteH+'</div>';
-  var zLow='<div class="jh-zone"><div class="jh-zlabel">Your World</div>'+skyH+wrH+awH+'</div>';
+  var zLow='<div class="jh-zone"><div class="jh-zlabel">Your World</div>'+skyH+awH+'</div>';
   var footer='<footer class="jh-footer"><p>However far you wander, the light stays on.</p></footer>';
   body.innerHTML=moodBg+'<div class="jh-wrap">'+header+purposeBand+zTop+zMid+zLow+footer+'</div>'+'<button class="jh-skyfab" onclick="openSkyvosBubble()" aria-label="'+escapeAttr(__guardian)+'">'+skyOrb({mood:'purple',sparkle:true})+'</button>';
 }

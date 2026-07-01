@@ -9,17 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --night:#12122A; --night2:#1A1A38; --raise:#212145;
-  --saffron:#F2A93B; --kong:#E8C25A; --chinar:#C6482B;
-  --snow:#F3EEE4; --mist:#A7A4C6; --line:rgba(243,238,228,.10);
-  --thread:linear-gradient(180deg,var(--kong),var(--chinar));
+  --night:#FBF5E9; --night2:#FFFFFF; --raise:#F3E7CE;
+  --saffron:#D98324; --kong:#9A6416; --chinar:#B23A26;
+  --snow:#2A2118; --mist:#6E6150; --line:rgba(60,40,10,.12);
+  --thread:linear-gradient(180deg,#E0912A,#B23A26);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:var(--night);color:var(--snow);
   font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body{overflow-x:hidden}
 .app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;
-  background:radial-gradient(120% 60% at 50% -10%, #23234c 0%, var(--night) 55%)}
+  background:radial-gradient(120% 60% at 50% -10%, #FFF7E8 0%, var(--night) 55%)}
 .wrap{padding:0 20px calc(40px + env(safe-area-inset-bottom))}
 h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;margin:0;letter-spacing:-.01em}
 .dev{font-family:'Noto Serif Devanagari','Fraunces',serif}
@@ -31,6 +31,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .brand{display:flex;align-items:center;gap:9px;font-family:'Fraunces';font-weight:600;font-size:18px}
 .brand .leaf{width:26px;height:26px;filter:drop-shadow(0 2px 6px rgba(198,72,43,.5))}
 .top .date{font-size:12px;color:var(--mist);text-align:right;line-height:1.35}
+.exit{width:40px;height:40px;flex:none;border-radius:50%;background:var(--raise);color:var(--snow);font-size:22px;line-height:1;border:1px solid var(--line);box-shadow:0 2px 6px rgba(120,80,20,.15)}
 
 /* ---------- setup ---------- */
 .setup{padding-top:6px}
@@ -52,8 +53,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* ---------- home card ---------- */
 .card{position:relative;margin-top:8px;border-radius:28px;overflow:hidden;
-  background:linear-gradient(155deg,#241f3f 0%, #1a1636 60%, #2a1a2e 100%);
-  border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+  background:linear-gradient(155deg,#FFF3DD 0%, #FDE9C8 55%, #F7DEBE 100%);
+  border:1px solid var(--line);box-shadow:0 24px 50px -28px rgba(120,80,20,.35)}
 .card .glow{position:absolute;inset:0;background:radial-gradient(60% 55% at 78% 12%, rgba(242,169,59,.30), transparent 70%);pointer-events:none}
 .card .motif{position:absolute;top:20px;right:22px;font-size:42px;opacity:.92;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
 .card .inner{position:relative;padding:26px 24px 28px}
@@ -107,7 +108,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .node .yr{font-family:'Fraunces';font-size:19px;font-weight:600;color:var(--kong)}
 .node .who{font-size:13px;color:var(--mist);margin-top:1px}
 .node .body{margin-top:9px;background:var(--night2);border:1px solid var(--line);border-radius:16px;padding:14px 15px;font-size:14.5px;line-height:1.55}
-.node .body .ph{height:120px;border-radius:12px;margin-top:11px;background:linear-gradient(135deg,#2a2450,#3a2340);display:flex;align-items:center;justify-content:center;color:var(--mist);font-size:12px;border:1px dashed rgba(243,238,228,.18)}
+.node .body .ph{height:120px;border-radius:12px;margin-top:11px;background:linear-gradient(135deg,#F1E3C8,#F6E7D2);display:flex;align-items:center;justify-content:center;color:var(--mist);font-size:12px;border:1px dashed rgba(120,80,20,.28)}
 .thread-cta{margin-left:34px}
 .addbtn{display:inline-flex;align-items:center;gap:9px;border:1px dashed rgba(242,169,59,.5);color:var(--kong);padding:12px 18px;border-radius:999px;font-weight:600;font-size:14px;background:rgba(242,169,59,.06)}
 
@@ -122,7 +123,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .word b{font-family:'Fraunces';font-weight:600;color:var(--kong)}
 .word span{color:var(--mist);font-size:12px;margin-left:6px}
 
-.ask{margin-top:14px;background:linear-gradient(150deg,#211b3d,#2a1a2e);border:1px solid var(--line);border-radius:22px;padding:20px}
+.ask{margin-top:14px;background:linear-gradient(150deg,#FFF3DD,#FBE7CB);border:1px solid var(--line);border-radius:22px;padding:20px}
 .ask .h{display:flex;align-items:center;gap:9px;font-family:'Fraunces';font-size:18px;font-weight:600}
 .ask .sug{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .ask .sug button{border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-size:12.5px;color:var(--snow);background:var(--night2);text-align:left}
@@ -157,13 +158,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 <div class="app">
 
   <div class="top">
-    <div class="brand">
-      <svg class="leaf" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-        <path d="M24 3c2 6 6 8 11 8-3 3-3 6-1 10 4-1 7 0 9 3-5 1-7 4-7 9-4-2-7-1-10 2-1-4-3-6-7-6 2-4 1-7-2-10 5 0 9-2 8-16Z" fill="url(#lg)"/>
-        <path d="M24 44V20" stroke="#8a5a3a" stroke-width="2.4" stroke-linecap="round"/>
-        <defs><linearGradient id="lg" x1="8" y1="6" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#E8C25A"/><stop offset="1" stop-color="#C6482B"/></linearGradient></defs>
-      </svg>
-      Jeeto <span style="color:var(--saffron);font-size:12px;letter-spacing:.2em;margin-left:-2px;align-self:center">HERITAGE</span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="exit" onclick="_exitHeritage()" aria-label="Back to Jeeto">‹</button>
+      <div class="brand">
+        <svg class="leaf" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 3c2 6 6 8 11 8-3 3-3 6-1 10 4-1 7 0 9 3-5 1-7 4-7 9-4-2-7-1-10 2-1-4-3-6-7-6 2-4 1-7-2-10 5 0 9-2 8-16Z" fill="url(#lg)"/>
+          <path d="M24 44V20" stroke="#8a5a3a" stroke-width="2.4" stroke-linecap="round"/>
+          <defs><linearGradient id="lg" x1="8" y1="6" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#E8C25A"/><stop offset="1" stop-color="#C6482B"/></linearGradient></defs>
+        </svg>
+        Jeeto <span style="color:var(--saffron);font-size:12px;letter-spacing:.2em;margin-left:-2px;align-self:center">HERITAGE</span>
+      </div>
     </div>
     <div class="date" id="topDate">—</div>
   </div>
@@ -416,6 +420,9 @@ function speak(t){try{if(!window.speechSynthesis)return;var u=new SpeechSynthesi
 async function askGo(){var q=el('askIn').value.trim();if(!q)return;var box=el('askAns');box.classList.add('show');box.textContent='Skyvos is thinking…';
   try{var r=await fetch('/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'heritage',pack:HH.current,q:q})});if(!r.ok)throw 0;var d=await r.json();box.textContent=(d&&(d.text||d.answer))||'—';}
   catch(e){box.textContent='Skyvos isn\u2019t connected in this preview. In the app it answers live — in Kashmiri, Hindi or English, at any depth — powered by your ANTHROPIC_API_KEY.';}}
+
+/* ================= exit ================= */
+function _exitHeritage(){ try{ window.close(); }catch(e){} setTimeout(function(){ try{ location.href='/'; }catch(_){} }, 90); }
 
 /* ================= init ================= */
 renderDate(); renderSetup();
