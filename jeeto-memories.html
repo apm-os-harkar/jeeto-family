@@ -63,34 +63,67 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .foot{padding:26px 22px 40px;text-align:center;color:var(--soft);font-size:11.5px;line-height:1.7}
 .foot b{color:var(--accent)}
 .empty{padding:30px 20px;text-align:center;color:var(--soft);font-size:14px;line-height:1.6}
+.shelf-h{font-family:'Fraunces';font-size:26px;font-weight:600;margin-top:10px}
+.shelf-lead{color:var(--soft);font-size:14px;margin-top:6px;line-height:1.5}
+.shelf-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.bookcard{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--card);text-align:left;cursor:pointer;padding:0}
+.bookcard .cov{aspect-ratio:4/3;background:linear-gradient(140deg,#cdb79a,#9a7a5c);position:relative}
+.bookcard .cov img{width:100%;height:100%;object-fit:cover;display:block}
+.bookcard .meta{padding:12px 13px}
+.bookcard .t{font-family:'Fraunces';font-weight:600;font-size:15px;line-height:1.2}
+.bookcard .s{color:var(--soft);font-size:11.5px;margin-top:3px;text-transform:capitalize}
+.newcard{border:1.5px dashed rgba(194,104,63,.5);background:rgba(194,104,63,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1/1;border-radius:18px;color:var(--accent);font-weight:700;font-size:14px;gap:8px;cursor:pointer}
+.newcard .e{font-size:30px}
+.scrim{position:fixed;inset:0;background:rgba(20,14,8,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.scrim.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:var(--card);border-radius:22px 22px 0 0;border:1px solid var(--line);transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);z-index:50;padding:22px 20px calc(22px + env(safe-area-inset-bottom))}
+.sheet.show{transform:translateY(0)}
+.nb-h{font-family:'Fraunces';font-size:20px;font-weight:600}
+.nb-in{width:100%;margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;background:#fff;color:var(--ink)}
+.nb-lbl{font-family:'Inter';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--soft);margin-top:16px}
+.nb-note{font-size:12.5px;color:var(--soft);margin-top:10px;line-height:1.5;min-height:1px}
+.nb-types{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.nb-type{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:600;color:var(--soft)}
+.nb-type.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.nb-create{width:100%;margin-top:18px;background:linear-gradient(100deg,var(--accent),#E0A24A);color:#fff;border:none;border-radius:14px;padding:15px;font-weight:800;font-size:16px}
+.cover-btn{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:999px;font-size:11px;font-weight:700;padding:6px 10px;cursor:pointer}
+.cover-btn.on{background:var(--accent)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <button class="bk" onclick="_exit()" aria-label="Back">‹</button>
-    <div class="ttl" id="bookTitle">Our Sweden Journey</div>
+    <button class="bk" id="backBtn" onclick="topBack()" aria-label="Back">‹</button>
+    <div class="ttl" id="bookTitle">Memory Books</div>
     <div class="lock">🔒 Private</div>
   </div>
 
-  <div class="upload">
-    <div class="big">Add today's photos</div>
-    <div class="sub">Shoot with your normal camera — Jeeto reads the time &amp; place and builds the page. Nothing is written by you.</div>
-    <label for="photoin">📷 Choose photos<input id="photoin" type="file" accept="image/*" multiple hidden onchange="ingest(event)"></label>
-    <div class="sub" id="upNote" style="margin-top:10px"></div>
-  </div>
+  <div id="shelf" class="wrap"></div>
 
-  <div class="days" id="days"></div>
-
-  <div class="wrap" id="page">
-    <div class="empty">Choose some photos above and your first Day Page will appear here — hero photo, story, gallery and the day's facts, all automatically.</div>
+  <div id="bookview" style="display:none">
+    <div class="upload">
+      <div class="big">Add photos to this book</div>
+      <div class="sub">Shoot with your normal camera — Jeeto reads the time &amp; place and builds each day. Nothing is written by you.</div>
+      <label for="photoin">📷 Choose photos<input id="photoin" type="file" accept="image/*" multiple hidden onchange="ingest(event)"></label>
+      <div class="sub" id="upNote" style="margin-top:10px"></div>
+    </div>
+    <div class="days" id="days"></div>
+    <div class="wrap" id="page"><div class="empty">Choose some photos above and your first Day Page will appear here — hero, story, gallery and facts, all automatically.</div></div>
+    <div class="foot">Private family book · not searchable · no ads.<br><b>Your phone</b> reads each photo's time &amp; place; <b>Skyvos</b> writes the story.</div>
   </div>
+</div>
 
-  <div class="foot" id="foot">
-    Private family book · invite &amp; passcode only · not searchable · no ads.<br>
-    <b>Your phone</b> reads each photo's time &amp; place; <b>Skyvos</b> writes the story from your day.
-  </div>
+<div class="scrim" id="nbScrim" onclick="closeNewBook()"></div>
+<div class="sheet" id="nbSheet">
+  <div class="nb-h">New memory book</div>
+  <input id="nbTitle" class="nb-in" placeholder="Book name (e.g. Our Sweden Journey)">
+  <div class="nb-lbl">Type</div>
+  <div class="nb-types" id="nbTypes"></div>
+  <div class="nb-lbl">Who is it for?</div>
+  <div class="nb-types" id="nbScopes"></div>
+  <div class="nb-note" id="nbNote"></div>
+  <button class="nb-create" onclick="createBook()">Create book</button>
 </div>
 
 <script>
@@ -122,8 +155,8 @@ async function ingest(e){
   if(!me){ el('upNote').innerHTML='<span style="color:var(--accent)">Open this from inside the Jeeto app (while logged in) to save your book.</span>'; e.target.value=''; return; }
   var sb=sbClient(); if(!sb){ el('upNote').textContent='Could not connect. Try again.'; return; }
   el('upNote').textContent='Preparing '+files.length+' photo'+(files.length>1?'s':'')+'…';
-  await ensureBook(); if(!BOOK){ el('upNote').textContent='Could not open your book.'; return; }
-  var ok=0;
+  if(!BOOK){ el('upNote').textContent='Open a book first.'; return; }
+  var ok=0, firstUrl=null;
   for(var i=0;i<files.length;i++){
     var f=files[i], meta={};
     try{ meta=await exifr.parse(f,{pick:['DateTimeOriginal','CreateDate','latitude','longitude','Make','Model']})||{}; }catch(_){}
@@ -140,10 +173,11 @@ async function ingest(e){
       if(meta.latitude&&meta.longitude){ var g=await geocode(meta.latitude,meta.longitude); if(g){ city=g.city||null; country=g.country||null; } }
       var ins=await sb.from('photos').insert({book_id:BOOK.id, uploader_phone:me, media_url:pub, media_type:'image', taken_at:date.toISOString(), lat:meta.latitude||null, lng:meta.longitude||null, city:city, country:country, place_name:((meta.Make||'')+' '+(meta.Model||'')).trim()||null});
       if(ins.error) throw ins.error;
-      ok++;
+      if(!firstUrl) firstUrl=pub; ok++;
     }catch(err){ /* skip this one */ }
   }
   e.target.value='';
+  if(ok && BOOK && !BOOK.cover_url && firstUrl){ try{ await sb.from('books').update({cover_url:firstUrl}).eq('id',BOOK.id); BOOK.cover_url=firstUrl; }catch(e){} }
   el('upNote').textContent=ok?('Saved '+ok+' to your book ✓'):'Could not save — check connection.';
   await loadBook();
 }
@@ -159,7 +193,7 @@ function buildDay(photos, ix){
     country: gps? '' : 'Location not saved in these photos',
     gps: gps||null, area:'',
     photos: photos, t1:t1, t2:t2, cams:Object.keys(cams),
-    hero: photos[0],
+    hero: photos.filter(function(p){return p.hero})[0]||photos[0],
     title:'Day '+(ix+1), story:['Skyvos is writing your story from this day…'], quote:'', lens:'The shared family story'
   };
 }
@@ -181,7 +215,8 @@ function renderPage(){
   var heroImg=d.hero.url?'<img src="'+d.hero.url+'" onerror="this.style.display=\'none\'">':noPrev;
   var gallery=d.photos.map(function(p){
     var im=p.url?'<img src="'+p.url+'" loading="lazy" onerror="this.style.display=\'none\'">':'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8);font-size:20px">🖼️</div>';
-    return '<div class="ph">'+im+'<span class="cap">'+hhmm(p.date)+'</span></div>';
+    var cb=p.id?'<button class="cover-btn'+(p.hero?' on':'')+'" onclick="setCover(\''+p.id+'\',\''+encodeURIComponent(p.url||'')+'\')">'+(p.hero?'★ Cover':'☆ Cover')+'</button>':'';
+    return '<div class="ph">'+im+cb+'<span class="cap">'+hhmm(p.date)+'</span></div>';
   }).join('');
   var facts=''
     + fact('Photos', d.photos.length)
@@ -251,22 +286,73 @@ async function toJpeg(file, maxDim){
     return {blob: blob||f};
   }catch(e){ return {blob:f}; }
 }
-async function ensureBook(){
-  if(BOOK) return BOOK; var sb=sbClient(); if(!sb||!me) return null;
-  try{
-    var q=await sb.from('books').select('*').eq('created_by',me).eq('title',BOOK_TITLE).limit(1);
-    if(q.data&&q.data[0]){ BOOK=q.data[0]; }
-    else { var ins=await sb.from('books').insert({title:BOOK_TITLE, kind:'trip', created_by:me}).select().limit(1); BOOK=(ins.data&&ins.data[0])||null;
-      if(BOOK){ try{ await sb.from('book_members').insert({book_id:BOOK.id, phone:me, role:'owner', display_name:''}); }catch(e){} } }
+function escapeHtml(s){ s=String(s==null?'':s); return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+var VIEW='shelf', NB_TYPE='trip', NB_SCOPE='me', BOOKS=[];
+var SCOPES=[['me','🔒 Just me'],['family','👪 Our family'],['world','🌍 World']];
+var SCOPE_LBL={me:'🔒 Just me',family:'👪 Family',world:'🌍 World'};
+var SCOPE_NOTE={me:'Only you can see this book.',family:'Everyone in your family circle sees it and can add their own photos.',world:'Visible to everyone on Jeeto — anyone can view and add.'};
+var TYPES=[['trip','Trip'],['birthday','Birthday'],['festival','Festival'],['wedding','Wedding'],['baby','Baby'],['custom','Other']];
+async function loadBooksList(){
+  var sb=sbClient(); if(!sb||!me) return []; var out={};
+  try{ var a=await sb.from('books').select('*').eq('created_by',me).order('created_at',{ascending:false}); (a.data||[]).forEach(function(b){ out[b.id]=b; }); }catch(e){}
+  try{ var m=await sb.from('book_members').select('book_id').eq('phone',me); var ids=(m.data||[]).map(function(x){return x.book_id}).filter(function(id){return id&&!out[id]}); if(ids.length){ var bb=await sb.from('books').select('*').in('id',ids); (bb.data||[]).forEach(function(b){ out[b.id]=b; }); } }catch(e){}
+  try{ var w=await sb.from('books').select('*').eq('scope','world').order('created_at',{ascending:false}).limit(50); (w.data||[]).forEach(function(b){ if(!out[b.id]) out[b.id]=b; }); }catch(e){}
+  BOOKS=Object.keys(out).map(function(k){return out[k]}); return BOOKS;
+}
+async function familyPhones(){
+  var sb=sbClient(); var set={}; if(!sb||!me) return me?[me]:[]; set[me]=1;
+  try{ var r=await sb.from('relationships').select('person_a_phone,person_b_phone,status').eq('status','active').or('person_a_phone.eq.'+me+',person_b_phone.eq.'+me); (r.data||[]).forEach(function(c){ var o=c.person_a_phone===me?c.person_b_phone:c.person_a_phone; if(o) set[o]=1; }); }catch(e){}
+  try{ var idset={};
+    var hm=await sb.from('household_members').select('household_id,status').eq('member_phone',me); (hm.data||[]).forEach(function(x){ if(x.household_id&&(x.status==='active'||x.status==null)) idset[x.household_id]=1; });
+    var hc=await sb.from('households').select('id').eq('created_by',me); (hc.data||[]).forEach(function(x){ if(x.id) idset[x.id]=1; });
+    var ids=Object.keys(idset);
+    if(ids.length){ var mm=await sb.from('household_members').select('member_phone,status').in('household_id',ids); (mm.data||[]).forEach(function(x){ if(x.member_phone&&(x.status==='active'||x.status==null)) set[x.member_phone]=1; }); }
   }catch(e){}
-  return BOOK;
+  return Object.keys(set);
+}
+function showShelf(){ VIEW='shelf'; BOOK=null; el('bookview').style.display='none'; el('shelf').style.display=''; el('bookTitle').textContent='Memory Books'; renderShelf(); window.scrollTo(0,0); }
+async function renderShelf(){
+  el('shelf').innerHTML='<div class="shelf-h">Your books</div><div class="shelf-lead">Every trip, birthday and festival becomes its own book. Tap one to open, or start a new one.</div><div class="shelf-grid" id="shelfGrid"><div class="newcard" onclick="newBook()"><span class="e">＋</span>New book</div></div>';
+  await loadBooksList();
+  var grid=el('shelfGrid'); if(!grid) return;
+  var cards=BOOKS.map(function(b){
+    var cov=b.cover_url?'<img src="'+escapeHtml(b.cover_url)+'" onerror="this.style.display=\'none\'">':'';
+    var scp=SCOPE_LBL[b.scope||'me']||'🔒 Just me';
+    return '<button class="bookcard" onclick="openBookById(\''+b.id+'\')"><div class="cov">'+cov+'</div><div class="meta"><div class="t">'+escapeHtml(b.title||'Untitled')+'</div><div class="s">'+escapeHtml(b.kind||'trip')+' · '+scp+'</div></div></button>';
+  }).join('');
+  grid.insertAdjacentHTML('afterbegin', cards);
+}
+function openBookById(id){ var b=BOOKS.filter(function(x){return x.id===id})[0]; if(b) openBook(b); }
+function openBook(b){ BOOK=b; VIEW='book'; el('shelf').style.display='none'; el('bookview').style.display=''; el('bookTitle').textContent=b.title||'Book'; DAYS=[]; cur=0; el('upNote').textContent=''; el('page').innerHTML='<div class="empty">Loading…</div>'; loadBook(); window.scrollTo(0,0); }
+function topBack(){ if(VIEW==='book'){ showShelf(); } else { _exit(); } }
+function newBook(){ el('nbTitle').value=''; NB_TYPE='trip'; NB_SCOPE='me'; renderNbTypes(); renderNbScopes(); el('nbScrim').classList.add('show'); el('nbSheet').classList.add('show'); setTimeout(function(){ try{ el('nbTitle').focus(); }catch(e){} },150); }
+function closeNewBook(){ el('nbScrim').classList.remove('show'); el('nbSheet').classList.remove('show'); }
+function renderNbTypes(){ el('nbTypes').innerHTML=TYPES.map(function(t){ return '<button class="nb-type'+(t[0]===NB_TYPE?' on':'')+'" onclick="NB_TYPE=\''+t[0]+'\';renderNbTypes()">'+t[1]+'</button>'; }).join(''); }
+function renderNbScopes(){ el('nbScopes').innerHTML=SCOPES.map(function(t){ return '<button class="nb-type'+(t[0]===NB_SCOPE?' on':'')+'" onclick="NB_SCOPE=\''+t[0]+'\';renderNbScopes()">'+t[1]+'</button>'; }).join(''); el('nbNote').textContent=SCOPE_NOTE[NB_SCOPE]||''; }
+async function createBook(){
+  var title=(el('nbTitle').value||'').trim(); if(!title){ try{ el('nbTitle').focus(); }catch(e){} return; }
+  var sb=sbClient(); if(!sb||!me) return;
+  try{
+    var ins=await sb.from('books').insert({title:title, kind:NB_TYPE, scope:NB_SCOPE, created_by:me}).select().limit(1);
+    var b=(ins.data&&ins.data[0]); if(!b) return;
+    var members=[{book_id:b.id, phone:me, role:'owner'}];
+    if(NB_SCOPE==='family'){ var fam=await familyPhones(); fam.forEach(function(p){ if(p&&p!==me) members.push({book_id:b.id, phone:p, role:'member'}); }); }
+    try{ await sb.from('book_members').insert(members); }catch(e){}
+    closeNewBook(); openBook(b);
+  }catch(e){}
+}
+async function setCover(photoId, encUrl){
+  var url=decodeURIComponent(encUrl||''); var sb=sbClient(); if(!sb||!BOOK) return;
+  var d=DAYS[cur]; if(!d) return; var ids=d.photos.map(function(p){return p.id}).filter(Boolean);
+  try{ if(ids.length) await sb.from('photos').update({hero:false}).in('id',ids); await sb.from('photos').update({hero:true}).eq('id',photoId); await sb.from('books').update({cover_url:url}).eq('id',BOOK.id); BOOK.cover_url=url; }catch(e){}
+  d.photos.forEach(function(p){ p.hero=(p.id===photoId); }); d.hero=d.photos.filter(function(p){return p.hero})[0]||d.hero; renderPage();
 }
 async function loadBook(){
   var sb=sbClient(); if(!sb||!me){ return; }
-  await ensureBook(); if(!BOOK){ return; }
+  if(!BOOK){ return; }
   var rows=[]; try{ var r=await sb.from('photos').select('*').eq('book_id',BOOK.id).eq('hidden',false).order('taken_at',{ascending:true}); rows=r.data||[]; }catch(e){}
   if(!rows.length){ DAYS=[]; renderDays(); el('page').innerHTML='<div class="empty">No photos yet — add some above and your first Day Page appears here, saved forever.</div>'; return; }
-  var photos=rows.map(function(x){ var dt=x.taken_at?new Date(x.taken_at):new Date(x.created_at||Date.now()); return {url:x.media_url, date:dt, lat:x.lat, lng:x.lng, cam:x.place_name||'', city:x.city, country:x.country, name:''}; });
+  var photos=rows.map(function(x){ var dt=x.taken_at?new Date(x.taken_at):new Date(x.created_at||Date.now()); return {id:x.id, url:x.media_url, date:dt, lat:x.lat, lng:x.lng, cam:x.place_name||'', city:x.city, country:x.country, hero:x.hero, name:''}; });
   var byDay={}; photos.forEach(function(p){ var k=p.date.toDateString(); (byDay[k]=byDay[k]||[]).push(p); });
   var keys=Object.keys(byDay).sort(function(a,b){return new Date(a)-new Date(b)});
   DAYS=keys.map(function(k,ix){ var d=buildDay(byDay[k],ix); var wc=byDay[k].filter(function(p){return p.city})[0]; if(wc){ d.city=wc.city; d.country=wc.country||''; d.area=wc.city; } return d; });
@@ -292,7 +378,7 @@ async function saveDay(d){
 (function(){
   me=(function(){ try{ return localStorage.getItem('jeeto_phone')||''; }catch(e){ return ''; } })();
   if(!me){ el('upNote').innerHTML='<span style="color:var(--accent)">Open this from inside the Jeeto app (while logged in) so your book saves to your family.</span>'; }
-  else { loadBook(); }
+  else { showShelf(); }
 })();
 </script>
 </body>
