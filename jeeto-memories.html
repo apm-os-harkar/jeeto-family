@@ -290,24 +290,40 @@ function escapeHtml(s){ s=String(s==null?'':s); return s.replace(/[&<>"]/g,funct
 var VIEW='shelf', NB_TYPE='trip', NB_SCOPE='me', BOOKS=[];
 var SCOPES=[['me','🔒 Just me'],['family','👪 Our family'],['world','🌍 World']];
 var SCOPE_LBL={me:'🔒 Just me',family:'👪 Family',world:'🌍 World'};
-var SCOPE_NOTE={me:'Only you can see this book.',family:'Everyone in your family circle sees it and can add their own photos.',world:'Visible to everyone on Jeeto — anyone can view and add.'};
+var SCOPE_NOTE={me:'Only you can see this book.',family:'Everyone in your family circle sees it and can add their own photos.',world:'Everyone in your bridged households (families you\u2019ve connected with) sees it and can add. Not the public.'};
 var TYPES=[['trip','Trip'],['birthday','Birthday'],['festival','Festival'],['wedding','Wedding'],['baby','Baby'],['custom','Other']];
 async function loadBooksList(){
   var sb=sbClient(); if(!sb||!me) return []; var out={};
   try{ var a=await sb.from('books').select('*').eq('created_by',me).order('created_at',{ascending:false}); (a.data||[]).forEach(function(b){ out[b.id]=b; }); }catch(e){}
   try{ var m=await sb.from('book_members').select('book_id').eq('phone',me); var ids=(m.data||[]).map(function(x){return x.book_id}).filter(function(id){return id&&!out[id]}); if(ids.length){ var bb=await sb.from('books').select('*').in('id',ids); (bb.data||[]).forEach(function(b){ out[b.id]=b; }); } }catch(e){}
-  try{ var w=await sb.from('books').select('*').eq('scope','world').order('created_at',{ascending:false}).limit(50); (w.data||[]).forEach(function(b){ if(!out[b.id]) out[b.id]=b; }); }catch(e){}
   BOOKS=Object.keys(out).map(function(k){return out[k]}); return BOOKS;
+}
+async function myHouseholdIds(){
+  var sb=sbClient(); var idset={}; if(!sb||!me) return [];
+  try{ var hm=await sb.from('household_members').select('household_id,status').eq('member_phone',me); (hm.data||[]).forEach(function(x){ if(x.household_id&&(x.status==='active'||x.status==null)) idset[x.household_id]=1; }); }catch(e){}
+  try{ var hc=await sb.from('households').select('id').eq('created_by',me); (hc.data||[]).forEach(function(x){ if(x.id) idset[x.id]=1; }); }catch(e){}
+  return Object.keys(idset);
+}
+async function membersOfHouseholds(ids){
+  var sb=sbClient(); var set={}; if(!sb||!ids||!ids.length) return [];
+  try{ var mm=await sb.from('household_members').select('member_phone,status').in('household_id',ids); (mm.data||[]).forEach(function(x){ if(x.member_phone&&(x.status==='active'||x.status==null)) set[x.member_phone]=1; }); }catch(e){}
+  return Object.keys(set);
+}
+async function bridgePhones(){
+  var sb=sbClient(); if(!sb||!me) return [];
+  var myIds=await myHouseholdIds(); if(!myIds.length) return [];
+  var others={};
+  try{
+    var or=myIds.map(function(id){return 'household_a_id.eq.'+id;}).concat(myIds.map(function(id){return 'household_b_id.eq.'+id;})).join(',');
+    var r=await sb.from('bridge_connections').select('household_a_id,household_b_id,status').eq('status','active').or(or);
+    (r.data||[]).forEach(function(b){ var o=(myIds.indexOf(b.household_a_id)>=0)?b.household_b_id:b.household_a_id; if(o) others[o]=1; });
+  }catch(e){}
+  return await membersOfHouseholds(Object.keys(others));
 }
 async function familyPhones(){
   var sb=sbClient(); var set={}; if(!sb||!me) return me?[me]:[]; set[me]=1;
   try{ var r=await sb.from('relationships').select('person_a_phone,person_b_phone,status').eq('status','active').or('person_a_phone.eq.'+me+',person_b_phone.eq.'+me); (r.data||[]).forEach(function(c){ var o=c.person_a_phone===me?c.person_b_phone:c.person_a_phone; if(o) set[o]=1; }); }catch(e){}
-  try{ var idset={};
-    var hm=await sb.from('household_members').select('household_id,status').eq('member_phone',me); (hm.data||[]).forEach(function(x){ if(x.household_id&&(x.status==='active'||x.status==null)) idset[x.household_id]=1; });
-    var hc=await sb.from('households').select('id').eq('created_by',me); (hc.data||[]).forEach(function(x){ if(x.id) idset[x.id]=1; });
-    var ids=Object.keys(idset);
-    if(ids.length){ var mm=await sb.from('household_members').select('member_phone,status').in('household_id',ids); (mm.data||[]).forEach(function(x){ if(x.member_phone&&(x.status==='active'||x.status==null)) set[x.member_phone]=1; }); }
-  }catch(e){}
+  try{ var ids=await myHouseholdIds(); (await membersOfHouseholds(ids)).forEach(function(p){ set[p]=1; }); }catch(e){}
   return Object.keys(set);
 }
 function showShelf(){ VIEW='shelf'; BOOK=null; el('bookview').style.display='none'; el('shelf').style.display=''; el('bookTitle').textContent='Memory Books'; renderShelf(); window.scrollTo(0,0); }
@@ -337,6 +353,7 @@ async function createBook(){
     var b=(ins.data&&ins.data[0]); if(!b) return;
     var members=[{book_id:b.id, phone:me, role:'owner'}];
     if(NB_SCOPE==='family'){ var fam=await familyPhones(); fam.forEach(function(p){ if(p&&p!==me) members.push({book_id:b.id, phone:p, role:'member'}); }); }
+    else if(NB_SCOPE==='world'){ var all={}; (await familyPhones()).forEach(function(p){ all[p]=1; }); (await bridgePhones()).forEach(function(p){ all[p]=1; }); Object.keys(all).forEach(function(p){ if(p&&p!==me) members.push({book_id:b.id, phone:p, role:'member'}); }); }
     try{ await sb.from('book_members').insert(members); }catch(e){}
     closeNewBook(); openBook(b);
   }catch(e){}
