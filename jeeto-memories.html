@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Memory Book · Jeeto</title>
+<script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FBF6EC;--card:#FFFDF7;--ink:#2B2621;--soft:#6E6559;--line:rgba(43,38,33,.10);--accent:#C2683F;--olive:#7E8A56;--gold:#C79A3E}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:60px}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif;margin:0;letter-spacing:-.01em}
+.soft{color:var(--soft)}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.top{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 18px 12px}
+.top .bk{width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:19px}
+.top .ttl{font-family:'Fraunces';font-weight:600;font-size:17px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .lock{font-size:11px;color:var(--soft);display:flex;align-items:center;gap:4px}
+.wrap{padding:6px 18px}
+
+.upload{margin:14px 18px 0;border:1.5px dashed rgba(194,104,63,.5);background:rgba(194,104,63,.05);border-radius:18px;padding:18px;text-align:center}
+.upload .big{font-family:'Fraunces';font-size:18px;font-weight:600}
+.upload .sub{color:var(--soft);font-size:12.5px;margin-top:5px;line-height:1.5}
+.upload label{display:inline-block;margin-top:12px;background:linear-gradient(100deg,var(--accent),#E0A24A);color:#fff;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px}
+
+.days{display:flex;gap:8px;overflow-x:auto;padding:14px 18px 2px;scrollbar-width:none}
+.days::-webkit-scrollbar{display:none}
+.dtab{flex:none;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 13px;font-size:12.5px;font-weight:600;color:var(--soft);text-align:left;line-height:1.2}
+.dtab.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.dtab b{font-family:'Fraunces';display:block;font-size:13px}
+
+.eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.hero{position:relative;margin-top:12px;border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(150deg,#d8c1a0,#9c6f52);box-shadow:0 24px 44px -26px rgba(70,45,25,.5)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero .vig{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,transparent 40%,rgba(40,25,15,.4))}
+.hero .cap{position:absolute;left:16px;bottom:14px;color:#fff;font-size:12.5px;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.daynum{display:flex;align-items:baseline;gap:10px;margin-top:18px}
+.daynum .n{font-family:'Fraunces';font-size:15px;font-weight:600;color:var(--accent)}
+.daynum .d{font-size:13px;color:var(--soft)}
+.city{font-family:'Fraunces';font-size:32px;font-weight:600;line-height:1.05;margin-top:4px}
+.country{color:var(--soft);font-size:14px}
+.story{margin-top:22px}
+.story h2{font-size:25px;font-weight:600;line-height:1.15}
+.story p{font-size:16px;line-height:1.66;margin:14px 0 0;color:#3a352e}
+.lens{font-size:12px;color:var(--accent);margin-top:12px;font-weight:600}
+.st{font-family:'Fraunces';font-size:20px;font-weight:600;margin:30px 0 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ph{aspect-ratio:1/1;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(140deg,#cdb79a,#9a7a5c);box-shadow:0 8px 18px -12px rgba(70,45,25,.5)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .cap{position:absolute;left:9px;bottom:8px;color:#fff;font-size:10.5px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px}
+.fact .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);font-weight:700}
+.fact .v{font-family:'Fraunces';font-size:16px;font-weight:600;margin-top:6px}
+.quote{grid-column:1/3;background:linear-gradient(150deg,#fff7e8,#f6ead2);border:1px solid var(--line);border-radius:18px;padding:20px}
+.quote .q{font-family:'Fraunces';font-size:18px;font-weight:500;line-height:1.4;font-style:italic}
+.quote .by{font-size:12px;color:var(--soft);margin-top:8px}
+.foot{padding:26px 22px 40px;text-align:center;color:var(--soft);font-size:11.5px;line-height:1.7}
+.foot b{color:var(--accent)}
+.empty{padding:30px 20px;text-align:center;color:var(--soft);font-size:14px;line-height:1.6}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <button class="bk" onclick="_exit()" aria-label="Back">‹</button>
+    <div class="ttl" id="bookTitle">Our Sweden Journey</div>
+    <div class="lock">🔒 Private</div>
+  </div>
+
+  <div class="upload">
+    <div class="big">Add today's photos</div>
+    <div class="sub">Shoot with your normal camera — Jeeto reads the time &amp; place and builds the page. Nothing is written by you.</div>
+    <label for="photoin">📷 Choose photos<input id="photoin" type="file" accept="image/*" multiple hidden onchange="ingest(event)"></label>
+    <div class="sub" id="upNote" style="margin-top:10px"></div>
+  </div>
+
+  <div class="days" id="days"></div>
+
+  <div class="wrap" id="page">
+    <div class="empty">Choose some photos above and your first Day Page will appear here — hero photo, story, gallery and the day's facts, all automatically.</div>
+  </div>
+
+  <div class="foot" id="foot">
+    Private family book · invite &amp; passcode only · not searchable · no ads.<br>
+    <b>Your phone</b> reads each photo's time &amp; place; <b>Skyvos</b> writes the story from your day.
+  </div>
+</div>
+
+<script>
+var DAYS=[], cur=0;
+var SB_URL="https://ebimsihjzwpmdtzqopmz.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaW1zaWhqendwbWR0enFvcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjQ2NzIsImV4cCI6MjA5NjYwMDY3Mn0.QgXTRYH384R0EY-rkCBhW5gmuCizKHY_akLcembBEMA";
+var me='', BOOK=null, _sb=null, BOOK_TITLE='Our Sweden Journey';
+function sbClient(){ if(_sb) return _sb; try{ _sb=window.supabase.createClient(SB_URL,SB_KEY); }catch(e){ _sb=null; } return _sb; }
+
+function el(id){return document.getElementById(id)}
+function _exit(){ try{ window.close(); }catch(e){} setTimeout(function(){ try{ location.href='/'; }catch(_){} },90); }
+function pad(n){ return (n<10?'0':'')+n; }
+function hhmm(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); }
+
+/* ---------------- ingest photos ---------------- */
+function isHeic(f){ var t=(f.type||'').toLowerCase(), n=(f.name||'').toLowerCase(); return t.indexOf('heic')>=0||t.indexOf('heif')>=0||/\.hei[cf]$/.test(n); }
+function probeImg(url){ return new Promise(function(res){ var im=new Image(); im.onload=function(){ res((im.naturalWidth||0)>0); }; im.onerror=function(){ res(false); }; im.src=url; setTimeout(function(){ res((im.naturalWidth||0)>0); }, 4000); }); }
+async function displayURL(f){
+  if(isHeic(f)){
+    try{ var nurl=URL.createObjectURL(new Blob([f],{type:'image/heic'})); if(await probeImg(nurl)) return nurl; }catch(e){}
+    if(window.heic2any){ try{ var out=await heic2any({blob:f, toType:'image/jpeg', quality:0.82}); var b=Array.isArray(out)?out[0]:out; var jurl=URL.createObjectURL(b); if(await probeImg(jurl)) return jurl; }catch(e){} }
+    return null;
+  }
+  try{ var u=URL.createObjectURL(f); if(await probeImg(u)) return u; }catch(e){}
+  return null;
+}
+async function ingest(e){
+  var files=Array.prototype.slice.call(e.target.files||[]); if(!files.length) return;
+  if(!me){ el('upNote').innerHTML='<span style="color:var(--accent)">Open this from inside the Jeeto app (while logged in) to save your book.</span>'; e.target.value=''; return; }
+  var sb=sbClient(); if(!sb){ el('upNote').textContent='Could not connect. Try again.'; return; }
+  el('upNote').textContent='Preparing '+files.length+' photo'+(files.length>1?'s':'')+'…';
+  await ensureBook(); if(!BOOK){ el('upNote').textContent='Could not open your book.'; return; }
+  var ok=0;
+  for(var i=0;i<files.length;i++){
+    var f=files[i], meta={};
+    try{ meta=await exifr.parse(f,{pick:['DateTimeOriginal','CreateDate','latitude','longitude','Make','Model']})||{}; }catch(_){}
+    var date=meta.DateTimeOriginal||meta.CreateDate||new Date(f.lastModified||Date.now());
+    if(!(date instanceof Date)) date=new Date(date);
+    el('upNote').textContent='Uploading '+(i+1)+' of '+files.length+'…';
+    var conv=await toJpeg(f, 1600); if(!conv||!conv.blob){ continue; }
+    var path=me+'/mem/'+BOOK.id+'/'+Date.now()+'-'+i+'.jpg';
+    try{
+      var up=await sb.storage.from('moments').upload(path, conv.blob, {upsert:true, contentType:conv.blob.type||'image/jpeg'});
+      if(up.error) throw up.error;
+      var pub=sb.storage.from('moments').getPublicUrl(path).data.publicUrl;
+      var city=null,country=null;
+      if(meta.latitude&&meta.longitude){ var g=await geocode(meta.latitude,meta.longitude); if(g){ city=g.city||null; country=g.country||null; } }
+      var ins=await sb.from('photos').insert({book_id:BOOK.id, uploader_phone:me, media_url:pub, media_type:'image', taken_at:date.toISOString(), lat:meta.latitude||null, lng:meta.longitude||null, city:city, country:country, place_name:((meta.Make||'')+' '+(meta.Model||'')).trim()||null});
+      if(ins.error) throw ins.error;
+      ok++;
+    }catch(err){ /* skip this one */ }
+  }
+  e.target.value='';
+  el('upNote').textContent=ok?('Saved '+ok+' to your book ✓'):'Could not save — check connection.';
+  await loadBook();
+}
+
+function buildDay(photos, ix){
+  var d0=photos[0].date, t1=photos[0].date, t2=photos[photos.length-1].date;
+  var gps=photos.filter(function(p){return p.lat&&p.lng})[0];
+  var cams={}; photos.forEach(function(p){ if(p.cam) cams[p.cam]=1; });
+  return {
+    index:ix+1, date:d0,
+    dateLabel:d0.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
+    city: gps? 'Locating…' : 'Your day',
+    country: gps? '' : 'Location not saved in these photos',
+    gps: gps||null, area:'',
+    photos: photos, t1:t1, t2:t2, cams:Object.keys(cams),
+    hero: photos[0],
+    title:'Day '+(ix+1), story:['Skyvos is writing your story from this day…'], quote:'', lens:'The shared family story'
+  };
+}
+
+/* ---------------- render ---------------- */
+function renderDays(){
+  if(!DAYS.length){ el('days').innerHTML=''; return; }
+  el('days').innerHTML=DAYS.map(function(d,i){
+    return '<button class="dtab'+(i===cur?' on':'')+'" onclick="selDay('+i+')"><b>Day '+d.index+'</b>'+d.date.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+'</button>';
+  }).join('');
+}
+function selDay(i){ cur=i; renderDays(); renderPage(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function renderPage(){
+  if(!DAYS.length){ return; }
+  var d=DAYS[cur];
+  var place=d.area||''; var heroCap=(place?place+' · ':'')+hhmm(d.hero.date)+(d.hero.cam?(' · '+d.hero.cam):'');
+  var noPrev='<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:13px;gap:6px;text-align:center;padding:20px"><span style="font-size:26px">🖼️</span>Photo saved, preview not supported in this browser</div>';
+  var heroImg=d.hero.url?'<img src="'+d.hero.url+'" onerror="this.style.display=\'none\'">':noPrev;
+  var gallery=d.photos.map(function(p){
+    var im=p.url?'<img src="'+p.url+'" loading="lazy" onerror="this.style.display=\'none\'">':'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8);font-size:20px">🖼️</div>';
+    return '<div class="ph">'+im+'<span class="cap">'+hhmm(p.date)+'</span></div>';
+  }).join('');
+  var facts=''
+    + fact('Photos', d.photos.length)
+    + fact('Between', hhmm(d.t1)+' – '+hhmm(d.t2))
+    + fact('Camera', d.cams.length?d.cams[0]:'—')
+    + fact('Location', d.photos.filter(function(p){return p.lat}).length?'From GPS ✓':'Not in photos');
+  el('page').innerHTML=
+     '<div class="hero">'+heroImg+'<div class="vig"></div><div class="cap">'+heroCap+'</div></div>'
+    +'<div class="daynum"><span class="n">Day '+d.index+'</span><span class="d">·</span><span class="d">'+d.dateLabel+'</span></div>'
+    +'<div class="city">'+d.city+'</div><div class="country">'+d.country+'</div>'
+    +'<div class="story"><h2 id="stTitle">'+d.title+'</h2><div id="stBody">'+d.story.map(function(p){return '<p>'+p+'</p>'}).join('')+'</div><div class="lens">✦ '+d.lens+'</div></div>'
+    +'<div class="st">The day in photos</div><div class="grid">'+gallery+'</div>'
+    +'<div class="st">The day at a glance</div><div class="facts">'+facts
+      +'<div class="quote"><div class="q" id="stQuote">'+(d.quote||'…')+'</div><div class="by">— written by Skyvos from your day</div></div></div>';
+}
+function fact(k,v){ return '<div class="fact"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'; }
+
+/* ---------------- reverse geocode (free, no key) ---------------- */
+async function geocode(lat,lng){
+  try{
+    var r=await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+lat+'&longitude='+lng+'&localityLanguage=en');
+    if(!r.ok) return null; var j=await r.json();
+    return {city:(j.city||j.locality||j.principalSubdivision||''), country:(j.countryName||''), area:(j.locality||j.city||'')};
+  }catch(e){ return null; }
+}
+async function geocodeDay(d){
+  if(!d.gps){ return; }
+  var g=await geocode(d.gps.lat,d.gps.lng);
+  if(g && (g.city||g.country)){ d.city=g.city||'Your day'; d.country=g.country||''; d.area=g.area||g.city||''; }
+  else { d.city='Your day'; d.country='Location from photo GPS'; }
+  if(DAYS[cur]===d) renderPage();
+}
+
+/* ---------------- story generation ---------------- */
+function templateStory(d){
+  var hasPlace=(d.city && d.city!=='Your day' && d.city!=='Locating…');
+  var l1='On '+d.date.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})+(hasPlace?(' in '+d.city):'')+', your family made '+d.photos.length+' photograph'+(d.photos.length>1?'s':'')+' between '+hhmm(d.t1)+' and '+hhmm(d.t2)+'.';
+  var l2= hasPlace? 'A day that will look ordinary now and precious later — which is exactly why it is written down.' : 'A quiet, unmarked day — often the kind most worth keeping.';
+  return {title:(hasPlace?d.city:('The day in '+d.photos.length+' frames')), body:[l1,l2], quote:'"'+hhmm(d.t1)+' to '+hhmm(d.t2)+' — a small piece of a life, kept."'};
+}
+async function writeStory(d){
+  var placeStr=(d.city && d.city!=='Your day' && d.city!=='Locating…')?(' in '+d.city+(d.country?', '+d.country:'')):'';
+  var brief='A day'+placeStr+' with '+d.photos.length+' photos, from '+hhmm(d.t1)+' to '+hhmm(d.t2)
+    + (d.cams.length?(', taken on '+d.cams.join(' and ')):'') + '. Write a warm family travel-diary entry: a short title on the first line, then two short paragraphs.';
+  try{
+    var r=await fetch('/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'memory',brief:brief})});
+    if(!r.ok) throw 0; var j=await r.json(); var txt=(j&&(j.text||j.answer))||'';
+    if(txt){ d.title=txt.split('\n')[0].slice(0,60); d.story=txt.split('\n').filter(function(x){return x.trim()}).slice(1); if(!d.story.length) d.story=[txt]; d.quote=templateStory(d).quote; if(cur>=0&&DAYS[cur]===d) renderPage(); saveDay(d); return; }
+    throw 0;
+  }catch(e){
+    var t=templateStory(d); d.title=t.title; d.story=t.body; d.quote=t.quote; if(DAYS[cur]===d) renderPage(); saveDay(d);
+  }
+}
+
+/* ---------------- persistence ---------------- */
+async function toJpeg(file, maxDim){
+  var f=file;
+  try{ if(isHeic(f) && window.heic2any){ try{ var out=await heic2any({blob:f,toType:'image/jpeg',quality:0.85}); f=Array.isArray(out)?out[0]:out; }catch(e){} } }catch(e){}
+  var bmp=null;
+  try{ bmp=await createImageBitmap(f); }catch(e){ bmp=null; }
+  if(!bmp){ bmp=await new Promise(function(res){ var im=new Image(); im.onload=function(){res(im)}; im.onerror=function(){res(null)}; try{ im.src=URL.createObjectURL(f); }catch(_){ res(null); } }); }
+  if(!bmp){ return {blob:f}; }   // couldn't decode — upload original
+  var w=bmp.width||bmp.naturalWidth, h=bmp.height||bmp.naturalHeight; if(!w||!h) return {blob:f};
+  var sc=Math.min(1, maxDim/Math.max(w,h)); var cw=Math.max(1,Math.round(w*sc)), ch=Math.max(1,Math.round(h*sc));
+  try{ var c=document.createElement('canvas'); c.width=cw; c.height=ch; c.getContext('2d').drawImage(bmp,0,0,cw,ch);
+    var blob=await new Promise(function(res){ c.toBlob(function(b){res(b)}, 'image/jpeg', 0.85); });
+    return {blob: blob||f};
+  }catch(e){ return {blob:f}; }
+}
+async function ensureBook(){
+  if(BOOK) return BOOK; var sb=sbClient(); if(!sb||!me) return null;
+  try{
+    var q=await sb.from('books').select('*').eq('created_by',me).eq('title',BOOK_TITLE).limit(1);
+    if(q.data&&q.data[0]){ BOOK=q.data[0]; }
+    else { var ins=await sb.from('books').insert({title:BOOK_TITLE, kind:'trip', created_by:me}).select().limit(1); BOOK=(ins.data&&ins.data[0])||null;
+      if(BOOK){ try{ await sb.from('book_members').insert({book_id:BOOK.id, phone:me, role:'owner', display_name:''}); }catch(e){} } }
+  }catch(e){}
+  return BOOK;
+}
+async function loadBook(){
+  var sb=sbClient(); if(!sb||!me){ return; }
+  await ensureBook(); if(!BOOK){ return; }
+  var rows=[]; try{ var r=await sb.from('photos').select('*').eq('book_id',BOOK.id).eq('hidden',false).order('taken_at',{ascending:true}); rows=r.data||[]; }catch(e){}
+  if(!rows.length){ DAYS=[]; renderDays(); el('page').innerHTML='<div class="empty">No photos yet — add some above and your first Day Page appears here, saved forever.</div>'; return; }
+  var photos=rows.map(function(x){ var dt=x.taken_at?new Date(x.taken_at):new Date(x.created_at||Date.now()); return {url:x.media_url, date:dt, lat:x.lat, lng:x.lng, cam:x.place_name||'', city:x.city, country:x.country, name:''}; });
+  var byDay={}; photos.forEach(function(p){ var k=p.date.toDateString(); (byDay[k]=byDay[k]||[]).push(p); });
+  var keys=Object.keys(byDay).sort(function(a,b){return new Date(a)-new Date(b)});
+  DAYS=keys.map(function(k,ix){ var d=buildDay(byDay[k],ix); var wc=byDay[k].filter(function(p){return p.city})[0]; if(wc){ d.city=wc.city; d.country=wc.country||''; d.area=wc.city; } return d; });
+  if(cur>=DAYS.length) cur=DAYS.length-1; if(cur<0) cur=0;
+  renderDays(); renderPage();
+  var saved={}; try{ var dr=await sb.from('day_pages').select('*').eq('book_id',BOOK.id); (dr.data||[]).forEach(function(x){ saved[x.date]=x; }); }catch(e){}
+  DAYS.forEach(function(d){ var key=d.date.toISOString().slice(0,10); var s=saved[key];
+    if(s && s.story){ d.title=s.title||d.title; d.story=String(s.story).split('\n').filter(function(t){return t.trim()}); d.quote=s.quote||d.quote; if(DAYS[cur]===d) renderPage(); }
+    else { writeStory(d); }
+  });
+}
+async function saveDay(d){
+  var sb=sbClient(); if(!sb||!BOOK||!d||!d.date) return;
+  var key=d.date.toISOString().slice(0,10);
+  var payload={book_id:BOOK.id, date:key, city:d.city||null, country:d.country||null, title:d.title||null, story:(d.story||[]).join('\n'), quote:d.quote||null, ai_status:'draft'};
+  try{ var ex=await sb.from('day_pages').select('id').eq('book_id',BOOK.id).eq('date',key).limit(1);
+    if(ex.data&&ex.data[0]){ await sb.from('day_pages').update(payload).eq('id',ex.data[0].id); }
+    else { await sb.from('day_pages').insert(payload); }
+  }catch(e){}
+}
+
+/* ---------------- init ---------------- */
+(function(){
+  me=(function(){ try{ return localStorage.getItem('jeeto_phone')||''; }catch(e){ return ''; } })();
+  if(!me){ el('upNote').innerHTML='<span style="color:var(--accent)">Open this from inside the Jeeto app (while logged in) so your book saves to your family.</span>'; }
+  else { loadBook(); }
+})();
+</script>
+</body>
+</html>
