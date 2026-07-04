@@ -88,6 +88,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .nb-create{width:100%;margin-top:18px;background:linear-gradient(100deg,var(--accent),#E0A24A);color:#fff;border:none;border-radius:14px;padding:15px;font-weight:800;font-size:16px}
 .cover-btn{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:999px;font-size:11px;font-weight:700;padding:6px 10px;cursor:pointer}
 .cover-btn.on{background:var(--accent)}
+.scopebar{display:flex;align-items:center;gap:8px;padding:16px 18px 0;flex-wrap:wrap}
+.scopebar .lab{font-size:12px;color:var(--soft);font-weight:800;margin-right:2px;text-transform:uppercase;letter-spacing:.4px}
+.scopebar .sc{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:700;color:var(--soft);cursor:pointer}
+.scopebar .sc.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.scopebar .ro{font-size:12.5px;color:var(--soft)}
+.lightbox{position:fixed;inset:0;background:rgba(10,8,6,.96);z-index:60;display:none;align-items:center;justify-content:center}
+.lightbox.show{display:flex}
+.lightbox img{max-width:100%;max-height:88vh;object-fit:contain;border-radius:8px;-webkit-user-select:none;user-select:none}
+.lb-x{position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:none;font-size:18px;z-index:2;cursor:pointer}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:none;font-size:28px;line-height:1;z-index:2;cursor:pointer}
+.lb-prev{left:10px}.lb-next{right:10px}
+.lb-cap{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:rgba(255,255,255,.85);font-size:13px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -102,6 +114,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   <div id="shelf" class="wrap"></div>
 
   <div id="bookview" style="display:none">
+    <div id="scopeBar" class="scopebar"></div>
     <div class="upload">
       <div class="big">Add photos to this book</div>
       <div class="sub">Shoot with your normal camera — Jeeto reads the time &amp; place and builds each day. Nothing is written by you.</div>
@@ -115,19 +128,25 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 </div>
 
 <div class="scrim" id="nbScrim" onclick="closeNewBook()"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lb-x" onclick="closeLightbox(event)" aria-label="Close">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbPrev(event)" aria-label="Previous">‹</button>
+  <img id="lbImg" src="" alt="" onclick="event.stopPropagation()">
+  <button class="lb-nav lb-next" onclick="lbNext(event)" aria-label="Next">›</button>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
 <div class="sheet" id="nbSheet">
   <div class="nb-h">New memory book</div>
   <input id="nbTitle" class="nb-in" placeholder="Book name (e.g. Our Sweden Journey)">
   <div class="nb-lbl">Type</div>
   <div class="nb-types" id="nbTypes"></div>
-  <div class="nb-lbl">Who is it for?</div>
-  <div class="nb-types" id="nbScopes"></div>
-  <div class="nb-note" id="nbNote"></div>
+  <div class="nb-note">Starts private to you. You can share it with your family or world circle anytime from inside the book.</div>
   <button class="nb-create" onclick="createBook()">Create book</button>
 </div>
 
 <script>
 var DAYS=[], cur=0;
+var LB_LIST=[], LB_I=0, HERO_IDX=0;
 var SB_URL="https://ebimsihjzwpmdtzqopmz.supabase.co";
 var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaW1zaWhqendwbWR0enFvcG16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjQ2NzIsImV4cCI6MjA5NjYwMDY3Mn0.QgXTRYH384R0EY-rkCBhW5gmuCizKHY_akLcembBEMA";
 var me='', BOOK=null, _sb=null, BOOK_TITLE='Our Sweden Journey';
@@ -135,6 +154,12 @@ function sbClient(){ if(_sb) return _sb; try{ _sb=window.supabase.createClient(S
 
 function el(id){return document.getElementById(id)}
 function _exit(){ try{ window.close(); }catch(e){} setTimeout(function(){ try{ location.href='/'; }catch(_){} },90); }
+function lbIndexOf(url){ for(var i=0;i<LB_LIST.length;i++){ if(LB_LIST[i].url===url) return i; } return 0; }
+function lbShow(){ var it=LB_LIST[LB_I]; if(!it) return; var im=el('lbImg'); if(im) im.src=it.url; var c=el('lbCap'); if(c) c.textContent=(LB_I+1)+' / '+LB_LIST.length+(it.cap?('  ·  '+it.cap):''); }
+function openLightbox(i){ if(!LB_LIST.length) return; LB_I=Math.max(0,Math.min(i|0,LB_LIST.length-1)); lbShow(); el('lightbox').classList.add('show'); }
+function lbPrev(e){ if(e&&e.stopPropagation)e.stopPropagation(); if(LB_I>0){ LB_I--; lbShow(); } }
+function lbNext(e){ if(e&&e.stopPropagation)e.stopPropagation(); if(LB_I<LB_LIST.length-1){ LB_I++; lbShow(); } }
+function closeLightbox(e){ if(e&&e.target&&e.target.id==='lbImg') return; el('lightbox').classList.remove('show'); }
 function pad(n){ return (n<10?'0':'')+n; }
 function hhmm(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); }
 
@@ -212,11 +237,14 @@ function renderPage(){
   var d=DAYS[cur];
   var place=d.area||''; var heroCap=(place?place+' · ':'')+hhmm(d.hero.date)+(d.hero.cam?(' · '+d.hero.cam):'');
   var noPrev='<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:13px;gap:6px;text-align:center;padding:20px"><span style="font-size:26px">🖼️</span>Photo saved, preview not supported in this browser</div>';
+  LB_LIST=[]; d.photos.forEach(function(p){ if(p.url) LB_LIST.push({url:p.url, cap:hhmm(p.date)}); });
+  HERO_IDX=0; if(d.hero&&d.hero.url){ HERO_IDX=lbIndexOf(d.hero.url); }
   var heroImg=d.hero.url?'<img src="'+d.hero.url+'" onerror="this.style.display=\'none\'">':noPrev;
   var gallery=d.photos.map(function(p){
     var im=p.url?'<img src="'+p.url+'" loading="lazy" onerror="this.style.display=\'none\'">':'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8);font-size:20px">🖼️</div>';
-    var cb=p.id?'<button class="cover-btn'+(p.hero?' on':'')+'" onclick="setCover(\''+p.id+'\',\''+encodeURIComponent(p.url||'')+'\')">'+(p.hero?'★ Cover':'☆ Cover')+'</button>':'';
-    return '<div class="ph">'+im+cb+'<span class="cap">'+hhmm(p.date)+'</span></div>';
+    var cb=p.id?'<button class="cover-btn'+(p.hero?' on':'')+'" onclick="event.stopPropagation();setCover(\''+p.id+'\',\''+encodeURIComponent(p.url||'')+'\')">'+(p.hero?'★ Cover':'☆ Cover')+'</button>':'';
+    var oc=p.url?(' onclick="openLightbox('+lbIndexOf(p.url)+')" style="cursor:zoom-in"'):'';
+    return '<div class="ph"'+oc+'>'+im+cb+'<span class="cap">'+hhmm(p.date)+'</span></div>';
   }).join('');
   var facts=''
     + fact('Photos', d.photos.length)
@@ -224,7 +252,7 @@ function renderPage(){
     + fact('Camera', d.cams.length?d.cams[0]:'—')
     + fact('Location', d.photos.filter(function(p){return p.lat}).length?'From GPS ✓':'Not in photos');
   el('page').innerHTML=
-     '<div class="hero">'+heroImg+'<div class="vig"></div><div class="cap">'+heroCap+'</div></div>'
+     '<div class="hero" onclick="openLightbox('+HERO_IDX+')" style="cursor:zoom-in">'+heroImg+'<div class="vig"></div><div class="cap">'+heroCap+'</div></div>'
     +'<div class="daynum"><span class="n">Day '+d.index+'</span><span class="d">·</span><span class="d">'+d.dateLabel+'</span></div>'
     +'<div class="city">'+d.city+'</div><div class="country">'+d.country+'</div>'
     +'<div class="story"><h2 id="stTitle">'+d.title+'</h2><div id="stBody">'+d.story.map(function(p){return '<p>'+p+'</p>'}).join('')+'</div><div class="lens">✦ '+d.lens+'</div></div>'
@@ -339,9 +367,9 @@ async function renderShelf(){
   grid.insertAdjacentHTML('afterbegin', cards);
 }
 function openBookById(id){ var b=BOOKS.filter(function(x){return x.id===id})[0]; if(b) openBook(b); }
-function openBook(b){ BOOK=b; VIEW='book'; el('shelf').style.display='none'; el('bookview').style.display=''; el('bookTitle').textContent=b.title||'Book'; DAYS=[]; cur=0; el('upNote').textContent=''; el('page').innerHTML='<div class="empty">Loading…</div>'; loadBook(); window.scrollTo(0,0); }
+function openBook(b){ BOOK=b; VIEW='book'; el('shelf').style.display='none'; el('bookview').style.display=''; el('bookTitle').textContent=b.title||'Book'; renderScopeBar(); DAYS=[]; cur=0; el('upNote').textContent=''; el('page').innerHTML='<div class="empty">Loading…</div>'; loadBook(); window.scrollTo(0,0); }
 function topBack(){ if(VIEW==='book'){ showShelf(); } else { _exit(); } }
-function newBook(){ el('nbTitle').value=''; NB_TYPE='trip'; NB_SCOPE='me'; renderNbTypes(); renderNbScopes(); el('nbScrim').classList.add('show'); el('nbSheet').classList.add('show'); setTimeout(function(){ try{ el('nbTitle').focus(); }catch(e){} },150); }
+function newBook(){ el('nbTitle').value=''; NB_TYPE='trip'; renderNbTypes(); el('nbScrim').classList.add('show'); el('nbSheet').classList.add('show'); setTimeout(function(){ try{ el('nbTitle').focus(); }catch(e){} },150); }
 function closeNewBook(){ el('nbScrim').classList.remove('show'); el('nbSheet').classList.remove('show'); }
 function renderNbTypes(){ el('nbTypes').innerHTML=TYPES.map(function(t){ return '<button class="nb-type'+(t[0]===NB_TYPE?' on':'')+'" onclick="NB_TYPE=\''+t[0]+'\';renderNbTypes()">'+t[1]+'</button>'; }).join(''); }
 function renderNbScopes(){ el('nbScopes').innerHTML=SCOPES.map(function(t){ return '<button class="nb-type'+(t[0]===NB_SCOPE?' on':'')+'" onclick="NB_SCOPE=\''+t[0]+'\';renderNbScopes()">'+t[1]+'</button>'; }).join(''); el('nbNote').textContent=SCOPE_NOTE[NB_SCOPE]||''; }
@@ -349,14 +377,32 @@ async function createBook(){
   var title=(el('nbTitle').value||'').trim(); if(!title){ try{ el('nbTitle').focus(); }catch(e){} return; }
   var sb=sbClient(); if(!sb||!me) return;
   try{
-    var ins=await sb.from('books').insert({title:title, kind:NB_TYPE, scope:NB_SCOPE, created_by:me}).select().limit(1);
+    var ins=await sb.from('books').insert({title:title, kind:NB_TYPE, scope:'me', created_by:me}).select().limit(1);
     var b=(ins.data&&ins.data[0]); if(!b) return;
-    var members=[{book_id:b.id, phone:me, role:'owner'}];
-    if(NB_SCOPE==='family'){ var fam=await familyPhones(); fam.forEach(function(p){ if(p&&p!==me) members.push({book_id:b.id, phone:p, role:'member'}); }); }
-    else if(NB_SCOPE==='world'){ var all={}; (await familyPhones()).forEach(function(p){ all[p]=1; }); (await bridgePhones()).forEach(function(p){ all[p]=1; }); Object.keys(all).forEach(function(p){ if(p&&p!==me) members.push({book_id:b.id, phone:p, role:'member'}); }); }
-    try{ await sb.from('book_members').insert(members); }catch(e){}
+    try{ await sb.from('book_members').insert({book_id:b.id, phone:me, role:'owner'}); }catch(e){}
     closeNewBook(); openBook(b);
   }catch(e){}
+}
+function renderScopeBar(){
+  var bar=el('scopeBar'); if(!bar){ return; } if(!BOOK){ bar.innerHTML=''; return; }
+  if(BOOK.created_by!==me){ bar.innerHTML='<span class="ro">Shared with you · '+(SCOPE_LBL[BOOK.scope||'me']||'')+'</span>'; return; }
+  bar.innerHTML='<span class="lab">Share</span>'+SCOPES.map(function(t){ return '<button class="sc'+((BOOK.scope||'me')===t[0]?' on':'')+'" onclick="setScope(\''+t[0]+'\')">'+t[1]+'</button>'; }).join('');
+}
+async function setScope(s){
+  if(!BOOK || BOOK.created_by!==me) return; var sb=sbClient(); if(!sb) return;
+  if((BOOK.scope||'me')===s) return;
+  BOOK.scope=s; renderScopeBar();
+  try{
+    await sb.from('books').update({scope:s}).eq('id',BOOK.id);
+    try{ await sb.from('book_members').delete().eq('book_id',BOOK.id).neq('phone',me); }catch(e){}
+    if(s!=='me'){
+      var all={}; (await familyPhones()).forEach(function(p){ all[p]=1; });
+      if(s==='world'){ (await bridgePhones()).forEach(function(p){ all[p]=1; }); }
+      var rows=Object.keys(all).filter(function(p){return p&&p!==me}).map(function(p){ return {book_id:BOOK.id, phone:p, role:'member'}; });
+      if(rows.length){ try{ await sb.from('book_members').insert(rows); }catch(e){} }
+    }
+  }catch(e){}
+  renderScopeBar();
 }
 async function setCover(photoId, encUrl){
   var url=decodeURIComponent(encUrl||''); var sb=sbClient(); if(!sb||!BOOK) return;
@@ -393,6 +439,8 @@ async function saveDay(d){
 
 /* ---------------- init ---------------- */
 (function(){
+  (function(){ var lb=el('lightbox'); if(lb){ var x0=0; lb.addEventListener('touchstart',function(e){ if(e.touches&&e.touches[0]) x0=e.touches[0].clientX; },{passive:true}); lb.addEventListener('touchend',function(e){ if(!e.changedTouches||!e.changedTouches[0])return; var dx=e.changedTouches[0].clientX-x0; if(dx>45) lbPrev(); else if(dx<-45) lbNext(); },{passive:true}); } })();
+  document.addEventListener('keydown',function(e){ if(!el('lightbox')||!el('lightbox').classList.contains('show'))return; if(e.key==='ArrowLeft')lbPrev(); else if(e.key==='ArrowRight')lbNext(); else if(e.key==='Escape')closeLightbox(); });
   me=(function(){ try{ return localStorage.getItem('jeeto_phone')||''; }catch(e){ return ''; } })();
   if(!me){ el('upNote').innerHTML='<span style="color:var(--accent)">Open this from inside the Jeeto app (while logged in) so your book saves to your family.</span>'; }
   else { showShelf(); }
