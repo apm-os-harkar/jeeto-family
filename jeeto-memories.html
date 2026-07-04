@@ -100,6 +100,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:none;font-size:28px;line-height:1;z-index:2;cursor:pointer}
 .lb-prev{left:10px}.lb-next{right:10px}
 .lb-cap{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:rgba(255,255,255,.85);font-size:13px}
+.mv-bar{padding:8px 18px 0}
+.mv-btn{width:100%;background:linear-gradient(100deg,#6B3FA0,#B23A6B);color:#fff;border:none;border-radius:16px;padding:15px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 12px 26px -12px rgba(107,63,160,.5)}
+.mv-status{color:var(--accent);font-size:13px;margin-top:10px;min-height:1px}
+.reelout{margin-top:16px}
+.reelout video{width:100%;border-radius:14px;background:#000;display:block}
+.reelout .act{display:flex;gap:10px;margin-top:12px}
+.reelout .share{flex:1;background:var(--accent);color:#fff;border:none;border-radius:14px;padding:14px;font-weight:800;font-size:15px;cursor:pointer}
+.reelout .save{flex:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:14px;padding:14px 16px;font-weight:700;cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -122,6 +130,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <div class="sub" id="upNote" style="margin-top:10px"></div>
     </div>
     <div class="days" id="days"></div>
+    <div class="mv-bar"><button class="mv-btn" onclick="openMovie()">🎬 Make a movie of this book</button></div>
     <div class="wrap" id="page"><div class="empty">Choose some photos above and your first Day Page will appear here — hero, story, gallery and facts, all automatically.</div></div>
     <div class="foot">Private family book · not searchable · no ads.<br><b>Your phone</b> reads each photo's time &amp; place; <b>Skyvos</b> writes the story.</div>
   </div>
@@ -142,6 +151,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   <div class="nb-types" id="nbTypes"></div>
   <div class="nb-note">Starts private to you. You can share it with your family or world circle anytime from inside the book.</div>
   <button class="nb-create" onclick="createBook()">Create book</button>
+</div>
+
+<div class="scrim" id="mvScrim" onclick="closeMovie()"></div>
+<div class="sheet" id="mvSheet">
+  <div class="nb-h">Make a movie</div>
+  <div class="nb-lbl">Which days</div>
+  <div class="nb-types" id="mvRange"></div>
+  <div class="nb-lbl">Music</div>
+  <div class="nb-types" id="mvMusic"></div>
+  <div class="nb-note" id="mvNote"></div>
+  <button class="nb-create" id="mvMakeBtn" onclick="makeMovie()">🎬 Make movie</button>
+  <div class="mv-status" id="mvStatus"></div>
+  <div class="reelout" id="mvOut"></div>
+  <canvas id="mvCanvas" width="1080" height="1920" style="display:none"></canvas>
 </div>
 
 <script>
@@ -436,6 +459,88 @@ async function saveDay(d){
     else { await sb.from('day_pages').insert(payload); }
   }catch(e){}
 }
+
+/* ---------------- MOVIE MAKER ---------------- */
+var MV_SEL={}, MV_MUS='warm', MV_MUS_NAME='', MV_BUF=null, _mvAC=null, _mvNodes=[];
+var MV_FILE=null, MV_BLOB=null, MV_NAME='jeeto-movie.mp4';
+function openMovie(){ if(!DAYS.length){ alert('Add some photos first.'); return; } MV_SEL={}; DAYS.forEach(function(d,i){ MV_SEL[i]=true; }); el('mvOut').innerHTML=''; el('mvStatus').textContent=''; renderMvRange(); renderMvMusic(); el('mvScrim').classList.add('show'); el('mvSheet').classList.add('show'); }
+function closeMovie(){ el('mvScrim').classList.remove('show'); el('mvSheet').classList.remove('show'); }
+function mvAllSelected(){ if(!DAYS.length) return false; for(var i=0;i<DAYS.length;i++){ if(!MV_SEL[i]) return false; } return true; }
+function mvSelectAll(){ DAYS.forEach(function(d,i){ MV_SEL[i]=true; }); renderMvRange(); }
+function mvToggleDay(i){ MV_SEL[i]=!MV_SEL[i]; renderMvRange(); }
+function renderMvRange(){
+  var html='<button class="nb-type'+(mvAllSelected()?' on':'')+'" onclick="mvSelectAll()">Whole trip</button>';
+  html+=DAYS.map(function(d,i){ return '<button class="nb-type'+(MV_SEL[i]?' on':'')+'" onclick="mvToggleDay('+i+')">Day '+(i+1)+'</button>'; }).join('');
+  el('mvRange').innerHTML=html;
+}
+function renderMvMusic(){
+  var opts=[['none','Off'],['warm','Warm'],['bright','Bright']];
+  el('mvMusic').innerHTML=opts.map(function(t){ return '<button class="nb-type'+(MV_MUS===t[0]?' on':'')+'" onclick="mvPickMusic(\''+t[0]+'\')">'+t[1]+'</button>'; }).join('')
+    +'<label class="nb-type" for="mvSong">＋ My song</label><input id="mvSong" type="file" accept="audio/*" hidden onchange="mvLoadMusic(event)">';
+  el('mvNote').textContent=(MV_MUS==='mine')?(MV_MUS_NAME||''):'Jeeto\u2019s own music — free to share anywhere.';
+}
+function mvPickMusic(k){ MV_MUS=k; renderMvMusic(); }
+function mvLoadMusic(e){ var f=e.target.files&&e.target.files[0]; if(!f)return; var n=el('mvNote'); n.textContent='Loading “'+f.name+'”…';
+  var fr=new FileReader(); fr.onload=function(){ try{ var AC=window.AudioContext||window.webkitAudioContext; var ac=new AC(); ac.decodeAudioData(fr.result,function(buf){ MV_BUF=buf; MV_MUS='mine'; MV_MUS_NAME='🎵 '+f.name+'  (plays under your movie)'; renderMvMusic(); try{ac.close()}catch(_){}; }, function(){ n.textContent='Could not read that audio.'; }); }catch(err){ n.textContent='Audio not supported here.'; } };
+  fr.readAsArrayBuffer(f); }
+function _mvBed(ac,out,kind){ var freqs=(kind==='bright')?[261.63,329.63,392.00,523.25]:[220.00,261.63,329.63];
+  for(var i=0;i<freqs.length;i++){ var o=ac.createOscillator();o.type='sine';o.frequency.value=freqs[i]; var g=ac.createGain();g.gain.value=0.16/freqs.length*2; var lfo=ac.createOscillator();lfo.frequency.value=0.06+0.015*i; var lg=ac.createGain();lg.gain.value=0.10; o.connect(g);g.connect(out);lfo.connect(lg);lg.connect(g.gain); o.start();lfo.start(); _mvNodes.push(o,lfo); } }
+function mvMusStart(stream){ if(MV_MUS==='none')return; try{ var AC=window.AudioContext||window.webkitAudioContext; var ac=new AC(); _mvAC=ac; if(ac.state==='suspended'){try{ac.resume()}catch(e){}} var dest=ac.createMediaStreamDestination(); var master=ac.createGain(); master.gain.value=0.5; master.connect(dest); if(MV_MUS==='mine'&&MV_BUF){ var src=ac.createBufferSource(); src.buffer=MV_BUF; src.loop=true; src.connect(master); src.start(); _mvNodes.push(src); } else { _mvBed(ac,master,MV_MUS); } var at=dest.stream.getAudioTracks()[0]; if(at&&stream.addTrack)stream.addTrack(at); }catch(e){} }
+function mvMusStop(){ _mvNodes.forEach(function(n){try{n.stop&&n.stop()}catch(e){}}); _mvNodes=[]; if(_mvAC){try{_mvAC.close()}catch(e){}_mvAC=null;} }
+function mvLoad(url){ return new Promise(function(res){ var im=new Image(); im.crossOrigin='anonymous'; var done=false; im.onload=function(){ if(!done){done=true;res(im);} }; im.onerror=function(){ if(!done){done=true;res(null);} }; im.src=url; setTimeout(function(){ if(!done){ done=true; res((im.naturalWidth||0)>0?im:null); } },7000); }); }
+function mvCover(ctx,cv,img,zoom,panx,pany){ var W=cv.width,H=cv.height; ctx.fillStyle='#0d0b09'; ctx.fillRect(0,0,W,H); var iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height; if(!iw||!ih)return; var s=Math.max(W/iw,H/ih)*(zoom||1); var dw=iw*s,dh=ih*s; var dx=(W-dw)/2+(panx||0),dy=(H-dh)/2+(pany||0); try{ ctx.drawImage(img,dx,dy,dw,dh); }catch(e){} }
+function mvWrap(ctx,text,cx,cy,maxW,lh){ var words=String(text).split(' '),lines=[],line=''; for(var i=0;i<words.length;i++){ var test=line?line+' '+words[i]:words[i]; if(ctx.measureText(test).width>maxW&&line){ lines.push(line); line=words[i]; } else line=test; } if(line)lines.push(line); var y=cy-(lines.length-1)*lh/2; lines.forEach(function(l){ ctx.fillText(l,cx,y); y+=lh; }); }
+function mvPhoto(ctx,cv,item,secs){ return new Promise(function(res){ var t0=performance.now(),W=cv.width,H=cv.height;
+  function frame(){ var t=(performance.now()-t0)/1000,p=Math.min(1,t/secs); mvCover(ctx,cv,item.img,1.05+0.10*p,-22*p,-32*p);
+    var g=ctx.createLinearGradient(0,H-330,0,H); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.74)'); ctx.fillStyle=g; ctx.fillRect(0,H-330,W,330);
+    ctx.textAlign='left'; ctx.fillStyle='rgba(255,255,255,.95)'; ctx.font='600 42px Georgia, serif'; ctx.fillText(item.day||'',60,H-152);
+    ctx.font='500 34px system-ui, sans-serif'; ctx.fillStyle='rgba(255,255,255,.85)'; ctx.fillText(item.cap||'',60,H-100,W-120);
+    if(t<secs) requestAnimationFrame(frame); else res(); } requestAnimationFrame(frame); }); }
+function mvTitleCard(ctx,cv,title,secs){ return new Promise(function(res){ var t0=performance.now(),W=cv.width,H=cv.height;
+  function frame(){ var t=(performance.now()-t0)/1000,p=Math.min(1,t/secs); var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,'#2a1a3e'); g.addColorStop(1,'#7a2a52'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.globalAlpha=Math.min(1,p*2.2); ctx.textAlign='center'; ctx.fillStyle='rgba(255,255,255,.72)'; ctx.font='600 32px system-ui, sans-serif'; ctx.fillText('A JEETO MEMORY',W/2,H/2-140);
+    ctx.fillStyle='#fff'; ctx.font='600 84px Georgia, serif'; mvWrap(ctx,title,W/2,H/2+10,W-160,98); ctx.globalAlpha=1;
+    if(t<secs) requestAnimationFrame(frame); else res(); } requestAnimationFrame(frame); }); }
+function mvEndCard(ctx,cv,secs){ return new Promise(function(res){ var t0=performance.now(),W=cv.width,H=cv.height;
+  function frame(){ var t=(performance.now()-t0)/1000; var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,'#1f6e5a'); g.addColorStop(1,'#2e1a3e'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); ctx.textAlign='center';
+    ctx.fillStyle='#fff'; ctx.font='600 78px Georgia, serif'; ctx.fillText('Jeeto',W/2,H/2-14);
+    ctx.fillStyle='rgba(255,255,255,.82)'; ctx.font='500 30px system-ui, sans-serif'; ctx.fillText('Every Life. Every Relationship. Every Generation.',W/2,H/2+52);
+    if(t<secs) requestAnimationFrame(frame); else res(); } requestAnimationFrame(frame); }); }
+async function makeMovie(){
+  var idxs=Object.keys(MV_SEL).filter(function(k){return MV_SEL[k]}).map(Number).sort(function(a,b){return a-b});
+  if(!idxs.length){ el('mvStatus').textContent='Pick at least one day.'; return; }
+  var items=[]; idxs.forEach(function(i){ var d=DAYS[i]; (d.photos||[]).forEach(function(p){ if(p.url) items.push({url:p.url, cap:((d.city&&d.city!=='Your day')?d.city+' · ':'')+hhmm(p.date), day:'Day '+(i+1)}); }); });
+  if(!items.length){ el('mvStatus').textContent='No photos to use in these days.'; return; }
+  if(items.length>28){ var st=items.length/28, s2=[]; for(var k=0;k<28;k++){ s2.push(items[Math.floor(k*st)]); } items=s2; }
+  var btn=el('mvMakeBtn'); btn.disabled=true; el('mvOut').innerHTML=''; el('mvStatus').textContent='Loading photos…';
+  for(var i=0;i<items.length;i++){ el('mvStatus').textContent='Loading photo '+(i+1)+' of '+items.length+'…'; items[i].img=await mvLoad(items[i].url); }
+  var usable=items.filter(function(x){return x.img});
+  if(!usable.length){ btn.disabled=false; el('mvStatus').textContent='Could not load photos for the movie.'; return; }
+  var cv=el('mvCanvas'), ctx=cv.getContext('2d');
+  if(!cv.captureStream||!window.MediaRecorder){ btn.disabled=false; el('mvStatus').textContent='This phone can’t record video.'; return; }
+  var stream; try{ stream=cv.captureStream(30); }catch(e){ btn.disabled=false; el('mvStatus').textContent='Recording not supported here.'; return; }
+  mvMusStart(stream);
+  var types=['video/mp4;codecs=h264,aac','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']; var mime=''; for(var t=0;t<types.length;t++){ if(window.MediaRecorder.isTypeSupported(types[t])){ mime=types[t]; break; } }
+  var rec; try{ rec=new MediaRecorder(stream, mime?{mimeType:mime}:undefined); }catch(e){ mvMusStop(); btn.disabled=false; el('mvStatus').textContent='Recording failed to start.'; return; }
+  var chunks=[], done=false;
+  function finish(){ if(done)return; done=true; mvMusStop(); btn.disabled=false; el('mvStatus').textContent='';
+    if(!chunks.length){ el('mvStatus').textContent='Could not capture the movie (photos may be blocked by the browser).'; return; }
+    var ext=(mime.indexOf('mp4')>=0)?'mp4':'webm'; MV_BLOB=new Blob(chunks,{type:mime||'video/webm'}); MV_NAME=(((BOOK&&BOOK.title)||'jeeto-movie').replace(/[^a-z0-9]+/gi,'-').toLowerCase())+'.'+ext; MV_FILE=new File([MV_BLOB],MV_NAME,{type:MV_BLOB.type||'video/webm'});
+    el('mvOut').innerHTML='<video controls playsinline src="'+URL.createObjectURL(MV_BLOB)+'"></video><div class="act"><button class="share" onclick="mvShare()">📤 Share / Forward</button><button class="save" onclick="mvSave()">⬇ Save</button></div>';
+  }
+  rec.ondataavailable=function(e){ if(e.data&&e.data.size) chunks.push(e.data); };
+  rec.onstop=finish; rec.onerror=function(){ finish(); };
+  try{ rec.start(200); }catch(e){ mvMusStop(); btn.disabled=false; el('mvStatus').textContent='Recording failed.'; return; }
+  try{
+    await mvTitleCard(ctx,cv,(BOOK&&BOOK.title)||'Our memories',2.2);
+    for(var j=0;j<usable.length;j++){ el('mvStatus').textContent='Making your movie… '+(j+1)+'/'+usable.length; await mvPhoto(ctx,cv,usable[j],2.4); }
+    await mvEndCard(ctx,cv,1.8);
+  }catch(e){}
+  setTimeout(function(){ try{ if(rec.state!=='inactive') rec.stop(); }catch(e){} },200);
+  setTimeout(function(){ if(!done){ try{ if(rec.state!=='inactive') rec.stop(); }catch(e){} finish(); } },2600);
+}
+function mvShare(){ if(!MV_FILE)return; try{ if(navigator.canShare&&navigator.canShare({files:[MV_FILE]})){ navigator.share({files:[MV_FILE],title:(BOOK&&BOOK.title)||'Jeeto'}).catch(function(){}); return; } }catch(e){} dl(MV_BLOB,MV_NAME); }
+function mvSave(){ if(MV_BLOB) dl(MV_BLOB,MV_NAME); }
 
 /* ---------------- init ---------------- */
 (function(){
