@@ -2434,12 +2434,12 @@ var SESSION_KEY='jeeto_phone';
 function myPhone(){ return localStorage.getItem(SESSION_KEY)||''; }
 function setMyPhone(p){ localStorage.setItem(SESSION_KEY,p); }
 function clearSession(){ localStorage.removeItem(SESSION_KEY); }
-var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null, _verifying=false;
+var ME=null, TMP_PHONE='', MOCK_OTP='123456', REVIEW=null, _verifying=false, _savingProfile=false;
 
 /* ============================================================
    JEETO OS — version + build stamp
    ============================================================ */
-var JEETO_VERSION='4.81.0-memorybooks';
+var JEETO_VERSION='4.81.1-savefix';
 var JEETO_BUILD='2026.06.30';
 
 /* ============================================================
@@ -2680,12 +2680,19 @@ async function saveProfile(){
   if(!name){ document.getElementById('pfErr').textContent='Please enter your name.'; return; }
   if(!_gender){ document.getElementById('pfErr').textContent='Please choose a gender.'; return; }
   if(!ensureSB()){ document.getElementById('pfErr').textContent='Connection problem. Try again.'; return; }
-  var btn=document.getElementById('pfBtn'); btn.disabled=true; btn.textContent='Saving…';
+  if(_savingProfile) return; _savingProfile=true;
+  var btn=document.getElementById('pfBtn'); if(btn){ btn.disabled=true; btn.textContent='Saving…'; }
+  document.getElementById('pfErr').textContent='';
   var row={ phone:myPhone()||TMP_PHONE, name:name, dob:dob, gender:_gender, avatar_url:_photo||null };
-  var r=await sb.from('profiles').upsert(row,{onConflict:'phone'}).select().maybeSingle();
-  btn.disabled=false; btn.textContent='Save & continue';
-  if(r.error){ document.getElementById('pfErr').textContent=humanError(r.error,'Could not save your details.'); return; }
-  ME=r.data||row; await renderHome(); navTo('home');
+  try{
+    var r=await _withTimeout(sb.from('profiles').upsert(row,{onConflict:'phone'}).select().maybeSingle(), 8000);
+    if(r==='__timeout__'||r==='__err__'){ ME=row; try{ await renderHome(); }catch(e){} navTo('home'); _savingProfile=false; return; }
+    if(r && r.error){ if(btn){ btn.disabled=false; btn.textContent='Save & continue'; } _savingProfile=false; document.getElementById('pfErr').textContent=humanError(r.error,'Could not save your details.'); return; }
+    ME=(r&&r.data)||row; try{ await renderHome(); }catch(e){} navTo('home');
+  }catch(e){
+    ME=row; try{ await renderHome(); }catch(e2){} navTo('home');
+  }
+  _savingProfile=false;
 }
 
 /* ---------- HOME ---------- */
