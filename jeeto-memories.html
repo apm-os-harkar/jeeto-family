@@ -79,6 +79,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .sheet{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:var(--card);border-radius:22px 22px 0 0;border:1px solid var(--line);transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);z-index:50;padding:22px 20px calc(22px + env(safe-area-inset-bottom))}
 .sheet.show{transform:translateY(0)}
 .nb-h{font-family:'Fraunces';font-size:20px;font-weight:600}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.sheet-x{width:34px;height:34px;flex:none;border-radius:50%;background:var(--paper);border:1px solid var(--line);color:var(--ink);font-size:15px;cursor:pointer}
 .nb-in{width:100%;margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;background:#fff;color:var(--ink)}
 .nb-lbl{font-family:'Inter';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--soft);margin-top:16px}
 .nb-note{font-size:12.5px;color:var(--soft);margin-top:10px;line-height:1.5;min-height:1px}
@@ -99,6 +101,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .lb-x{position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:none;font-size:18px;z-index:2;cursor:pointer}
 .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:none;font-size:28px;line-height:1;z-index:2;cursor:pointer}
 .lb-prev{left:10px}.lb-next{right:10px}
+.lb-del{position:absolute;top:calc(14px + env(safe-area-inset-top));left:16px;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:17px;z-index:2;cursor:pointer}
+.danger-btn{width:100%;background:none;border:1px solid rgba(178,58,38,.4);color:#B23A26;border-radius:14px;padding:13px;font-weight:700;font-size:13.5px;cursor:pointer}
 .lb-cap{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:rgba(255,255,255,.85);font-size:13px}
 .mv-bar{padding:8px 18px 0}
 .mv-btn{width:100%;background:linear-gradient(100deg,#6B3FA0,#B23A6B);color:#fff;border:none;border-radius:16px;padding:15px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 12px 26px -12px rgba(107,63,160,.5)}
@@ -133,19 +137,21 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <div class="mv-bar"><button class="mv-btn" onclick="openMovie()">🎬 Make a movie of this book</button></div>
     <div class="wrap" id="page"><div class="empty">Choose some photos above and your first Day Page will appear here — hero, story, gallery and facts, all automatically.</div></div>
     <div class="foot">Private family book · not searchable · no ads.<br><b>Your phone</b> reads each photo's time &amp; place; <b>Skyvos</b> writes the story.</div>
+    <div id="bookDanger" style="padding:2px 18px 26px"></div>
   </div>
 </div>
 
 <div class="scrim" id="nbScrim" onclick="closeNewBook()"></div>
 <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
   <button class="lb-x" onclick="closeLightbox(event)" aria-label="Close">✕</button>
+  <button class="lb-del" id="lbDel" onclick="lbDelete(event)" aria-label="Delete photo" style="display:none">🗑</button>
   <button class="lb-nav lb-prev" onclick="lbPrev(event)" aria-label="Previous">‹</button>
   <img id="lbImg" src="" alt="" onclick="event.stopPropagation()">
   <button class="lb-nav lb-next" onclick="lbNext(event)" aria-label="Next">›</button>
   <div class="lb-cap" id="lbCap"></div>
 </div>
 <div class="sheet" id="nbSheet">
-  <div class="nb-h">New memory book</div>
+  <div class="sheet-head"><div class="nb-h">New memory book</div><button class="sheet-x" onclick="closeNewBook()" aria-label="Close">✕</button></div>
   <input id="nbTitle" class="nb-in" placeholder="Book name (e.g. Our Sweden Journey)">
   <div class="nb-lbl">Type</div>
   <div class="nb-types" id="nbTypes"></div>
@@ -155,7 +161,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 <div class="scrim" id="mvScrim" onclick="closeMovie()"></div>
 <div class="sheet" id="mvSheet">
-  <div class="nb-h">Make a movie</div>
+  <div class="sheet-head"><div class="nb-h">Make a movie</div><button class="sheet-x" onclick="closeMovie()" aria-label="Close">✕</button></div>
   <div class="nb-lbl">Which days</div>
   <div class="nb-types" id="mvRange"></div>
   <div class="nb-lbl">Music</div>
@@ -178,7 +184,31 @@ function sbClient(){ if(_sb) return _sb; try{ _sb=window.supabase.createClient(S
 function el(id){return document.getElementById(id)}
 function _exit(){ try{ window.close(); }catch(e){} setTimeout(function(){ try{ location.href='/'; }catch(_){} },90); }
 function lbIndexOf(url){ for(var i=0;i<LB_LIST.length;i++){ if(LB_LIST[i].url===url) return i; } return 0; }
-function lbShow(){ var it=LB_LIST[LB_I]; if(!it) return; var im=el('lbImg'); if(im) im.src=it.url; var c=el('lbCap'); if(c) c.textContent=(LB_I+1)+' / '+LB_LIST.length+(it.cap?('  ·  '+it.cap):''); }
+function lbShow(){ var it=LB_LIST[LB_I]; if(!it) return; var im=el('lbImg'); if(im) im.src=it.url; var c=el('lbCap'); if(c) c.textContent=(LB_I+1)+' / '+LB_LIST.length+(it.cap?('  ·  '+it.cap):''); var del=el('lbDel'); if(del) del.style.display=(BOOK&&BOOK.created_by===me&&it.id)?'':'none'; }
+function removeStorage(url){ try{ var parts=String(url).split('/object/public/moments/'); if(parts[1]){ sbClient().storage.from('moments').remove([decodeURIComponent(parts[1])]); } }catch(e){} }
+function lbDelete(e){ if(e&&e.stopPropagation)e.stopPropagation(); var it=LB_LIST[LB_I]; if(it&&it.id) deletePhoto(it.id); }
+async function deletePhoto(id){
+  if(!id||!BOOK||BOOK.created_by!==me) return;
+  if(!confirm('Remove this photo from the book?')) return;
+  var sb=sbClient(); if(!sb) return;
+  var url=''; for(var i=0;i<LB_LIST.length;i++){ if(LB_LIST[i].id===id){ url=LB_LIST[i].url; break; } }
+  try{ await sb.from('photos').delete().eq('id',id); }catch(e){}
+  removeStorage(url);
+  el('lightbox').classList.remove('show'); await loadBook();
+}
+function renderBookMenu(){ var d=el('bookDanger'); if(!d) return; d.innerHTML=(BOOK&&BOOK.created_by===me)?'<button class="danger-btn" onclick="deleteBook()">🗑 Delete this book</button>':''; }
+async function deleteBook(){
+  if(!BOOK||BOOK.created_by!==me) return;
+  if(!confirm('Delete “'+(BOOK.title||'this book')+'” and all its photos? This cannot be undone.')) return;
+  var sb=sbClient(); if(!sb) return; var id=BOOK.id;
+  try{ var r=await sb.from('photos').select('media_url').eq('book_id',id); (r.data||[]).forEach(function(x){ removeStorage(x.media_url); }); }catch(e){}
+  try{ await sb.from('photos').delete().eq('book_id',id); }catch(e){}
+  try{ await sb.from('day_pages').delete().eq('book_id',id); }catch(e){}
+  try{ await sb.from('book_members').delete().eq('book_id',id); }catch(e){}
+  try{ await sb.from('book_comments').delete().eq('book_id',id); }catch(e){}
+  try{ await sb.from('books').delete().eq('id',id); }catch(e){}
+  BOOK=null; showShelf();
+}
 function openLightbox(i){ if(!LB_LIST.length) return; LB_I=Math.max(0,Math.min(i|0,LB_LIST.length-1)); lbShow(); el('lightbox').classList.add('show'); }
 function lbPrev(e){ if(e&&e.stopPropagation)e.stopPropagation(); if(LB_I>0){ LB_I--; lbShow(); } }
 function lbNext(e){ if(e&&e.stopPropagation)e.stopPropagation(); if(LB_I<LB_LIST.length-1){ LB_I++; lbShow(); } }
@@ -203,8 +233,8 @@ async function ingest(e){
   if(!me){ el('upNote').innerHTML='<span style="color:var(--accent)">Open this from inside the Jeeto app (while logged in) to save your book.</span>'; e.target.value=''; return; }
   var sb=sbClient(); if(!sb){ el('upNote').textContent='Could not connect. Try again.'; return; }
   el('upNote').textContent='Preparing '+files.length+' photo'+(files.length>1?'s':'')+'…';
-  if(!BOOK){ el('upNote').textContent='Open a book first.'; return; }
-  var ok=0, firstUrl=null;
+  if(!BOOK||!BOOK.id){ el('upNote').textContent='Open a book first.'; return; }
+  var ok=0, firstUrl=null, lastErr=null;
   for(var i=0;i<files.length;i++){
     var f=files[i], meta={};
     try{ meta=await exifr.parse(f,{pick:['DateTimeOriginal','CreateDate','latitude','longitude','Make','Model']})||{}; }catch(_){}
@@ -222,11 +252,11 @@ async function ingest(e){
       var ins=await sb.from('photos').insert({book_id:BOOK.id, uploader_phone:me, media_url:pub, media_type:'image', taken_at:date.toISOString(), lat:meta.latitude||null, lng:meta.longitude||null, city:city, country:country, place_name:((meta.Make||'')+' '+(meta.Model||'')).trim()||null});
       if(ins.error) throw ins.error;
       if(!firstUrl) firstUrl=pub; ok++;
-    }catch(err){ /* skip this one */ }
+    }catch(err){ lastErr=err; }
   }
   e.target.value='';
   if(ok && BOOK && !BOOK.cover_url && firstUrl){ try{ await sb.from('books').update({cover_url:firstUrl}).eq('id',BOOK.id); BOOK.cover_url=firstUrl; }catch(e){} }
-  el('upNote').textContent=ok?('Saved '+ok+' to your book ✓'):'Could not save — check connection.';
+  el('upNote').textContent=ok?('Saved '+ok+' to your book ✓'):('Could not save'+(lastErr?(': '+(lastErr.message||lastErr)):' — check your connection and try again.'));
   await loadBook();
 }
 
@@ -260,7 +290,7 @@ function renderPage(){
   var d=DAYS[cur];
   var place=d.area||''; var heroCap=(place?place+' · ':'')+hhmm(d.hero.date)+(d.hero.cam?(' · '+d.hero.cam):'');
   var noPrev='<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:13px;gap:6px;text-align:center;padding:20px"><span style="font-size:26px">🖼️</span>Photo saved, preview not supported in this browser</div>';
-  LB_LIST=[]; d.photos.forEach(function(p){ if(p.url) LB_LIST.push({url:p.url, cap:hhmm(p.date)}); });
+  LB_LIST=[]; d.photos.forEach(function(p){ if(p.url) LB_LIST.push({url:p.url, cap:hhmm(p.date), id:p.id}); });
   HERO_IDX=0; if(d.hero&&d.hero.url){ HERO_IDX=lbIndexOf(d.hero.url); }
   var heroImg=d.hero.url?'<img src="'+d.hero.url+'" onerror="this.style.display=\'none\'">':noPrev;
   var gallery=d.photos.map(function(p){
@@ -390,7 +420,7 @@ async function renderShelf(){
   grid.insertAdjacentHTML('afterbegin', cards);
 }
 function openBookById(id){ var b=BOOKS.filter(function(x){return x.id===id})[0]; if(b) openBook(b); }
-function openBook(b){ BOOK=b; VIEW='book'; el('shelf').style.display='none'; el('bookview').style.display=''; el('bookTitle').textContent=b.title||'Book'; renderScopeBar(); DAYS=[]; cur=0; el('upNote').textContent=''; el('page').innerHTML='<div class="empty">Loading…</div>'; loadBook(); window.scrollTo(0,0); }
+function openBook(b){ BOOK=b; VIEW='book'; el('shelf').style.display='none'; el('bookview').style.display=''; el('bookTitle').textContent=b.title||'Book'; renderScopeBar(); renderBookMenu(); DAYS=[]; cur=0; el('upNote').textContent=''; el('page').innerHTML='<div class="empty">Loading…</div>'; loadBook(); window.scrollTo(0,0); }
 function topBack(){ if(VIEW==='book'){ showShelf(); } else { _exit(); } }
 function newBook(){ el('nbTitle').value=''; NB_TYPE='trip'; renderNbTypes(); el('nbScrim').classList.add('show'); el('nbSheet').classList.add('show'); setTimeout(function(){ try{ el('nbTitle').focus(); }catch(e){} },150); }
 function closeNewBook(){ el('nbScrim').classList.remove('show'); el('nbSheet').classList.remove('show'); }
@@ -398,13 +428,19 @@ function renderNbTypes(){ el('nbTypes').innerHTML=TYPES.map(function(t){ return 
 function renderNbScopes(){ el('nbScopes').innerHTML=SCOPES.map(function(t){ return '<button class="nb-type'+(t[0]===NB_SCOPE?' on':'')+'" onclick="NB_SCOPE=\''+t[0]+'\';renderNbScopes()">'+t[1]+'</button>'; }).join(''); el('nbNote').textContent=SCOPE_NOTE[NB_SCOPE]||''; }
 async function createBook(){
   var title=(el('nbTitle').value||'').trim(); if(!title){ try{ el('nbTitle').focus(); }catch(e){} return; }
-  var sb=sbClient(); if(!sb||!me) return;
+  var sb=sbClient(); if(!sb||!me){ alert('Not connected — open Memory Books from inside the Jeeto app while logged in.'); return; }
+  var b=null;
   try{
-    var ins=await sb.from('books').insert({title:title, kind:NB_TYPE, scope:'me', created_by:me}).select().limit(1);
-    var b=(ins.data&&ins.data[0]); if(!b) return;
-    try{ await sb.from('book_members').insert({book_id:b.id, phone:me, role:'owner'}); }catch(e){}
-    closeNewBook(); openBook(b);
-  }catch(e){}
+    var ins=await sb.from('books').insert({title:title, kind:NB_TYPE, scope:'me', created_by:me}).select();
+    if(ins.error) throw ins.error;
+    b=(ins.data&&ins.data[0])||null;
+  }catch(err){ alert('Could not create the book: '+(err&&err.message?err.message:err)); return; }
+  if(!b || !b.id){
+    try{ var q=await sb.from('books').select('*').eq('created_by',me).eq('title',title).order('created_at',{ascending:false}).limit(1); b=(q.data&&q.data[0])||null; }catch(e){}
+  }
+  if(!b || !b.id){ alert('Book was not created. Please try again.'); return; }
+  try{ await sb.from('book_members').insert({book_id:b.id, phone:me, role:'owner'}); }catch(e){}
+  closeNewBook(); openBook(b);
 }
 function renderScopeBar(){
   var bar=el('scopeBar'); if(!bar){ return; } if(!BOOK){ bar.innerHTML=''; return; }
@@ -435,7 +471,7 @@ async function setCover(photoId, encUrl){
 }
 async function loadBook(){
   var sb=sbClient(); if(!sb||!me){ return; }
-  if(!BOOK){ return; }
+  if(!BOOK||!BOOK.id){ DAYS=[]; renderDays(); el('page').innerHTML='<div class="empty">Could not open this book — please go back and try again.</div>'; return; }
   var rows=[]; try{ var r=await sb.from('photos').select('*').eq('book_id',BOOK.id).eq('hidden',false).order('taken_at',{ascending:true}); rows=r.data||[]; }catch(e){}
   if(!rows.length){ DAYS=[]; renderDays(); el('page').innerHTML='<div class="empty">No photos yet — add some above and your first Day Page appears here, saved forever.</div>'; return; }
   var photos=rows.map(function(x){ var dt=x.taken_at?new Date(x.taken_at):new Date(x.created_at||Date.now()); return {id:x.id, url:x.media_url, date:dt, lat:x.lat, lng:x.lng, cam:x.place_name||'', city:x.city, country:x.country, hero:x.hero, name:''}; });
@@ -517,7 +553,9 @@ async function makeMovie(){
   var usable=items.filter(function(x){return x.img});
   if(!usable.length){ btn.disabled=false; el('mvStatus').textContent='Could not load photos for the movie.'; return; }
   var cv=el('mvCanvas'), ctx=cv.getContext('2d');
-  if(!cv.captureStream||!window.MediaRecorder){ btn.disabled=false; el('mvStatus').textContent='This phone can’t record video.'; return; }
+  try{ mvCover(ctx,cv,usable[0].img,1,0,0); cv.toDataURL('image/jpeg',0.5); }
+  catch(taintErr){ btn.disabled=false; el('mvStatus').textContent='These photos are protected by the browser and can’t be turned into a video here. Try opening Jeeto in Chrome or on a computer.'; return; }
+  if(!cv.captureStream||!window.MediaRecorder){ btn.disabled=false; el('mvStatus').textContent='This browser can’t make videos (common on iPhone). Open Jeeto in Chrome or on Android/desktop to make movies.'; return; }
   var stream; try{ stream=cv.captureStream(30); }catch(e){ btn.disabled=false; el('mvStatus').textContent='Recording not supported here.'; return; }
   mvMusStart(stream);
   var types=['video/mp4;codecs=h264,aac','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']; var mime=''; for(var t=0;t<types.length;t++){ if(window.MediaRecorder.isTypeSupported(types[t])){ mime=types[t]; break; } }
