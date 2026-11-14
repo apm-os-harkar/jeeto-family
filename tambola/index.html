@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Tambola Night</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+.claimalert{background:#fff;color:var(--ink);border-radius:14px;padding:10px 12px;margin:8px 0;display:flex;align-items:center;gap:10px;animation:pop .4s ease;border-left:6px solid var(--red)}
+.claimalert b{font-size:18px}.claimalert .grow{flex:1}
+:root{
+  --bg:#2a0a12;--bg2:#3d0f1b;--card:#fff8ec;--ink:#2a0a12;--gold:#f4b73f;--gold2:#ffd77a;
+  --red:#c8203f;--green:#1f8a4c;--muted:#b98a93;--line:#e8d6bd;--dab:#c8203f;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:#fff;font-family:"Baloo 2",system-ui,sans-serif;min-height:100%}
+body{background:radial-gradient(1200px 600px at 50% -200px,#6b1a2c 0%,var(--bg) 60%) fixed}
+button{font-family:inherit;cursor:pointer;border:0}
+input,select{font-family:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:16px 14px 90px}
+.hidden{display:none!important}
+h1{font-size:34px;line-height:1;margin:0;color:var(--gold2);letter-spacing:.5px}
+.sub{color:var(--muted);font-size:15px;margin-top:4px}
+.brand{display:flex;align-items:center;gap:10px;margin:6px 0 18px}
+.ball{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 18%,var(--gold) 19% 100%);display:grid;place-items:center;color:var(--ink);font-weight:800;font-size:18px;box-shadow:0 4px 0 #9c6a12}
+.btn{display:block;width:100%;padding:14px 16px;border-radius:14px;font-size:19px;font-weight:700;background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #9c6a12;transition:transform .05s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #9c6a12}
+.btn.ghost{background:transparent;color:var(--gold2);border:2px solid #6b2a39;box-shadow:none}
+.btn.red{background:var(--red);color:#fff;box-shadow:0 4px 0 #7d1023}
+.btn.green{background:var(--green);color:#fff;box-shadow:0 4px 0 #0f5a2f}
+.btn.sm{font-size:15px;padding:9px 12px;border-radius:11px}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.panel{background:var(--bg2);border:1px solid #5a1d2c;border-radius:18px;padding:14px;margin:12px 0}
+.panel h3{margin:0 0 8px;font-size:18px;color:var(--gold2)}
+label.f{display:block;font-size:14px;color:var(--muted);margin:10px 0 4px}
+.inp{width:100%;padding:12px;border-radius:12px;border:2px solid #6b2a39;background:#1d070c;color:#fff;font-size:20px;font-weight:600;outline:none}
+.inp:focus{border-color:var(--gold)}
+.inp.code{text-transform:uppercase;letter-spacing:6px;text-align:center;font-size:26px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:13px;background:#1d070c;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:#888}.dot.on{background:#3ddc84}.dot.warn{background:var(--gold)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.codebox{font-size:13px;color:var(--muted)}.codebox b{display:block;font-size:30px;line-height:1;color:var(--gold2);letter-spacing:5px}
+/* current number */
+.current{display:flex;flex-direction:column;align-items:center;padding:8px 0 4px}
+.bigball{width:170px;height:170px;border-radius:50%;display:grid;place-items:center;font-size:84px;font-weight:800;color:var(--ink);
+  background:radial-gradient(circle at 34% 28%,#fff 0 14%,var(--gold2) 15%,var(--gold) 60%,#c88a1b 100%);box-shadow:0 10px 0 #7a520f,0 0 60px rgba(244,183,63,.35)}
+.bigball.pop{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.4) rotate(-40deg);opacity:.2}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+.bigball.small{width:110px;height:110px;font-size:52px;box-shadow:0 6px 0 #7a520f}
+.callword{margin-top:14px;font-size:20px;color:var(--gold2);text-align:center;min-height:30px}
+.recent{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.recent span{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#5a1d2c;color:#fff;font-weight:700}
+.count{color:var(--muted);font-size:14px;text-align:center;margin-top:6px}
+/* board */
+.board{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.board div{aspect-ratio:1;border-radius:7px;display:grid;place-items:center;font-size:14px;font-weight:700;background:#1d070c;color:#6f4a52}
+.board div.on{background:var(--gold);color:var(--ink)}
+.board div.last{background:#fff;color:var(--red);box-shadow:0 0 0 2px var(--red)}
+/* ticket */
+.ticket{background:var(--card);border-radius:16px;padding:10px;color:var(--ink);box-shadow:0 6px 0 #b9a27c;margin:14px 0}
+.thead{display:flex;justify-content:space-between;align-items:center;padding:0 2px 8px}
+.tid{font-weight:800;font-size:20px;letter-spacing:3px}
+.tid small{font-size:12px;letter-spacing:0;color:#8a6a55;font-weight:600;display:block;line-height:1}
+.grid{display:grid;grid-template-columns:repeat(9,1fr);border:2px solid var(--line);border-radius:10px;overflow:hidden}
+.cell{aspect-ratio:1/1.05;display:grid;place-items:center;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:clamp(17px,5.4vw,26px);font-weight:800;position:relative;user-select:none}
+.cell:nth-child(9n){border-right:0}.cell:nth-last-child(-n+9){border-bottom:0}
+.cell.empty{background:repeating-linear-gradient(45deg,#f5e8d2,#f5e8d2 4px,#efdfc4 4px,#efdfc4 8px)}
+.cell.num{cursor:pointer}
+.cell.hint::before{content:"";position:absolute;inset:14%;border-radius:50%;border:2px dashed #e6a33a}
+.cell.marked{color:#fff}
+.cell.marked::after{content:"";position:absolute;inset:9%;border-radius:50%;background:var(--dab);opacity:.88;z-index:0;animation:dab .18s ease-out}
+.cell span{position:relative;z-index:1}
+.cell.v-ok{background:#d6f3e0}.cell.v-ok span{color:var(--green)}
+.cell.v-no{color:#b9a89a}
+@keyframes dab{from{transform:scale(1.6);opacity:0}to{transform:scale(1);opacity:.88}}
+.winners{margin:0;padding:0;list-style:none}
+.winners li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #5a1d2c;font-size:16px}
+.winners li:last-child{border-bottom:0}
+.winners .w{color:var(--gold2);font-weight:700;text-align:right}
+.chk{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:17px}
+.chk input{width:22px;height:22px;accent-color:var(--gold)}
+.note{font-size:14px;color:var(--muted);line-height:1.35}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#fff;color:var(--ink);padding:10px 16px;border-radius:12px;font-weight:700;z-index:50;box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:90vw;text-align:center}
+.overlay{position:fixed;inset:0;background:rgba(20,4,8,.98);z-index:40;overflow:auto;padding:18px 14px}
+.overlay .inner{max-width:560px;margin:0 auto}
+.claimid{font-size:72px;font-weight:800;letter-spacing:10px;color:var(--gold2);text-align:center;line-height:1;margin:10px 0}
+.prizechk{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px dashed #5a1d2c}
+.prizechk:last-child{border-bottom:0}
+.ok{color:#3ddc84;font-weight:700}.no{color:#ff8a9c;font-weight:700}
+.slider{width:100%;accent-color:var(--gold)}
+.lastcalled{display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid #5a1d2c;border-radius:18px;padding:10px 14px;margin:6px 0 4px}
+.lastcalled .lbl{font-size:14px;color:var(--muted)}
+.lastcalled .nums{font-size:15px;color:#e8cfd4}
+details summary{cursor:pointer;color:var(--gold2);font-weight:700;font-size:17px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.banner{background:linear-gradient(90deg,var(--gold),var(--gold2));color:var(--ink);border-radius:14px;padding:10px 14px;font-weight:700;margin:10px 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HOME -->
+  <section id="home">
+    <div class="brand"><div class="ball">90</div><div><h1>Tambola Night</h1><div class="sub">Housie for the whole room — on every phone</div></div></div>
+    <div id="liveInfo" class="banner hidden"></div>
+    <div class="panel">
+      <h3>Playing?</h3>
+      <p class="note" style="margin:0 0 12px">Get your ticket on this phone. Listen to the caller, tap numbers to dab them, and shout when you win.</p>
+      <button class="btn" id="goPlayer">Join as Player</button>
+    </div>
+    <p class="note" style="text-align:center">Physical mode · everyone in one room · numbers called aloud by the host phone</p>
+    <div style="text-align:center;margin-top:30px"><button class="btn ghost sm" style="width:auto;display:inline-block" id="goHost">🔒 Admin</button></div>
+  </section>
+
+  <!-- ADMIN LOGIN -->
+  <section id="login" class="hidden">
+    <div class="topbar"><button class="btn ghost sm" style="width:auto" data-back>‹ Back</button></div>
+    <h1 style="font-size:28px">Admin login</h1>
+    <p class="note">Only the host needs this. Players never log in.</p>
+    <label class="f">Admin password</label>
+    <input class="inp" id="lPin" type="password" autocomplete="current-password" placeholder="••••••••">
+    <div style="height:14px"></div>
+    <button class="btn" id="lGo">Log in</button>
+  </section>
+
+  <!-- PLAYER: JOIN -->
+  <section id="pjoin" class="hidden">
+    <div class="topbar"><button class="btn ghost sm" style="width:auto" data-back>‹ Back</button><span class="pill"><span class="dot" id="pjDot"></span><span id="pjSync">Connecting…</span></span></div>
+    <h1 style="font-size:28px">Get your ticket</h1>
+    <label class="f">Your name</label>
+    <input class="inp" id="pName" maxlength="20" placeholder="e.g. Ramesh">
+    <div id="pCodeWrap">
+      <label class="f">Game code (shown on host screen)</label>
+      <input class="inp code" id="pCode" maxlength="4" placeholder="ABCD" autocomplete="off">
+    </div>
+    <div id="pCodeAuto" class="note hidden" style="margin-top:10px"></div>
+    <div style="height:16px"></div>
+    <button class="btn" id="pGet">Get My Ticket</button>
+  </section>
+
+  <!-- PLAYER: PLAY -->
+  <section id="pplay" class="hidden">
+    <div class="topbar">
+      <div class="codebox">Game<b id="ppCode">----</b></div>
+      <div style="text-align:right">
+        <span class="pill"><span class="dot" id="ppDot"></span><span id="ppSync">Offline</span></span>
+        <div style="font-weight:700;margin-top:4px" id="ppName"></div>
+      </div>
+    </div>
+    <div id="ppNewGame" class="banner hidden"></div>
+    <div class="lastcalled" id="ppLast">
+      <div class="bigball small" id="ppBall">–</div>
+      <div><div class="lbl">Last called</div><div class="nums" id="ppRecent">Waiting for host…</div><div class="lbl" id="ppCount"></div></div>
+    </div>
+    <div id="ppTickets"></div>
+    <div class="row">
+      <button class="btn red" id="ppClaim">I WON! Claim</button>
+    </div>
+    <div class="panel">
+      <label class="chk"><input type="checkbox" id="ppAuto"> Auto-dab called numbers</label>
+      <p class="note" style="margin:0" id="ppAutoNote">Off = classic play: you listen and tap yourself. Dotted rings show numbers already called that you haven't dabbed.</p>
+    </div>
+    <div class="panel" id="ppWinPanel"><h3>Winners</h3><ul class="winners" id="ppWinners"><li><span class="note">No winners yet</span></li></ul></div>
+    <div class="panel"><details><summary>Called numbers board ▾</summary><div style="height:10px"></div><div class="board" id="ppBoard"></div></details></div>
+    <div class="row" style="margin-top:6px">
+      <button class="btn ghost sm" id="ppAddTicket">+ Another ticket</button>
+      <button class="btn ghost sm" id="ppLeave">Leave game</button>
+    </div>
+  </section>
+
+  <!-- HOST -->
+  <section id="host" class="hidden">
+    <div class="topbar">
+      <button class="btn ghost sm" style="width:auto" data-back>‹ Home</button>
+      <span class="pill"><span class="dot" id="hDot"></span><span id="hSync">Local only</span></span>
+    </div>
+
+    <!-- lobby -->
+    <div id="hLobby">
+      <div class="panel" style="text-align:center">
+        <div class="note">Game code — tell players to open this link, tap <b>Join as Player</b>, and enter</div>
+        <div class="claimid" id="hCodeBig">----</div>
+        <div class="note" id="hLobbySync"></div>
+        <div style="height:12px"></div>
+        <button class="btn green" id="hShare">Share on WhatsApp</button>
+        <div style="height:8px"></div>
+        <button class="btn ghost sm" id="hCopy">Copy invite link</button>
+      </div>
+      <div class="panel"><h3>Players joined: <span id="hPlayerCount">0</span></h3><div class="note" id="hPlayerList">Nobody yet — share the link.</div></div>
+      <div class="panel">
+        <h3>Prizes</h3>
+        <div id="hPrizeSetup"></div>
+      </div>
+      <div class="panel" id="voicePanel">
+        <h3>Caller voice</h3>
+        <label class="f">Language</label>
+        <select class="inp" id="hLang" style="font-size:17px">
+          <option value="en">English</option>
+          <option value="hi">हिंदी (Hindi)</option>
+          <option value="both">English + हिंदी</option>
+        </select>
+        <label class="f">Voice</label>
+        <select class="inp" id="hVoice" style="font-size:15px"></select>
+        <label class="f">Speed <span id="hRateV"></span></label>
+        <input type="range" class="slider" id="hRate" min="0.6" max="1.3" step="0.05" value="0.9">
+        <label class="chk"><input type="checkbox" id="hFun"> Fun calls ("Two fat ladies, 88")</label>
+        <label class="chk"><input type="checkbox" id="hTwice"> Say each number twice</label>
+        <button class="btn ghost sm" id="hTest">🔊 Test voice</button>
+        <p class="note" id="hVoiceNote" style="margin-bottom:0">Turn the phone volume up and connect a Bluetooth speaker for a big room.</p>
+      </div>
+      <button class="btn green" id="hStart">Start Game</button>
+      <div id="hResume" class="hidden" style="margin-top:10px"></div>
+    </div>
+
+    <!-- running -->
+    <div id="hRun" class="hidden">
+      <div class="topbar" style="margin-bottom:0">
+        <div class="codebox">Game<b id="hCode">----</b></div>
+        <div class="count" id="hCount" style="text-align:right"></div>
+      </div>
+      <div class="current">
+        <div class="bigball" id="hBall">–</div>
+        <div class="callword" id="hWord">Tap “Next Number” to begin</div>
+        <div class="recent" id="hRecent"></div>
+      </div>
+      <div style="height:10px"></div>
+      <button class="btn" id="hNext" style="font-size:24px;padding:18px">Next Number</button>
+      <div style="height:10px"></div>
+      <div class="row">
+        <button class="btn ghost sm" id="hAuto">▶ Auto</button>
+        <button class="btn ghost sm" id="hRepeat">🔁 Repeat</button>
+        <button class="btn ghost sm" id="hUndo">↶ Undo</button>
+      </div>
+      <div class="panel" id="hAutoPanel">
+        <label class="f" style="margin-top:0">Auto gap: <b id="hGapV">8</b> seconds</label>
+        <input type="range" class="slider" id="hGap" min="4" max="20" step="1" value="8">
+      </div>
+      <div id="hClaims"></div>
+      <button class="btn red" id="hVerify">Check a Claim</button>
+      <div class="note" style="text-align:center;margin-top:8px"><span id="hPlayersRun">0</span> players in this game · <a href="#" id="hShare2" style="color:var(--gold2)">invite more</a></div>
+      <div class="panel"><h3>Winners</h3><ul class="winners" id="hWinners"></ul></div>
+      <div class="panel"><h3>Board</h3><div class="board" id="hBoard"></div></div>
+      <div class="row">
+        <button class="btn ghost sm" id="hEnd">End Game</button>
+        <button class="btn ghost sm" id="hNew">New Game</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- verify overlay -->
+<div class="overlay hidden" id="vOverlay"><div class="inner">
+  <div class="topbar"><h1 style="font-size:26px">Check Claim</h1><button class="btn ghost sm" style="width:auto" id="vClose">Close</button></div>
+  <label class="f">Ticket ID (player shows it on their phone)</label>
+  <input class="inp code" id="vId" maxlength="4" placeholder="ABCD" autocomplete="off">
+  <label class="f">Player name</label>
+  <input class="inp" id="vName" maxlength="20" placeholder="Name to announce">
+  <div style="height:10px"></div>
+  <button class="btn" id="vCheck">Check Ticket</button>
+  <div id="vResult"></div>
+</div></div>
+
+<!-- claim overlay (player) -->
+<div class="overlay hidden" id="cOverlay"><div class="inner" style="text-align:center">
+  <h1 style="font-size:30px;margin-top:10px">Claim sent to host!</h1>
+  <div class="note" id="cMsg">Shout “TAMBOLA!” too. The host will check this ticket ID.</div>
+  <div id="cList"></div>
+  <button class="btn ghost" id="cClose" style="margin-top:14px">Back to my ticket</button>
+</div></div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script>
+(()=>{
+/* ---------- utils ---------- */
+const $=s=>document.querySelector(s);
+const ALPH="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const rid=n=>{const a=new Uint32Array(n);crypto.getRandomValues(a);return Array.from(a,x=>ALPH[x%ALPH.length]).join('')};
+const randInt=n=>{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+let toastT;function toast(m,ms=2200){const t=$('#toast');t.textContent=m;t.classList.remove('hidden');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.add('hidden'),ms)}
+const cleanCode=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/[O]/g,'0').replace(/[I]/g,'1').slice(0,4);
+
+/* ---------- deterministic ticket ---------- */
+function hashStr(s){let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return ((h2>>>0)^(h1>>>0))>>>0}
+function rng32(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(arr,r){for(let i=arr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+function genTicket(seed){
+  const r=rng32(hashStr(seed));
+  const counts=Array(9).fill(1);let extra=6;
+  while(extra){const c=Math.floor(r()*9);if(counts[c]<3){counts[c]++;extra--}}
+  let grid;
+  for(let at=0;at<300;at++){
+    grid=[0,1,2].map(()=>Array(9).fill(0));const rc=[0,0,0];let ok=true;
+    const order=shuffle([0,1,2,3,4,5,6,7,8],r);order.sort((a,b)=>counts[b]-counts[a]);
+    for(const c of order){
+      const rows=shuffle([0,1,2],r).filter(x=>rc[x]<5);rows.sort((a,b)=>rc[a]-rc[b]);
+      if(rows.length<counts[c]){ok=false;break}
+      for(let k=0;k<counts[c];k++){grid[rows[k]][c]=1;rc[rows[k]]++}
+    }
+    if(ok&&rc[0]===5&&rc[1]===5&&rc[2]===5)break;
+  }
+  for(let c=0;c<9;c++){
+    const lo=c===0?1:c*10,hi=c===8?90:c*10+9,pool=[];
+    for(let n=lo;n<=hi;n++)pool.push(n);
+    shuffle(pool,r);const nums=pool.slice(0,counts[c]).sort((a,b)=>a-b);let k=0;
+    for(let x=0;x<3;x++)if(grid[x][c])grid[x][c]=nums[k++];
+  }
+  return grid;
+}
+const ticketFor=(code,id)=>genTicket(code+'-'+id);
+const rowNums=(g,i)=>g[i].filter(Boolean);
+const allNums=g=>g.flat().filter(Boolean);
+const corners=g=>{const t=rowNums(g,0),b=rowNums(g,2);return[t[0],t[t.length-1],b[0],b[b.length-1]]};
+const PRIZES=[
+  {k:'early5',name:'Early Five',def:true,need:(g)=>null,test:(g,S)=>allNums(g).filter(n=>S.has(n)).length>=5},
+  {k:'corners',name:'Four Corners',def:true,cells:g=>corners(g),test:(g,S)=>corners(g).every(n=>S.has(n))},
+  {k:'top',name:'Top Line',def:true,cells:g=>rowNums(g,0),test:(g,S)=>rowNums(g,0).every(n=>S.has(n))},
+  {k:'middle',name:'Middle Line',def:true,cells:g=>rowNums(g,1),test:(g,S)=>rowNums(g,1).every(n=>S.has(n))},
+  {k:'bottom',name:'Bottom Line',def:true,cells:g=>rowNums(g,2),test:(g,S)=>rowNums(g,2).every(n=>S.has(n))},
+  {k:'full',name:'Full House',def:true,cells:g=>allNums(g),test:(g,S)=>allNums(g).every(n=>S.has(n))},
+];
+const prizeName=k=>(PRIZES.find(p=>p.k===k)||{}).name||k;
+
+function ticketHTML(g,{marks,called,verify,tid,label,interactive}={}){
+  const M=new Set(marks||[]),C=new Set(called||[]);
+  let cells='';
+  for(let x=0;x<3;x++)for(let c=0;c<9;c++){
+    const n=g[x][c];
+    if(!n){cells+='<div class="cell empty"></div>';continue}
+    let cls='cell num';
+    if(verify){cls+=C.has(n)?' v-ok':' v-no'}
+    else{if(M.has(n))cls+=' marked';else if(C.has(n))cls+=' hint'}
+    cells+=`<div class="${cls}" data-n="${n}"><span>${n}</span></div>`;
+  }
+  return `<div class="ticket" ${tid?`data-tid="${tid}"`:''}><div class="thead"><div class="tid"><small>${esc(label||'Ticket')}</small>${esc(tid||'')}</div>${interactive?`<div class="note" style="color:#8a6a55">${M.size}/15 dabbed</div>`:''}</div><div class="grid">${cells}</div></div>`;
+}
+function boardHTML(called){const S=new Set(called),last=called[called.length-1];let h='';for(let n=1;n<=90;n++)h+=`<div class="${n===last?'on last':S.has(n)?'on':''}">${n}</div>`;return h}
+
+/* ---------- settings ---------- */
+const S=Object.assign({lang:'en',rate:0.9,fun:true,twice:false,voiceURI:'',gap:8},store.get('tb_settings',{}));
+const saveS=()=>store.set('tb_settings',S);
+
+/* ---------- speech ---------- */
+const EN=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+const ENT=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+const enWord=n=>n<20?EN[n]:ENT[Math.floor(n/10)]+(n%10?' '+EN[n%10]:'');
+const HI=['शून्य','एक','दो','तीन','चार','पाँच','छह','सात','आठ','नौ','दस','ग्यारह','बारह','तेरह','चौदह','पंद्रह','सोलह','सत्रह','अठारह','उन्नीस','बीस','इक्कीस','बाईस','तेईस','चौबीस','पच्चीस','छब्बीस','सत्ताईस','अट्ठाईस','उनतीस','तीस','इकतीस','बत्तीस','तैंतीस','चौंतीस','पैंतीस','छत्तीस','सैंतीस','अड़तीस','उनतालीस','चालीस','इकतालीस','बयालीस','तैंतालीस','चवालीस','पैंतालीस','छियालीस','सैंतालीस','अड़तालीस','उनचास','पचास','इक्यावन','बावन','तिरेपन','चौवन','पचपन','छप्पन','सत्तावन','अट्ठावन','उनसठ','साठ','इकसठ','बासठ','तिरेसठ','चौंसठ','पैंसठ','छियासठ','सड़सठ','अड़सठ','उनहत्तर','सत्तर','इकहत्तर','बहत्तर','तिहत्तर','चौहत्तर','पचहत्तर','छिहत्तर','सतहत्तर','अठहत्तर','उन्यासी','अस्सी','इक्यासी','बयासी','तिरासी','चौरासी','पचासी','छियासी','सत्तासी','अट्ठासी','नवासी','नब्बे'];
+const FUN={1:"Kelly's eye",3:"Cup of tea",7:"Lucky seven",9:"Doctor's orders",11:"Legs eleven",16:"Sweet sixteen",21:"Key of the door",22:"Two little ducks",33:"All the threes",44:"All the fours",45:"Halfway there",50:"Half a century",52:"Deck of cards",55:"All the fives",66:"Clickety click",77:"All the sevens",88:"Two fat ladies",90:"Top of the house"};
+function enCall(n,fun){const d=String(n).split('');let s=n<10?`Single number, ${EN[n]}.`:`${EN[+d[0]]}, ${EN[+d[1]]}. ${enWord(n)}.`;if(fun&&FUN[n])s=`${FUN[n]}! `+s;return s}
+function hiCall(n){const d=String(n).split('');return n<10?`अकेला ${HI[n]}।`:`${HI[+d[0]]} ${HI[+d[1]]}, ${HI[n]}।`}
+const synth=window.speechSynthesis;let voices=[];
+function loadVoices(){try{voices=synth?synth.getVoices():[]}catch(e){voices=[]}fillVoices()}
+if(synth){loadVoices();try{synth.onvoiceschanged=loadVoices}catch(e){}}
+const hiVoice=()=>voices.find(v=>/^hi/i.test(v.lang));
+function enVoice(){const pref=S.voiceURI&&voices.find(v=>v.voiceURI===S.voiceURI);if(pref)return pref;return voices.find(v=>/en[-_]IN/i.test(v.lang))||voices.find(v=>/^en/i.test(v.lang))}
+function sayParts(parts){
+  if(!synth){return}
+  try{synth.cancel()}catch(e){}
+  parts.forEach(p=>{
+    const u=new SpeechSynthesisUtterance(p.text);
+    const v=p.lang==='hi'?hiVoice():enVoice();
+    u.lang=p.lang==='hi'?'hi-IN':(v?v.lang:'en-IN');if(v)u.voice=v;
+    u.rate=+S.rate||0.9;u.volume=1;u.pitch=1;synth.speak(u);
+  });
+}
+function callParts(n){
+  const hiOK=!!hiVoice();let parts=[];
+  const en={text:enCall(n,S.fun),lang:'en'},hi={text:hiCall(n),lang:'hi'};
+  if(S.lang==='en'||(!hiOK))parts=[en];else if(S.lang==='hi')parts=[hi];else parts=[en,hi];
+  if(S.twice)parts=parts.concat(parts);
+  return parts;
+}
+function fillVoices(){
+  const sel=$('#hVoice');if(!sel)return;
+  const en=voices.filter(v=>/^en/i.test(v.lang));
+  sel.innerHTML='<option value="">Auto (Indian English if available)</option>'+en.map(v=>`<option value="${esc(v.voiceURI)}">${esc(v.name)} · ${esc(v.lang)}</option>`).join('');
+  sel.value=S.voiceURI||'';
+  const note=$('#hVoiceNote');
+  if(!synth)note.textContent="This browser can't speak. Open the link in Chrome or Safari on the host phone.";
+  else if(S.lang!=='en'&&voices.length&&!hiVoice())note.textContent="No Hindi voice on this phone — it will call in English. (Android: Settings → Text-to-speech → install Hindi.)";
+  else note.textContent="Turn the phone volume up and connect a Bluetooth speaker for a big room.";
+}
+
+
+/* ---------- platform (Supabase) ---------- */
+const SB_URL='https://ebimsihjzwpmdtzqopmz.supabase.co';
+const SB_KEY='sb_publishable_wMOwA8fUMECD711mOa-34w_vexghRFF';
+let sb=null;try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false}})}catch(e){sb=null}
+let liveDoc=null,liveLoaded=false,watchCode=null,gameChan=null;
+function setSync(dotSel,txtSel,state,txt){const d=$(dotSel),t=$(txtSel);if(!d)return;d.className='dot'+(state==='on'?' on':state==='warn'?' warn':'');t.textContent=txt}
+function syncLabel(){
+  const st=!sb?'off':liveLoaded?'on':'warn';
+  const txt=!sb?'Offline':liveLoaded?'Live':'Connecting…';
+  setSync('#hDot','#hSync',st,txt);setSync('#pjDot','#pjSync',st,txt);setSync('#ppDot','#ppSync',st,txt);
+}
+const rowToDoc=r=>r?{code:r.code,status:r.status,called:r.called||[],prizes:r.prizes||{}}:null;
+async function watchGame(code){
+  if(!sb||!code)return;
+  if(watchCode===code&&gameChan)return;
+  if(gameChan){try{sb.removeChannel(gameChan)}catch(e){}gameChan=null}
+  watchCode=code;liveLoaded=false;liveDoc=null;syncLabel();
+  const load=async()=>{const {data,error}=await sb.from('tb_games').select('*').eq('code',code).maybeSingle();if(!error&&watchCode===code){liveDoc=rowToDoc(data);liveLoaded=true;onLive()}};
+  gameChan=sb.channel('g-'+code).on('postgres_changes',{event:'*',schema:'public',table:'tb_games',filter:'code=eq.'+code},p=>{
+    if(watchCode!==code)return;
+    if(p.eventType==='DELETE'){liveDoc=null}else liveDoc=rowToDoc(p.new);
+    liveLoaded=true;onLive();
+  }).subscribe(st=>{if(st==='SUBSCRIBED')load();if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'){liveLoaded=false;syncLabel()}});
+  load();
+}
+// safety net: refresh every 15s in case a realtime message drops
+setInterval(async()=>{if(!sb||!watchCode||cur==='host')return;const {data}=await sb.from('tb_games').select('*').eq('code',watchCode).maybeSingle();if(data){const d=rowToDoc(data);if(!liveDoc||d.called.length!==liveDoc.called.length||d.status!==liveDoc.status||JSON.stringify(d.prizes)!==JSON.stringify(liveDoc.prizes)){liveDoc=d;liveLoaded=true;onLive()}}},15000);
+
+/* ---------- navigation ---------- */
+const screens=['home','login','pjoin','pplay','host'];
+let cur='home';
+function show(id){screens.forEach(s=>$('#'+s).classList.toggle('hidden',s!==id));window.scrollTo(0,0);cur=id}
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{stopAuto();show('home');renderHome()});
+function renderHome(){
+  const li=$('#liveInfo');
+  if(P&&P.code&&liveDoc&&liveDoc.code===P.code&&liveDoc.status!=='ended'){li.textContent=`Your game ${P.code} is ${liveDoc.status==='lobby'?'about to start':'live'} — tap Join to continue`;li.classList.remove('hidden')}
+  else li.classList.add('hidden');
+}
+function onLive(){
+  syncLabel();
+  if(cur==='home')renderHome();
+  if(cur==='pjoin')renderJoin();
+  if(cur==='pplay')renderPlayer();
+}
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+let P=store.get('tb_player',null); // {name,code,tickets:[{id,marks:[]}],auto}
+const saveP=()=>store.set('tb_player',P);
+let inviteCode=cleanCode((location.hash||'').slice(1));
+function openJoin(){show('pjoin');$('#pName').value=(P&&P.name)||store.get('tb_name','');if(inviteCode)$('#pCode').value=inviteCode;renderJoin();if(inviteCode)watchGame(inviteCode)}
+$('#goPlayer').onclick=()=>{
+  if(P&&P.tickets&&P.tickets.length&&(!inviteCode||inviteCode===P.code)){show('pplay');watchGame(P.code);renderPlayer();return}
+  openJoin();
+};
+function renderJoin(){
+  syncLabel();
+  const code=cleanCode($('#pCode').value);
+  const a=$('#pCodeAuto');
+  if(inviteCode&&code===inviteCode){
+    $('#pCodeWrap').classList.add('hidden');
+    const st=liveDoc&&liveDoc.code===code?(liveDoc.status==='ended'?' — <span class="no">this game has ended</span>':liveDoc.status==='lobby'?' — starting soon':' — live now'):'';
+    a.innerHTML=`Joining game <b style="color:var(--gold2);letter-spacing:3px">${esc(code)}</b>${st}<br><a href="#" id="pChangeCode" style="color:var(--muted)">different code?</a>`;a.classList.remove('hidden');
+    const ch=$('#pChangeCode');if(ch)ch.onclick=e=>{e.preventDefault();inviteCode='';$('#pCode').value='';renderJoin()};
+  }else{$('#pCodeWrap').classList.remove('hidden');a.classList.add('hidden')}
+}
+$('#pCode').addEventListener('input',e=>{e.target.value=cleanCode(e.target.value)});
+let joining=false;
+$('#pGet').onclick=async()=>{
+  if(joining)return;
+  const name=$('#pName').value.trim();
+  if(!name){toast('Enter your name · अपना नाम लिखें');$('#pName').focus();return}
+  const code=cleanCode($('#pCode').value);
+  if(code.length!==4){toast('Enter the 4-letter game code');$('#pCode').focus();return}
+  store.set('tb_name',name);
+  const tid=rid(4);
+  joining=true;$('#pGet').textContent='Joining…';
+  let ok=true;
+  if(sb){const {data,error}=await sb.rpc('tb_join',{p_code:code,p_ticket:tid,p_name:name});ok=!error&&data===true;if(error)ok=null}
+  joining=false;$('#pGet').textContent='Get My Ticket';
+  if(ok===false){toast('Game not found or already over. Check the code with the host.',3500);return}
+  if(ok===null)toast('Network weak — you can still play by listening');
+  P={name,code,tickets:[{id:tid,marks:[]}],auto:false};saveP();
+  watchGame(code);show('pplay');renderPlayer();toast('Your ticket is ready! 🎉');
+};
+function playerCalled(){return liveDoc&&P&&liveDoc.code===P.code?(liveDoc.called||[]):[]}
+let lastSeenCount=-1;
+function renderPlayer(){
+  if(!P)return;
+  syncLabel();
+  $('#ppCode').textContent=P.code;$('#ppName').textContent=P.name;
+  const called=playerCalled();const synced=!!(liveLoaded&&liveDoc&&liveDoc.code===P.code);
+  const ng=$('#ppNewGame');
+  if(synced&&liveDoc.status==='ended'){ng.innerHTML='This game is over. Thanks for playing! <button class="btn sm red" id="ppSwitch" style="margin-top:6px">Join another game</button>';ng.classList.remove('hidden');$('#ppSwitch').onclick=()=>{P.tickets=[];saveP();inviteCode='';openJoin()}}
+  else ng.classList.add('hidden');
+  $('#ppLast').classList.toggle('hidden',!synced);
+  if(synced){
+    const last=called[called.length-1];const b=$('#ppBall');
+    if(called.length!==lastSeenCount){b.textContent=last||'–';if(last){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');if(navigator.vibrate&&lastSeenCount>=0)try{navigator.vibrate(60)}catch(e){}}lastSeenCount=called.length}
+    $('#ppRecent').textContent=called.length?called.slice(-6,-1).reverse().join(' · ')||'First number!':(liveDoc.status==='lobby'?'Game starting soon…':'Waiting for host…');
+    $('#ppCount').textContent=called.length?`${called.length} of 90 called`:'';
+  }
+  $('#ppAuto').checked=!!P.auto;$('#ppAuto').disabled=!synced;
+  $('#ppAutoNote').textContent=synced?"Off = classic play: listen and tap yourself. Dotted rings show called numbers you haven't dabbed yet.":"Connecting… meanwhile listen to the host and tap your numbers.";
+  $('#ppTickets').innerHTML=P.tickets.map((t,i)=>{
+    const g=ticketFor(P.code,t.id);
+    const marks=P.auto&&synced?Array.from(new Set([...t.marks,...allNums(g).filter(n=>called.includes(n))])):t.marks;
+    return ticketHTML(g,{marks,called:synced?called:[],tid:t.id,label:P.tickets.length>1?`Ticket ${i+1} · ID`:'Ticket ID',interactive:true});
+  }).join('');
+  renderWinnersList($('#ppWinners'),synced?liveDoc:null);
+  $('#ppBoard').innerHTML=boardHTML(called);
+}
+$('#ppTickets').addEventListener('click',e=>{
+  const cell=e.target.closest('.cell.num');if(!cell)return;
+  const tid=cell.closest('.ticket').dataset.tid;const n=+cell.dataset.n;
+  const t=P.tickets.find(x=>x.id===tid);if(!t)return;
+  const i=t.marks.indexOf(n);if(i>=0)t.marks.splice(i,1);else t.marks.push(n);
+  saveP();renderPlayer();
+});
+$('#ppAuto').onchange=e=>{P.auto=e.target.checked;saveP();renderPlayer()};
+$('#ppAddTicket').onclick=async()=>{
+  if(P.tickets.length>=3){toast('Max 3 tickets per phone');return}
+  const tid=rid(4);if(sb)sb.rpc('tb_join',{p_code:P.code,p_ticket:tid,p_name:P.name}).then(()=>{},()=>{});
+  P.tickets.push({id:tid,marks:[]});saveP();renderPlayer();toast('Ticket added');
+};
+$('#ppLeave').onclick=()=>{
+  const b=$('#ppLeave');
+  if(b.dataset.sure){P=null;store.del('tb_player');b.dataset.sure='';b.textContent='Leave game';inviteCode='';show('home');renderHome();return}
+  b.dataset.sure='1';b.textContent='Tap again to leave';setTimeout(()=>{b.dataset.sure='';b.textContent='Leave game'},3000);
+};
+$('#ppClaim').onclick=async()=>{
+  const called=playerCalled();
+  $('#cList').innerHTML=P.tickets.map(t=>`<div class="claimid">${esc(t.id)}</div>`+ticketHTML(ticketFor(P.code,t.id),{marks:t.marks,called,tid:t.id,label:P.name})).join('');
+  $('#cMsg').textContent='Sending your claim to the host…';
+  $('#cOverlay').classList.remove('hidden');
+  if(!sb){$('#cMsg').textContent='Shout “TAMBOLA!” and show this ticket ID to the host.';return}
+  let sent=0;
+  for(const t of P.tickets){const {data,error}=await sb.rpc('tb_claim',{p_code:P.code,p_ticket:t.id,p_name:P.name});if(!error&&data)sent++}
+  $('#cMsg').textContent=sent?'Claim sent to the host ✓ Shout “TAMBOLA!” too. Host will check this ticket ID.':'Could not send — shout “TAMBOLA!” and show this ticket ID to the host.';
+};
+$('#cClose').onclick=()=>$('#cOverlay').classList.add('hidden');
+
+function renderWinnersList(ul,doc){
+  if(!doc||!doc.prizes){ul.innerHTML='<li><span class="note">No winners yet</span></li>';return}
+  const rows=PRIZES.filter(p=>doc.prizes[p.k]&&doc.prizes[p.k].on).map(p=>{
+    const w=doc.prizes[p.k].winners||[];
+    return `<li><span>${p.name}</span><span class="w">${w.length?w.map(x=>`${esc(x.name||'Winner')} <span class="note">(${esc(x.ticket)})</span>`).join('<br>'):'<span class="note">open</span>'}</span></li>`;
+  });
+  ul.innerHTML=rows.join('')||'<li><span class="note">No prizes set</span></li>';
+}
+
+/* =========================================================
+   ADMIN LOGIN
+   ========================================================= */
+let PIN=store.get('tb_pin','');
+$('#goHost').onclick=async()=>{
+  if(PIN&&sb){const {data}=await sb.rpc('tb_admin_check',{p_pin:PIN});if(data===true){openHost();return}}
+  show('login');$('#lPin').value='';setTimeout(()=>$('#lPin').focus(),50);
+};
+$('#lPin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lGo').click()});
+$('#lGo').onclick=async()=>{
+  const pin=$('#lPin').value;if(!pin){toast('Enter the admin password');return}
+  if(!sb){toast('No internet connection');return}
+  $('#lGo').textContent='Checking…';
+  const {data,error}=await sb.rpc('tb_admin_check',{p_pin:pin});
+  $('#lGo').textContent='Log in';
+  if(error){toast('Network problem — try again');return}
+  if(data!==true){toast('Wrong password');return}
+  PIN=pin;store.set('tb_pin',pin);openHost();
+};
+
+/* =========================================================
+   HOST
+   ========================================================= */
+let G=null,players=[],plChan=null,claimChan=null,claims=[];
+function newGameState(){const prizes={};PRIZES.forEach(p=>prizes[p.k]={on:p.def,winners:[]});return{code:rid(4),status:'lobby',called:[],prizes}}
+async function openHost(){
+  show('host');
+  if(!G){
+    const local=store.get('tb_host',null);
+    if(local&&local.code&&local.status!=='ended')G=local;
+    else if(sb){const {data}=await sb.from('tb_games').select('*').neq('status','ended').order('updated_at',{ascending:false}).limit(1);if(data&&data[0])G=rowToDoc(data[0])}
+    if(!G){G=newGameState();pushState()}
+  }
+  liveLoaded=!!sb;watchHostRoom();renderHost();
+}
+function watchHostRoom(){
+  if(!sb||!G)return;
+  const code=G.code;
+  if(plChan){try{sb.removeChannel(plChan)}catch(e){}}
+  if(claimChan){try{sb.removeChannel(claimChan)}catch(e){}}
+  players=[];claims=[];
+  sb.from('tb_players').select('name,ticket').eq('code',code).order('joined_at').then(({data})=>{if(data&&G.code===code){players=data;renderPlayers()}});
+  sb.from('tb_claims').select('*').eq('code',code).eq('status','new').order('created_at').then(({data})=>{if(data&&G.code===code){claims=data;renderClaims()}});
+  plChan=sb.channel('p-'+code).on('postgres_changes',{event:'INSERT',schema:'public',table:'tb_players',filter:'code=eq.'+code},p=>{if(G.code!==code)return;if(!players.some(x=>x.ticket===p.new.ticket))players.push(p.new);renderPlayers()}).subscribe();
+  claimChan=sb.channel('c-'+code).on('postgres_changes',{event:'INSERT',schema:'public',table:'tb_claims',filter:'code=eq.'+code},p=>{
+    if(G.code!==code)return;claims.push(p.new);renderClaims();
+    if(autoOn){stopAuto();toast('Auto paused — claim received')}
+    try{if(navigator.vibrate)navigator.vibrate([100,60,100])}catch(e){}
+    sayParts([{text:`Claim from ${p.new.name}!`,lang:'en'}]);
+  }).subscribe();
+}
+function renderPlayers(){
+  const n=new Set(players.map(p=>p.name.toLowerCase())).size;
+  $('#hPlayerCount').textContent=n;$('#hPlayersRun').textContent=n;
+  $('#hPlayerList').textContent=players.length?Array.from(new Set(players.map(p=>p.name))).join(', '):'Nobody yet — share the link.';
+}
+function renderClaims(){
+  $('#hClaims').innerHTML=claims.map(c=>`<div class="claimalert"><div class="grow"><b>${esc(c.name)}</b> claims!<div class="note" style="color:#8a6a55">Ticket ${esc(c.ticket)}</div></div><button class="btn red sm" style="width:auto" data-chk="${c.id}">Check</button><button class="btn ghost sm" style="width:auto;color:#8a6a55;border-color:#e8d6bd" data-dis="${c.id}">✕</button></div>`).join('');
+  $('#hClaims').querySelectorAll('[data-chk]').forEach(b=>b.onclick=()=>{const c=claims.find(x=>String(x.id)===b.dataset.chk);if(!c)return;openVerify(c.ticket,c.name);dismissClaim(c.id)});
+  $('#hClaims').querySelectorAll('[data-dis]').forEach(b=>b.onclick=()=>dismissClaim(+b.dataset.dis));
+}
+function dismissClaim(id){claims=claims.filter(c=>c.id!=id);renderClaims();if(sb)sb.rpc('tb_claim_done',{p_pin:PIN,p_id:id}).then(()=>{},()=>{})}
+const inviteLink=()=>location.origin+location.pathname+'#'+G.code;
+const inviteText=()=>`🎉 Tambola time! Join my game on your phone:\n${inviteLink()}\n\nGame code: ${G.code}\nOpen the link → type your name → get your ticket. No app, no login.`;
+function shareWA(e){if(e)e.preventDefault();const u='https://wa.me/?text='+encodeURIComponent(inviteText());window.open(u,'_blank')||(location.href=u)}
+$('#hShare').onclick=shareWA;$('#hShare2').onclick=shareWA;
+$('#hCopy').onclick=async()=>{try{await navigator.clipboard.writeText(inviteText());toast('Invite copied — paste in WhatsApp')}catch(e){toast(inviteLink(),5000)}};
+
+function renderHost(){
+  syncLabel();
+  const lobby=G.status==='lobby';
+  $('#hLobby').classList.toggle('hidden',!lobby);
+  $('#hRun').classList.toggle('hidden',lobby);
+  renderPlayers();renderClaims();
+  if(lobby){
+    $('#hCodeBig').textContent=G.code;
+    $('#hLobbySync').textContent=sb?'Share the link on WhatsApp — players tap it, type their name, and get a ticket.':'No internet — players type the code above and play by listening.';
+    $('#hPrizeSetup').innerHTML=PRIZES.map(p=>`<label class="chk"><input type="checkbox" data-pk="${p.k}" ${G.prizes[p.k]&&G.prizes[p.k].on?'checked':''}> ${p.name}</label>`).join('');
+    $('#hLang').value=S.lang;$('#hRate').value=S.rate;$('#hRateV').textContent=(+S.rate).toFixed(2)+'×';$('#hFun').checked=S.fun;$('#hTwice').checked=S.twice;fillVoices();
+    return;
+  }
+  $('#hCode').textContent=G.code;
+  const c=G.called,last=c[c.length-1];
+  $('#hBall').textContent=last||'–';
+  $('#hWord').textContent=G.status==='ended'?'Game over — thanks for playing!':last?(S.lang==='hi'&&hiVoice()?hiCall(last):enCall(last,S.fun)):'Tap “Next Number” to begin';
+  $('#hRecent').innerHTML=c.slice(-6,-1).reverse().map(n=>`<span>${n}</span>`).join('');
+  $('#hCount').innerHTML=`<b style="font-size:22px;color:#fff">${c.length}</b>/90 called`;
+  $('#hBoard').innerHTML=boardHTML(c);
+  renderWinnersList($('#hWinners'),G);
+  const done=G.status==='ended'||c.length>=90;
+  $('#hNext').disabled=done;$('#hNext').style.opacity=done?.4:1;
+  $('#hNext').textContent=c.length>=90?'All 90 called':G.status==='ended'?'Game ended':'Next Number';
+  $('#hAuto').textContent=autoOn?'⏸ Pause':'▶ Auto';
+  $('#hGap').value=S.gap;$('#hGapV').textContent=S.gap;
+}
+document.getElementById('hPrizeSetup').addEventListener('change',e=>{const k=e.target.dataset.pk;if(!k)return;G.prizes[k]=G.prizes[k]||{winners:[]};G.prizes[k].on=e.target.checked;pushState()});
+$('#hLang').onchange=e=>{S.lang=e.target.value;saveS();fillVoices()};
+$('#hVoice').onchange=e=>{S.voiceURI=e.target.value;saveS()};
+$('#hRate').oninput=e=>{S.rate=+e.target.value;$('#hRateV').textContent=S.rate.toFixed(2)+'×';saveS()};
+$('#hFun').onchange=e=>{S.fun=e.target.checked;saveS()};
+$('#hTwice').onchange=e=>{S.twice=e.target.checked;saveS()};
+$('#hTest').onclick=()=>{loadVoices();sayParts(callParts(45))};
+$('#hGap').oninput=e=>{S.gap=+e.target.value;$('#hGapV').textContent=S.gap;saveS()};
+
+let wakeLock=null;async function keepAwake(){try{if(navigator.wakeLock&&!wakeLock){wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener('release',()=>wakeLock=null)}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cur==='host'&&G&&G.status==='running')keepAwake()});
+
+$('#hStart').onclick=()=>{
+  if(!PRIZES.some(p=>G.prizes[p.k]&&G.prizes[p.k].on)){toast('Pick at least one prize');return}
+  G.status='running';pushState();keepAwake();
+  const hi=S.lang==='hi'&&hiVoice();
+  sayParts([{text:hi?'तम्बोला शुरू हो रहा है। अपने टिकट तैयार रखिए!':"Let's play Tambola! Get your tickets ready.",lang:hi?'hi':'en'}]);
+  renderHost();
+};
+function drawNext(){
+  if(!G||G.status!=='running')return false;
+  const S2=new Set(G.called);const rem=[];for(let n=1;n<=90;n++)if(!S2.has(n))rem.push(n);
+  if(!rem.length){stopAuto();toast('All 90 numbers called');return false}
+  const n=rem[randInt(rem.length)];G.called=G.called.concat(n);
+  pushState();renderHost();
+  const b=$('#hBall');b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');
+  sayParts(callParts(n));
+  return true;
+}
+$('#hNext').onclick=()=>{keepAwake();drawNext()};
+$('#hRepeat').onclick=()=>{const l=G.called[G.called.length-1];if(l)sayParts(callParts(l))};
+$('#hUndo').onclick=()=>{
+  const b=$('#hUndo');if(!G.called.length)return;
+  if(!b.dataset.sure){b.dataset.sure='1';b.textContent='Sure?';setTimeout(()=>{b.dataset.sure='';b.textContent='↶ Undo'},2500);return}
+  b.dataset.sure='';b.textContent='↶ Undo';stopAuto();
+  const n=G.called[G.called.length-1];G.called=G.called.slice(0,-1);pushState();renderHost();toast(`Removed ${n}`);
+};
+let autoOn=false,autoT=null;
+function stopAuto(){autoOn=false;clearTimeout(autoT);if(cur==='host'&&G&&G.status!=='lobby')$('#hAuto').textContent='▶ Auto'}
+function autoStep(){if(!autoOn)return;if(!drawNext()){stopAuto();return}autoT=setTimeout(autoStep,S.gap*1000)}
+$('#hAuto').onclick=()=>{if(autoOn){stopAuto();toast('Paused');return}if(G.status!=='running')return;autoOn=true;$('#hAuto').textContent='⏸ Pause';keepAwake();autoStep()};
+$('#hEnd').onclick=()=>{
+  const b=$('#hEnd');if(!b.dataset.sure){b.dataset.sure='1';b.textContent='Tap again to end';setTimeout(()=>{b.dataset.sure='';b.textContent='End Game'},3000);return}
+  b.dataset.sure='';b.textContent='End Game';stopAuto();G.status='ended';pushState();renderHost();
+  sayParts([{text:'Game over. Thank you for playing Tambola!',lang:'en'}]);
+};
+$('#hNew').onclick=()=>{
+  const b=$('#hNew');if(G.status==='running'&&!b.dataset.sure){b.dataset.sure='1';b.textContent='Tap again — new code';setTimeout(()=>{b.dataset.sure='';b.textContent='New Game'},3000);return}
+  b.dataset.sure='';b.textContent='New Game';stopAuto();
+  if(G.status!=='ended'){G.status='ended';pushState()}
+  setTimeout(()=>{G=newGameState();pushState();watchHostRoom();renderHost();toast('New game ready — code '+G.code)},400);
+};
+
+/* verify */
+function openVerify(id,name){stopAuto();$('#vId').value=id||'';$('#vName').value=name||'';$('#vResult').innerHTML='';$('#vOverlay').classList.remove('hidden');if(id)doVerify();else setTimeout(()=>$('#vId').focus(),50)}
+$('#hVerify').onclick=()=>openVerify();
+$('#vClose').onclick=()=>{$('#vOverlay').classList.add('hidden');renderHost()};
+$('#vId').addEventListener('input',e=>{e.target.value=cleanCode(e.target.value)});
+$('#vCheck').onclick=doVerify;
+function doVerify(){
+  const id=cleanCode($('#vId').value);if(id.length!==4){toast('Enter the 4-character ticket ID');return}
+  if(!$('#vName').value.trim()){const p=players.find(x=>x.ticket===id);if(p)$('#vName').value=p.name}
+  const g=ticketFor(G.code,id);const C=new Set(G.called);
+  const rows=PRIZES.filter(p=>G.prizes[p.k]&&G.prizes[p.k].on).map(p=>{
+    const ok=p.test(g,C);const w=G.prizes[p.k].winners||[];const already=w.some(x=>x.ticket===id);
+    return `<div class="prizechk"><div><b>${p.name}</b><br>${ok?'<span class="ok">✓ Valid</span>':'<span class="no">✗ Not complete</span>'}${w.length?`<div class="note">Won by ${w.map(x=>esc(x.name)).join(', ')}</div>`:''}</div>
+      ${ok&&!already?`<button class="btn green sm" style="width:auto" data-award="${p.k}">Award</button>`:already?'<span class="ok">Awarded</span>':''}</div>`;
+  }).join('');
+  const hits=allNums(g).filter(n=>C.has(n)).length;
+  const known=players.some(x=>x.ticket===id);
+  $('#vResult').innerHTML=(sb&&players.length&&!known?'<div class="banner" style="background:#ff8a9c">This ticket ID was not registered in this game — double-check it.</div>':'')+
+    ticketHTML(g,{called:G.called,verify:true,tid:id,label:'Checking ticket'})+
+    `<div class="note" style="text-align:center;margin-top:-6px">${hits}/15 numbers on this ticket have been called (green)</div>`+
+    `<div class="panel">${rows}</div><p class="note">If nothing is valid, it's a <b>bogey</b> — close and carry on.</p>`;
+  $('#vResult').querySelectorAll('[data-award]').forEach(b=>b.onclick=()=>award(b.dataset.award,id));
+}
+function award(k,id){
+  const name=$('#vName').value.trim()||'Ticket '+id;
+  G.prizes[k].winners=(G.prizes[k].winners||[]).concat({name,ticket:id,at:G.called.length});
+  pushState();doVerify();
+  sayParts([{text:`Congratulations ${name}! ${prizeName(k)}!`,lang:'en'}]);
+  toast(`${prizeName(k)} → ${name}`);
+  const allDone=PRIZES.filter(p=>G.prizes[p.k]&&G.prizes[p.k].on).every(p=>(G.prizes[p.k].winners||[]).length);
+  if(allDone)setTimeout(()=>toast('All prizes won! Tap End Game when ready.',3500),2400);
+}
+
+/* state push: one write at a time */
+let writing=false,dirty=false;
+async function pushState(){
+  store.set('tb_host',G);
+  if(!sb)return;
+  dirty=true;if(writing)return;writing=true;
+  while(dirty){
+    dirty=false;const snap=JSON.parse(JSON.stringify(G));
+    const {error}=await sb.rpc('tb_save_game',{p_pin:PIN,p_code:snap.code,p_status:snap.status,p_called:snap.called,p_prizes:snap.prizes});
+    if(error){
+      if(/not admin/i.test(error.message||'')){toast('Admin login expired — log in again',3500);store.del('tb_pin');PIN='';break}
+      setSync('#hDot','#hSync','warn','Retrying…');await new Promise(r=>setTimeout(r,1200));dirty=true;continue;
+    }
+    setSync('#hDot','#hSync','on','Live');
+  }
+  writing=false;
+}
+
+/* boot */
+syncLabel();
+if(inviteCode&&P&&P.code===inviteCode&&P.tickets&&P.tickets.length){watchGame(P.code);show('pplay');renderPlayer()}
+else if(inviteCode){openJoin()}
+else if(P&&P.code&&P.tickets&&P.tickets.length){watchGame(P.code);renderHome()}
+else renderHome();
+window.addEventListener('hashchange',()=>{const c=cleanCode(location.hash.slice(1));if(c.length===4&&cur!=='host'){inviteCode=c;openJoin()}});
+})();
+</script>
+</body>
+</html>
