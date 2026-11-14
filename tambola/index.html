@@ -208,6 +208,7 @@ details summary::-webkit-details-marker{display:none}
         <label class="chk"><input type="checkbox" id="hFun"> Fun calls ("Two fat ladies, 88")</label>
         <label class="chk"><input type="checkbox" id="hTwice"> Say each number twice</label>
         <button class="btn ghost sm" id="hTest">🔊 Test voice</button>
+        <div class="note hidden" id="hVoiceStatus" style="margin-top:10px;font-weight:700"></div>
         <p class="note" id="hVoiceNote" style="margin-bottom:0">Turn the phone volume up and connect a Bluetooth speaker for a big room.</p>
       </div>
       <button class="btn green" id="hStart">Start Game</button>
@@ -358,15 +359,27 @@ function loadVoices(){try{voices=synth?synth.getVoices():[]}catch(e){voices=[]}f
 if(synth){loadVoices();try{synth.onvoiceschanged=loadVoices}catch(e){}}
 const hiVoice=()=>voices.find(v=>/^hi/i.test(v.lang));
 function enVoice(){const pref=S.voiceURI&&voices.find(v=>v.voiceURI===S.voiceURI);if(pref)return pref;return voices.find(v=>/en[-_]IN/i.test(v.lang))||voices.find(v=>/^en/i.test(v.lang))}
-function sayParts(parts){
-  if(!synth){return}
-  try{synth.cancel()}catch(e){}
-  parts.forEach(p=>{
-    const u=new SpeechSynthesisUtterance(p.text);
-    const v=p.lang==='hi'?hiVoice():enVoice();
-    u.lang=p.lang==='hi'?'hi-IN':(v?v.lang:'en-IN');if(v)u.voice=v;
-    u.rate=+S.rate||0.9;u.volume=1;u.pitch=1;synth.speak(u);
-  });
+const inApp=/; wv\)|WhatsApp|FBAN|FBAV|Instagram|Line\//i.test(navigator.userAgent);
+const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+function voiceStatus(msg,bad){const el=document.getElementById('hVoiceStatus');if(!el)return;el.textContent=msg;el.style.color=bad?'#ff8a9c':'#3ddc84';el.classList.remove('hidden')}
+let lastSpeakOK=false;
+function sayParts(parts,isTest){
+  if(!synth){voiceStatus(inApp?"This in-app browser can't speak. Tap ⋮ → Open in Chrome (or Safari on iPhone).":"This browser can't speak. Open the link in Chrome (Android) or Safari (iPhone).",true);return}
+  let started=false;
+  const go=()=>{
+    try{synth.resume()}catch(e){}
+    parts.forEach(p=>{
+      const u=new SpeechSynthesisUtterance(p.text);
+      const v=p.lang==='hi'?hiVoice():enVoice();
+      if(v){u.voice=v;u.lang=v.lang}else if(p.lang==='hi'){u.lang='hi-IN'}
+      u.rate=+S.rate||0.9;u.volume=1;u.pitch=1;
+      u.onstart=()=>{started=true;lastSpeakOK=true;if(isTest)voiceStatus('🔊 Speaking… if you hear nothing, turn up MEDIA volume'+(isIOS?' and switch off Silent mode':'')+'.')};
+      u.onerror=e=>{if(e&&e.error!=='interrupted'&&e.error!=='canceled')voiceStatus('Voice error: '+(e.error||'unknown')+'. Try Chrome/Safari, or pick another voice.',true)};
+      synth.speak(u);
+    });
+  };
+  if(synth.speaking||synth.pending){try{synth.cancel()}catch(e){}setTimeout(go,150)}else go();
+  if(isTest)setTimeout(()=>{if(!started)voiceStatus((inApp?"Blocked inside WhatsApp's browser. Tap ⋮ → Open in Chrome (Safari on iPhone). ":"Phone didn't start speaking. ")+(voices.length?'':'No voices found — Android: Settings → Text-to-speech → install Google Speech Services. ')+(isIOS?'Also switch off Silent mode.':''),true)},2500);
 }
 function callParts(n){
   const hiOK=!!hiVoice();let parts=[];
@@ -617,7 +630,7 @@ function renderHost(){
     $('#hCodeBig').textContent=G.code;
     $('#hLobbySync').textContent=sb?'Share the link on WhatsApp — players tap it, type their name, and get a ticket.':'No internet — players type the code above and play by listening.';
     $('#hPrizeSetup').innerHTML=PRIZES.map(p=>`<label class="chk"><input type="checkbox" data-pk="${p.k}" ${G.prizes[p.k]&&G.prizes[p.k].on?'checked':''}> ${p.name}</label>`).join('');
-    $('#hLang').value=S.lang;$('#hRate').value=S.rate;$('#hRateV').textContent=(+S.rate).toFixed(2)+'×';$('#hFun').checked=S.fun;$('#hTwice').checked=S.twice;fillVoices();
+    $('#hLang').value=S.lang;$('#hRate').value=S.rate;$('#hRateV').textContent=(+S.rate).toFixed(2)+'×';$('#hFun').checked=S.fun;$('#hTwice').checked=S.twice;fillVoices();if(inApp)voiceStatus("You're inside WhatsApp's browser — voice may not work. Tap ⋮ → Open in Chrome (Safari on iPhone).",true);
     return;
   }
   $('#hCode').textContent=G.code;
@@ -640,7 +653,7 @@ $('#hVoice').onchange=e=>{S.voiceURI=e.target.value;saveS()};
 $('#hRate').oninput=e=>{S.rate=+e.target.value;$('#hRateV').textContent=S.rate.toFixed(2)+'×';saveS()};
 $('#hFun').onchange=e=>{S.fun=e.target.checked;saveS()};
 $('#hTwice').onchange=e=>{S.twice=e.target.checked;saveS()};
-$('#hTest').onclick=()=>{loadVoices();sayParts(callParts(45))};
+$('#hTest').onclick=()=>{loadVoices();voiceStatus('Starting voice…');sayParts(callParts(45),true)};
 $('#hGap').oninput=e=>{S.gap=+e.target.value;$('#hGapV').textContent=S.gap;saveS()};
 
 let wakeLock=null;async function keepAwake(){try{if(navigator.wakeLock&&!wakeLock){wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener('release',()=>wakeLock=null)}}catch(e){}}
